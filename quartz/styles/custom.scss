@@ -1,0 +1,63 @@
+@use "./variables.scss" as *;
+
+:root {
+  --garden-shadow: 0 12px 36px rgba(27, 45, 39, 0.08);
+}
+
+body {
+  letter-spacing: 0.005em;
+}
+
+.page > #quartz-body .sidebar.left {
+  border-right: 1px solid var(--lightgray);
+}
+
+.page article {
+  line-height: 1.82;
+}
+
+.page article > h1 {
+  letter-spacing: -0.025em;
+}
+
+.page article h2 {
+  margin-top: 2.25rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--lightgray);
+}
+
+.page article img {
+  border: 1px solid var(--lightgray);
+  border-radius: 14px;
+  box-shadow: var(--garden-shadow);
+  background: white;
+}
+
+.page article table {
+  font-size: 0.92rem;
+}
+
+.page article th {
+  white-space: nowrap;
+}
+
+.callout[data-callout="warning"],
+.callout[data-callout="important"] {
+  border-radius: 10px;
+}
+
+code {
+  font-variant-ligatures: none;
+}
+
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+}
+
+@media (max-width: 800px) {
+  .page article {
+    line-height: 1.72;
+  }
+}
