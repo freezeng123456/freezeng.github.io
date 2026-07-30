@@ -1,19 +1,23 @@
 ---
-title: 计算数学
-description: 高阶偏导、科学机器学习与时间并行算法
+title: Computational Mathematics
+description: Research and technical notes on high-order differentiation and parallel-in-time algorithms
 tags:
-  - 计算数学
+  - computational-mathematics
 ---
 
-这一部分围绕两个共同主题展开：**如何降低高阶微分算子的计算代价**，以及**如何把时间方向从串行瓶颈改造成可并行维度**。
+This section has two distinct parts.
 
-## 个人科研
+## Research
 
-- [[计算数学/个人科研/RSSE\|RSSE]]：利用旋转对称复采样消去低阶 Taylor 模式，使高阶 Stein 分量估计器的主导方差不再随平滑带宽爆炸。
-- [[计算数学/个人科研/Apolarity\|Apolarity-guided Taylor jets]]：把一个固定混合偏导的最短方向调度，等价为单项式的 Waring 分解。
+The [[计算数学/个人科研/index|Research]] directory contains concise accounts of two projects:
 
-两项工作的联系是：它们都把“高阶导数很贵”转化为“怎样设计结构化方向”。前者是随机估计与方差消减，后者是精确确定性计算与最短调度。
+- [[计算数学/个人科研/RSSE|Rotationally Symmetric Stein Estimators]] use structured complex samples to remove low-order Taylor modes from high-order stochastic derivative estimators.
+- [[计算数学/个人科研/Apolarity|Apolarity-Guided Taylor Jets]] convert the minimum directional schedule for a prescribed mixed derivative into a Waring decomposition problem.
 
-## 知识整理
+These pages report the main insight, the algorithmic structure, and selected results. Proof details and implementation-specific optimizations are intentionally omitted.
 
-[[计算数学/时间并行计算/index\|双曲与抛物问题的时间并行计算]]按综述论文的五章组织，并将理论方法连接到可运行的 Python 数值实验。
+## Knowledge notes
+
+The [[计算数学/知识整理/index|Knowledge Notes]] directory is reserved for expository material derived from papers, books, and reproducible computational studies.
+
+Its first topic, [[计算数学/知识整理/时间并行计算/index|Time Parallelization for Hyperbolic and Parabolic Problems]], follows the five-section structure of the 2025 Acta Numerica survey by Gander, Wu, and Zhou. Numerical results are placed directly in the chapter where the corresponding equation or algorithm is discussed.

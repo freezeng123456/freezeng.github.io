@@ -1,60 +1,60 @@
 ---
-title: Apolarity-guided Taylor Jets
-description: 用 Waring 分解计算固定高阶混合偏导
+title: Apolarity-Guided Taylor Jets
+description: Waring-optimal directional schedules for prescribed mixed derivatives
 tags:
-  - 计算数学
-  - 自动微分
-  - 代数几何
+  - computational-mathematics
+  - automatic-differentiation
+  - algebraic-geometry
 ---
 
-项目：[freezeng123456/apolarity](https://github.com/freezeng123456/apolarity)
+Repository: [freezeng123456/apolarity](https://github.com/freezeng123456/apolarity)
 
-## 问题
+## Problem
 
-对一个固定的 $p$ 阶混合偏导，嵌套自动微分会形成越来越深的导数图。Taylor-mode AD 可以沿一个方向传播截断 jet，却没有回答：**究竟需要评估哪些方向，才能用最少次数精确恢复目标混合偏导？**
+Nested automatic differentiation builds an increasingly deep derivative graph for a prescribed mixed derivative of order $p$. Taylor-mode automatic differentiation can propagate a truncated jet along one direction, but this observation leaves a combinatorial question: which directions recover the target mixed derivative exactly, and what is the minimum number of such directions?
 
-## 核心洞见
+## Main insight
 
-方向 Taylor 系数
+The directional Taylor coefficient
 
 $$
 T_p(x;v)=\frac1{p!}\frac{d^p}{d\tau^p}u(x+\tau v)\bigg|_{\tau=0}
 $$
 
-是方向 $v$ 的 $p$ 次齐次多项式。用若干方向的 $T_p(x;v_r)$ 线性组合提取指定混合偏导，等价于把对应单项式 $z^\alpha$ 写成线性形式的 $p$ 次幂之和，也就是 Waring 分解。
+is a homogeneous polynomial of degree $p$ in the direction $v$. Expressing a prescribed mixed derivative as a linear combination of $T_p(x;v_r)$ is equivalent to expressing the associated monomial $z^\alpha$ as a sum of $p$th powers of linear forms. This is a Waring decomposition.
 
-若活跃指数排序为 $a_0\le\cdots\le a_n$，复 Waring 秩给出最短方向数
+If the active exponents are ordered as $a_0\le\cdots\le a_n$, the complex Waring rank gives the minimum number of directions:
 
 $$
 R_{\mathbb C}(z^\alpha)=\prod_{j=1}^{n}(a_j+1).
 $$
 
-根单位构造不仅证明这个上界，而且直接给出可执行的复方向调度。
+A roots-of-unity construction attains this rank and produces an executable schedule of complex directions.
 
-## 实现骨架
+## Computational structure
 
 ```text
 multi-index
-  → active exponents
-  → roots-of-unity Waring schedule
-  → directional Taylor jets
-  → weighted exact derivative
-  → custom reverse rule
-  → parameter-gradient training
+  -> active exponents
+  -> roots-of-unity Waring schedule
+  -> directional Taylor jets
+  -> weighted exact derivative
+  -> custom reverse rule
+  -> parameter-gradient training
 ```
 
-前向通过 Linear 与 $\sinh$ 的 Taylor 递推传播到 $p$ 阶，反向用自定义规则保持对网络参数可微。
+The forward pass propagates Taylor coefficients through linear layers and the recurrence for $\sinh$ up to order $p$. A custom reverse rule differentiates the resulting derivative evaluation with respect to the network parameters.
 
-## 核心结果
+## Selected results
 
-- 导数值和参数梯度均与嵌套自动微分对齐。
-- 对含重复索引的混合偏导，复 Waring 方向数可少于实 polarization；对 square-free 模式，两者均需 $2^{p-1}$ 个方向，没有方向数优势。
-- 在共同宽度、共同 1200 秒预算、五个随机种子的 12 个 PDE 设置中，complex-$\sinh$ 模型的平均相对 $L^2$ 误差均最低，覆盖 polyharmonic、radial chirp 与 lossy Maxwell。
+- The computed derivative values and parameter gradients agree with nested automatic differentiation in the reported validation tests.
+- For mixed derivatives with repeated indices, the complex Waring schedule can use fewer directions than real polarization. For square-free derivatives, both constructions require $2^{p-1}$ directions, so the complex construction has no directional-count advantage in that case.
+- Under a common network width, a common 1200-second budget, and five random seeds, the complex-$\sinh$ model attained the lowest mean relative $L^2$ error in the 12 reported PDE configurations. The test set covers polyharmonic, radial-chirp, and lossy-Maxwell problems.
 
 ![[assets/research/apolarity-chirp.png]]
 
-## 结论边界
+## Scope
 
-这是针对**一个固定单项式偏导**的精确后端，不是对 Laplacian、$\Delta^m$ 等算子和的通用加速。代数上更短的方向表也不自动等于 wall-clock 更快：复数算术、批处理、精度和显存布局都会改变实际收益。
+The construction is an exact backend for one prescribed monomial derivative. It is not a universal acceleration for sums of operators such as the Laplacian or $\Delta^m$. A shorter algebraic schedule also does not imply a proportional wall-clock improvement, because complex arithmetic, batching, numerical precision, and memory layout affect the measured cost.
 
-PDE 结果支持 complex-$\sinh$ 表示的潜力，但不能把全部精度提升归因于 Waring 方向缩减；参数量匹配与运行时/峰值显存对照仍是必要的后续实验。
+The PDE results provide evidence for the complex-$\sinh$ representation under the reported settings. They do not isolate the Waring schedule as the sole cause of the accuracy gain. Matched-parameter, runtime, and peak-memory comparisons remain necessary for that attribution.
