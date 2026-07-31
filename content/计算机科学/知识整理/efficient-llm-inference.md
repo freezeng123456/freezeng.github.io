@@ -17,16 +17,7 @@ tags:
 
 高效推理不只是一次 Transformer 前向计算，而是一个持续运行的资源调度循环。系统每一轮选择一批**本轮需要计算的 token**，执行模型、采样出新 token，再把未结束的请求送回下一轮。
 
-```mermaid
-flowchart TD
-  A["Token-level scheduler<br/>request state + token budget"] --> B["Flattened model execution<br/>Embedding → N × Transformer"]
-  B --> C["Gather + LM head + sampler<br/>produce next-token IDs"]
-  C --> D{"Request finished?"}
-  D -->|"No"| A
-  D -->|"Yes"| E["Output"]
-  A <--> M["KV block manager"]
-  M <--> B
-```
+![Token 级大模型推理服务循环](assets/diagrams/ml-inference/zh/serving-loop.svg)
 
 这里：
 
@@ -72,12 +63,7 @@ $$
 
 其中 $L$ 是层数，2 表示 K/V，$N_b$ 是物理块数，$B$ 是 block size，$H_{kv}$ 是 KV head 数，$D_h$ 是 head dimension。
 
-```mermaid
-flowchart TD
-  A["Logical token position 25"] --> B["Virtual block 1<br/>offset 9"]
-  B --> C["block_table[request, 1] = 8<br/>physical slot = 8 × 16 + 9 = 137"]
-  C --> D["Use slot position 137<br/>in every model layer's K/V cache"]
-```
+![PagedAttention 从逻辑 Token 到物理 KV Slot 的映射](assets/diagrams/ml-inference/zh/paged-kv-cache.svg)
 
 `slot_mapping` 告诉 kernel 新 K/V 写到哪里，`block_table` 告诉 Attention kernel 去哪些物理块读取历史 K/V。它们不需要层维度：同一个 token 在每一层都使用相同的物理块号与块内偏移，只是访问不同层的缓存切片。
 
@@ -135,16 +121,7 @@ $$
 
 随后进入采样链路：
 
-```mermaid
-flowchart TD
-  A["Raw logits<br/>optionally snapshot raw logprobs"] --> B["Grammar / allowlist / penalties<br/>then temperature scaling"]
-  B --> C["min-p / top-k / top-p filtering"]
-  C --> D{"temperature < 1e-5?"}
-  D -->|"Yes"| E["Greedy argmax"]
-  D -->|"No"| F["Random sampling<br/>e.g. Gumbel-Max"]
-  E --> G["Next-token ID"]
-  F --> G
-```
+![从 Logits 到 Next Token 的采样流程](assets/diagrams/ml-inference/zh/sampling-pipeline.svg)
 
 理解参数时应关注它改变的是哪一层：
 
@@ -163,16 +140,7 @@ flowchart TD
 
 当 RUNNING 请求无法再获得 KV block 时，vLLM v1 的思路是抢占低优先级运行请求：释放其 KV Cache，把 `num_computed_tokens` 归零并放回 WAITING，之后通过重新 prefill 恢复状态。
 
-```mermaid
-stateDiagram-v2
-  [*] --> WAITING
-  WAITING --> RUNNING: token budget and KV blocks available
-  RUNNING --> RUNNING: schedule next tokens
-  RUNNING --> FINISHED: stop condition reached
-  RUNNING --> PREEMPTED: KV allocation fails
-  PREEMPTED --> WAITING: free blocks and reset progress
-  FINISHED --> [*]
-```
+![KV 压力下的请求状态与抢占循环](assets/diagrams/ml-inference/zh/preemption-states.svg)
 
 发生抢占说明缓存已经紧张，因此该 step 通常不再引入新的 WAITING 请求，以免触发连续抢占。v1 选择 recompute 而不是把 KV swap 到 host，体现了一个系统取舍：PCIe 往返、host 内存占用和额外状态机可能比重新 prefill 更昂贵。
 

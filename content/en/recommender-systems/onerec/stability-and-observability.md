@@ -129,20 +129,7 @@ Thresholds must be bucketed by traffic, machine type, and position. Global avera
 
 ## Fault Tree
 
-```mermaid
-flowchart TD
-  A["No final ads"] --> B{"Decoder has SIDs?"}
-  B -->|No| C["Model input/version/beam"]
-  B -->|Yes| D{"KV has TIDs?"}
-  D -->|No| E["SID protocol/KV version/shards"]
-  D -->|Yes| F{"Creative Build has AIDs?"}
-  F -->|No| G["TID→AID forward index/dedup"]
-  F -->|Yes| H{"Common downstream retains ads?"}
-  H -->|No| I["quota/property/inventory/coarse rank"]
-  H -->|Yes| J{"Fetch hits?"}
-  J -->|No| K["cache key/timeout/fill_done"]
-  J -->|Yes| L["Ranking side path/merge dedup"]
-```
+![The OneRec diagnostic path when no final ads remain](assets/diagrams/onerec/en/debugging-tree.svg)
 
 ## Gate for Removing the Legacy Path
 

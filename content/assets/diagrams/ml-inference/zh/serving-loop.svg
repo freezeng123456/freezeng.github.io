@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">Token 级服务循环</title>
+  <desc id="diagram-desc">调度、执行、采样与 KV 内存管理在每个 step 中闭环</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b8c4d2"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc4c64"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1184" height="614" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1184" height="614" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="118" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="113" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="113" dy="0">LLM 推理</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">Token 级服务循环</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">调度、执行、采样与 KV 内存管理在每个 step 中闭环</tspan></text>
+
+    <g filter="url(#shadow)">
+    <rect x="70" y="235" width="270" height="145" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="70" y="235" width="8" height="145" rx="4" fill="#2563eb"/>
+    <circle cx="312" cy="263" r="17" fill="#2563eb"/>
+           <text x="312" y="268" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="312" dy="0">1</tspan></text>
+    <text x="98" y="278" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="98" dy="0">Token 调度器</tspan></text>
+    <text x="98" y="298.5" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="98" dy="0">请求状态</tspan><tspan x="98" dy="23">Token 预算</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="465" y="205" width="280" height="145" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="465" y="205" width="8" height="145" rx="4" fill="#4f46e5"/>
+    <circle cx="717" cy="233" r="17" fill="#4f46e5"/>
+           <text x="717" y="238" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="717" dy="0">2</tspan></text>
+    <text x="493" y="248" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="493" dy="0">展平模型执行</tspan></text>
+    <text x="493" y="268.5" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="493" dy="0">Embedding</tspan><tspan x="493" dy="23">N × Transformer</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="860" y="235" width="270" height="145" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="860" y="235" width="8" height="145" rx="4" fill="#0f766e"/>
+    <circle cx="1102" cy="263" r="17" fill="#0f766e"/>
+           <text x="1102" y="268" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="1102" dy="0">3</tspan></text>
+    <text x="888" y="278" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="888" dy="0">LM Head + 采样器</tspan></text>
+    <text x="888" y="298.5" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="888" dy="0">Gather hidden states</tspan><tspan x="888" dy="23">生成 next-token IDs</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="860" y="470" width="270" height="90" rx="22" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="860" y="470" width="8" height="90" rx="4" fill="#16865b"/>
+
+    <text x="995" y="522.14" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="995" dy="0">完成输出</tspan></text>
+
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="465" y="430" width="280" height="115" rx="22" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="465" y="430" width="8" height="115" rx="4" fill="#d97706"/>
+
+    <text x="605" y="473" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="605" dy="0">KV Block Manager</tspan></text>
+    <text x="605" y="505" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="605" dy="0">分配 · 映射 · 回收</tspan></text>
+  </g>
+    <path d="M 340 307 L 455 277" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
+    <path d="M 745 277 L 850 307" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
+    <path d="M 995 380 L 995 458" fill="none" stroke="#16865b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)"  opacity="1"/>
+    <g>
+    <rect x="1012" y="403" width="84" height="28" rx="14" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="1054" y="421.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#16865b" opacity="1"><tspan x="1054" dy="0">完成</tspan></text>
+  </g>
+    <path d="M 885 258 C 770 120, 300 120, 205 225" fill="none" stroke="#dc4c64" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)"  opacity="1"/>
+    <g>
+    <rect x="470" y="158" width="210" height="30" rx="15" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="575" y="177.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="575" dy="0">未完成：进入下一 step</tspan></text>
+  </g>
+    <path d="M 530 430 C 460 405, 390 365, 335 345" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" stroke-dasharray="8 8" opacity="1"/>
+    <path d="M 680 430 C 745 395, 785 335, 855 320" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" stroke-dasharray="8 8" opacity="1"/>
+    <g>
+    <rect x="523" y="568" width="164" height="30" rx="15" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="605" y="587.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#d97706" opacity="1"><tspan x="605" dy="0">request state + KV</tspan></text>
+  </g>
+
+</svg>

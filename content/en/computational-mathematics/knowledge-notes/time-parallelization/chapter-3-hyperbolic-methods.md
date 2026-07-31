@@ -18,11 +18,7 @@ Multiple shooting, waveform relaxation, time-domain decomposition, and all-at-on
 
 SWR decomposes the spatial domain but exchanges an entire interface waveform over a time window:
 
-```mermaid
-flowchart LR
-  A["Subdomain 1: solve over the full time window"] -->|interface waveform| B["Subdomain 2: solve over the full time window"]
-  B -->|updated interface waveform| A
-```
+![Schwarz waveform relaxation exchanges interface waveforms over a full time window](assets/diagrams/pint/en/schwarz-waveform-relaxation.svg)
 
 Robin or characteristic transmission conditions can approximate incoming and outgoing waves more accurately than Dirichlet exchange for second-order hyperbolic equations. The overlap width, time-window length, and transmission parameter jointly determine convergence.
 

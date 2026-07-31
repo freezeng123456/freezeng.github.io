@@ -20,25 +20,7 @@ It does not “replace every recommendation stage with a large model.” It adds
 
 ## Complete Loop
 
-```mermaid
-flowchart LR
-  A["Ad/content representation"] --> B["RQ-VAE quantization"]
-  B --> C["Multilevel semantic ID"]
-  D["User behavior and context"] --> E["Online/offline sample generation"]
-  C --> E
-  E --> F["Sequence-generation model training"]
-  F --> G["Model release: Encoder + Decoder"]
-  D --> H["Online features and sequence"]
-  H --> G
-  G --> I["Beam Search generates SIDs"]
-  I --> J["KV: SID → TID"]
-  J --> K["TID → AID/creative"]
-  K --> L["Filtering/quota/coarse ranking"]
-  L --> M["Side-path fine ranking"]
-  M --> N["Merge/dedup/rerank/bid"]
-  N --> O["Impressions and feedback"]
-  O --> E
-```
+![The complete OneRec loop from semantic IDs to online feedback](assets/diagrams/onerec/en/overview.svg)
 
 ## Four Flows That Must Be Understood Together
 

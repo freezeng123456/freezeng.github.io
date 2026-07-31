@@ -44,19 +44,7 @@ One position must use only one path to prevent duplicated retrieval and duplicat
 
 ## 3. New Generative Retrieval DAG
 
-```mermaid
-flowchart LR
-  A["Entry"] --> B["Datahub"]
-  B --> C["Encoder"]
-  C --> D["Decoder"]
-  D --> E["KV Creative"]
-  E --> F["Creative List Build"]
-  F --> G["Ad List Merge"]
-  G --> H["Quota / Property Filter"]
-  H --> I["Creative Server"]
-  I --> J["Sharding + Coarse Scoring"]
-  J --> K["Retrieval Cache"]
-```
+![The OneRec production path from entry to retrieval cache](assets/diagrams/onerec/en/retrieval-pipeline.svg)
 
 The six generative nodes have the following responsibilities:
 
@@ -75,16 +63,7 @@ The path then meets the legacy path near `AdListMerge` and enters structurally e
 
 The main path continues through conventional retrieval, coarse ranking, and the primary Ranking stage. Within GprHub, OneRec writes results to Retrieval Cache. On the Ranking side, `FetchGenerativeX` waits for `fill_done`, reads the result, and executes independent side-path fine ranking.
 
-```mermaid
-flowchart TD
-  A["Mixer"] --> B["Main retrieval/coarse ranking"]
-  A --> C["OneRec GprHub retrieval/coarse ranking/cache"]
-  B --> D["Main Ranking"]
-  C --> E["Ranking Fetch + side-path ranking"]
-  D --> F["MergeMultiAds / MergeSameAd"]
-  E --> F
-  F --> G["Common reranking and bidding"]
-```
+![Where the OneRec side path merges into the main path](assets/diagrams/onerec/en/merge-paths.svg)
 
 This topology provides isolation:
 

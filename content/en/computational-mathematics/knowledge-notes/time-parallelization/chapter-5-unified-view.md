@@ -30,15 +30,7 @@ This formulation makes the central questions explicit: which error modes does $M
 
 ## Method selection
 
-```mermaid
-flowchart TD
-  A["Is the problem approximately linear?"] -->|yes| B["Are complex-shifted spatial systems inexpensive?"]
-  B -->|yes| C["ParaDiag or ParaExp"]
-  B -->|no| D["SWR or Krylov with a structure-aware preconditioner"]
-  A -->|no| E["Are the dynamics strongly dissipative?"]
-  E -->|yes| F["Parareal, PFASST, MGRiT, or STMG"]
-  E -->|no| G["Characteristic or phase correction; use coarse temporal grids cautiously"]
-```
+![A decision map for parallel-in-time methods](assets/diagrams/pint/en/method-selection.svg)
 
 - **Strongly dissipative, low- or moderate-order integration:** MGRiT and STMG are natural candidates; Parareal provides a simple initial prototype.
 - **High-order temporal accuracy:** PFASST incorporates collocation and SDC but requires a more complex schedule.

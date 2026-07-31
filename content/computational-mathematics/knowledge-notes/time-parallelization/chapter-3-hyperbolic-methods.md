@@ -18,11 +18,7 @@ tags:
 
 SWR 分解空间区域，但在一个时间窗口上交换完整界面波形：
 
-```mermaid
-flowchart LR
-  A["子域 1：求解完整时间窗口"] -->|界面波形| B["子域 2：求解完整时间窗口"]
-  B -->|更新后的界面波形| A
-```
+![Schwarz 波形松弛在完整时间窗口上交换界面波形](assets/diagrams/pint/zh/schwarz-waveform-relaxation.svg)
 
 对于二阶双曲方程，Robin 或特征线传输条件通常比 Dirichlet 交换更准确地近似入射波与出射波。重叠宽度、时间窗口长度和传输参数共同决定收敛速度。
 

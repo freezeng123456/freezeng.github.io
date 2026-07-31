@@ -17,19 +17,7 @@ tags:
 
 A GPU is not a large arithmetic unit controlled instruction by instruction by the CPU. The application uses the CUDA Runtime and driver to prepare memory, load device code, and submit work asynchronously. The GPU front end parses commands and assigns thread blocks to SMs that have sufficient resources. Each SM then schedules instructions at warp granularity.
 
-```mermaid
-flowchart LR
-  A["Host application"] --> B["CUDA Runtime / Driver"]
-  B --> C["Host command queue<br/>stream order"]
-  C --> D["GPU front end"]
-  D --> E["Global block scheduler"]
-  E --> S1["SM 0<br/>resident blocks → warps"]
-  E --> S2["SM 1<br/>resident blocks → warps"]
-  E --> Sn["SM n<br/>resident blocks → warps"]
-  B <--> M["Host memory"]
-  D <--> G["GPU memory + copy engines"]
-  M <--> G
-```
+![The CPU–GPU heterogeneous system](assets/diagrams/gpu/en/heterogeneous-system.svg)
 
 The diagram separates three forms of parallelism:
 
@@ -100,22 +88,7 @@ When a process first uses CUDA, the runtime and driver must establish a device c
 
 A kernel launch submits the entry address, Grid/Block dimensions, dynamic shared-memory size, and parameter addresses. A command queue and doorbell provide a sufficiently accurate abstraction:
 
-```mermaid
-sequenceDiagram
-  participant App as CPU application
-  participant Driver as CUDA runtime / driver
-  participant Queue as Host command queue
-  participant Front as GPU front end
-  participant SM as SMs
-
-  App->>Driver: launch kernel(grid, block, args)
-  Driver->>Queue: encode and enqueue work
-  Driver->>Front: notify through a doorbell
-  Front->>Queue: fetch / consume queued records
-  Front->>SM: distribute thread blocks
-  SM-->>Front: complete blocks
-  Note over App,SM: The host may continue until an explicit dependency or synchronization
-```
+![How one CUDA kernel launch reaches the SMs](assets/diagrams/gpu/en/kernel-launch.svg)
 
 A doorbell is a device-visible register through which the CPU notifies the GPU that new work is available. Command packets, queue placement, and fetching behavior are driver and hardware details. Application logic should not depend on an internal description of one architecture.
 
@@ -123,17 +96,7 @@ Traditional `cudaMalloc` is a synchronous and relatively expensive allocation pa
 
 ## Mapping the Programming Model to Hardware
 
-```mermaid
-flowchart TD
-  G["Grid<br/>one kernel launch"] --> B1["Thread Block"]
-  G --> B2["Thread Block"]
-  G --> Bn["Thread Block"]
-  B1 -->|"placed as a whole"| SM["Streaming Multiprocessor"]
-  SM --> W0["Warp 0<br/>32 threads"]
-  SM --> W1["Warp 1<br/>32 threads"]
-  SM --> Wn["Warp n<br/>32 threads"]
-  W0 --> X["CUDA / Tensor / Load-Store<br/>execution pipelines"]
-```
+![Mapping the CUDA programming model to GPU hardware](assets/diagrams/gpu/en/programming-model.svg)
 
 | CUDA abstraction | Hardware meaning and constraint                                                                                       |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -197,15 +160,7 @@ Shared memory can become the limiting resource as well. If an SM has 96 KB and e
 
 SIMT reduces the burden of explicit vectorization, but it does not remove SIMD-like execution constraints. When threads in one warp choose different `if/else` paths, the hardware generally executes the paths at different times and disables lanes that do not participate in the current path:
 
-```mermaid
-flowchart TD
-  A["Warp reaches a branch"] --> B{"All active lanes<br/>take the same path?"}
-  B -->|"Yes"| C["Execute one path<br/>all lanes useful"]
-  B -->|"No"| D["Execute path A<br/>mask lanes for B"]
-  D --> E["Execute path B<br/>mask lanes for A"]
-  E --> F["Reconverge"]
-  C --> F
-```
+![SIMT warp divergence](assets/diagrams/gpu/en/warp-divergence.svg)
 
 Volta and later architectures introduced Independent Thread Scheduling, which maintains finer-grained execution state and permits more flexible reconvergence and synchronization. It does not mean that 32 threads in one warp can execute 32 arbitrary instructions in the same cycle. Warp divergence can still reduce throughput.
 

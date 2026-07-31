@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="690" viewBox="0 0 1200 690" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">From Logits to the Next Token</title>
+  <desc id="diagram-desc">Constrain the distribution first, then choose a deterministic or stochastic path</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b8c4d2"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc4c64"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1184" height="674" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1184" height="674" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="124" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="116" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="116" dy="0">SAMPLING</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">From Logits to the Next Token</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">Constrain the distribution first, then choose a deterministic or stochastic path</tspan></text>
+
+    <g filter="url(#shadow)">
+    <rect x="65" y="220" width="270" height="135" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="65" y="220" width="8" height="135" rx="4" fill="#2563eb"/>
+    <circle cx="307" cy="248" r="17" fill="#2563eb"/>
+           <text x="307" y="253" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="307" dy="0">1</tspan></text>
+    <text x="93" y="263" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="93" dy="0">Raw Logits</tspan></text>
+    <text x="93" y="283.5" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="93" dy="0">Optionally snapshot</tspan><tspan x="93" dy="23">raw logprobs</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="465" y="220" width="270" height="135" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="465" y="220" width="8" height="135" rx="4" fill="#4f46e5"/>
+    <circle cx="707" cy="248" r="17" fill="#4f46e5"/>
+           <text x="707" y="253" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="707" dy="0">2</tspan></text>
+    <text x="493" y="263" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="493" dy="0">Policy Transform</tspan></text>
+    <text x="493" y="283.5" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="493" dy="0">Grammar / allowlist</tspan><tspan x="493" dy="23">penalties + temperature</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="865" y="220" width="270" height="135" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="865" y="220" width="8" height="135" rx="4" fill="#0f766e"/>
+    <circle cx="1107" cy="248" r="17" fill="#0f766e"/>
+           <text x="1107" y="253" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="1107" dy="0">3</tspan></text>
+    <text x="893" y="263" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="893" dy="0">Candidate Filtering</tspan></text>
+    <text x="893" y="295" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="893" dy="0">min-p · top-k · top-p</tspan></text>
+  </g>
+    <path d="M 335 287 L 454 287" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
+    <path d="M 735 287 L 854 287" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
+    <g filter="url(#shadow)">
+      <circle cx="600" cy="450" r="76" fill="#ffffff" stroke="#d97706" stroke-width="2.2"/>
+      <text x="600" y="425" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="700" fill="#d97706" opacity="1"><tspan x="600" dy="0">temperature</tspan></text>
+      <text x="600" y="469" text-anchor="middle" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="25" font-weight="850" fill="#14213d" opacity="1"><tspan x="600" dy="0">&lt; 1e-5</tspan></text>
+    </g>
+    <path d="M 1000 355 C 980 410, 790 440, 684 448" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)"  opacity="1"/>
+    <g filter="url(#shadow)">
+    <rect x="155" y="525" width="260" height="115" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="155" y="525" width="8" height="115" rx="4" fill="#2563eb"/>
+
+    <text x="285" y="568" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="285" dy="0">Greedy</tspan></text>
+    <text x="285" y="588.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="285" dy="0">argmax</tspan><tspan x="285" dy="23">deterministic</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="785" y="525" width="260" height="115" rx="22" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="785" y="525" width="8" height="115" rx="4" fill="#dc4c64"/>
+
+    <text x="915" y="568" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="915" dy="0">Random</tspan></text>
+    <text x="915" y="588.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="915" dy="0">e.g. Gumbel-Max</tspan><tspan x="915" dy="23">sample the distribution</tspan></text>
+  </g>
+    <path d="M 535 490 C 450 515, 390 540, 405 560" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
+    <path d="M 665 490 C 750 515, 810 540, 795 560" fill="none" stroke="#dc4c64" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)"  opacity="1"/>
+    <g>
+    <rect x="430" y="502" width="58" height="28" rx="14" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="459" y="520.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2563eb" opacity="1"><tspan x="459" dy="0">yes</tspan></text>
+  </g>
+    <g>
+    <rect x="712" y="502" width="58" height="28" rx="14" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="741" y="520.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="741" dy="0">no</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+      <rect x="490" y="592" width="220" height="60" rx="30" fill="#16865b" />
+      <text x="600" y="630" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="19" font-weight="800" fill="#ffffff" opacity="1"><tspan x="600" dy="0">Next-token ID</tspan></text>
+    </g>
+    <path d="M 415 594 C 450 616, 470 622, 480 622" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
+    <path d="M 785 594 C 750 616, 730 622, 720 622" fill="none" stroke="#dc4c64" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)"  opacity="1"/>
+
+</svg>

@@ -17,19 +17,7 @@ tags:
 
 GPU 不是由 CPU 逐条遥控的“大号算术单元”。应用通过 CUDA Runtime 和驱动准备内存、装载设备代码，并把工作异步提交给 GPU。GPU 前端解析命令，把 thread block 分配给可容纳它的 SM；SM 再以 warp 为调度单位执行指令。
 
-```mermaid
-flowchart LR
-  A["Host application"] --> B["CUDA Runtime / Driver"]
-  B --> C["Host command queue<br/>stream order"]
-  C --> D["GPU front end"]
-  D --> E["Global block scheduler"]
-  E --> S1["SM 0<br/>resident blocks → warps"]
-  E --> S2["SM 1<br/>resident blocks → warps"]
-  E --> Sn["SM n<br/>resident blocks → warps"]
-  B <--> M["Host memory"]
-  D <--> G["GPU memory + copy engines"]
-  M <--> G
-```
+![CPU 与 GPU 异构计算系统](assets/diagrams/gpu/zh/heterogeneous-system.svg)
 
 这张图区分了三层并行：
 
@@ -100,22 +88,7 @@ $$
 
 Kernel launch 会提交入口地址、Grid/Block 维度、动态共享内存大小和参数地址等信息。可以用 command queue 与 doorbell 建立一个足够准确的抽象：
 
-```mermaid
-sequenceDiagram
-  participant App as CPU application
-  participant Driver as CUDA runtime / driver
-  participant Queue as Host command queue
-  participant Front as GPU front end
-  participant SM as SMs
-
-  App->>Driver: launch kernel(grid, block, args)
-  Driver->>Queue: encode and enqueue work
-  Driver->>Front: notify through a doorbell
-  Front->>Queue: fetch / consume queued records
-  Front->>SM: distribute thread blocks
-  SM-->>Front: complete blocks
-  Note over App,SM: The host may continue until an explicit dependency or synchronization
-```
+![一次 CUDA Kernel Launch 抵达 SM 的过程](assets/diagrams/gpu/zh/kernel-launch.svg)
 
 “Doorbell”表示 CPU 通过设备可见的寄存器通知 GPU 有新工作。具体命令包、队列位置和取数方式是驱动与硬件实现细节，不应依赖单一架构的内部描述编写应用逻辑。
 
@@ -123,17 +96,7 @@ sequenceDiagram
 
 ## 编程模型如何映射到硬件
 
-```mermaid
-flowchart TD
-  G["Grid<br/>one kernel launch"] --> B1["Thread Block"]
-  G --> B2["Thread Block"]
-  G --> Bn["Thread Block"]
-  B1 -->|"placed as a whole"| SM["Streaming Multiprocessor"]
-  SM --> W0["Warp 0<br/>32 threads"]
-  SM --> W1["Warp 1<br/>32 threads"]
-  SM --> Wn["Warp n<br/>32 threads"]
-  W0 --> X["CUDA / Tensor / Load-Store<br/>execution pipelines"]
-```
+![CUDA 编程模型到 GPU 硬件执行模型的映射](assets/diagrams/gpu/zh/programming-model.svg)
 
 | CUDA 抽象        | 硬件含义与约束                                                                   |
 | ---------------- | -------------------------------------------------------------------------------- |
@@ -197,15 +160,7 @@ $$
 
 SIMT 降低了显式向量化的编程负担，但没有消除 SIMD 式执行约束。如果同一 warp 的线程在 `if/else` 中选择不同路径，硬件通常需要分时执行各路径，并对不参与当前路径的 lane 关闭活动掩码：
 
-```mermaid
-flowchart TD
-  A["Warp reaches a branch"] --> B{"All active lanes<br/>take the same path?"}
-  B -->|"Yes"| C["Execute one path<br/>all lanes useful"]
-  B -->|"No"| D["Execute path A<br/>mask lanes for B"]
-  D --> E["Execute path B<br/>mask lanes for A"]
-  E --> F["Reconverge"]
-  C --> F
-```
+![SIMT Warp Divergence 示意](assets/diagrams/gpu/zh/warp-divergence.svg)
 
 Volta 及后续架构引入 Independent Thread Scheduling，保存更细粒度的线程执行状态并允许更灵活的重汇合与同步。它不意味着同一 warp 的 32 个线程可以在同一周期任意执行 32 条不同指令，warp divergence 的吞吐损失仍然存在。
 

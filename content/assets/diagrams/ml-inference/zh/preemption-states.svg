@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="665" viewBox="0 0 1200 665" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">请求状态与抢占循环</title>
+  <desc id="diagram-desc">KV 分配失败时释放低优先级缓存，并通过重新 prefill 恢复</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b8c4d2"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc4c64"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1184" height="649" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1184" height="649" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="157" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="132.5" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="132.5" dy="0">KV PRESSURE</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">请求状态与抢占循环</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">KV 分配失败时释放低优先级缓存，并通过重新 prefill 恢复</tspan></text>
+
+    <g filter="url(#shadow)">
+    <rect x="75" y="270" width="260" height="130" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="75" y="270" width="8" height="130" rx="4" fill="#2563eb"/>
+
+    <text x="205" y="313" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="205" dy="0">WAITING</tspan></text>
+    <text x="205" y="333.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="205" dy="0">等待 token budget</tspan><tspan x="205" dy="23">和空闲 KV block</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="470" y="235" width="260" height="130" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="470" y="235" width="8" height="130" rx="4" fill="#0f766e"/>
+
+    <text x="600" y="278" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="600" dy="0">RUNNING</tspan></text>
+    <text x="600" y="298.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="600" dy="0">持续调度</tspan><tspan x="600" dy="23">next tokens</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="865" y="270" width="260" height="130" rx="22" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="865" y="270" width="8" height="130" rx="4" fill="#16865b"/>
+
+    <text x="995" y="313" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="995" dy="0">FINISHED</tspan></text>
+    <text x="995" y="345" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="995" dy="0">命中停止条件</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="470" y="485" width="260" height="130" rx="22" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="470" y="485" width="8" height="130" rx="4" fill="#dc4c64"/>
+
+    <text x="600" y="528" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="600" dy="0">PREEMPTED</tspan></text>
+    <text x="600" y="548.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="600" dy="0">释放 KV blocks</tspan><tspan x="600" dy="23">重置计算进度</tspan></text>
+  </g>
+    <circle cx="44" cy="335" r="9" fill="#2563eb"/>
+    <path d="M 53 335 L 65 335" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
+    <path d="M 335 335 L 459 300" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
+    <g>
+    <rect x="348" y="270" width="96" height="28" rx="14" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="396" y="288.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2563eb" opacity="1"><tspan x="396" dy="0">资源可用</tspan></text>
+  </g>
+    <path d="M 730 300 L 854 335" fill="none" stroke="#16865b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)"  opacity="1"/>
+    <g>
+    <rect x="747" y="270" width="84" height="28" rx="14" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="789" y="288.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#16865b" opacity="1"><tspan x="789" dy="0">停止条件</tspan></text>
+  </g>
+    <path d="M 600 365 C 610 405, 610 430, 600 474" fill="none" stroke="#dc4c64" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)"  opacity="1"/>
+    <g>
+    <rect x="625" y="407" width="108" height="28" rx="14" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="679" y="425.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="679" dy="0">KV 分配失败</tspan></text>
+  </g>
+    <path d="M 470 550 C 300 560, 205 490, 205 411" fill="none" stroke="#dc4c64" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)" stroke-dasharray="8 8" opacity="1"/>
+    <g>
+    <rect x="198" y="520" width="170" height="28" rx="14" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="283" y="538.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="283" dy="0">回到队列 · 重新 prefill</tspan></text>
+  </g>
+    <path d="M 535 235 C 500 180, 700 180, 665 235" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)"  opacity="1"/>
+    <g>
+    <rect x="555" y="174" width="90" height="28" rx="14" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="600" y="192.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f766e" opacity="1"><tspan x="600" dy="0">下一 step</tspan></text>
+  </g>
+
+</svg>

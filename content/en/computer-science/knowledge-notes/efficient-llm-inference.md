@@ -17,16 +17,7 @@ tags:
 
 Efficient inference is not a single Transformer forward pass. It is a continuously running resource-scheduling loop. At each iteration, the system selects the tokens that need computation, executes the model, samples new tokens, and returns unfinished requests to the next iteration.
 
-```mermaid
-flowchart TD
-  A["Token-level scheduler<br/>request state + token budget"] --> B["Flattened model execution<br/>Embedding → N × Transformer"]
-  B --> C["Gather + LM head + sampler<br/>produce next-token IDs"]
-  C --> D{"Request finished?"}
-  D -->|"No"| A
-  D -->|"Yes"| E["Output"]
-  A <--> M["KV block manager"]
-  M <--> B
-```
+![The token-level LLM serving loop](assets/diagrams/ml-inference/en/serving-loop.svg)
 
 Here:
 
@@ -72,12 +63,7 @@ $$
 
 Here $L$ is the number of layers, 2 denotes K/V, $N_b$ is the number of physical blocks, $B$ is block size, $H_{kv}$ is the number of KV heads, and $D_h$ is head dimension.
 
-```mermaid
-flowchart TD
-  A["Logical token position 25"] --> B["Virtual block 1<br/>offset 9"]
-  B --> C["block_table[request, 1] = 8<br/>physical slot = 8 × 16 + 9 = 137"]
-  C --> D["Use slot position 137<br/>in every model layer's K/V cache"]
-```
+![PagedAttention mapping from a logical token to a physical KV slot](assets/diagrams/ml-inference/en/paged-kv-cache.svg)
 
 `slot_mapping` tells the kernel where to write new K/V values, while `block_table` tells the Attention kernel which physical blocks contain the historical K/V values. Neither needs a layer dimension: the same token uses the same physical block number and offset at every layer, while accessing a different cache slice for each layer.
 
@@ -135,16 +121,7 @@ $$
 
 The sampling pipeline then proceeds as follows:
 
-```mermaid
-flowchart TD
-  A["Raw logits<br/>optionally snapshot raw logprobs"] --> B["Grammar / allowlist / penalties<br/>then temperature scaling"]
-  B --> C["min-p / top-k / top-p filtering"]
-  C --> D{"temperature < 1e-5?"}
-  D -->|"Yes"| E["Greedy argmax"]
-  D -->|"No"| F["Random sampling<br/>e.g. Gumbel-Max"]
-  E --> G["Next-token ID"]
-  F --> G
-```
+![The sampling pipeline from logits to the next token](assets/diagrams/ml-inference/en/sampling-pipeline.svg)
 
 Each parameter should be understood by the layer it changes:
 
@@ -163,16 +140,7 @@ In the implementation described by the source article, raw logprobs requested by
 
 When a RUNNING request can no longer acquire a KV block, vLLM v1 preempts a low-priority running request: it releases that request's KV cache, resets `num_computed_tokens` to zero, returns the request to WAITING, and later reconstructs its state through prefill.
 
-```mermaid
-stateDiagram-v2
-  [*] --> WAITING
-  WAITING --> RUNNING: token budget and KV blocks available
-  RUNNING --> RUNNING: schedule next tokens
-  RUNNING --> FINISHED: stop condition reached
-  RUNNING --> PREEMPTED: KV allocation fails
-  PREEMPTED --> WAITING: free blocks and reset progress
-  FINISHED --> [*]
-```
+![Request states and preemption under KV pressure](assets/diagrams/ml-inference/en/preemption-states.svg)
 
 Preemption indicates that cache capacity is already tight, so that step generally admits no new WAITING requests; admitting them could trigger repeated preemption. The v1 preference for recomputation over swapping KV to the host reflects a systems tradeoff: PCIe transfers, host-memory use, and a more complex state machine can cost more than repeating prefill.
 

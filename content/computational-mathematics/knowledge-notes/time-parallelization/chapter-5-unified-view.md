@@ -30,15 +30,7 @@ $$
 
 ## 方法选择
 
-```mermaid
-flowchart TD
-  A["问题是否近似线性？"] -->|是| B["复移位空间系统是否易于求解？"]
-  B -->|是| C["ParaDiag 或 ParaExp"]
-  B -->|否| D["SWR 或带结构感知预条件器的 Krylov 方法"]
-  A -->|否| E["动力学是否强耗散？"]
-  E -->|是| F["Parareal、PFASST、MGRiT 或 STMG"]
-  E -->|否| G["使用特征线或相位校正；谨慎使用粗时间网格"]
-```
+![时间并行方法选择地图](assets/diagrams/pint/zh/method-selection.svg)
 
 - **强耗散、低到中阶时间积分：** MGRiT 与 STMG 是自然候选，Parareal 可作为简单原型；
 - **高阶时间精度：** PFASST 引入配置与 SDC，但调度更复杂；

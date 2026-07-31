@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="735" viewBox="0 0 1200 735" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">From a Grid to Execution Pipelines</title>
+  <desc id="diagram-desc">A block is a resource-allocation unit; a warp is the basic scheduling group</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b8c4d2"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc4c64"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1184" height="719" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1184" height="719" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="223" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="165.5" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="165.5" dy="0">PROGRAMMING MODEL</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">From a Grid to Execution Pipelines</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">A block is a resource-allocation unit; a warp is the basic scheduling group</tspan></text>
+
+    <g>
+    <rect x="45" y="190" width="410" height="500" rx="26" fill="#f7faff" stroke="#2563eb" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="45" y="190" width="410" height="52" rx="26" fill="#2563eb" fill-opacity=".1"/>
+    <rect x="45" y="216" width="410" height="26" fill="#2563eb" fill-opacity=".1"/>
+    <text x="69" y="223" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#2563eb" opacity="1"><tspan x="69" dy="0">CUDA software view</tspan></text>
+
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="90" y="220" width="320" height="62" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="90" y="220" width="8" height="62" rx="4" fill="#4f46e5"/>
+
+    <text x="118" y="256.78" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="750" fill="#14213d" opacity="1"><tspan x="118" dy="0">Grid · one kernel launch</tspan></text>
+
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="90" y="300" width="300" height="68" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="90" y="300" width="8" height="68" rx="4" fill="#2563eb"/>
+
+    <text x="118" y="339.44" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="118" dy="0">Thread Block 0</tspan></text>
+
+  </g><g filter="url(#shadow)">
+    <rect x="90" y="392" width="300" height="68" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="90" y="392" width="8" height="68" rx="4" fill="#2563eb"/>
+
+    <text x="118" y="431.44" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="118" dy="0">Thread Block 1</tspan></text>
+
+  </g><g filter="url(#shadow)">
+    <rect x="90" y="484" width="300" height="68" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="90" y="484" width="8" height="68" rx="4" fill="#2563eb"/>
+
+    <text x="118" y="523.44" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="118" dy="0">Thread Block n</tspan></text>
+
+  </g>
+    <g>
+    <rect x="655" y="190" width="500" height="500" rx="26" fill="#f6fcfa" stroke="#0f766e" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="655" y="190" width="500" height="52" rx="26" fill="#0f766e" fill-opacity=".1"/>
+    <rect x="655" y="216" width="500" height="26" fill="#0f766e" fill-opacity=".1"/>
+    <text x="679" y="223" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#0f766e" opacity="1"><tspan x="679" dy="0">GPU hardware view</tspan></text>
+
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="705" y="220" width="400" height="62" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="705" y="220" width="8" height="62" rx="4" fill="#4f46e5"/>
+
+    <text x="733" y="256.78" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="750" fill="#14213d" opacity="1"><tspan x="733" dy="0">Streaming Multiprocessor</tspan></text>
+
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="705" y="300" width="300" height="68" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="705" y="300" width="8" height="68" rx="4" fill="#0f766e"/>
+
+    <text x="733" y="339.44" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="733" dy="0">Warp 0 · 32 threads</tspan></text>
+
+  </g><g filter="url(#shadow)">
+    <rect x="705" y="392" width="300" height="68" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="705" y="392" width="8" height="68" rx="4" fill="#0f766e"/>
+
+    <text x="733" y="431.44" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="733" dy="0">Warp 1 · 32 threads</tspan></text>
+
+  </g><g filter="url(#shadow)">
+    <rect x="705" y="484" width="300" height="68" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="705" y="484" width="8" height="68" rx="4" fill="#0f766e"/>
+
+    <text x="733" y="523.44" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="733" dy="0">Warp n · 32 threads</tspan></text>
+
+  </g>
+    <g>
+    <rect x="705" y="595" width="118" height="40" rx="20" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="764" y="619.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#d97706" opacity="1"><tspan x="764" dy="0">CUDA Core</tspan></text>
+  </g><g>
+    <rect x="835" y="595" width="118" height="40" rx="20" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28"/>
+    <text x="894" y="619.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#4f46e5" opacity="1"><tspan x="894" dy="0">Tensor Core</tspan></text>
+  </g><g>
+    <rect x="965" y="595" width="118" height="40" rx="20" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="1024" y="619.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#d97706" opacity="1"><tspan x="1024" dy="0">Load / Store</tspan></text>
+  </g>
+    <path d="M 390 392 C 510 350, 560 350, 695 392" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
+    <g>
+    <rect x="468" y="324" width="220" height="34" rx="17" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="578" y="345.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2563eb" opacity="1"><tspan x="578" dy="0">A block is placed as a whole</tspan></text>
+  </g>
+    <path d="M 855 576 L 855 586" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)"  opacity="1"/>
+
+</svg>

@@ -20,25 +20,7 @@ OneRec 把广告/内容映射成多级离散语义 ID，把用户历史组织成
 
 ## 完整闭环
 
-```mermaid
-flowchart LR
-  A["广告/内容表征"] --> B["RQ-VAE 量化"]
-  B --> C["多级语义 ID"]
-  D["用户行为与上下文"] --> E["在线/离线样本生成"]
-  C --> E
-  E --> F["序列生成模型训练"]
-  F --> G["模型发布：Encoder + Decoder"]
-  D --> H["在线特征与序列"]
-  H --> G
-  G --> I["Beam Search 生成 SID"]
-  I --> J["KV: SID → TID"]
-  J --> K["TID → AID/创意"]
-  K --> L["过滤/Quota/粗排"]
-  L --> M["Ranking 侧路精排"]
-  M --> N["合并/去重/重排/竞价"]
-  N --> O["曝光与反馈"]
-  O --> E
-```
+![OneRec 从语义 ID 到在线反馈的完整闭环](assets/diagrams/onerec/zh/overview.svg)
 
 ## 需要同时理解的四条流
 
