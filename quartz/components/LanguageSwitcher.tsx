@@ -188,8 +188,40 @@ const localizeKnowledgeBaseUi = () => {
   filterLanguageLinks(searchLayout)
   filterLanguageLinks(recentNotes)
 
+  const orderTimeParallelChapters = (list, linkSelector) => {
+    if (!list) return
+    const chapterItems = Array.from(list.children)
+      .map((item) => {
+        if (!(item instanceof HTMLElement)) return null
+        const link = item.querySelector(linkSelector)
+        if (!(link instanceof HTMLAnchorElement)) return null
+        const match = new URL(link.href, window.location.href).pathname.match(
+          /\\/time-parallelization\\/chapter-(\\d+)-/,
+        )
+        return match ? { item, chapter: Number(match[1]) } : null
+      })
+      .filter((entry) => entry !== null)
+
+    const orderedItems = [...chapterItems].sort((a, b) => a.chapter - b.chapter)
+    const needsReordering = orderedItems.some(
+      (entry, index) => entry.item !== chapterItems[index]?.item,
+    )
+    if (needsReordering) {
+      for (const { item } of orderedItems) list.appendChild(item)
+    }
+  }
+
+  document
+    .querySelectorAll(".section-ul")
+    .forEach((list) => orderTimeParallelChapters(list, ":scope > .section .desc a"))
+
   const filterExplorer = (explorerRoot) => {
     if (!explorerRoot) return
+
+    for (const list of explorerRoot.querySelectorAll("ul.content")) {
+      orderTimeParallelChapters(list, ":scope > a")
+    }
+
     for (const item of explorerRoot.children) {
       if (!(item instanceof HTMLElement) || item.classList.contains("overflow-end")) continue
       const link = item.querySelector(":scope > .tree-item-self a, :scope > a")
