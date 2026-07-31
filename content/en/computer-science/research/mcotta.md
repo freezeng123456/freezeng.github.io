@@ -4,7 +4,7 @@ description: Three-seed paired results, causal gradient-retention diagnostics, a
 lang: en
 translation: 计算机科学/个人科研/mcotta
 tags:
-  - Computer-Science
+  - Machine-Learning
   - Test-Time-Adaptation
   - AAAI
 ---

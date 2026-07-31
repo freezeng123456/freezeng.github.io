@@ -4,7 +4,7 @@ description: 三种子配对结果、因果梯度保留诊断与长时程边界
 lang: zh
 translation: en/computer-science/research/mcotta
 tags:
-  - 计算机科学
+  - 机器学习
   - Test-Time-Adaptation
   - AAAI
 ---

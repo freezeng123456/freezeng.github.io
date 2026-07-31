@@ -1,10 +1,10 @@
 ---
-title: 计算机科学
-description: 持续测试时适应与后续知识整理
+title: 机器学习
+description: 持续测试时适应、机器学习系统与 AI Infra 知识整理
 lang: zh
 translation: en/computer-science
 tags:
-  - 计算机科学
+  - 机器学习
 ---
 
 ## 个人科研
@@ -13,6 +13,7 @@ tags:
 
 ## 知识整理
 
-[[计算机科学/知识整理/index\|知识整理]]从 AI 系统开始，首篇
-[[计算机科学/知识整理/efficient-llm-inference\|高效大模型推理]]
-以 vLLM 为主线，可视化 continuous batching、PagedAttention、Transformer 张量流、采样与抢占。
+[[计算机科学/知识整理/index\|知识整理]]从机器学习系统与 AI Infra 开始：
+
+- [[计算机科学/知识整理/efficient-llm-inference\|高效大模型推理]]以 vLLM 为主线，可视化 continuous batching、PagedAttention、Transformer 张量流、采样与抢占；
+- [[计算机科学/知识整理/how-gpus-work\|GPU 如何工作]]解释 CPU–GPU 协作、CUDA 程序生命周期、Grid/Block/Warp/SM 映射、占用率与分支发散。

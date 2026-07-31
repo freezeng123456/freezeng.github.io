@@ -1,14 +1,14 @@
 ---
-title: Computer Science Knowledge Notes
-description: Computer science notes from algorithmic abstractions to systems implementation
+title: Machine Learning Knowledge Notes
+description: Machine-learning notes from algorithmic abstractions to training, inference, and hardware execution
 lang: en
 translation: 计算机科学/知识整理
 tags:
-  - Computer-Science
+  - Machine-Learning
 draft: false
 ---
 
-This section organizes computer science knowledge around problems, mechanisms, data flow, and performance boundaries instead of accumulating disconnected links.
+This section organizes machine-learning knowledge around problems, mechanisms, data flow, and performance boundaries instead of accumulating disconnected links.
 
 ## AI Systems
 
@@ -20,6 +20,15 @@ Using vLLM as the main thread, four flowcharts and a tensor-shape ledger explain
 - how PagedAttention manages a dynamic KV cache with block tables;
 - how data for Llama 3 8B flows through Attention, the FFN, the LM head, and the sampler;
 - which hardware and resource constraints dominate prefill, decode, and preemption.
+
+### [[en/computer-science/knowledge-notes/how-gpus-work|How GPUs Work: From the CUDA Lifecycle to SIMT]]
+
+This note expands the GPU from an abstract “accelerator” into a traceable execution path:
+
+- how the CPU submits work through the runtime, driver, command queues, and a doorbell;
+- how CUDA grids, blocks, and threads map to SMs, warps, and execution units;
+- how registers, shared memory, and thread limits jointly constrain occupancy;
+- why high occupancy does not guarantee high performance, and how SIMD, SIMT, and warp divergence differ.
 
 ## Organization
 

@@ -1,10 +1,10 @@
 ---
-title: Computer Science
-description: Continual test-time adaptation and future knowledge notes
+title: Machine Learning
+description: Continual test-time adaptation, machine-learning systems, and AI infrastructure
 lang: en
 translation: 计算机科学
 tags:
-  - Computer-Science
+  - Machine-Learning
 ---
 
 ## Research
@@ -13,4 +13,7 @@ tags:
 
 ## Knowledge Notes
 
-The [[en/computer-science/knowledge-notes/index\|knowledge notes]] begin with AI systems. The first article, [[en/computer-science/knowledge-notes/efficient-llm-inference\|Efficient LLM Inference]], uses vLLM to visualize continuous batching, PagedAttention, Transformer tensor flow, sampling, and preemption.
+The [[en/computer-science/knowledge-notes/index\|knowledge notes]] begin with machine-learning systems and AI infrastructure:
+
+- [[en/computer-science/knowledge-notes/efficient-llm-inference\|Efficient LLM Inference]] uses vLLM to visualize continuous batching, PagedAttention, Transformer tensor flow, sampling, and preemption;
+- [[en/computer-science/knowledge-notes/how-gpus-work\|How GPUs Work]] explains CPU–GPU coordination, the CUDA program lifecycle, Grid/Block/Warp/SM mapping, occupancy, and branch divergence.

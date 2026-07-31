@@ -1,6 +1,6 @@
 ---
 title: Freezeng Knowledge Base
-description: A personal knowledge base for computational mathematics, computer science, and recommender systems
+description: A personal knowledge base for computational mathematics, machine learning, and recommender systems
 lang: en
 translation: index
 tags:
@@ -13,11 +13,11 @@ This is not a chronological blog. It is a growing knowledge base in which each t
 
 ## Three Starting Points
 
-| Area                                                              | Research                                                                                                                                                                        | Knowledge Notes                                                                                                                                                            |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [[en/computational-mathematics/index\|Computational Mathematics]] | [[en/computational-mathematics/research/index\|Research]]: [[en/computational-mathematics/research/rsse\|RSSE]], [[en/computational-mathematics/research/apolarity\|Apolarity]] | [[en/computational-mathematics/knowledge-notes/index\|Knowledge Notes]]: [[en/computational-mathematics/knowledge-notes/time-parallelization/index\|Time Parallelization]] |
-| [[en/computer-science/index\|Computer Science]]                   | [[en/computer-science/research/mcotta\|MCoTTA]]                                                                                                                                 | [[en/computer-science/knowledge-notes/index\|Knowledge Notes]]: [[en/computer-science/knowledge-notes/efficient-llm-inference\|Efficient LLM Inference]]                   |
-| [[en/recommender-systems/index\|Recommender Systems]]             | —                                                                                                                                                                               | [[en/recommender-systems/onerec/index\|The OneRec Production Pipeline]]                                                                                                    |
+| Area                                                              | Research                                                                                                                                                                        | Knowledge Notes                                                                                                                                                                                                                |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [[en/computational-mathematics/index\|Computational Mathematics]] | [[en/computational-mathematics/research/index\|Research]]: [[en/computational-mathematics/research/rsse\|RSSE]], [[en/computational-mathematics/research/apolarity\|Apolarity]] | [[en/computational-mathematics/knowledge-notes/index\|Knowledge Notes]]: [[en/computational-mathematics/knowledge-notes/time-parallelization/index\|Time Parallelization]]                                                     |
+| [[en/computer-science/index\|Machine Learning]]                   | [[en/computer-science/research/mcotta\|MCoTTA]]                                                                                                                                 | [[en/computer-science/knowledge-notes/index\|Knowledge Notes]]: [[en/computer-science/knowledge-notes/efficient-llm-inference\|Efficient LLM Inference]], [[en/computer-science/knowledge-notes/how-gpus-work\|How GPUs Work]] |
+| [[en/recommender-systems/index\|Recommender Systems]]             | —                                                                                                                                                                               | [[en/recommender-systems/onerec/index\|The OneRec Production Pipeline]]                                                                                                                                                        |
 
 ## Reading Conventions
 
@@ -32,5 +32,5 @@ This is not a chronological blog. It is a growing knowledge base in which each t
 
 - Computational Mathematics: research and knowledge notes use separate directories; the time-parallelization notes and their numerical evidence follow an academic presentation.
 - Time parallelization: all formal Python result artifacts are assigned to the corresponding Acta Numerica chapter.
-- Computer Science: the minimal MCoTTA algorithmic change and its experimental limits are documented, together with a visual note on efficient LLM inference.
+- Machine Learning: the minimal MCoTTA algorithmic change and its experimental limits are documented, together with visual notes on efficient LLM inference and GPU execution.
 - OneRec: the loop connecting data, training, semantic IDs, online retrieval, parameters, and reliability has been documented for internal review, after which it should be migrated or closed.
