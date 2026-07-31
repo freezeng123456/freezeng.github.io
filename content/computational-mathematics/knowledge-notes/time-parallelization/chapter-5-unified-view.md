@@ -39,7 +39,7 @@ $$
 
 ## 完整实验清单
 
-Python 复现项目提供 8 个基线实验和 1 个组合论文验证入口；组合入口生成 5 张论文对应图。由此得到的 13 张 PNG 图及数值结论均已归入第二至第四章。
+Python 复现项目提供 8 个基线实验和 1 个组合论文验证入口；组合入口生成 6 张论文对应图。由此得到的 14 组 SVG/PNG 图及数值结论均已归入第二至第四章。
 
 | Python 输出              | 网页位置         | 机器可读结果                                         |
 | ------------------------ | ---------------- | ---------------------------------------------------- |
@@ -59,21 +59,22 @@ Python 复现项目提供 8 个基线实验和 1 个组合论文验证入口；�
 
 跨实验简表见 [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]]。
 
-上游 MATLAB 仓库还包含直接 ParaDiag、对角化 Parareal、ParaExp、SWR、IDC/PIDC 与波动区域分解脚本。这些脚本已经登记，但尚未移植到当前 Python 实验接口。因此，清单声称覆盖所有已经生成的 Python 结果产物，而不是复现每一份上游 MATLAB 脚本。
+上游 MATLAB 仓库还包含直接 ParaDiag、对角化 Parareal、ParaExp、SWR、IDC/PIDC 与波动区域分解脚本。这些脚本已经登记，但尚未全部移植到当前 Python 实验接口；Figure 3.15 的波动 ParaDiag 已经完成。清单声称覆盖所有已经生成的 Python 结果产物，而不是复现每一份上游 MATLAB 脚本。
 
 ## Formal 复现
 
 ```bash
-python3 -m pip install -r requirements.txt
-python3 run_experiments.py all --quick --output-dir results/quick
-python3 run_experiments.py all --output-dir results/formal
+python3.11 -m pip install -e ".[test]"
+actapint all --quick --output-dir results/quick
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  actapint paper_validation --output-dir results/paper-full
 ```
 
-2026 年 7 月 31 日的 formal 运行在原 T4 主机上使用 NumPy 2.2.6、SciPy 1.15.3 与 Matplotlib 3.10.9。代码路径使用 CPU 稀疏分解、Krylov 方法和 FFT。
+2026 年 7 月 31 日的 formal 运行在新实验服务器上使用 Python 3.11、NumPy 2.4.6、SciPy 1.17.1 与 Matplotlib 3.11.1。论文套件墙钟约 4 分 24 秒，峰值常驻内存低于 280 MiB。代码路径使用 CPU 稀疏分解、Krylov 方法和 FFT。
 
 每个实验写出：
 
-1. 一张由同一组分析数组生成的 PNG；
+1. 由同一组分析数组生成的可编辑 SVG 与高分辨率 PNG；
 2. 一份记录网格、物理参数、容差和指标的 JSON；
 3. 当全时间耦合初值需要随机量时，使用确定性随机初始化。
 

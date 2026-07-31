@@ -39,7 +39,7 @@ This formulation makes the central questions explicit: which error modes does $M
 
 ## Complete experiment ledger
 
-The Python reproduction exposes eight baseline experiments and one composite paper-validation entry. The composite entry generates five paper-specific figures. All 13 resulting PNG figures and their numerical conclusions are now assigned to Chapters 2-4.
+The Python reproduction exposes eight baseline experiments and one composite paper-validation entry. The composite entry generates six paper-specific figures. All 14 SVG/PNG figure sets and their numerical conclusions are now assigned to Chapters 2-4.
 
 | Python output               | Website location               | Machine-readable result                              |
 | --------------------------- | ------------------------------ | ---------------------------------------------------- |
@@ -59,21 +59,22 @@ The Python reproduction exposes eight baseline experiments and one composite pap
 
 The compact cross-experiment record is available as [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]].
 
-The upstream MATLAB repository contains additional scripts for direct ParaDiag, diagonalized Parareal, ParaExp, SWR, IDC/PIDC, and wave-domain decomposition. They have been inventoried but not ported to the current Python experiment interface. The ledger therefore claims complete coverage of generated Python result artifacts, not complete reproduction of every MATLAB script in the upstream repository.
+The upstream MATLAB repository contains additional scripts for direct ParaDiag, diagonalized Parareal, ParaExp, SWR, IDC/PIDC, and wave-domain decomposition. They have been inventoried but not all ported to the current Python experiment interface; the wave ParaDiag case in Figure 3.15 is now implemented. The ledger therefore claims complete coverage of generated Python result artifacts, not complete reproduction of every MATLAB script in the upstream repository.
 
 ## Formal reproduction
 
 ```bash
-python3 -m pip install -r requirements.txt
-python3 run_experiments.py all --quick --output-dir results/quick
-python3 run_experiments.py all --output-dir results/formal
+python3.11 -m pip install -e ".[test]"
+actapint all --quick --output-dir results/quick
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  actapint paper_validation --output-dir results/paper-full
 ```
 
-The formal run on 31 July 2026 used NumPy 2.2.6, SciPy 1.15.3, and Matplotlib 3.10.9 on the original T4 host. The code path uses CPU sparse factorizations, Krylov methods, and FFTs.
+The formal run on 31 July 2026 used Python 3.11, NumPy 2.4.6, SciPy 1.17.1, and Matplotlib 3.11.1 on the new experiment server. The paper suite took about 4 minutes 24 seconds of wall time and less than 280 MiB peak resident memory. The code path uses CPU sparse factorizations, Krylov methods, and FFTs.
 
 Each experiment writes:
 
-1. a PNG generated from the same arrays used for analysis;
+1. an editable SVG and a high-resolution PNG generated from the same arrays used for analysis;
 2. a JSON record of the grid, physical parameters, tolerance, and metric;
 3. deterministic random initialization where an all-at-once initial iterate is required.
 

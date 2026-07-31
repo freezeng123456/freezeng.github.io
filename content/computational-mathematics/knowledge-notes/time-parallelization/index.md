@@ -14,7 +14,7 @@ tags:
 
 1. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|第一章：为什么要做时间并行？]]介绍因果性、全时间耦合形式与性能判断标准。
 2. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|第二章：模型问题]]比较热方程、对流扩散方程、Burgers 方程和波动方程，并收录三个重新计算的解实验。
-3. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|第三章：适用于双曲问题的方法]]讨论 SWR、PIDC/RIDC、ParaExp 和 ParaDiag，并收录两个 ParaDiag-II 实验。
+3. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|第三章：适用于双曲问题的方法]]讨论 SWR、PIDC/RIDC、ParaExp 和 ParaDiag，并收录 Heat、ADE 与 Wave 三类 ParaDiag-II 实验。
 4. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|第四章：为抛物问题设计的方法]]介绍 Parareal、PFASST、MGRiT、基于对角化的 Parareal 和 STMG，并给出重新计算的收敛实验。
 5. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|第五章：统一视角与方法选择]]比较各类算法，记录完整实验清单和复现流程。
 
@@ -53,9 +53,10 @@ $$
 其中 $K$ 是迭代次数，$C_G$ 和 $C_F$ 分别是粗、细传播成本，$P$ 是时间并发度。本专题的数值实验测量算法收敛性，不测量端到端并行加速比。
 
 > [!note] 数值来源
-> 所有展示的实验图均于 2026 年 7 月 31 日在原 T4 主机上，由 Python/SciPy 复现项目重新生成。实现使用 CPU 稀疏线性代数与 FFT；主机配备 T4 并不表示实验调用了 GPU kernel。
+> 所有展示的实验图均于 2026 年 7 月 31 日在新的实验服务器上，由 Python/SciPy 复现项目重新生成。实现使用 CPU 稀疏线性代数与 FFT；服务器配备 T4 并不表示实验调用了 GPU kernel。
 
 ## 第一手资料
 
 - M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), Acta Numerica 34 (2025), pp. 385-489.
 - 原始 MATLAB 算例：[wushulin/ActaPinT](https://github.com/wushulin/ActaPinT)。
+- Python 转换、扩充与正式结果：[freezeng123456/ActaPinT-Python](https://github.com/freezeng123456/ActaPinT-Python)。

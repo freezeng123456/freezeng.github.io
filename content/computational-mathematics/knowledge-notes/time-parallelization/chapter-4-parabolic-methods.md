@@ -25,12 +25,12 @@ $$
 
 | 问题     | formal 参数                             | 迭代次数 |          最终最大误差 |
 | -------- | --------------------------------------- | -------: | --------------------: |
-| 对流扩散 | $N_x=128$，$N_t=40$，$J=32$，$\nu=0.02$ |       39 | $5.940\times10^{-15}$ |
-| Burgers  | $N_x=128$，$N_t=40$，$J=32$，$\nu=1$    |       16 | $3.577\times10^{-12}$ |
+| 对流扩散 | $N_x=128$，$N_t=40$，$J=32$，$\nu=0.02$ |       39 | $6.106\times10^{-15}$ |
+| Burgers  | $N_x=128$，$N_t=40$，$J=32$，$\nu=1$    |       16 | $3.544\times10^{-12}$ |
 
-![[assets/pint/parareal-ade-baseline.png]]
+![对流扩散方程上的 Parareal 收敛基线](assets/pint/parareal-ade-baseline.svg)
 
-![[assets/pint/parareal-burgers-baseline.png]]
+![黏性 Burgers 方程上的 Parareal 收敛基线](assets/pint/parareal-burgers-baseline.svg)
 
 这些迭代次数表示向串行细解收敛，而不是墙钟加速比。
 
@@ -43,7 +43,7 @@ formal 扫描固定 $T=4$、$\Delta T=0.1$、$\Delta x=1/128$ 与 $J=32$。把�
 | 对流扩散 |      14 |        24 |         35 |
 | Burgers  |      14 |        21 |         25 |
 
-![[assets/pint/parareal-figure-4-5.png]]
+![扩散减弱时 ADE 与 Burgers 方程的 Parareal 收敛曲线](assets/pint/parareal-figure-4-5.svg)
 
 在这一固定实验协议下，两类方程都会随扩散减弱而收敛变慢。
 
@@ -64,9 +64,9 @@ MGRiT 把时间网格分为 C 点和其间的 F 点。F 松弛并行填充 F 点
 
 ### 近双曲基线实验
 
-基线比较使用 $N_x=160$、$N_t=40$、$J=20$、$T=5$ 与 $\nu=0.002$。在报告的迭代窗口末，Parareal 最大误差为 $2.895\times10^2$，二层 MGRiT 则通过有限步性质达到 $4.441\times10^{-16}$。
+基线比较使用 $N_x=160$、$N_t=40$、$J=20$、$T=5$ 与 $\nu=0.002$。在报告的迭代窗口末，Parareal 最大误差为 $2.895\times10^2$，二层 MGRiT 则通过有限步性质达到 $5.551\times10^{-16}$。
 
-![[assets/pint/mgrit-baseline.png]]
+![近双曲 ADE 上 Parareal 与 MGRiT 的基线比较](assets/pint/mgrit-baseline.svg)
 
 后期有限步下降不能使前面的迭代自动成为可扩展求解器。对于实际停止容差，暂态增长仍是需要关注的现象。
 
@@ -81,7 +81,13 @@ MGRiT 把时间网格分为 C 点和其间的 F 点。F 松弛并行填充 F 点
 | 对流扩散，$\nu=0.01$  |        1.0501 |         0.9021 |
 | 对流扩散，$\nu=0.002$ |        1.4211 |         1.2812 |
 
-![[assets/pint/mgrit-figure-4-10.png]]
+颜色表示每个空间谱模态的长时间因子，点的大小也随因子增加。它直接显示危险模态集中在低实部、高相位分量附近：
+
+![Heat 与不同黏性 ADE 的逐模态 Parareal 和 FCF-MGRiT 长时间收敛因子](assets/pint/mgrit-figure-4-9.svg)
+
+等成本迭代的实测曲线与逐模态预测一致：
+
+![Parareal 与 FCF-MGRiT 的等细求解成本收敛比较](assets/pint/mgrit-figure-4-10.svg)
 
 当谱接近双曲区域时，两种方法都发生退化。在 $\nu=0.002$ 时，实际相关的线性阶段中两者因子都超过 1。
 
@@ -97,7 +103,7 @@ STMG 把完整离散看作一个多层时空系统。其效果取决于平滑子
 
 基线实验使用 $N_x=N_t=255$、$\nu=10^{-3}$、梯形规则及 3 次前、后平滑。在采样网格中，15 个 cycle 后最小误差出现在 $\eta\approx0.98$。
 
-![[assets/pint/stmg-baseline.png]]
+![梯形规则下 STMG 阻尼参数的基线扫描](assets/pint/stmg-baseline.svg)
 
 由于时间积分器和残差构造不同，该值不能与下面的后向 Euler 结果直接比较。
 
@@ -110,11 +116,11 @@ Figures 4.19-4.20 使用后向 Euler。复现该设置得到：
 | 热方程               |                          0.500 |
 | 对流扩散，$\nu=0.01$ |                          0.372 |
 
-![[assets/pint/stmg-figure-4-19.png]]
+![后向 Euler STMG 的阻尼参数扫描](assets/pint/stmg-figure-4-19.svg)
 
 固定 $\eta=0.5$ 时，在测试的热方程和对流扩散问题上，3 次前、后平滑比 1 次平滑使用更少 cycle 降低误差。
 
-![[assets/pint/stmg-figure-4-20.png]]
+![一次与三次前后平滑的 STMG 收敛比较](assets/pint/stmg-figure-4-20.svg)
 
 该比较使用 cycle 数。真正的性能决策应最小化
 

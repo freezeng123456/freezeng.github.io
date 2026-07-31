@@ -44,7 +44,7 @@ $$
 
 formal Python 实验使用无源 Dirichlet 问题，$\Delta t=\Delta x=10^{-3}$、$T=3$、$\nu=5\times10^{-4}$、对流速度 $a=1$，初值为 $\sin^2(8\pi(1-x)^2)$。最终 $L^\infty$ 范数为 $7.022\times10^{-99}$。
 
-![[assets/pint/model-advection-diffusion.png]]
+![对流扩散方程在时空域上的数值解](assets/pint/model-advection-diffusion.svg)
 
 近零的最终范数只对应这一耗散且出流占优的 Dirichlet 实验，不能直接外推到周期或受迫方程。
 
@@ -69,7 +69,7 @@ $$
 
 formal 实验使用 $\Delta t=\Delta x=1/400$、$T=3$、$\nu=5\times10^{-4}$ 及齐次 Dirichlet 边界。解的最大值为 $1.045940$，最终 $L^\infty$ 范数为 $0.325871$。
 
-![[assets/pint/model-burgers.png]]
+![黏性 Burgers 方程在时空域上的数值解](assets/pint/model-burgers.svg)
 
 ## 2.4 二阶波动方程
 
@@ -83,7 +83,7 @@ $$
 
 无源 formal 实验使用梯形规则，$\Delta t=\Delta x=1/400$、$T=3$、空间系数为 $0.2$。初始位移与前两个实验相同，初始速度为零。最终位移的 $L^\infty$ 范数为 $0.948217$。
 
-![[assets/pint/model-wave.png]]
+![波动方程在时空域上的数值解](assets/pint/model-wave.svg)
 
 持续存在的振幅与几乎完全衰减的对流扩散解形成对比，说明波传播的时间非局部性为何难以由耗散型粗网格校正处理。
 

@@ -44,7 +44,7 @@ measures the competition between propagation and dissipation. The low-frequency 
 
 The formal Python experiment uses a source-free Dirichlet problem with $\Delta t=\Delta x=10^{-3}$, $T=3$, $\nu=5\times10^{-4}$, and advection speed $a=1$. The initial condition is $\sin^2(8\pi(1-x)^2)$. Its final $L^\infty$ norm is $7.022\times10^{-99}$.
 
-![[assets/pint/model-advection-diffusion.png]]
+![Numerical solution of the advection-diffusion equation over space and time](assets/pint/model-advection-diffusion.svg)
 
 The near-zero final norm is specific to this dissipative, outflow-dominated Dirichlet experiment. It should not be transferred to periodic or forced variants of the equation.
 
@@ -69,7 +69,7 @@ but $F-G$ is no longer a fixed linear correction.
 
 The formal experiment uses $\Delta t=\Delta x=1/400$, $T=3$, and $\nu=5\times10^{-4}$ with homogeneous Dirichlet boundaries. The solution reaches a maximum value of $1.045940$ and has final $L^\infty$ norm $0.325871$.
 
-![[assets/pint/model-burgers.png]]
+![Numerical solution of the viscous Burgers equation over space and time](assets/pint/model-burgers.svg)
 
 ## 2.4 Second-order wave equation
 
@@ -83,7 +83,7 @@ After conversion to a first-order system, the ideal propagation eigenvalues lie 
 
 The source-free formal experiment uses the trapezoidal rule with $\Delta t=\Delta x=1/400$, $T=3$, and spatial coefficient $0.2$. It starts from the same oscillatory displacement as the previous two experiments and zero initial velocity. The final displacement has $L^\infty$ norm $0.948217$.
 
-![[assets/pint/model-wave.png]]
+![Numerical solution of the wave equation over space and time](assets/pint/model-wave.svg)
 
 The persistent amplitude contrasts with the nearly extinguished advection-diffusion solution. This comparison illustrates the temporal nonlocality that makes wave propagation difficult for dissipative coarse-grid corrections.
 

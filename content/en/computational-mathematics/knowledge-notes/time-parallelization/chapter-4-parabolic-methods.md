@@ -25,12 +25,12 @@ The fine solves for a fixed iteration are independent across intervals. The new 
 
 | Problem             | Formal parameters                       | Iterations |   Final maximum error |
 | ------------------- | --------------------------------------- | ---------: | --------------------: |
-| advection-diffusion | $N_x=128$, $N_t=40$, $J=32$, $\nu=0.02$ |         39 | $5.940\times10^{-15}$ |
-| Burgers             | $N_x=128$, $N_t=40$, $J=32$, $\nu=1$    |         16 | $3.577\times10^{-12}$ |
+| advection-diffusion | $N_x=128$, $N_t=40$, $J=32$, $\nu=0.02$ |         39 | $6.106\times10^{-15}$ |
+| Burgers             | $N_x=128$, $N_t=40$, $J=32$, $\nu=1$    |         16 | $3.544\times10^{-12}$ |
 
-![[assets/pint/parareal-ade-baseline.png]]
+![Parareal convergence baseline for the advection-diffusion equation](assets/pint/parareal-ade-baseline.svg)
 
-![[assets/pint/parareal-burgers-baseline.png]]
+![Parareal convergence baseline for the viscous Burgers equation](assets/pint/parareal-burgers-baseline.svg)
 
 The iteration counts refer to convergence toward the serial fine solution. They are not wall-clock speedups.
 
@@ -43,7 +43,7 @@ The formal sweep fixes $T=4$, $\Delta T=0.1$, $\Delta x=1/128$, and $J=32$. The 
 | advection-diffusion |      14 |        24 |         35 |
 | Burgers             |      14 |        21 |         25 |
 
-![[assets/pint/parareal-figure-4-5.png]]
+![Parareal convergence for ADE and Burgers as diffusion weakens](assets/pint/parareal-figure-4-5.svg)
 
 The data show slower convergence as diffusion weakens for both equations under this fixed protocol.
 
@@ -64,9 +64,9 @@ MGRiT separates the temporal grid into C-points and intervening F-points. F-rela
 
 ### Baseline near-hyperbolic experiment
 
-The baseline comparison uses $N_x=160$, $N_t=40$, $J=20$, $T=5$, and $\nu=0.002$. After the reported iteration window, the Parareal maximum error is $2.895\times10^2$, whereas two-level MGRiT reaches $4.441\times10^{-16}$ through its finite-step behavior.
+The baseline comparison uses $N_x=160$, $N_t=40$, $J=20$, $T=5$, and $\nu=0.002$. After the reported iteration window, the Parareal maximum error is $2.895\times10^2$, whereas two-level MGRiT reaches $5.551\times10^{-16}$ through its finite-step behavior.
 
-![[assets/pint/mgrit-baseline.png]]
+![Baseline comparison of Parareal and MGRiT on near-hyperbolic ADE](assets/pint/mgrit-baseline.svg)
 
 The late finite-step drop does not make the preceding iteration useful as a scalable solver. The transient growth remains the relevant observation for a practical stopping tolerance.
 
@@ -81,7 +81,13 @@ One FCF-MGRiT iteration uses approximately two fine propagations and is therefor
 | advection-diffusion, $\nu=0.01$  |          1.0501 |           0.9021 |
 | advection-diffusion, $\nu=0.002$ |          1.4211 |           1.2812 |
 
-![[assets/pint/mgrit-figure-4-10.png]]
+Color gives the long-time factor for each spatial spectral mode, with marker size increasing with the factor. The dangerous modes concentrate near small real parts and large phase components:
+
+![Mode-wise long-time factors for Parareal and FCF-MGRiT on heat and ADE problems](assets/pint/mgrit-figure-4-9.svg)
+
+The measured equal-cost curves agree with the mode-wise prediction:
+
+![Measured equal-fine-solve-cost comparison of Parareal and FCF-MGRiT](assets/pint/mgrit-figure-4-10.svg)
 
 Both methods deteriorate as the spectrum approaches the hyperbolic regime. At $\nu=0.002$, the factors exceed one during the practically relevant linear phase.
 
@@ -97,7 +103,7 @@ STMG treats the complete discretization as a multilevel space-time system. Its e
 
 The baseline experiment uses $N_x=N_t=255$, $\nu=10^{-3}$, the trapezoidal rule, and three pre- and post-smoothing steps. In the sampled grid, the minimum error after 15 cycles occurs near $\eta=0.98$.
 
-![[assets/pint/stmg-baseline.png]]
+![Baseline STMG damping scan with the trapezoidal rule](assets/pint/stmg-baseline.svg)
 
 This value is not comparable to the backward-Euler value below because the time integrator and residual construction differ.
 
@@ -110,11 +116,11 @@ Figures 4.19-4.20 use backward Euler. Reproducing that setting gives:
 | heat equation                   |                                   0.500 |
 | advection-diffusion, $\nu=0.01$ |                                   0.372 |
 
-![[assets/pint/stmg-figure-4-19.png]]
+![STMG damping scan with backward Euler](assets/pint/stmg-figure-4-19.svg)
 
 At fixed $\eta=0.5$, three pre- and post-smoothing steps reduce the error in fewer cycles than one step for the tested heat and advection-diffusion problems.
 
-![[assets/pint/stmg-figure-4-20.png]]
+![STMG convergence with one and three pre/post smoothing steps](assets/pint/stmg-figure-4-20.svg)
 
 The comparison is in cycle count. A performance decision should instead minimize
 

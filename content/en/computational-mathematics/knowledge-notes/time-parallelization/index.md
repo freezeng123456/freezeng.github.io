@@ -14,7 +14,7 @@ These notes follow M. J. Gander, S.-L. Wu, and T. Zhou, _Time Parallelization fo
 
 1. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|Chapter 1: Why Parallelize in Time?]] introduces causality, the all-at-once formulation, and performance criteria.
 2. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|Chapter 2: Model Problems]] compares the heat, advection-diffusion, Burgers, and wave equations. The chapter includes all three recomputed solution experiments.
-3. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|Chapter 3: Methods Effective for Hyperbolic Problems]] discusses SWR, PIDC/RIDC, ParaExp, and ParaDiag. The chapter includes both ParaDiag-II experiments.
+3. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|Chapter 3: Methods Effective for Hyperbolic Problems]] discusses SWR, PIDC/RIDC, ParaExp, and ParaDiag. The chapter includes ParaDiag-II experiments for heat, ADE, and wave problems.
 4. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|Chapter 4: Methods Designed for Parabolic Problems]] covers Parareal, PFASST, MGRiT, diagonalization-based Parareal, and STMG. It contains the recomputed convergence studies.
 5. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|Chapter 5: A Unified View and Method Selection]] compares the algorithms and records the complete experiment ledger and reproduction protocol.
 
@@ -53,9 +53,10 @@ $$
 where $K$ is the iteration count, $C_G$ and $C_F$ are the coarse and fine propagation costs, and $P$ is the temporal concurrency. The numerical experiments in these notes measure convergence, not end-to-end parallel speedup.
 
 > [!note] Numerical provenance
-> All displayed experiment figures were regenerated on 31 July 2026 from the Python/SciPy reproduction project on the original T4 host. The implementation uses CPU sparse linear algebra and FFTs. The presence of a T4 accelerator does not imply that the reported runs use GPU kernels.
+> All displayed experiment figures were regenerated on 31 July 2026 from the Python/SciPy reproduction project on the new experiment server. The implementation uses CPU sparse linear algebra and FFTs. The presence of a T4 accelerator does not imply that the reported runs use GPU kernels.
 
 ## Primary sources
 
 - M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), Acta Numerica 34 (2025), pp. 385-489.
 - Original MATLAB examples: [wushulin/ActaPinT](https://github.com/wushulin/ActaPinT).
+- Python conversion, extensions, and formal results: [freezeng123456/ActaPinT-Python](https://github.com/freezeng123456/ActaPinT-Python).

@@ -3,6 +3,7 @@
     "0.001": 3,
     "1e-06": 13
   },
+  "figure_3_15_heat_iterations": 2,
   "figure_4_5_ade_iterations_to_1e-10": {
     "1.0": 14,
     "0.1": 24,
@@ -15,24 +16,26 @@
   },
   "figure_4_10_rho": {
     "Heat": {
-      "parareal": 0.2824458752228643,
-      "mgrit": 0.08350604328676814
+      "parareal": 0.2824458752235448,
+      "mgrit": 0.08350604328608252
     },
     "ADE nu=0.1": {
-      "parareal": 0.4452650327392841,
-      "mgrit": 0.27187250018498954
+      "parareal": 0.4452650327392994,
+      "mgrit": 0.27187250018504444
     },
     "ADE nu=0.01": {
-      "parareal": 1.0501123957198328,
-      "mgrit": 0.9020662632965529
+      "parareal": 1.0501123957198761,
+      "mgrit": 0.902066263296788
     },
     "ADE nu=0.002": {
-      "parareal": 1.4210820361344563,
-      "mgrit": 1.281200496975769
+      "parareal": 1.4210820361344592,
+      "mgrit": 1.2812004969757436
     }
   },
   "figure_4_19_best_eta_k15": {
     "Heat": 0.5,
     "ADE nu=0.01": 0.372
-  }
+  },
+  "figure_3_15_wave_iterations": 103,
+  "figure_3_15_wave_iteration_to_preconditioned_residual_1e-11": 89
 }

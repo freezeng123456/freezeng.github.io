@@ -65,22 +65,24 @@ An FFT in time then decomposes one large space-time problem into independent com
 
 ### Baseline ParaDiag-II experiment
 
-The recomputed baseline uses $N_x=N_t=100$, $T=2$, $\nu=10^{-6}$, $\alpha=1$, and GMRES tolerance $10^{-12}$. It converges in 13 iterations and reaches a true relative residual of $1.149\times10^{-14}$.
+The recomputed baseline uses $N_x=N_t=100$, $T=2$, $\nu=10^{-6}$, $\alpha=1$, and GMRES tolerance $10^{-12}$. It converges in 13 iterations and reaches a true relative residual of $1.152\times10^{-14}$.
 
-![[assets/pint/paradiag-baseline.png]]
+![GMRES convergence baseline for ParaDiag-II on the advection-diffusion equation](assets/pint/paradiag-baseline.svg)
 
 ### Validation against Figure 3.15
 
-The paper-grid validation fixes $N_x=N_t=100$ and $T=2$ while varying the viscosity:
+The paper-grid validation uses $T=2$, $\Delta t=1/50$, and $\Delta x=1/100$. It varies viscosity for the first-order equations and applies the parameterized Numerov discretization to the second-order wave equation:
 
-| Viscosity $\nu$ | GMRES iterations | Interpretation                                                           |
-| --------------: | ---------------: | ------------------------------------------------------------------------ |
-|       $10^{-3}$ |                3 | the circulant preconditioner closely approximates the all-at-once system |
-|       $10^{-6}$ |               13 | weaker diffusion reduces spectral clustering                             |
+| Problem                            |                                        Reproduced result | Interpretation                                                                                    |
+| ---------------------------------- | -------------------------------------------------------: | ------------------------------------------------------------------------------------------------- |
+| heat                               |                                         2 Krylov updates | the eigenvalues cluster tightly near one                                                          |
+| advection-diffusion, $\nu=10^{-3}$ |                                                        3 | the circulant preconditioner closely approximates the all-at-once system                          |
+| advection-diffusion, $\nu=10^{-6}$ |                                                       13 | weaker diffusion reduces spectral clustering                                                      |
+| wave                               | preconditioned residual below $10^{-11}$ at iteration 89 | the non-unit eigenvalues extend along $\operatorname{Re}\lambda=0.5$, slowing the outer iteration |
 
-![[assets/pint/paradiag-figure-3-15.png]]
+![ParaDiag-II spectra and GMRES convergence for the heat, advection-diffusion, and wave equations](assets/pint/paradiag-figure-3-15.svg)
 
-The result reproduces the iteration counts shown in Figure 3.15(c,d). It supports the stated parameter dependence for this discretization; it is not a viscosity-independent convergence claim.
+The ADE counts of 3 and 13 reproduce Figure 3.15(c,d). The wave run uses the paper values $\gamma=1/100$ and $\alpha=1$. Its single-thread SciPy preconditioned residual falls below $10^{-11}$ at iteration 89, matching the paper curve’s endpoint near 88. Enforcing SciPy’s true-relative-residual stopping test at $10^{-12}$ takes 103 iterations. This remaining difference reflects MATLAB/SciPy residual normalization, restart, and stopping conventions rather than a different spectrum.
 
 ### Parameters that affect ParaDiag
 
@@ -93,4 +95,4 @@ The result reproduces the iteration counts shown in Figure 3.15(c,d). It support
 
 ## Computational coverage
 
-The Python reproduction contains executable ParaDiag-II experiments and these are both reported above. The upstream MATLAB repository also contains SWR, PIDC/RIDC, ParaExp, direct ParaDiag, and wave-domain-decomposition scripts. Those scripts have been catalogued, but they do not yet have Python-equivalent formal result artifacts. This chapter therefore does not present newly computed curves for those methods.
+The public [ActaPinT-Python](https://github.com/freezeng123456/ActaPinT-Python) repository now covers the heat, ADE, and wave panels of Figure 3.15(a-f), with SVG, PNG, and JSON artifacts. The upstream MATLAB repository also contains SWR, PIDC/RIDC, ParaExp, direct ParaDiag, and wave-domain-decomposition scripts. Those scripts have been catalogued, but they do not yet have Python-equivalent formal result artifacts. This chapter therefore does not present newly computed curves for those methods.
