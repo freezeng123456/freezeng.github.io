@@ -45,7 +45,7 @@ formal 扫描固定 $T=4$、$\Delta T=0.1$、$\Delta x=1/128$ 与 $J=32$。把�
 
 ![扩散减弱时 ADE 与 Burgers 方程的 Parareal 收敛曲线](assets/pint/parareal-figure-4-5.svg)
 
-在这一固定实验协议下，两类方程都会随扩散减弱而收敛变慢。
+在这一固定实验协议下，两类方程都会随扩散减弱而收敛变慢。本实验也是当前 GPU 后端的主要优化对象：40 个相互独立的 Burgers 细传播在 T4 上批量执行，保持上述停止迭代不变。性能数据见[[computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view#gpu-加速与性能剖析|第五章的 GPU 加速分析]]。
 
 ## 4.2 PFASST
 

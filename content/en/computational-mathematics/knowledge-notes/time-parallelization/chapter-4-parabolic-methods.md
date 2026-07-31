@@ -45,7 +45,7 @@ The formal sweep fixes $T=4$, $\Delta T=0.1$, $\Delta x=1/128$, and $J=32$. The 
 
 ![Parareal convergence for ADE and Burgers as diffusion weakens](assets/pint/parareal-figure-4-5.svg)
 
-The data show slower convergence as diffusion weakens for both equations under this fixed protocol.
+The data show slower convergence as diffusion weakens for both equations under this fixed protocol. This experiment is also the main target of the current GPU backend: 40 independent Burgers fine propagators execute as one T4 batch without changing the stopping iterations above. See the [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view#gpu-acceleration-and-profiling|GPU acceleration study in Chapter 5]].
 
 ## 4.2 PFASST
 

@@ -56,6 +56,7 @@ Python 复现项目提供 8 个基线实验和 1 个组合论文验证入口；�
 | Figures 4.9-4.10 验证    | 第四章，MGRiT    | [[assets/pint/data/figure_4_10_validation.json       | JSON]] |
 | Figure 4.19 验证         | 第四章，STMG     | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
 | Figure 4.20 验证         | 第四章，STMG     | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
+| T4 GPU 性能验证          | 本章，GPU 加速   | [[assets/pint/data/gpu_benchmark_t4.json             | JSON]] |
 
 跨实验简表见 [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]]。
 
@@ -77,6 +78,34 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 1. 由同一组分析数组生成的可编辑 SVG 与高分辨率 PNG；
 2. 一份记录网格、物理参数、容差和指标的 JSON；
 3. 当全时间耦合初值需要随机量时，使用确定性随机初始化。
+
+## GPU 加速与性能剖析
+
+函数级 profiler 表明，快速论文套件的 62.95 秒中，Figure 4.5 占 43.06 秒；其中 Burgers 细传播占 38.11 秒。相比之下，所有 FFT 仅占 0.007 秒，全部 GMRES 调用合计 0.251 秒。因此首个 CUDA 后端没有机械地迁移 FFT，而是把每轮 Parareal 中相互独立的 Burgers 细传播组成一个 GPU batch。
+
+实现使用 CuPy 把空间算子常驻 GPU，并批量构造、求解 40 个独立的 Newton 系统。因果性的粗传播和其余实验仍保留在 CPU 上，所以这是混合 CPU/GPU 实现。
+
+| T4 双精度测试                     |       CPU |      GPU | 加速比 |
+| --------------------------------- | --------: | -------: | -----: |
+| 40 个 Burgers 细传播子，32 个子步 |  2.893 秒 | 0.246 秒 | 11.76× |
+| 完整论文验证套件                  | 263.57 秒 | 67.92 秒 |  3.88× |
+
+单批 CPU/GPU 最大绝对差为 $2.33\times10^{-15}$。Figure 4.5 的停止迭代保持不变：ADE 为 14/24/35，Burgers 为 14/21/25。超过 $10^{-10}$ 目标以后继续迭代至机器精度时，CPU SuperLU 与 GPU batched LU 会因为浮点运算顺序不同而出现正常的舍入差异。
+
+```bash
+python3.11 -m pip install -e ".[gpu,test]"
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  actapint paper_validation --backend gpu \
+  --output-dir results/paper-gpu
+```
+
+当前仍有三项重要优化空间：
+
+1. 用循环三对角 CUDA kernel 取代当前的稠密 batched LU，使空间复杂度和计算量随 $N_x$ 更合理地增长；
+2. 将完整 Parareal 状态保留在 GPU，并用 parallel prefix/scan 改写粗传播，减少主机传输与串行尾部；
+3. 在更大 ParaDiag 网格上实现批量复移位带状求解。当前 $100\times100$ 论文网格的 FFT 与 GMRES 太小，单独迁移到 GPU 不会有可靠收益。
+
+机器可读记录见 [[assets/pint/data/gpu_benchmark_t4.json|gpu_benchmark_t4.json]]。这组数据证明单 GPU kernel 与端到端加速，但尚不构成多 GPU 强、弱扩展结果。
 
 ## 解释边界
 

@@ -56,6 +56,7 @@ The Python reproduction exposes eight baseline experiments and one composite pap
 | Figures 4.9-4.10 validation | Chapter 4, MGRiT               | [[assets/pint/data/figure_4_10_validation.json       | JSON]] |
 | Figure 4.19 validation      | Chapter 4, STMG                | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
 | Figure 4.20 validation      | Chapter 4, STMG                | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
+| T4 GPU performance study    | This chapter, GPU acceleration | [[assets/pint/data/gpu_benchmark_t4.json             | JSON]] |
 
 The compact cross-experiment record is available as [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]].
 
@@ -77,6 +78,34 @@ Each experiment writes:
 1. an editable SVG and a high-resolution PNG generated from the same arrays used for analysis;
 2. a JSON record of the grid, physical parameters, tolerance, and metric;
 3. deterministic random initialization where an all-at-once initial iterate is required.
+
+## GPU acceleration and profiling
+
+Function-level profiling shows that Figure 4.5 consumes 43.06 of 62.95 seconds in the quick paper suite, with Burgers fine propagation accounting for 38.11 seconds. In contrast, all FFT calls require only 0.007 seconds and all GMRES calls together require 0.251 seconds. The first CUDA backend therefore does not move small FFTs mechanically. It batches the independent Burgers fine propagators in each Parareal iteration.
+
+CuPy keeps the spatial operators on the GPU and constructs and solves 40 independent Newton systems as one batch. The causal coarse sweep and the remaining experiments stay on the CPU, making this a hybrid CPU/GPU implementation.
+
+| T4 double-precision test                 |      CPU |     GPU | Speedup |
+| ---------------------------------------- | -------: | ------: | ------: |
+| 40 Burgers fine propagators, 32 substeps |  2.893 s | 0.246 s |  11.76x |
+| complete paper-validation suite          | 263.57 s | 67.92 s |   3.88x |
+
+The maximum absolute CPU/GPU difference for one batch is $2.33\times10^{-15}$. Figure 4.5 retains exactly the same stopping iterations: 14/24/35 for ADE and 14/21/25 for Burgers. Continuing well beyond the $10^{-10}$ target toward machine precision produces ordinary roundoff differences because CPU SuperLU and GPU batched LU use different floating-point operation orders.
+
+```bash
+python3.11 -m pip install -e ".[gpu,test]"
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+  actapint paper_validation --backend gpu \
+  --output-dir results/paper-gpu
+```
+
+Three important opportunities remain:
+
+1. replace dense batched LU with a cyclic-tridiagonal CUDA kernel so cost and storage scale appropriately with $N_x$;
+2. keep the complete Parareal state on the GPU and express the coarse propagation as a parallel prefix/scan, reducing host transfers and the serial tail;
+3. implement batched complex shifted-band solves for larger ParaDiag grids. On the current $100\times100$ paper grid, FFT and GMRES workloads are too small for a reliable standalone GPU benefit.
+
+The machine-readable record is [[assets/pint/data/gpu_benchmark_t4.json|gpu_benchmark_t4.json]]. These measurements establish single-GPU kernel and end-to-end acceleration, not multi-GPU strong or weak scaling.
 
 ## Interpretation limits
 

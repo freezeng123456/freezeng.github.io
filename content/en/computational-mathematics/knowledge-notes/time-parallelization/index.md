@@ -53,7 +53,7 @@ $$
 where $K$ is the iteration count, $C_G$ and $C_F$ are the coarse and fine propagation costs, and $P$ is the temporal concurrency. The numerical experiments in these notes measure convergence, not end-to-end parallel speedup.
 
 > [!note] Numerical provenance
-> All displayed experiment figures were regenerated on 31 July 2026 from the Python/SciPy reproduction project on the new experiment server. The implementation uses CPU sparse linear algebra and FFTs. The presence of a T4 accelerator does not imply that the reported runs use GPU kernels.
+> All displayed experiment figures were regenerated on 31 July 2026 from the Python reproduction project on the new experiment server. The initial formal results used the SciPy CPU path. A subsequent CuPy/T4 hybrid backend batches the independent Burgers fine propagators on the GPU, preserves the Figure 4.5 stopping iterations, and reduces the complete paper suite from 263.57 to 67.92 seconds.
 
 ## Primary sources
 
