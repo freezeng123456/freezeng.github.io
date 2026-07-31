@@ -8,11 +8,11 @@ tags:
 
 ## Projects
 
-1. [[计算数学/个人科研/RSSE|Rotationally Symmetric Stein Estimators]]
+1. [[computational-mathematics/research/rsse|Rotationally Symmetric Stein Estimators]]
    - High-order stochastic differentiation for smoothed physics-informed neural networks.
    - The principal objective is to prevent the estimator variance from diverging as the smoothing bandwidth tends to zero.
 
-2. [[计算数学/个人科研/Apolarity|Apolarity-Guided Taylor Jets]]
+2. [[computational-mathematics/research/apolarity|Apolarity-Guided Taylor Jets]]
    - Exact evaluation of a prescribed high-order mixed derivative.
    - The principal objective is to minimize the number of directional Taylor jets through an algebraic decomposition.
 

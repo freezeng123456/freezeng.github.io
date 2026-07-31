@@ -10,11 +10,11 @@ These notes follow M. J. Gander, S.-L. Wu, and T. Zhou, _Time Parallelization fo
 
 ## Reading sequence
 
-1. [[计算数学/知识整理/时间并行计算/第一章-为什么需要时间并行|Chapter 1: Why Parallelize in Time?]] introduces causality, the all-at-once formulation, and performance criteria.
-2. [[计算数学/知识整理/时间并行计算/第二章-模型问题|Chapter 2: Model Problems]] compares the heat, advection-diffusion, Burgers, and wave equations. The chapter includes all three recomputed solution experiments.
-3. [[计算数学/知识整理/时间并行计算/第三章-双曲型方法|Chapter 3: Methods Effective for Hyperbolic Problems]] discusses SWR, PIDC/RIDC, ParaExp, and ParaDiag. The chapter includes both ParaDiag-II experiments.
-4. [[计算数学/知识整理/时间并行计算/第四章-抛物型方法|Chapter 4: Methods Designed for Parabolic Problems]] covers Parareal, PFASST, MGRiT, diagonalization-based Parareal, and STMG. It contains the recomputed convergence studies.
-5. [[计算数学/知识整理/时间并行计算/第五章-统一视角与选择|Chapter 5: A Unified View and Method Selection]] compares the algorithms and records the complete experiment ledger and reproduction protocol.
+1. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|Chapter 1: Why Parallelize in Time?]] introduces causality, the all-at-once formulation, and performance criteria.
+2. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|Chapter 2: Model Problems]] compares the heat, advection-diffusion, Burgers, and wave equations. The chapter includes all three recomputed solution experiments.
+3. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|Chapter 3: Methods Effective for Hyperbolic Problems]] discusses SWR, PIDC/RIDC, ParaExp, and ParaDiag. The chapter includes both ParaDiag-II experiments.
+4. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|Chapter 4: Methods Designed for Parabolic Problems]] covers Parareal, PFASST, MGRiT, diagonalization-based Parareal, and STMG. It contains the recomputed convergence studies.
+5. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|Chapter 5: A Unified View and Method Selection]] compares the algorithms and records the complete experiment ledger and reproduction protocol.
 
 ## Method map
 

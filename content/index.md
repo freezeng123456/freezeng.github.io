@@ -1,21 +1,21 @@
 ---
-title: Freezeng 知识库
-description: 计算数学、计算机科学与推荐系统理论的个人知识库
+title: Freezeng Knowledge Base
+description: A personal knowledge base for computational mathematics, computer science, and recommender systems
 tags:
   - 导航
 ---
 
-# 从问题出发，建立可复用的知识
+# Building Reusable Knowledge from Problems
 
 这里不是按时间堆叠的博客，而是一座持续生长的知识库。每个专题尽量回答三件事：**问题为什么难、方法靠什么成立、实现时最容易忽略什么**。
 
 ## 三个入口
 
-| 领域                                          | 研究内容                                                                                                            | 知识整理                                                                                                     |
-| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| [[计算数学/index\|Computational Mathematics]] | [[计算数学/个人科研/index\|Research]]: [[计算数学/个人科研/RSSE\|RSSE]]、[[计算数学/个人科研/Apolarity\|Apolarity]] | [[计算数学/知识整理/index\|Knowledge Notes]]: [[计算数学/知识整理/时间并行计算/index\|Time Parallelization]] |
-| [[计算机科学/index\|计算机科学]]              | [[计算机科学/个人科研/MCoTTA\|MCoTTA]]                                                                              | 暂留空，后续扩展                                                                                             |
-| [[推荐系统理论/index\|推荐系统理论]]          | —                                                                                                                   | [[推荐系统理论/OneRec/index\|OneRec 工业实现链路]]                                                           |
+| 领域                                                           | 研究内容                                                                                                                                                               | 知识整理                                                                                                                                                             |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [[computational-mathematics/index\|Computational Mathematics]] | [[computational-mathematics/research/index\|Research]]: [[computational-mathematics/research/rsse\|RSSE]]、[[computational-mathematics/research/apolarity\|Apolarity]] | [[computational-mathematics/knowledge-notes/index\|Knowledge Notes]]: [[computational-mathematics/knowledge-notes/time-parallelization/index\|Time Parallelization]] |
+| [[计算机科学/index\|计算机科学]]                               | [[计算机科学/个人科研/MCoTTA\|MCoTTA]]                                                                                                                                 | 暂留空，后续扩展                                                                                                                                                     |
+| [[推荐系统理论/index\|推荐系统理论]]                           | —                                                                                                                                                                      | [[推荐系统理论/OneRec/index\|OneRec 工业实现链路]]                                                                                                                   |
 
 ## 阅读约定
 
@@ -24,7 +24,7 @@ tags:
 - **OneRec 页**是临时内部评审稿；仅保留架构与工程逻辑，剔除凭据、内网地址、人员信息和真实业务样本。
 
 > [!tip] 推荐阅读路径
-> 如果第一次来，可先看 [[计算数学/知识整理/时间并行计算/index\|Time Parallelization method map]]，再看 [[推荐系统理论/OneRec/端到端链路\|OneRec 端到端链路]]。前者展示如何组织理论，后者展示如何组织大型系统实现。
+> 如果第一次来，可先看 [[computational-mathematics/knowledge-notes/time-parallelization/index\|Time Parallelization method map]]，再看 [[推荐系统理论/OneRec/端到端链路\|OneRec 端到端链路]]。前者展示如何组织理论，后者展示如何组织大型系统实现。
 
 ## 当前建设状态
 

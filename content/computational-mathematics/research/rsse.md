@@ -64,4 +64,4 @@ $1.55\times10^{-2}$, $9.83\times10^{-3}$, and $7.35\times10^{-3}$.
 
 ## Relation to the apolarity project
 
-[[计算数学/个人科研/Apolarity|Apolarity-Guided Taylor Jets]] seek the shortest deterministic directional schedule for one exact mixed derivative. RSSE instead removes low-order modes from a stochastic smoothing estimator. Both use roots of unity, complex directions, and Taylor coefficient extraction, but they solve different optimization problems.
+[[computational-mathematics/research/apolarity|Apolarity-Guided Taylor Jets]] seek the shortest deterministic directional schedule for one exact mixed derivative. RSSE instead removes low-order modes from a stochastic smoothing estimator. Both use roots of unity, complex directions, and Taylor coefficient extraction, but they solve different optimization problems.
