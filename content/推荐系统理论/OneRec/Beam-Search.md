@@ -1,6 +1,8 @@
 ---
 title: OneRec Beam Search
 description: beam width、逐层保留、top-k、图档位与调优权衡
+lang: zh
+translation: en/recommender-systems/onerec/beam-search
 tags:
   - OneRec
   - Beam-Search

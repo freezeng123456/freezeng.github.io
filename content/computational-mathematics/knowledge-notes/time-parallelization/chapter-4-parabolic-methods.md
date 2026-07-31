@@ -1,135 +1,137 @@
 ---
-title: "Chapter 4: Methods Designed for Parabolic Problems"
-description: Parareal, PFASST, MGRiT, diagonalized coarse correction, and space-time multigrid
+title: 第四章：为抛物问题设计的方法
+description: Parareal、PFASST、MGRiT、对角化粗校正与时空多重网格
+lang: zh
+translation: en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods
 tags:
-  - parallel-in-time
-  - parabolic-PDE
+  - 时间并行
+  - 抛物-PDE
 ---
 
-Parabolic dynamics damp high-frequency components and make coarse propagation informative. This property supports the most widely studied coarse-grid and multilevel PinT methods.
+抛物动力学会衰减高频分量，使粗传播仍然包含有效信息。这一性质支撑了研究最广泛的粗网格与多层 PinT 方法。
 
 ## 4.1 Parareal
 
-Let $F$ be an accurate propagator and $G$ an inexpensive coarse propagator over one time interval. Parareal applies
+设 $F$ 是一个准确传播子，$G$ 是一个时间区间上的低成本粗传播子。Parareal 使用
 
 $$
 U_{n+1}^{k+1}
 =G(U_n^{k+1})+F(U_n^k)-G(U_n^k).
 $$
 
-The fine solves for a fixed iteration are independent across intervals. The new coarse propagation remains sequential. In exact arithmetic the method has a finite-step property, but convergence in nearly $N$ iterations gives little opportunity for speedup over $N$ time intervals.
+固定迭代轮次内，各区间的细求解相互独立；新的粗传播仍然串行。精确算术下该方法具有有限步性质，但若在 $N$ 个时间区间上需要接近 $N$ 次迭代，就几乎没有加速空间。
 
-### Recomputed baseline experiments
+### 重新计算的基线实验
 
-| Problem             | Formal parameters                       | Iterations |   Final maximum error |
-| ------------------- | --------------------------------------- | ---------: | --------------------: |
-| advection-diffusion | $N_x=128$, $N_t=40$, $J=32$, $\nu=0.02$ |         39 | $5.940\times10^{-15}$ |
-| Burgers             | $N_x=128$, $N_t=40$, $J=32$, $\nu=1$    |         16 | $3.577\times10^{-12}$ |
+| 问题     | formal 参数                             | 迭代次数 |          最终最大误差 |
+| -------- | --------------------------------------- | -------: | --------------------: |
+| 对流扩散 | $N_x=128$，$N_t=40$，$J=32$，$\nu=0.02$ |       39 | $5.940\times10^{-15}$ |
+| Burgers  | $N_x=128$，$N_t=40$，$J=32$，$\nu=1$    |       16 | $3.577\times10^{-12}$ |
 
 ![[assets/pint/parareal-ade-baseline.png]]
 
 ![[assets/pint/parareal-burgers-baseline.png]]
 
-The iteration counts refer to convergence toward the serial fine solution. They are not wall-clock speedups.
+这些迭代次数表示向串行细解收敛，而不是墙钟加速比。
 
-### Diffusion sweep corresponding to Figure 4.5
+### 对应 Figure 4.5 的扩散参数扫描
 
-The formal sweep fixes $T=4$, $\Delta T=0.1$, $\Delta x=1/128$, and $J=32$. The number of iterations required to reduce the maximum error below $10^{-10}$ is:
+formal 扫描固定 $T=4$、$\Delta T=0.1$、$\Delta x=1/128$ 与 $J=32$。把最大误差降到 $10^{-10}$ 以下所需的迭代次数为：
 
-| Equation            | $\nu=1$ | $\nu=0.1$ | $\nu=0.02$ |
-| ------------------- | ------: | --------: | ---------: |
-| advection-diffusion |      14 |        24 |         35 |
-| Burgers             |      14 |        21 |         25 |
+| 方程     | $\nu=1$ | $\nu=0.1$ | $\nu=0.02$ |
+| -------- | ------: | --------: | ---------: |
+| 对流扩散 |      14 |        24 |         35 |
+| Burgers  |      14 |        21 |         25 |
 
 ![[assets/pint/parareal-figure-4-5.png]]
 
-The data show slower convergence as diffusion weakens for both equations under this fixed protocol.
+在这一固定实验协议下，两类方程都会随扩散减弱而收敛变慢。
 
 ## 4.2 PFASST
 
-PFASST combines spectral deferred correction with a multilevel full approximation scheme:
+PFASST 把谱延迟校正与多层全近似格式结合起来：
 
-1. each time step contains several collocation nodes;
-2. SDC sweeps approach the high-order collocation solution;
-3. a coarse level transfers slowly converging components;
-4. sweeps on different time steps execute as a pipeline.
+1. 每个时间步包含多个配置节点；
+2. SDC sweep 逐渐逼近高阶配置解；
+3. 粗层传递收敛缓慢的分量；
+4. 不同时间步上的 sweep 以流水线执行。
 
-The method is appropriate when high-order temporal accuracy is required, but its performance depends on the collocation nodes, number of sweeps, coarse operator, and coordination with spatial parallelism.
+它适用于需要高阶时间精度的场景，但性能取决于配置节点、sweep 次数、粗算子及其与空间并行的协调。
 
 ## 4.3 MGRiT
 
-MGRiT separates the temporal grid into C-points and intervening F-points. F-relaxation fills the F-points in parallel. C-relaxation and coarse-grid correction transmit long-range information. FCF relaxation performs an F, C, and F sequence and is usually more robust than F relaxation alone, at a higher cost per iteration.
+MGRiT 把时间网格分为 C 点和其间的 F 点。F 松弛并行填充 F 点；C 松弛与粗网格校正传递长距离信息。FCF 松弛按 F、C、F 顺序执行，通常比单独 F 松弛更稳健，但单轮成本更高。
 
-### Baseline near-hyperbolic experiment
+### 近双曲基线实验
 
-The baseline comparison uses $N_x=160$, $N_t=40$, $J=20$, $T=5$, and $\nu=0.002$. After the reported iteration window, the Parareal maximum error is $2.895\times10^2$, whereas two-level MGRiT reaches $4.441\times10^{-16}$ through its finite-step behavior.
+基线比较使用 $N_x=160$、$N_t=40$、$J=20$、$T=5$ 与 $\nu=0.002$。在报告的迭代窗口末，Parareal 最大误差为 $2.895\times10^2$，二层 MGRiT 则通过有限步性质达到 $4.441\times10^{-16}$。
 
 ![[assets/pint/mgrit-baseline.png]]
 
-The late finite-step drop does not make the preceding iteration useful as a scalable solver. The transient growth remains the relevant observation for a practical stopping tolerance.
+后期有限步下降不能使前面的迭代自动成为可扩展求解器。对于实际停止容差，暂态增长仍是需要关注的现象。
 
-### Equal-cost comparison corresponding to Figures 4.9-4.10
+### 对应 Figures 4.9-4.10 的等成本比较
 
-One FCF-MGRiT iteration uses approximately two fine propagations and is therefore compared with two Parareal iterations:
+一次 FCF-MGRiT 迭代约使用两次细传播，因此与两次 Parareal 迭代比较：
 
-| Problem                          | Parareal factor | FCF-MGRiT factor |
-| -------------------------------- | --------------: | ---------------: |
-| heat equation                    |          0.2824 |           0.0835 |
-| advection-diffusion, $\nu=0.1$   |          0.4453 |           0.2719 |
-| advection-diffusion, $\nu=0.01$  |          1.0501 |           0.9021 |
-| advection-diffusion, $\nu=0.002$ |          1.4211 |           1.2812 |
+| 问题                  | Parareal 因子 | FCF-MGRiT 因子 |
+| --------------------- | ------------: | -------------: |
+| 热方程                |        0.2824 |         0.0835 |
+| 对流扩散，$\nu=0.1$   |        0.4453 |         0.2719 |
+| 对流扩散，$\nu=0.01$  |        1.0501 |         0.9021 |
+| 对流扩散，$\nu=0.002$ |        1.4211 |         1.2812 |
 
 ![[assets/pint/mgrit-figure-4-10.png]]
 
-Both methods deteriorate as the spectrum approaches the hyperbolic regime. At $\nu=0.002$, the factors exceed one during the practically relevant linear phase.
+当谱接近双曲区域时，两种方法都发生退化。在 $\nu=0.002$ 时，实际相关的线性阶段中两者因子都超过 1。
 
-## 4.4 Diagonalization-based Parareal
+## 4.4 基于对角化的 Parareal
 
-Diagonalization-based variants apply a temporal FFT to the coarse-grid correction or replace the sequential coarse solve by a circulant approximation. They reduce the serial fraction but introduce complex shifted spatial solves, global transforms, and approximation error from the cyclic coupling.
+基于对角化的变体对粗网格校正执行时间 FFT，或以循环近似替换串行粗求解。它降低了串行比例，但引入复移位空间求解、全局变换以及循环耦合造成的近似误差。
 
-## 4.5 Space-time multigrid
+## 4.5 时空多重网格
 
-STMG treats the complete discretization as a multilevel space-time system. Its effectiveness depends on the smoother, damping $\eta$, coarsening strategy, and time integrator.
+STMG 把完整离散看作一个多层时空系统。其效果取决于平滑子、阻尼 $\eta$、粗化策略和时间积分器。
 
-### Baseline trapezoidal-rule experiment
+### 梯形规则基线实验
 
-The baseline experiment uses $N_x=N_t=255$, $\nu=10^{-3}$, the trapezoidal rule, and three pre- and post-smoothing steps. In the sampled grid, the minimum error after 15 cycles occurs near $\eta=0.98$.
+基线实验使用 $N_x=N_t=255$、$\nu=10^{-3}$、梯形规则及 3 次前、后平滑。在采样网格中，15 个 cycle 后最小误差出现在 $\eta\approx0.98$。
 
 ![[assets/pint/stmg-baseline.png]]
 
-This value is not comparable to the backward-Euler value below because the time integrator and residual construction differ.
+由于时间积分器和残差构造不同，该值不能与下面的后向 Euler 结果直接比较。
 
-### Paper-grid damping validation
+### 论文网格阻尼验证
 
-Figures 4.19-4.20 use backward Euler. Reproducing that setting gives:
+Figures 4.19-4.20 使用后向 Euler。复现该设置得到：
 
-| Problem                         | Best sampled $\eta$ after 15 iterations |
-| ------------------------------- | --------------------------------------: |
-| heat equation                   |                                   0.500 |
-| advection-diffusion, $\nu=0.01$ |                                   0.372 |
+| 问题                 | 15 次迭代后采样到的最佳 $\eta$ |
+| -------------------- | -----------------------------: |
+| 热方程               |                          0.500 |
+| 对流扩散，$\nu=0.01$ |                          0.372 |
 
 ![[assets/pint/stmg-figure-4-19.png]]
 
-At fixed $\eta=0.5$, three pre- and post-smoothing steps reduce the error in fewer cycles than one step for the tested heat and advection-diffusion problems.
+固定 $\eta=0.5$ 时，在测试的热方程和对流扩散问题上，3 次前、后平滑比 1 次平滑使用更少 cycle 降低误差。
 
 ![[assets/pint/stmg-figure-4-20.png]]
 
-The comparison is in cycle count. A performance decision should instead minimize
+该比较使用 cycle 数。真正的性能决策应最小化
 
 $$
-\text{work to tolerance}
+\text{达到容差的工作量}
 =
-(\text{cost per cycle})\times(\text{number of cycles}),
+(\text{单 cycle 成本})\times(\text{cycle 数}),
 $$
 
-with communication and memory traffic included.
+并计入通信与内存流量。
 
-## Parameter summary
+## 参数汇总
 
-| Method   | Parameter                              | Effect                                                           |
-| -------- | -------------------------------------- | ---------------------------------------------------------------- |
-| Parareal | number of intervals $N$                | controls concurrency and the maximum finite-step iteration count |
-| Parareal | coarse-to-fine step ratio              | trades coarse cost against phase and damping mismatch            |
-| PFASST   | collocation nodes and SDC sweeps       | control formal accuracy and work per pipeline stage              |
-| MGRiT    | coarsening factor and F/FCF relaxation | control coarse-model quality and smoothing cost                  |
-| STMG     | damping $\eta$ and smoothing steps     | control high-frequency reduction and work per cycle              |
+| 方法     | 参数                   | 作用                                |
+| -------- | ---------------------- | ----------------------------------- |
+| Parareal | 时间区间数 $N$         | 控制并发度及有限步迭代上限          |
+| Parareal | 粗细步长比             | 在粗计算成本与相位/耗散失配之间折中 |
+| PFASST   | 配置节点与 SDC sweep   | 控制形式精度和流水线每级工作量      |
+| MGRiT    | 粗化因子与 F/FCF 松弛  | 控制粗模型质量和平滑成本            |
+| STMG     | 阻尼 $\eta$ 与平滑次数 | 控制高频削减及单 cycle 工作量       |

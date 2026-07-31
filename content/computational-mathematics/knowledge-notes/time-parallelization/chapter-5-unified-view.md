@@ -1,73 +1,75 @@
 ---
-title: "Chapter 5: A Unified View and Method Selection"
-description: A common algebraic interpretation, an experiment ledger, and reproducibility limits
+title: 第五章：统一视角与方法选择
+description: 共同代数解释、实验清单与可复现性边界
+lang: zh
+translation: en/computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view
 tags:
-  - parallel-in-time
-  - methodology
+  - 时间并行
+  - 方法论
 ---
 
-## A common algebraic form
+## 共同代数形式
 
-Many PinT iterations can be written as
+许多 PinT 迭代都可写成
 
 $$
 U^{k+1}=U^k+M^{-1}(b-AU^k),
 $$
 
-where $A$ is the all-at-once space-time operator and $M^{-1}$ is a parallel approximation to its inverse.
+其中 $A$ 是全时间耦合时空算子，$M^{-1}$ 是其逆算子的并行近似。
 
-| Method   | Source of $M^{-1}$                                            |
-| -------- | ------------------------------------------------------------- |
-| Parareal | block lower-triangular inverse defined by a coarse propagator |
-| MGRiT    | a temporal multilevel cycle                                   |
-| STMG     | a multilevel cycle on the complete space-time grid            |
-| ParaDiag | FFT inversion of a circulant temporal approximation           |
-| SWR      | local space-time inverses coupled by waveform transmission    |
+| 方法     | $M^{-1}$ 的来源              |
+| -------- | ---------------------------- |
+| Parareal | 由粗传播子定义的分块下三角逆 |
+| MGRiT    | 时间多层 cycle               |
+| STMG     | 完整时空网格上的多层 cycle   |
+| ParaDiag | 对循环时间近似执行 FFT 求逆  |
+| SWR      | 由波形传输耦合的局部时空逆   |
 
-This formulation makes the central questions explicit: which error modes does $M^{-1}$ reduce, which physical information does it preserve, and which operations are actually concurrent?
+这一形式明确提出三个核心问题：$M^{-1}$ 能削减哪些误差模态？保留哪些物理信息？哪些操作真正并发？
 
-## Method selection
+## 方法选择
 
 ```mermaid
 flowchart TD
-  A["Is the problem approximately linear?"] -->|yes| B["Are complex-shifted spatial systems inexpensive?"]
-  B -->|yes| C["ParaDiag or ParaExp"]
-  B -->|no| D["SWR or Krylov with a structure-aware preconditioner"]
-  A -->|no| E["Are the dynamics strongly dissipative?"]
-  E -->|yes| F["Parareal, PFASST, MGRiT, or STMG"]
-  E -->|no| G["Characteristic or phase correction; use coarse temporal grids cautiously"]
+  A["问题是否近似线性？"] -->|是| B["复移位空间系统是否易于求解？"]
+  B -->|是| C["ParaDiag 或 ParaExp"]
+  B -->|否| D["SWR 或带结构感知预条件器的 Krylov 方法"]
+  A -->|否| E["动力学是否强耗散？"]
+  E -->|是| F["Parareal、PFASST、MGRiT 或 STMG"]
+  E -->|否| G["使用特征线或相位校正；谨慎使用粗时间网格"]
 ```
 
-- **Strongly dissipative, low- or moderate-order integration:** MGRiT and STMG are natural candidates; Parareal provides a simple initial prototype.
-- **High-order temporal accuracy:** PFASST incorporates collocation and SDC but requires a more complex schedule.
-- **Large linear systems:** ParaDiag is attractive when shifted spatial solves are scalable; ParaExp is attractive when matrix-exponential actions are efficient.
-- **Transport- or wave-dominated problems:** characteristic transmission, phase correction, or SWR can preserve propagation more faithfully than a strongly dissipative coarse solver.
+- **强耗散、低到中阶时间积分：** MGRiT 与 STMG 是自然候选，Parareal 可作为简单原型；
+- **高阶时间精度：** PFASST 引入配置与 SDC，但调度更复杂；
+- **大型线性系统：** 当移位空间求解可扩展时，ParaDiag 有吸引力；当矩阵指数作用高效时，可考虑 ParaExp；
+- **输运或波动占优问题：** 特征线传输、相位校正或 SWR 通常比强耗散粗求解器更忠实地保留传播。
 
-## Complete experiment ledger
+## 完整实验清单
 
-The Python reproduction exposes eight baseline experiments and one composite paper-validation entry. The composite entry generates five paper-specific figures. All 13 resulting PNG figures and their numerical conclusions are now assigned to Chapters 2-4.
+Python 复现项目提供 8 个基线实验和 1 个组合论文验证入口；组合入口生成 5 张论文对应图。由此得到的 13 张 PNG 图及数值结论均已归入第二至第四章。
 
-| Python output               | Website location               | Machine-readable result                              |
-| --------------------------- | ------------------------------ | ---------------------------------------------------- |
-| `solution_heat_ade`         | Chapter 2, advection-diffusion | [[assets/pint/data/solution_heat_ade.json            | JSON]] |
-| `solution_burgers`          | Chapter 2, Burgers             | [[assets/pint/data/solution_burgers.json             | JSON]] |
-| `solution_wave`             | Chapter 2, wave equation       | [[assets/pint/data/solution_wave.json                | JSON]] |
-| `parareal_heat_ade`         | Chapter 4, Parareal            | [[assets/pint/data/parareal_heat_ade.json            | JSON]] |
-| `parareal_burgers`          | Chapter 4, Parareal            | [[assets/pint/data/parareal_burgers.json             | JSON]] |
-| `mgrit_heat_ade`            | Chapter 4, MGRiT               | [[assets/pint/data/mgrit_heat_ade.json               | JSON]] |
-| `iterative_paradiag_ade`    | Chapter 3, ParaDiag            | [[assets/pint/data/iterative_paradiag_ade.json       | JSON]] |
-| `stmg_heat_ade`             | Chapter 4, STMG                | [[assets/pint/data/stmg_heat_ade.json                | JSON]] |
-| Figure 3.15 validation      | Chapter 3, ParaDiag            | [[assets/pint/data/figure_3_15_validation.json       | JSON]] |
-| Figure 4.5 validation       | Chapter 4, Parareal            | [[assets/pint/data/figure_4_5_validation.json        | JSON]] |
-| Figures 4.9-4.10 validation | Chapter 4, MGRiT               | [[assets/pint/data/figure_4_10_validation.json       | JSON]] |
-| Figure 4.19 validation      | Chapter 4, STMG                | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
-| Figure 4.20 validation      | Chapter 4, STMG                | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
+| Python 输出              | 网页位置         | 机器可读结果                                         |
+| ------------------------ | ---------------- | ---------------------------------------------------- |
+| `solution_heat_ade`      | 第二章，对流扩散 | [[assets/pint/data/solution_heat_ade.json            | JSON]] |
+| `solution_burgers`       | 第二章，Burgers  | [[assets/pint/data/solution_burgers.json             | JSON]] |
+| `solution_wave`          | 第二章，波动方程 | [[assets/pint/data/solution_wave.json                | JSON]] |
+| `parareal_heat_ade`      | 第四章，Parareal | [[assets/pint/data/parareal_heat_ade.json            | JSON]] |
+| `parareal_burgers`       | 第四章，Parareal | [[assets/pint/data/parareal_burgers.json             | JSON]] |
+| `mgrit_heat_ade`         | 第四章，MGRiT    | [[assets/pint/data/mgrit_heat_ade.json               | JSON]] |
+| `iterative_paradiag_ade` | 第三章，ParaDiag | [[assets/pint/data/iterative_paradiag_ade.json       | JSON]] |
+| `stmg_heat_ade`          | 第四章，STMG     | [[assets/pint/data/stmg_heat_ade.json                | JSON]] |
+| Figure 3.15 验证         | 第三章，ParaDiag | [[assets/pint/data/figure_3_15_validation.json       | JSON]] |
+| Figure 4.5 验证          | 第四章，Parareal | [[assets/pint/data/figure_4_5_validation.json        | JSON]] |
+| Figures 4.9-4.10 验证    | 第四章，MGRiT    | [[assets/pint/data/figure_4_10_validation.json       | JSON]] |
+| Figure 4.19 验证         | 第四章，STMG     | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
+| Figure 4.20 验证         | 第四章，STMG     | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
 
-The compact cross-experiment record is available as [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]].
+跨实验简表见 [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]]。
 
-The upstream MATLAB repository contains additional scripts for direct ParaDiag, diagonalized Parareal, ParaExp, SWR, IDC/PIDC, and wave-domain decomposition. They have been inventoried but not ported to the current Python experiment interface. The ledger therefore claims complete coverage of generated Python result artifacts, not complete reproduction of every MATLAB script in the upstream repository.
+上游 MATLAB 仓库还包含直接 ParaDiag、对角化 Parareal、ParaExp、SWR、IDC/PIDC 与波动区域分解脚本。这些脚本已经登记，但尚未移植到当前 Python 实验接口。因此，清单声称覆盖所有已经生成的 Python 结果产物，而不是复现每一份上游 MATLAB 脚本。
 
-## Formal reproduction
+## Formal 复现
 
 ```bash
 python3 -m pip install -r requirements.txt
@@ -75,23 +77,23 @@ python3 run_experiments.py all --quick --output-dir results/quick
 python3 run_experiments.py all --output-dir results/formal
 ```
 
-The formal run on 31 July 2026 used NumPy 2.2.6, SciPy 1.15.3, and Matplotlib 3.10.9 on the original T4 host. The code path uses CPU sparse factorizations, Krylov methods, and FFTs.
+2026 年 7 月 31 日的 formal 运行在原 T4 主机上使用 NumPy 2.2.6、SciPy 1.15.3 与 Matplotlib 3.10.9。代码路径使用 CPU 稀疏分解、Krylov 方法和 FFT。
 
-Each experiment writes:
+每个实验写出：
 
-1. a PNG generated from the same arrays used for analysis;
-2. a JSON record of the grid, physical parameters, tolerance, and metric;
-3. deterministic random initialization where an all-at-once initial iterate is required.
+1. 一张由同一组分析数组生成的 PNG；
+2. 一份记录网格、物理参数、容差和指标的 JSON；
+3. 当全时间耦合初值需要随机量时，使用确定性随机初始化。
 
-## Interpretation limits
+## 解释边界
 
-- The experiments measure numerical convergence and reproduce selected trends and values from the paper. They do not measure temporal strong or weak scaling.
-- No figure reports MPI process count, communication volume, setup cost, or wall-clock speedup.
-- The original MATLAB random generator and NumPy do not produce identical initial arrays. Convergence factors, iteration counts, and final states are the relevant comparisons.
-- Sparse factorization, FFT ordering, and GMRES reduction can produce ordinary differences near $10^{-14}$ to $10^{-16}$.
-- In `MGRiT_Heat_ADE.m`, the invalid expression `nu=0.002max;` is interpreted as $\nu=0.002$, which is consistent with the surrounding branches and the paper.
-- For the STMG paper validation, backward Euler and the original MATLAB residual convention are retained. A consistent post-smoothing residual is also stored in JSON for diagnostic comparison.
+- 实验测量数值收敛性并复现论文中的部分趋势与数值，不测量时间维强、弱扩展；
+- 没有图报告 MPI 进程数、通信量、初始化成本或墙钟加速比；
+- 原 MATLAB 随机生成器与 NumPy 不会产生相同初始数组，应比较收敛因子、迭代次数和最终状态；
+- 稀疏分解、FFT 排序与 GMRES 归约会在 $10^{-14}$ 至 $10^{-16}$ 附近产生正常差异；
+- `MGRiT_Heat_ADE.m` 中无效表达式 `nu=0.002max;` 被解释为 $\nu=0.002$，与上下文分支及论文一致；
+- STMG 论文验证保留后向 Euler 与原 MATLAB 残差约定，同时在 JSON 中保存一致的后平滑残差用于诊断。
 
-## Minimum reporting standard for future experiments
+## 后续实验的最低报告标准
 
-A performance-oriented PinT study should report the spatial and temporal discretizations, fine reference, number of time intervals, hardware allocation, coarse-to-fine cost ratio, stopping criterion, communication and setup time, parameter sweeps, and strong or weak scaling. Error versus iteration alone supports an algorithmic convergence statement, not a parallel-efficiency claim.
+面向性能的 PinT 研究应报告空间与时间离散、细网格参考解、时间区间数、硬件分配、粗细成本比、停止准则、通信与初始化时间、参数扫描以及强或弱扩展。只有“误差随迭代次数变化”足以支持算法收敛结论，但不足以支持并行效率结论。

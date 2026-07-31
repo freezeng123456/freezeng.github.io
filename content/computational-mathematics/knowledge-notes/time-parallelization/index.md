@@ -1,59 +1,61 @@
 ---
-title: Time Parallelization for Hyperbolic and Parabolic Problems
-description: Chapter-by-chapter notes and reproducible experiments for parallel-in-time methods
+title: 双曲与抛物问题的时间并行方法
+description: 时间并行方法的分章笔记与可复现实验
+lang: zh
+translation: en/computational-mathematics/knowledge-notes/time-parallelization
 tags:
-  - computational-mathematics
-  - parallel-in-time
+  - 计算数学
+  - 时间并行
 ---
 
-These notes follow M. J. Gander, S.-L. Wu, and T. Zhou, _Time Parallelization for Hyperbolic and Parabolic Problems_, Acta Numerica 34 (2025), pp. 385-489. The survey distinguishes methods that remain effective for propagative problems from methods designed primarily for dissipative problems.
+本专题依据 M. J. Gander、S.-L. Wu 和 T. Zhou 的综述 _Time Parallelization for Hyperbolic and Parabolic Problems_（Acta Numerica 34, 2025, pp. 385-489）整理。原文区分了对传播型问题仍然有效的方法，以及主要为耗散问题设计的方法。
 
-## Reading sequence
+## 阅读顺序
 
-1. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|Chapter 1: Why Parallelize in Time?]] introduces causality, the all-at-once formulation, and performance criteria.
-2. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|Chapter 2: Model Problems]] compares the heat, advection-diffusion, Burgers, and wave equations. The chapter includes all three recomputed solution experiments.
-3. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|Chapter 3: Methods Effective for Hyperbolic Problems]] discusses SWR, PIDC/RIDC, ParaExp, and ParaDiag. The chapter includes both ParaDiag-II experiments.
-4. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|Chapter 4: Methods Designed for Parabolic Problems]] covers Parareal, PFASST, MGRiT, diagonalization-based Parareal, and STMG. It contains the recomputed convergence studies.
-5. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|Chapter 5: A Unified View and Method Selection]] compares the algorithms and records the complete experiment ledger and reproduction protocol.
+1. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|第一章：为什么要做时间并行？]]介绍因果性、全时间耦合形式与性能判断标准。
+2. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|第二章：模型问题]]比较热方程、对流扩散方程、Burgers 方程和波动方程，并收录三个重新计算的解实验。
+3. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|第三章：适用于双曲问题的方法]]讨论 SWR、PIDC/RIDC、ParaExp 和 ParaDiag，并收录两个 ParaDiag-II 实验。
+4. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|第四章：为抛物问题设计的方法]]介绍 Parareal、PFASST、MGRiT、基于对角化的 Parareal 和 STMG，并给出重新计算的收敛实验。
+5. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|第五章：统一视角与方法选择]]比较各类算法，记录完整实验清单和复现流程。
 
-## Method map
+## 方法图谱
 
-| Method    | Parallel unit                             | Mechanism                              | Natural regime                 |
-| --------- | ----------------------------------------- | -------------------------------------- | ------------------------------ |
-| SWR       | overlapping space-time subdomains         | waveform transmission                  | transport and wave problems    |
-| PIDC/RIDC | correction levels and time nodes          | deferred correction and pipelining     | initial-value problems         |
-| ParaExp   | inhomogeneous and homogeneous subproblems | exponential propagation                | linear systems                 |
-| ParaDiag  | all-at-once temporal matrix               | circulant approximation and FFT        | linear or linearized systems   |
-| Parareal  | coarse time intervals                     | coarse prediction plus fine correction | moderate to strong dissipation |
-| PFASST    | collocation nodes across time steps       | SDC with multilevel correction         | high-order integration         |
-| MGRiT     | a hierarchy of temporal grids             | relaxation and coarse-grid correction  | long time intervals            |
-| STMG      | the full space-time grid                  | space-time smoothing and coarsening    | parabolic systems              |
+| 方法      | 并行单元           | 机制             | 自然适用区域     |
+| --------- | ------------------ | ---------------- | ---------------- |
+| SWR       | 重叠时空子域       | 波形传输         | 输运与波动问题   |
+| PIDC/RIDC | 校正层与时间节点   | 延迟校正与流水线 | 初值问题         |
+| ParaExp   | 非齐次与齐次子问题 | 指数传播         | 线性系统         |
+| ParaDiag  | 全时间耦合矩阵     | 循环近似与 FFT   | 线性或线性化系统 |
+| Parareal  | 粗时间区间         | 粗预测加细校正   | 中等到强耗散     |
+| PFASST    | 跨时间步的配置节点 | SDC 与多层校正   | 高阶时间积分     |
+| MGRiT     | 时间网格层次       | 松弛与粗网格校正 | 长时间区间       |
+| STMG      | 完整时空网格       | 时空平滑与粗化   | 抛物系统         |
 
-## Three organizing principles
+## 三条组织原则
 
-### Causality is reformulated, not removed
+### 因果性被重新表述，而不是被消除
 
-For a one-step method, $u_{n+1}=\Phi_{\Delta t}(u_n)$ is sequential. A parallel-in-time method instead constructs a parallel approximation to the inverse of the coupled all-at-once system. Parallel work occurs inside an iteration, a decomposition, or a transform.
+单步方法 $u_{n+1}=\Phi_{\Delta t}(u_n)$ 本质上是串行的。时间并行方法转而构造全时间耦合系统逆算子的并行近似，使并行工作发生在迭代、分解或变换内部。
 
-### Dissipation determines whether a coarse representation is informative
+### 耗散决定粗表示是否包含有效信息
 
-Parabolic dynamics damp high-frequency error. A coarse propagator can therefore reproduce the slowly varying components that remain relevant over long intervals. Hyperbolic dynamics preserve phase information. Small phase errors in the coarse problem may then accumulate across time intervals.
+抛物动力学会衰减高频误差，因此粗传播子仍能表示长时间尺度上保留下来的慢变分量。双曲动力学保留相位信息，粗问题中的微小相位误差可能沿多个时间区间累积。
 
-### Iteration count is not parallel efficiency
+### 迭代次数不等于并行效率
 
-A simplified cost model is
+一个简化成本模型是
 
 $$
 T_{\mathrm{parallel}}
 \approx K(C_G+C_F/P)+C_{\mathrm{comm}}+C_{\mathrm{setup}},
 $$
 
-where $K$ is the iteration count, $C_G$ and $C_F$ are the coarse and fine propagation costs, and $P$ is the temporal concurrency. The numerical experiments in these notes measure convergence, not end-to-end parallel speedup.
+其中 $K$ 是迭代次数，$C_G$ 和 $C_F$ 分别是粗、细传播成本，$P$ 是时间并发度。本专题的数值实验测量算法收敛性，不测量端到端并行加速比。
 
-> [!note] Numerical provenance
-> All displayed experiment figures were regenerated on 31 July 2026 from the Python/SciPy reproduction project on the original T4 host. The implementation uses CPU sparse linear algebra and FFTs. The presence of a T4 accelerator does not imply that the reported runs use GPU kernels.
+> [!note] 数值来源
+> 所有展示的实验图均于 2026 年 7 月 31 日在原 T4 主机上，由 Python/SciPy 复现项目重新生成。实现使用 CPU 稀疏线性代数与 FFT；主机配备 T4 并不表示实验调用了 GPU kernel。
 
-## Primary sources
+## 第一手资料
 
 - M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), Acta Numerica 34 (2025), pp. 385-489.
-- Original MATLAB examples: [wushulin/ActaPinT](https://github.com/wushulin/ActaPinT).
+- 原始 MATLAB 算例：[wushulin/ActaPinT](https://github.com/wushulin/ActaPinT)。

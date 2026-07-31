@@ -1,96 +1,98 @@
 ---
-title: "Chapter 2: Model Problems"
-description: Heat, advection-diffusion, Burgers, and wave equations as a dissipation-to-propagation spectrum
+title: 第二章：模型问题
+description: 从强耗散到持续传播的热、对流扩散、Burgers 与波动方程
+lang: zh
+translation: en/computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems
 tags:
-  - parallel-in-time
+  - 时间并行
   - PDE
 ---
 
-The four model equations form a controlled progression from strong dissipation to persistent propagation. This progression exposes which components of a coarse temporal model are required for convergence.
+四类模型方程构成从强耗散到持续传播的受控序列，可用于判断粗时间模型需要保留哪些信息才能收敛。
 
-## 2.1 Heat equation
+## 2.1 热方程
 
 $$
 u_t-\nu\Delta u=f.
 $$
 
-A Fourier mode $e^{ikx}$ decays as $e^{-\nu k^2t}$. High-frequency error is removed first, so coarse grids and coarse time steps can often approximate the long-time dynamics. The heat equation is therefore a favorable reference problem for Parareal, MGRiT, and STMG.
+Fourier 模态 $e^{ikx}$ 按 $e^{-\nu k^2t}$ 衰减。高频误差首先消失，因此粗网格和粗时间步通常能够近似长时间动力学。热方程由此成为 Parareal、MGRiT 和 STMG 的有利基准问题。
 
-Three effects must be separated in an implementation:
+实现时需要区分三种效应：
 
-- **Discretization plateau:** further PinT iterations are not useful after the iteration error falls below the fine discretization error.
-- **Stability versus accuracy:** backward Euler is strongly damping but first order; the trapezoidal rule has different amplitude and phase properties.
-- **Spatial coarsening:** temporal coarsening alone does not remove every spatial high-frequency mode.
+- **离散误差平台：** 当 PinT 迭代误差低于细离散误差后，继续迭代没有意义；
+- **稳定性与精度：** 后向 Euler 强耗散但只有一阶精度；梯形规则具有不同的振幅与相位性质；
+- **空间粗化：** 只做时间粗化不能消除所有空间高频模态。
 
-## 2.2 Advection-diffusion equation
+## 2.2 对流扩散方程
 
 $$
 u_t+a u_x-\nu u_{xx}=f.
 $$
 
-The Fourier symbol contains both phase, $e^{-iakt}$, and damping, $e^{-\nu k^2t}$. As the Péclet number increases or $\nu$ decreases, phase accuracy becomes more important than additional numerical damping. A stable coarse propagator may still be ineffective if it travels at the wrong numerical speed.
+其 Fourier 符号同时包含相位 $e^{-iakt}$ 与衰减 $e^{-\nu k^2t}$。当 Péclet 数增加或 $\nu$ 减小时，相位精度比额外数值耗散更重要。即使粗传播子稳定，只要其数值传播速度错误，仍可能无法提供有效校正。
 
-For a mode with wavenumber $k$, the ratio
+对波数为 $k$ 的模态，
 
 $$
 \chi_k=\frac{|ak|}{\nu k^2}=\frac{|a|}{\nu|k|}
 $$
 
-measures the competition between propagation and dissipation. The low-frequency modes have the largest $\chi_k$ and are also the most persistent in time.
+衡量传播与耗散的竞争。低频模态具有最大的 $\chi_k$，同时也是时间上最持久的模态。
 
-### Recomputed solution
+### 重新计算的解
 
-The formal Python experiment uses a source-free Dirichlet problem with $\Delta t=\Delta x=10^{-3}$, $T=3$, $\nu=5\times10^{-4}$, and advection speed $a=1$. The initial condition is $\sin^2(8\pi(1-x)^2)$. Its final $L^\infty$ norm is $7.022\times10^{-99}$.
+formal Python 实验使用无源 Dirichlet 问题，$\Delta t=\Delta x=10^{-3}$、$T=3$、$\nu=5\times10^{-4}$、对流速度 $a=1$，初值为 $\sin^2(8\pi(1-x)^2)$。最终 $L^\infty$ 范数为 $7.022\times10^{-99}$。
 
 ![[assets/pint/model-advection-diffusion.png]]
 
-The near-zero final norm is specific to this dissipative, outflow-dominated Dirichlet experiment. It should not be transferred to periodic or forced variants of the equation.
+近零的最终范数只对应这一耗散且出流占优的 Dirichlet 实验，不能直接外推到周期或受迫方程。
 
-## 2.3 Viscous Burgers equation
+## 2.3 黏性 Burgers 方程
 
 $$
 u_t+u u_x-\nu u_{xx}=f.
 $$
 
-The propagation speed now depends on the solution. Fine and coarse propagators must therefore reconcile nonlinearity, phase, and diffusion at every PinT iteration. When viscosity is small, steep gradients couple spatial discretization error, nonlinear-solver error, and temporal iteration error.
+此时传播速度取决于解本身。每次 PinT 迭代都必须同时协调非线性、相位与扩散。当黏性很小时，陡峭梯度会把空间离散误差、非线性求解误差和时间迭代误差耦合起来。
 
-Parareal retains the update
+Parareal 仍采用更新
 
 $$
 U_{n+1}^{k+1}
 =G(U_n^{k+1})+F(U_n^k)-G(U_n^k),
 $$
 
-but $F-G$ is no longer a fixed linear correction.
+但 $F-G$ 不再是固定线性校正。
 
-### Recomputed solution
+### 重新计算的解
 
-The formal experiment uses $\Delta t=\Delta x=1/400$, $T=3$, and $\nu=5\times10^{-4}$ with homogeneous Dirichlet boundaries. The solution reaches a maximum value of $1.045940$ and has final $L^\infty$ norm $0.325871$.
+formal 实验使用 $\Delta t=\Delta x=1/400$、$T=3$、$\nu=5\times10^{-4}$ 及齐次 Dirichlet 边界。解的最大值为 $1.045940$，最终 $L^\infty$ 范数为 $0.325871$。
 
 ![[assets/pint/model-burgers.png]]
 
-## 2.4 Second-order wave equation
+## 2.4 二阶波动方程
 
 $$
 u_{tt}-c^2\Delta u=f.
 $$
 
-After conversion to a first-order system, the ideal propagation eigenvalues lie on or near the unit circle. Coarse phase error accumulates because the dynamics do not remove it. Useful approaches often employ characteristic variables, waveform relaxation, exponential propagation, diagonalization, or a phase-aware coarse model.
+转化为一阶系统后，理想传播特征值位于或接近单位圆。动力学不会消除粗时间模型的相位误差，因此误差会累积。有效方法通常使用特征变量、波形松弛、指数传播、对角化或相位感知的粗模型。
 
-### Recomputed solution
+### 重新计算的解
 
-The source-free formal experiment uses the trapezoidal rule with $\Delta t=\Delta x=1/400$, $T=3$, and spatial coefficient $0.2$. It starts from the same oscillatory displacement as the previous two experiments and zero initial velocity. The final displacement has $L^\infty$ norm $0.948217$.
+无源 formal 实验使用梯形规则，$\Delta t=\Delta x=1/400$、$T=3$、空间系数为 $0.2$。初始位移与前两个实验相同，初始速度为零。最终位移的 $L^\infty$ 范数为 $0.948217$。
 
 ![[assets/pint/model-wave.png]]
 
-The persistent amplitude contrasts with the nearly extinguished advection-diffusion solution. This comparison illustrates the temporal nonlocality that makes wave propagation difficult for dissipative coarse-grid corrections.
+持续存在的振幅与几乎完全衰减的对流扩散解形成对比，说明波传播的时间非局部性为何难以由耗散型粗网格校正处理。
 
-## Numerical summary
+## 数值汇总
 
-| Formal experiment   | Grid and horizon                   |                      Reported metric |
-| ------------------- | ---------------------------------- | -----------------------------------: |
-| advection-diffusion | $\Delta x=\Delta t=10^{-3}$, $T=3$ | final $L^\infty=7.022\times10^{-99}$ |
-| viscous Burgers     | $\Delta x=\Delta t=1/400$, $T=3$   |            final $L^\infty=0.325871$ |
-| wave equation       | $\Delta x=\Delta t=1/400$, $T=3$   |            final $L^\infty=0.948217$ |
+| formal 实验  | 网格与时间区间                     |                            报告指标 |
+| ------------ | ---------------------------------- | ----------------------------------: |
+| 对流扩散     | $\Delta x=\Delta t=10^{-3}$，$T=3$ | 最终 $L^\infty=7.022\times10^{-99}$ |
+| 黏性 Burgers | $\Delta x=\Delta t=1/400$，$T=3$   |            最终 $L^\infty=0.325871$ |
+| 波动方程     | $\Delta x=\Delta t=1/400$，$T=3$   |            最终 $L^\infty=0.948217$ |
 
-These experiments visualize the model dynamics. They are not parallel speedup measurements.
+这些实验用于展示模型动力学，而不是并行加速比。

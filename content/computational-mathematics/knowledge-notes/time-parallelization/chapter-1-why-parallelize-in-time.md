@@ -1,30 +1,32 @@
 ---
-title: "Chapter 1: Why Parallelize in Time?"
-description: Causality, all-at-once systems, and criteria for useful parallelism
+title: 第一章：为什么要做时间并行？
+description: 因果性、全时间耦合系统与有效并行的判断标准
+lang: zh
+translation: en/computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time
 tags:
-  - parallel-in-time
-  - computational-mathematics
+  - 时间并行
+  - 计算数学
 ---
 
-## The limit of spatial parallelism
+## 空间并行的极限
 
-Domain decomposition and mesh parallelism are usually the first sources of concurrency in a PDE solver. Once each spatial subdomain becomes too small, communication and synchronization dominate additional local computation. The temporal grid remains large, but conventional time stepping is sequential:
+区域分解和网格并行通常是 PDE 求解器最先利用的并发来源。当每个空间子域过小时，通信与同步成本会超过新增的局部计算。此时时间网格仍然很大，但传统时间推进是串行的：
 
 $$
 u_{n+1}=\Phi_{\Delta t}(u_n).
 $$
 
-Parallel-in-time methods do not eliminate causal dependence. They introduce redundant work, global iteration, decomposition, or a transform so that multiple time intervals can be processed concurrently.
+时间并行方法不会消除因果依赖。它通过冗余计算、全局迭代、分解或变换，让多个时间区间能够并发处理。
 
-## The all-at-once formulation
+## 全时间耦合形式
 
-For a linear one-step discretization,
+对线性单步离散，
 
 $$
 u_{n+1}-\Phi u_n=g_{n+1}.
 $$
 
-Stacking all temporal unknowns gives
+把所有时间未知量堆叠起来可得
 
 $$
 \begin{bmatrix}
@@ -38,56 +40,56 @@ I \\
 \begin{bmatrix}g_0\\g_1\\g_2\\\vdots\end{bmatrix}.
 $$
 
-Sequential time stepping is exact forward substitution. The principal PinT families replace it by different approximations to the inverse:
+串行时间推进就是精确前代。主要 PinT 方法族用不同方式近似该系统的逆：
 
-- Parareal and MGRiT use inexpensive coarse propagation.
-- STMG uses a multilevel approximation on the complete space-time grid.
-- ParaDiag replaces the triangular temporal coupling by a matrix that can be diagonalized by FFT.
-- SWR solves space-time subdomain problems and exchanges interface waveforms.
+- Parareal 和 MGRiT 使用低成本粗传播；
+- STMG 在完整时空网格上构造多层近似；
+- ParaDiag 用可经 FFT 对角化的矩阵替代三角时间耦合；
+- SWR 求解时空子域问题并交换界面波形。
 
-## Why hyperbolic problems are more difficult
+## 双曲问题为什么更困难
 
-For a dissipative propagator, many error modes satisfy $|\lambda(\Phi)|<1$. The rapidly damped components do not need to be represented accurately on the coarsest temporal level. For wave and transport problems, relevant modes remain close to the unit circle. Their error is primarily a phase error rather than an amplitude error. A small phase mismatch between fine and coarse propagation can accumulate over many time intervals.
+对耗散传播子，许多误差模态满足 $|\lambda(\Phi)|<1$。快速衰减分量不必在最粗时间层上被精确表示。对波动和输运问题，相关模态仍接近单位圆，误差主要表现为相位误差而非振幅误差。细、粗传播之间微小的相位失配会沿多个时间区间累积。
 
-This mechanism explains why:
+这一机制解释了：
 
-1. decreasing the viscosity $\nu$ makes advection-diffusion increasingly difficult for standard temporal coarsening;
-2. Parareal may exhibit transient error growth in transport-dominated regimes;
-3. characteristic transmission, phase correction, waveform relaxation, or global diagonalization can be more effective than a merely more dissipative coarse solver.
+1. 当黏性 $\nu$ 减小时，标准时间粗化越来越难处理对流扩散问题；
+2. 在输运占优区域，Parareal 可能出现暂态误差增长；
+3. 特征线传输、相位校正、波形松弛或全局对角化，可能比单纯增加耗散的粗求解器更有效。
 
-## Evaluation criteria
+## 评价标准
 
-Convergence histories are necessary but insufficient. A computational study should report:
+收敛历史是必要信息，但并不充分。计算研究至少应报告：
 
-| Quantity             | Question                                                                     |
-| -------------------- | ---------------------------------------------------------------------------- |
-| convergence          | How many global iterations reach the discretization-error scale?             |
-| coarse-to-fine cost  | Is the coarse propagator substantially cheaper than the fine propagator?     |
-| temporal concurrency | How many fine or local solves can execute simultaneously?                    |
-| communication        | Does each iteration require neighbor exchange or a global collective?        |
-| memory               | Must all temporal states be stored?                                          |
-| parameter robustness | Does convergence degrade toward the hyperbolic limit?                        |
-| scalability          | Does the iteration count remain controlled as the number of intervals grows? |
+| 指标       | 要回答的问题                             |
+| ---------- | ---------------------------------------- |
+| 收敛性     | 需要多少次全局迭代才能达到离散误差量级？ |
+| 粗细成本比 | 粗传播子是否显著低于细传播子成本？       |
+| 时间并发度 | 可以同时执行多少个细求解或局部求解？     |
+| 通信       | 每轮迭代需要邻居交换还是全局集合通信？   |
+| 内存       | 是否必须存储全部时间状态？               |
+| 参数鲁棒性 | 接近双曲极限时收敛是否退化？             |
+| 可扩展性   | 时间区间数量增加时迭代次数是否受控？     |
 
-For Parareal with $N$ time intervals, a simplified idealized speedup bound is
+对含 $N$ 个时间区间的 Parareal，忽略通信时，一个理想化加速上界为
 
 $$
-S\lesssim \frac{NC_F}{K(C_F+NC_G)},
+S\lesssim \frac{NC_F}{K(C_F+NC_G)}.
 $$
 
-when communication is neglected. Useful acceleration requires both $K\ll N$ and $C_G\ll C_F$. Algorithmic convergence alone does not imply either condition.
+获得有效加速需要同时满足 $K\ll N$ 与 $C_G\ll C_F$。算法收敛本身不能推出这两个条件。
 
-## Reproduction policy used in these notes
+## 本专题采用的复现策略
 
-The companion project has two execution levels:
+配套项目提供两个执行级别：
 
 ```bash
 python3 run_experiments.py all --quick --output-dir results/quick
 python3 run_experiments.py all --output-dir results/formal
 ```
 
-The quick configuration preserves the algorithmic structure with smaller grids and serves only as a smoke test. Every figure and numerical value in Chapters 2-4 comes from the formal configuration. Each experiment writes a PNG figure and a JSON record containing its parameters and metrics.
+quick 配置用更小网格保留算法结构，只作为冒烟测试。第二至第四章的所有图和数值都来自 formal 配置。每个实验都会写出一张 PNG 图，以及一份包含参数和指标的 JSON 记录。
 
-## Summary
+## 小结
 
-PinT is best viewed as a structured approximation to the inverse of a global temporal system. The first diagnostic question is whether the dynamics are dominated by dissipation or propagation. The second is which physical information the parallel approximation preserves: amplitude, phase, characteristics, or slowly decaying modes.
+PinT 更适合被理解为全局时间系统逆算子的结构化近似。第一个诊断问题是动力学由耗散还是传播主导；第二个问题是并行近似保留了哪些物理信息：振幅、相位、特征线，还是缓慢衰减模态。

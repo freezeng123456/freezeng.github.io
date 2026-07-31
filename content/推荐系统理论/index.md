@@ -1,6 +1,8 @@
 ---
 title: 推荐系统理论
 description: 从序列建模到 OneRec 工业链路
+lang: zh
+translation: en/recommender-systems
 tags:
   - 推荐系统
 ---

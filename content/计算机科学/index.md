@@ -1,6 +1,8 @@
 ---
 title: 计算机科学
 description: 持续测试时适应与后续知识整理
+lang: zh
+translation: en/computer-science
 tags:
   - 计算机科学
 ---
@@ -11,6 +13,6 @@ tags:
 
 ## 知识整理
 
-[[计算机科学/知识整理/index\|Knowledge Notes]]从 AI Systems 开始，首篇
-[[计算机科学/知识整理/efficient-llm-inference\|Efficient LLM Inference]]
+[[计算机科学/知识整理/index\|知识整理]]从 AI 系统开始，首篇
+[[计算机科学/知识整理/efficient-llm-inference\|高效大模型推理]]
 以 vLLM 为主线，可视化 continuous batching、PagedAttention、Transformer 张量流、采样与抢占。

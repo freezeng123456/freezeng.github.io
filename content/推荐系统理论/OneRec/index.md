@@ -1,6 +1,8 @@
 ---
 title: OneRec 工业实现链路
 description: 从行为序列、语义 ID、训练到在线生成式召回的完整闭环
+lang: zh
+translation: en/recommender-systems/onerec
 tags:
   - 推荐系统
   - OneRec

@@ -211,7 +211,7 @@ plugins:
     enabled: true
     options:
       title: 最近更新
-      limit: 5
+      limit: 56
   - source: "@quartz-community/spacer"
     enabled: true
     options: {}

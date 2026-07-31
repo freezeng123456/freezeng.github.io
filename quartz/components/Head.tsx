@@ -13,6 +13,8 @@ export default (() => {
     ctx,
   }: QuartzComponentProps) => {
     const titleSuffix = cfg.pageTitleSuffix ?? ""
+    const language = fileData.frontmatter?.lang === "en" ? "en" : "zh"
+    const siteName = language === "en" ? "Freezeng Knowledge Base" : "Freezeng 知识库"
     const title =
       (fileData.frontmatter?.title ?? i18n(cfg.locale).propertyDefaults.title) + titleSuffix
     const description =
@@ -30,6 +32,9 @@ export default (() => {
     // Url of current page
     const socialUrl =
       fileData.slug === "404" ? url.toString() : joinSegments(url.toString(), fileData.slug!)
+    const translation = fileData.frontmatter?.translation
+    const translationUrl =
+      typeof translation === "string" ? joinSegments(url.toString(), translation) : undefined
 
     const usesCustomOgImage = ctx.cfg.plugins.emitters.some((e) => e.name === "CustomOgImages")
     const ogImageDefaultPath = `https://${cfg.baseUrl}/static/og-image.png`
@@ -60,7 +65,7 @@ export default (() => {
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <meta name="og:site_name" content={cfg.pageTitle}></meta>
+        <meta name="og:site_name" content={siteName}></meta>
         <meta property="og:title" content={title} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -86,6 +91,22 @@ export default (() => {
             <meta property="twitter:domain" content={cfg.baseUrl}></meta>
             <meta property="og:url" content={socialUrl}></meta>
             <meta property="twitter:url" content={socialUrl}></meta>
+          </>
+        )}
+
+        {translationUrl && (
+          <>
+            <link rel="alternate" hrefLang={language} href={socialUrl} />
+            <link
+              rel="alternate"
+              hrefLang={language === "en" ? "zh" : "en"}
+              href={translationUrl}
+            />
+            <link
+              rel="alternate"
+              hrefLang="x-default"
+              href={language === "en" ? translationUrl : socialUrl}
+            />
           </>
         )}
 

@@ -1,6 +1,8 @@
 ---
 title: 语义 ID 与 RQ-VAE
 description: 连续广告表征如何变成可生成、可检索的多级 token
+lang: zh
+translation: en/recommender-systems/onerec/semantic-id-and-rq-vae
 tags:
   - OneRec
   - RQ-VAE

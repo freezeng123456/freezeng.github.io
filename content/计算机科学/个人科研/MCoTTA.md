@@ -1,6 +1,8 @@
 ---
 title: MCoTTA：动量引导的持续测试时适应
 description: 三种子配对结果、因果梯度保留诊断与长时程边界
+lang: zh
+translation: en/computer-science/research/mcotta
 tags:
   - 计算机科学
   - Test-Time-Adaptation

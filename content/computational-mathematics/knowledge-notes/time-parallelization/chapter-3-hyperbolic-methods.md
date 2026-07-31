@@ -1,98 +1,100 @@
 ---
-title: "Chapter 3: Methods Effective for Hyperbolic Problems"
-description: SWR, deferred correction, ParaExp, and ParaDiag
+title: 第三章：适用于双曲问题的方法
+description: SWR、延迟校正、ParaExp 与 ParaDiag
+lang: zh
+translation: en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods
 tags:
-  - parallel-in-time
-  - hyperbolic-PDE
+  - 时间并行
+  - 双曲-PDE
 ---
 
-Hyperbolic problems transmit information along characteristics. Effective PinT methods either represent this propagation explicitly or avoid relying on a dissipative coarse temporal model.
+双曲问题沿特征线传递信息。有效的 PinT 方法要么显式表示这一传播过程，要么避免依赖耗散型粗时间模型。
 
-## 3.1 Historical viewpoint
+## 3.1 历史视角
 
-Multiple shooting, waveform relaxation, time-domain decomposition, and all-at-once solvers replace one long initial-value chain by local problems coupled through interface or continuity conditions. Their computational differences arise from how these coupling conditions are approximated and parallelized.
+多重打靶、波形松弛、时间区域分解与全时间耦合求解器，都把一条很长的初值链改写为由界面或连续性条件耦合的局部问题。它们的计算差别取决于如何近似并并行化这些耦合条件。
 
-## 3.2 Schwarz waveform relaxation
+## 3.2 Schwarz 波形松弛
 
-SWR decomposes the spatial domain but exchanges an entire interface waveform over a time window:
+SWR 分解空间区域，但在一个时间窗口上交换完整界面波形：
 
 ```mermaid
 flowchart LR
-  A["Subdomain 1: solve over the full time window"] -->|interface waveform| B["Subdomain 2: solve over the full time window"]
-  B -->|updated interface waveform| A
+  A["子域 1：求解完整时间窗口"] -->|界面波形| B["子域 2：求解完整时间窗口"]
+  B -->|更新后的界面波形| A
 ```
 
-Robin or characteristic transmission conditions can approximate incoming and outgoing waves more accurately than Dirichlet exchange for second-order hyperbolic equations. The overlap width, time-window length, and transmission parameter jointly determine convergence.
+对于二阶双曲方程，Robin 或特征线传输条件通常比 Dirichlet 交换更准确地近似入射波与出射波。重叠宽度、时间窗口长度和传输参数共同决定收敛速度。
 
-## 3.3 Parallel deferred correction
+## 3.3 并行延迟校正
 
-Integral deferred correction improves a provisional solution by solving an error equation based on the integral residual. In schematic form,
+积分延迟校正通过求解基于积分残差的误差方程改善预测解。示意形式为
 
 $$
 e'(t)=f(t,u+e)-f(t,u)-r'(t),
 $$
 
-where $r$ is the residual of the current approximation.
+其中 $r$ 是当前近似的残差。
 
-- PIDC executes correction work across time windows but introduces synchronization between sweeps.
-- RIDC pipelines the correction levels and reduces global synchronization.
+- PIDC 在多个时间窗口上执行校正，但不同 sweep 之间需要同步；
+- RIDC 把各校正层做成流水线，从而减少全局同步。
 
-The attainable concurrency is limited by the number of correction levels and by pipeline startup and drain time.
+可达到的并发度受校正层数以及流水线启动、排空时间限制。
 
 ## 3.4 ParaExp
 
-For
+对
 
 $$
 u'(t)=Au(t)+g(t),
 $$
 
-ParaExp decomposes the interval into independent zero-initial-value inhomogeneous problems. The endpoint contributions are propagated by homogeneous matrix-exponential actions:
+ParaExp 把时间区间分解为相互独立、零初值的非齐次问题，再通过齐次矩阵指数作用传播端点贡献：
 
 $$
 u(t)=v_j(t)+\sum_{i\le j}e^{(t-T_i)A}b_i.
 $$
 
-Its efficiency depends on a fast and accurate implementation of $e^{tA}v$, commonly through a Krylov method. The construction is most direct for linear systems.
+其效率取决于 $e^{tA}v$ 的快速、准确实现，通常使用 Krylov 方法。该构造最直接地适用于线性系统。
 
 ## 3.5 ParaDiag
 
-The temporal matrix in an all-at-once discretization is close to Toeplitz. Replacing its strictly triangular coupling by an $\alpha$-circulant matrix yields
+全时间耦合离散中的时间矩阵接近 Toeplitz 结构。用 $\alpha$-循环矩阵替换严格三角耦合，可得
 
 $$
 C_\alpha=V_\alpha D_\alpha V_\alpha^{-1}.
 $$
 
-An FFT in time then decomposes one large space-time problem into independent complex-shifted spatial systems. ParaDiag-I applies this diagonalization directly. ParaDiag-II uses the circulant system as an iterative method or a preconditioner for the original non-circulant problem.
+沿时间方向执行 FFT 后，一个大型时空问题被分解为若干相互独立的复移位空间系统。ParaDiag-I 直接使用该对角化；ParaDiag-II 则把循环系统用作原非循环问题的迭代方法或预条件器。
 
-### Baseline ParaDiag-II experiment
+### ParaDiag-II 基线实验
 
-The recomputed baseline uses $N_x=N_t=100$, $T=2$, $\nu=10^{-6}$, $\alpha=1$, and GMRES tolerance $10^{-12}$. It converges in 13 iterations and reaches a true relative residual of $1.149\times10^{-14}$.
+重新计算的基线使用 $N_x=N_t=100$、$T=2$、$\nu=10^{-6}$、$\alpha=1$ 和 GMRES 容差 $10^{-12}$。算法在 13 次迭代后收敛，真实相对残差为 $1.149\times10^{-14}$。
 
 ![[assets/pint/paradiag-baseline.png]]
 
-### Validation against Figure 3.15
+### 对 Figure 3.15 的验证
 
-The paper-grid validation fixes $N_x=N_t=100$ and $T=2$ while varying the viscosity:
+论文网格固定 $N_x=N_t=100$ 与 $T=2$，并改变黏性：
 
-| Viscosity $\nu$ | GMRES iterations | Interpretation                                                           |
-| --------------: | ---------------: | ------------------------------------------------------------------------ |
-|       $10^{-3}$ |                3 | the circulant preconditioner closely approximates the all-at-once system |
-|       $10^{-6}$ |               13 | weaker diffusion reduces spectral clustering                             |
+| 黏性 $\nu$ | GMRES 迭代次数 | 解释                             |
+| ---------: | -------------: | -------------------------------- |
+|  $10^{-3}$ |              3 | 循环预条件器与全时间耦合系统接近 |
+|  $10^{-6}$ |             13 | 较弱扩散使谱聚集变差             |
 
 ![[assets/pint/paradiag-figure-3-15.png]]
 
-The result reproduces the iteration counts shown in Figure 3.15(c,d). It supports the stated parameter dependence for this discretization; it is not a viscosity-independent convergence claim.
+结果复现了 Figure 3.15(c,d) 的迭代次数，支持该离散下的参数依赖关系，但不能据此宣称收敛与黏性无关。
 
-### Parameters that affect ParaDiag
+### 影响 ParaDiag 的参数
 
-| Parameter               | Role                                    | Failure mode                                                                                        |
-| ----------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| $\alpha$                | strength of the circulant approximation | very small values can make the transform ill-conditioned; large values can weaken the approximation |
-| $N_t$                   | temporal transform size                 | larger values increase concurrency, transform cost, and memory                                      |
-| shifted-solve tolerance | accuracy of each spatial solve          | loose solves pollute the outer iteration; unnecessarily tight solves add cost                       |
-| $\nu$                   | physical dissipation                    | smaller values increase phase sensitivity and preconditioning difficulty                            |
+| 参数         | 作用                   | 失效方式                               |
+| ------------ | ---------------------- | -------------------------------------- |
+| $\alpha$     | 控制循环近似强度       | 过小会使变换病态，过大则削弱近似质量   |
+| $N_t$        | 时间变换规模           | 增大并发度，同时增加变换成本与内存     |
+| 移位求解容差 | 控制每个空间求解的精度 | 过松会污染外层迭代，过紧则增加无效成本 |
+| $\nu$        | 物理耗散               | 越小越依赖相位精度，预条件也越困难     |
 
-## Computational coverage
+## 计算覆盖范围
 
-The Python reproduction contains executable ParaDiag-II experiments and these are both reported above. The upstream MATLAB repository also contains SWR, PIDC/RIDC, ParaExp, direct ParaDiag, and wave-domain-decomposition scripts. Those scripts have been catalogued, but they do not yet have Python-equivalent formal result artifacts. This chapter therefore does not present newly computed curves for those methods.
+Python 复现项目包含两个可执行 ParaDiag-II 实验，均已在上文报告。上游 MATLAB 仓库还包含 SWR、PIDC/RIDC、ParaExp、直接 ParaDiag 与波动区域分解脚本；这些脚本已经登记，但尚无对应的 Python formal 结果。因此本章不为这些方法给出新计算曲线。

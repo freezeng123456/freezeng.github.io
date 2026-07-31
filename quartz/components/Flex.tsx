@@ -1,6 +1,7 @@
 import { concatenateResources } from "../util/resources"
 import { classNames } from "../util/lang"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
+import LanguageSwitcher from "./LanguageSwitcher"
 
 type FlexConfig = {
   components: {
@@ -18,6 +19,13 @@ type FlexConfig = {
 }
 
 export default ((config: FlexConfig) => {
+  const isToolbar =
+    config.components.some((c) => String(c.Component.css).includes(".search")) &&
+    config.components.some((c) => String(c.Component.css).includes(".darkmode"))
+  const components = isToolbar
+    ? [...config.components, { Component: LanguageSwitcher() }]
+    : config.components
+
   const Flex: QuartzComponent = (props: QuartzComponentProps) => {
     const direction = config.direction ?? "row"
     const wrap = config.wrap ?? "nowrap"
@@ -28,7 +36,7 @@ export default ((config: FlexConfig) => {
         class={classNames(props.displayClass, "flex-component")}
         style={`flex-direction: ${direction}; flex-wrap: ${wrap}; gap: ${gap};`}
       >
-        {config.components.map((c) => {
+        {components.map((c) => {
           const grow = c.grow ? 1 : 0
           const shrink = (c.shrink ?? true) ? 1 : 0
           const basis = c.basis ?? "auto"
@@ -48,12 +56,8 @@ export default ((config: FlexConfig) => {
     )
   }
 
-  Flex.afterDOMLoaded = concatenateResources(
-    ...config.components.map((c) => c.Component.afterDOMLoaded),
-  )
-  Flex.beforeDOMLoaded = concatenateResources(
-    ...config.components.map((c) => c.Component.beforeDOMLoaded),
-  )
-  Flex.css = concatenateResources(...config.components.map((c) => c.Component.css))
+  Flex.afterDOMLoaded = concatenateResources(...components.map((c) => c.Component.afterDOMLoaded))
+  Flex.beforeDOMLoaded = concatenateResources(...components.map((c) => c.Component.beforeDOMLoaded))
+  Flex.css = concatenateResources(...components.map((c) => c.Component.css))
   return Flex
 }) satisfies QuartzComponentConstructor<FlexConfig>
