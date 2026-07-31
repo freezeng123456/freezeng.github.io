@@ -14,20 +14,26 @@
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
       <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
     </filter>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b8c4d2"/>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowRose" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc4c64"/>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
   </defs>
   <rect x="8" y="8" width="1184" height="614" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
@@ -77,20 +83,38 @@
     <text x="605" y="473" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="605" dy="0">KV Block Manager</tspan></text>
     <text x="605" y="505" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="605" dy="0">分配 · 映射 · 回收</tspan></text>
   </g>
-    <path d="M 340 307 L 455 277" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
-    <path d="M 745 277 L 850 307" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/>
-    <path d="M 995 380 L 995 458" fill="none" stroke="#16865b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)"  opacity="1"/>
+    <g class="flow-connector" opacity="1">
+    <path d="M 340 307 L 455 277" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 340 307 L 455 277" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)" />
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 745 277 L 850 307" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 745 277 L 850 307" fill="none" stroke="#4f46e5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 995 380 L 995 458" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 995 380 L 995 458" fill="none" stroke="#16865b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowGreen)" />
+  </g>
     <g>
     <rect x="1012" y="403" width="84" height="28" rx="14" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28"/>
     <text x="1054" y="421.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#16865b" opacity="1"><tspan x="1054" dy="0">完成</tspan></text>
   </g>
-    <path d="M 885 258 C 770 120, 300 120, 205 225" fill="none" stroke="#dc4c64" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)"  opacity="1"/>
+    <g class="flow-connector" opacity="1">
+    <path d="M 885 258 C 770 120, 300 120, 205 225" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 885 258 C 770 120, 300 120, 205 225" fill="none" stroke="#dc4c64" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)" />
+  </g>
     <g>
     <rect x="470" y="158" width="210" height="30" rx="15" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28"/>
     <text x="575" y="177.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="575" dy="0">未完成：进入下一 step</tspan></text>
   </g>
-    <path d="M 530 430 C 460 405, 390 365, 335 345" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" stroke-dasharray="8 8" opacity="1"/>
-    <path d="M 680 430 C 745 395, 785 335, 855 320" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" stroke-dasharray="8 8" opacity="1"/>
+    <g class="flow-connector" opacity="1">
+    <path d="M 530 430 C 460 405, 390 365, 335 345" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 9"/>
+    <path d="M 530 430 C 460 405, 390 365, 335 345" fill="none" stroke="#d97706" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" stroke-dasharray="6 9"/>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 680 430 C 745 395, 785 335, 855 320" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 9"/>
+    <path d="M 680 430 C 745 395, 785 335, 855 320" fill="none" stroke="#d97706" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" stroke-dasharray="6 9"/>
+  </g>
     <g>
     <rect x="523" y="568" width="164" height="30" rx="15" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28"/>
     <text x="605" y="587.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#d97706" opacity="1"><tspan x="605" dy="0">request state + KV</tspan></text>

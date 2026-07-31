@@ -90,9 +90,29 @@ function card(x, y, w, h, options = {}) {
   </g>`
 }
 
+function arrowMarker(color, fallback = "arrow") {
+  return (
+    new Map([
+      [C.teal, "arrowTeal"],
+      [C.blue, "arrowBlue"],
+      [C.indigo, "arrowIndigo"],
+      [C.amber, "arrowAmber"],
+      [C.rose, "arrowRose"],
+      [C.green, "arrowGreen"],
+      [C.line, "arrow"],
+    ]).get(color) ?? fallback
+  )
+}
+
 function pathArrow(d, options = {}) {
-  const { color = C.line, width = 3, marker = "arrow", dashed = false, opacity = 1 } = options
-  return `<path d="${d}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#${marker})" ${dashed ? 'stroke-dasharray="8 8"' : ""} opacity="${opacity}"/>`
+  const { color = C.line, width = 2.6, marker = "arrow", dashed = false, opacity = 1 } = options
+  const lineWidth = Math.min(width, 3.2)
+  const dash = dashed ? 'stroke-dasharray="6 9"' : ""
+  const resolvedMarker = arrowMarker(color, marker)
+  return `<g class="flow-connector" opacity="${opacity}">
+    <path d="${d}" fill="none" stroke="${C.white}" stroke-opacity=".88" stroke-width="${lineWidth + 4.8}" stroke-linecap="round" stroke-linejoin="round" ${dash}/>
+    <path d="${d}" fill="none" stroke="${color}" stroke-width="${lineWidth}" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#${resolvedMarker})" ${dash}/>
+  </g>`
 }
 
 function lineArrow(x1, y1, x2, y2, options = {}) {
@@ -127,20 +147,26 @@ function frame({ width, height, kicker, title, subtitle, body }) {
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
       <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
     </filter>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="${C.line}"/>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="${C.line}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="${C.teal}"/>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="${C.teal}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="${C.blue}"/>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="${C.blue}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="${C.amber}"/>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="${C.indigo}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowRose" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="${C.rose}"/>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="${C.amber}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="${C.rose}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="${C.green}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
   </defs>
   <rect x="8" y="8" width="${width - 16}" height="${height - 16}" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>

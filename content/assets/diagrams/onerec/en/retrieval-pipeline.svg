@@ -14,20 +14,26 @@
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
       <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
     </filter>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b8c4d2"/>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0f766e"/>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <marker id="arrowRose" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc4c64"/>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
   </defs>
   <rect x="8" y="8" width="1384" height="644" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
@@ -51,14 +57,20 @@
            <text x="223" y="303" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="223" dy="0">1</tspan></text>
     <text x="87" y="307.1" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="750" fill="#14213d" opacity="1"><tspan x="87" dy="0">Entry</tspan></text>
 
-  </g><path d="M 155 334 L 155 540" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/><g filter="url(#shadow)">
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 155 334 L 155 540" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 155 334 L 155 540" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)" />
+  </g><g filter="url(#shadow)">
     <rect x="59" y="552" width="192" height="64" rx="22" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
     <rect x="59" y="552" width="8" height="64" rx="4" fill="#2563eb"/>
     <circle cx="223" cy="580" r="17" fill="#2563eb"/>
            <text x="223" y="585" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="223" dy="0">2</tspan></text>
     <text x="87" y="589.1" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="750" fill="#14213d" opacity="1"><tspan x="87" dy="0">Datahub</tspan></text>
 
-  </g><path d="M 275 405 L 285 405" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/><g>
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 275 405 L 285 405" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 275 405 L 285 405" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)" />
+  </g><g>
     <rect x="295" y="195" width="240" height="420" rx="26" fill="#f9f8ff" stroke="#4f46e5" stroke-opacity=".22" stroke-width="1.5"/>
     <rect x="295" y="195" width="240" height="52" rx="26" fill="#4f46e5" fill-opacity=".1"/>
     <rect x="295" y="221" width="240" height="26" fill="#4f46e5" fill-opacity=".1"/>
@@ -71,14 +83,20 @@
            <text x="483" y="303" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="483" dy="0">3</tspan></text>
     <text x="347" y="307.1" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="750" fill="#14213d" opacity="1"><tspan x="347" dy="0">Encoder</tspan></text>
 
-  </g><path d="M 415 334 L 415 540" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/><g filter="url(#shadow)">
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 415 334 L 415 540" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 415 334 L 415 540" fill="none" stroke="#4f46e5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g><g filter="url(#shadow)">
     <rect x="319" y="552" width="192" height="64" rx="22" fill="#ffffff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
     <rect x="319" y="552" width="8" height="64" rx="4" fill="#4f46e5"/>
     <circle cx="483" cy="580" r="17" fill="#4f46e5"/>
            <text x="483" y="585" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="483" dy="0">4</tspan></text>
     <text x="347" y="589.1" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="750" fill="#14213d" opacity="1"><tspan x="347" dy="0">Decoder</tspan></text>
 
-  </g><path d="M 535 405 L 545 405" fill="none" stroke="#4f46e5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/><g>
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 535 405 L 545 405" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 535 405 L 545 405" fill="none" stroke="#4f46e5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g><g>
     <rect x="555" y="195" width="330" height="420" rx="26" fill="#fffaf0" stroke="#d97706" stroke-opacity=".22" stroke-width="1.5"/>
     <rect x="555" y="195" width="330" height="52" rx="26" fill="#d97706" fill-opacity=".1"/>
     <rect x="555" y="221" width="330" height="26" fill="#d97706" fill-opacity=".1"/>
@@ -91,21 +109,30 @@
            <text x="833" y="303" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="833" dy="0">5</tspan></text>
     <text x="607" y="307.1" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="750" fill="#14213d" opacity="1"><tspan x="607" dy="0">Creative KV</tspan></text>
 
-  </g><path d="M 720 334 L 720 399" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/><g filter="url(#shadow)">
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 720 334 L 720 399" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 720 334 L 720 399" fill="none" stroke="#d97706" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" />
+  </g><g filter="url(#shadow)">
     <rect x="579" y="411" width="282" height="64" rx="22" fill="#ffffff" stroke="#d97706" stroke-opacity=".28" stroke-width="1.5" />
     <rect x="579" y="411" width="8" height="64" rx="4" fill="#d97706"/>
     <circle cx="833" cy="439" r="17" fill="#d97706"/>
            <text x="833" y="444" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="833" dy="0">6</tspan></text>
     <text x="607" y="448.1" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="750" fill="#14213d" opacity="1"><tspan x="607" dy="0">Creative list build</tspan></text>
 
-  </g><path d="M 720 475 L 720 540" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/><g filter="url(#shadow)">
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 720 475 L 720 540" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 720 475 L 720 540" fill="none" stroke="#d97706" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" />
+  </g><g filter="url(#shadow)">
     <rect x="579" y="552" width="282" height="64" rx="22" fill="#ffffff" stroke="#d97706" stroke-opacity=".28" stroke-width="1.5" />
     <rect x="579" y="552" width="8" height="64" rx="4" fill="#d97706"/>
     <circle cx="833" cy="580" r="17" fill="#d97706"/>
            <text x="833" y="585" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="833" dy="0">7</tspan></text>
     <text x="607" y="589.1" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="750" fill="#14213d" opacity="1"><tspan x="607" dy="0">Ad list merge</tspan></text>
 
-  </g><path d="M 885 405 L 895 405" fill="none" stroke="#d97706" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)"  opacity="1"/><g>
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 885 405 L 895 405" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 885 405 L 895 405" fill="none" stroke="#d97706" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" />
+  </g><g>
     <rect x="905" y="195" width="460" height="420" rx="26" fill="#f6fcfa" stroke="#0f766e" stroke-opacity=".22" stroke-width="1.5"/>
     <rect x="905" y="195" width="460" height="52" rx="26" fill="#0f766e" fill-opacity=".1"/>
     <rect x="905" y="221" width="460" height="26" fill="#0f766e" fill-opacity=".1"/>
@@ -118,21 +145,30 @@
            <text x="1313" y="303" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="1313" dy="0">8</tspan></text>
     <text x="957" y="306.76" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="750" fill="#14213d" opacity="1"><tspan x="957" dy="0">Quota / property filter</tspan></text>
 
-  </g><path d="M 1135 334 L 1135 352" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)"  opacity="1"/><g filter="url(#shadow)">
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 1135 334 L 1135 352" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 1135 334 L 1135 352" fill="none" stroke="#0f766e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)" />
+  </g><g filter="url(#shadow)">
     <rect x="929" y="364" width="412" height="64" rx="22" fill="#ffffff" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
     <rect x="929" y="364" width="8" height="64" rx="4" fill="#0f766e"/>
     <circle cx="1313" cy="392" r="17" fill="#0f766e"/>
            <text x="1313" y="397" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="1313" dy="0">9</tspan></text>
     <text x="957" y="400.76" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="750" fill="#14213d" opacity="1"><tspan x="957" dy="0">Creative server</tspan></text>
 
-  </g><path d="M 1135 428 L 1135 446" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)"  opacity="1"/><g filter="url(#shadow)">
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 1135 428 L 1135 446" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 1135 428 L 1135 446" fill="none" stroke="#0f766e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)" />
+  </g><g filter="url(#shadow)">
     <rect x="929" y="458" width="412" height="64" rx="22" fill="#ffffff" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
     <rect x="929" y="458" width="8" height="64" rx="4" fill="#0f766e"/>
     <circle cx="1313" cy="486" r="17" fill="#0f766e"/>
            <text x="1313" y="491" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="1313" dy="0">10</tspan></text>
     <text x="957" y="494.76" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="750" fill="#14213d" opacity="1"><tspan x="957" dy="0">Sharding + coarse score</tspan></text>
 
-  </g><path d="M 1135 522 L 1135 540" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)"  opacity="1"/><g filter="url(#shadow)">
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 1135 522 L 1135 540" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 1135 522 L 1135 540" fill="none" stroke="#0f766e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)" />
+  </g><g filter="url(#shadow)">
     <rect x="929" y="552" width="412" height="64" rx="22" fill="#ffffff" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
     <rect x="929" y="552" width="8" height="64" rx="4" fill="#0f766e"/>
     <circle cx="1313" cy="580" r="17" fill="#0f766e"/>

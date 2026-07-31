@@ -26,6 +26,7 @@ These rules apply to all content and visual work in this repository.
    - use `role="img"` with the appropriate accessible references;
    - avoid embedded scripts, remote resources, and external font dependencies;
    - remain readable at the article content width without horizontal overflow.
+9. Use a lightweight connector system: open chevron arrowheads, rounded caps and joins, restrained line weights, and arrow colors that match their paths. Avoid oversized filled-triangle arrowheads and visually heavy connectors.
 
 ## Adapting KM Articles and Figures
 
