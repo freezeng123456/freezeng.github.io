@@ -11,4 +11,6 @@ tags:
 
 ## 知识整理
 
-[[计算机科学/知识整理/index\|知识整理]]暂留空。后续可以按“基础理论—系统实现—实验方法”三个层次扩展，而不是简单收集课程笔记。
+[[计算机科学/知识整理/index\|Knowledge Notes]]从 AI Systems 开始，首篇
+[[计算机科学/知识整理/efficient-llm-inference\|Efficient LLM Inference]]
+以 vLLM 为主线，可视化 continuous batching、PagedAttention、Transformer 张量流、采样与抢占。

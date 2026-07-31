@@ -14,7 +14,7 @@ tags:
 | 领域                                                           | 研究内容                                                                                                                                                               | 知识整理                                                                                                                                                             |
 | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [[computational-mathematics/index\|Computational Mathematics]] | [[computational-mathematics/research/index\|Research]]: [[computational-mathematics/research/rsse\|RSSE]]、[[computational-mathematics/research/apolarity\|Apolarity]] | [[computational-mathematics/knowledge-notes/index\|Knowledge Notes]]: [[computational-mathematics/knowledge-notes/time-parallelization/index\|Time Parallelization]] |
-| [[计算机科学/index\|计算机科学]]                               | [[计算机科学/个人科研/MCoTTA\|MCoTTA]]                                                                                                                                 | 暂留空，后续扩展                                                                                                                                                     |
+| [[计算机科学/index\|计算机科学]]                               | [[计算机科学/个人科研/MCoTTA\|MCoTTA]]                                                                                                                                 | [[计算机科学/知识整理/index\|Knowledge Notes]]: [[计算机科学/知识整理/efficient-llm-inference\|Efficient LLM Inference]]                                             |
 | [[推荐系统理论/index\|推荐系统理论]]                           | —                                                                                                                                                                      | [[推荐系统理论/OneRec/index\|OneRec 工业实现链路]]                                                                                                                   |
 
 ## 阅读约定
@@ -30,5 +30,5 @@ tags:
 
 - Computational Mathematics: research and knowledge notes now use separate directories; the time-parallelization notes and their numerical evidence are written in academic English.
 - Time parallelization: all formal Python result artifacts are assigned to the corresponding Acta Numerica chapter.
-- 计算机科学科研：已整理 MCoTTA 的最小算法改动与实验边界。
+- 计算机科学：已整理 MCoTTA 的最小算法改动与实验边界，并新增高效 LLM 推理的可视化知识笔记。
 - OneRec：已形成数据、训练、语义 ID、在线召回、参数与稳定性闭环，等待内部评审后迁移或关闭。
