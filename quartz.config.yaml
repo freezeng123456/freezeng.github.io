@@ -6,7 +6,7 @@ configuration:
   enablePopovers: true
   analytics: null
   locale: zh-CN
-  baseUrl: freezeng123456.github.io/freezeng.github.io
+  baseUrl: freezeng123456.github.io
   ignorePatterns:
     - private
     - templates
