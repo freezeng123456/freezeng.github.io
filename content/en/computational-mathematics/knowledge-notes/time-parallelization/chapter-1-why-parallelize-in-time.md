@@ -50,7 +50,9 @@ $$
 
 The recurrence exposes the data dependency directly. The value $u_n$ must be available before $u_{n+1}$ can be computed. If $u_9$ is still unknown, an idle processor cannot use the same forward Euler recurrence to compute accurate values of $u_{10}$, $u_{11}$, and $u_{12}$. This is the sequential structure illustrated by Figure 1.1 of the paper.
 
-![The one-way causal chain in forward Euler time integration](assets/diagrams/pint/en/sequential-time-stepping.svg)
+![Original Figure 1.1: sequential dependence in forward Euler time integration](assets/papers/time-parallelization/source-figures/figure-1-1.svg)
+
+**Reading Figure 1.1.** The horizontal axis lists $t_0$ through $t_{12}$, and every point on the polyline represents the numerical solution at the corresponding discrete time. The connected points turn the recurrence into one continuous dependency path: computation advances through $u_0,u_1,\ldots,u_{12}$ in order. The shape of the plotted curve is schematic rather than the solution of a particular equation; its purpose is to expose the ordering constraint.
 
 PinT algorithms preserve the causal constraint of the original problem while changing how that constraint is enforced computationally. They may assign provisional interface values and correct them globally, exchange complete interface waveforms, introduce a hierarchy of temporal grids, or transform the coupled time problem into concurrent subproblems. Redundant work, iteration, and communication are the costs paid for this additional concurrency.
 
@@ -184,7 +186,7 @@ The quick configuration uses smaller grids to test code paths and data interface
 | ----------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Abstract, pp. 385-386                     | 1.1 and 1.6            | Definition of PinT, the 1964/2004 timeline, four conventional classes, the hyperbolic difficulty, the two-way reclassification, and four model PDEs |
 | Introduction, paragraphs 1-2, pp. 386-387 | 1.2                    | Multicore hardware, Nievergelt's redundancy principle, the post-Parareal expansion, and three complementary surveys                                 |
-| Causality paragraph, p. 387               | 1.3                    | Forward Euler equation (1.1), the dependency from $u_9$ to $u_{10}$, and the meaning of Figure 1.1                                                  |
+| Causality paragraph, p. 387               | 1.3                    | Forward Euler equation (1.1), the dependency from $u_9$ to $u_{10}$, the original Figure 1.1, and a figure-level reading                            |
 | Four method families, pp. 387-388         | 1.4                    | Historical origins and coupling mechanisms of multiple shooting, SWR, STMG, RIDC, ParaExp, and ParaDiag                                             |
 | Overlapping classifications, p. 388       | 1.5                    | Direct and iterative ParaDiag, all-at-once preconditioning, Parareal as multigrid, and the MGRiT-Parareal connection                                |
 | Organization of the paper, p. 388         | 1.6                    | Hyperbolic-effective methods, parabolic-designed methods, the section plan, and the original code repository                                        |

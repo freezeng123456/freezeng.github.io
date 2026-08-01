@@ -10,6 +10,9 @@ tags:
 
 These notes follow M. J. Gander, S.-L. Wu, and T. Zhou, _Time Parallelization for Hyperbolic and Parabolic Problems_, Acta Numerica 34 (2025), pp. 385-489. The survey distinguishes methods that remain effective for propagative problems from methods designed primarily for dissipative problems.
 
+> [!info] Source graphics and license
+> The close-reading pages include every original Figure 1.1–4.22 and Tables 3.1, 3.2, and 4.1: 48 graphical and tabular assets extracted from the paper PDF as scalable SVGs. Adjacent explanations are newly written. The paper is distributed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); authors, title, and DOI appear under “Primary sources.” Redrawn diagrams and Python reproductions are labeled separately from source graphics.
+
 ## Reading sequence
 
 1. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|Chapter 1: Why Parallelize in Time?]] follows the abstract and introduction paragraph by paragraph, covering the hardware context, the causal chain, four historical lineages, the two-way classification, and the all-at-once system.
@@ -24,10 +27,10 @@ These notes follow M. J. Gander, S.-L. Wu, and T. Zhou, _Time Parallelization fo
 
 | Source range           | Website chapter | Current status                                                                                                                                               |
 | ---------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Abstract and Section 1 | Chapter 1       | **Paragraph-level complete**: every argument on pp. 385–388 is covered, and Figure 1.1 has been redrawn                                                      |
-| Sections 2.1–2.4       | Chapter 2       | **Paragraph-level complete**: four models, every boundary setting, all Figure 2.1–2.4 observation groups, and three supplemental experiments                 |
-| Sections 3.1–3.5.2     | Chapter 3       | **Paragraph-level complete**: history, SWR, PIDC/RIDC, ParaExp, ParaDiag-I/II derivations, theorems, and all numerical discussions                           |
-| Sections 4.1–4.6       | Chapter 4       | **Paragraph-level complete**: Parareal, PFASST, MGRiT, diagonalized variants, STMG, Theorems 4.1–4.9, and Figures 4.1–4.22                                   |
+| Abstract and Section 1 | Chapter 1       | **Paragraph-level complete**: every argument on pp. 385–388, equation (1.1), and the original Figure 1.1 are covered                                         |
+| Sections 2.1–2.4       | Chapter 2       | **Paragraph-level complete**: (2.1)–(2.7), four models, every boundary setting, original Figures 2.1–2.4, and three supplemental experiments                 |
+| Sections 3.1–3.5.2     | Chapter 3       | **Paragraph-level complete**: five close-reading pages cover (3.1)–(3.68), Theorems 3.1–3.9, Figures 3.1–3.18, and both tables                               |
+| Sections 4.1–4.6       | Chapter 4       | **Paragraph-level complete**: four close-reading pages cover (4.1)–(4.44), Theorems 4.1–4.9, Figures 4.1–4.22, and Table 4.1                                 |
 | Section 5              | Chapter 5       | **Paragraph-level complete**: paper conclusions are covered; unified analysis, GPU work, and the experiment ledger are explicitly marked as site supplements |
 
 ## Method map
@@ -65,7 +68,7 @@ $$
 where $K$ is the iteration count, $C_G$ and $C_F$ are the coarse and fine propagation costs, and $P$ is the temporal concurrency. The numerical experiments in these notes measure convergence, not end-to-end parallel speedup.
 
 > [!note] Numerical provenance
-> All displayed experiment figures were regenerated on 31 July 2026 from the Python reproduction project on the new experiment server. The initial formal results used the SciPy CPU path. A subsequent CuPy/T4 hybrid backend batches the independent Burgers fine propagators on the GPU, preserves the Figure 4.5 stopping iterations, and reduces the complete paper suite from 263.57 to 67.92 seconds.
+> Original paper figures on these pages are extracted from the source PDF with their coordinates and panels intact. Experiments labeled “site reproduction” were regenerated on 31 July 2026 from the Python project on the new experiment server. The initial formal results used the SciPy CPU path. A subsequent CuPy/T4 hybrid backend batches the independent Burgers fine propagators on the GPU, preserves the Figure 4.5 stopping iterations, and reduces the complete paper suite from 263.57 to 67.92 seconds.
 
 ## Primary sources
 

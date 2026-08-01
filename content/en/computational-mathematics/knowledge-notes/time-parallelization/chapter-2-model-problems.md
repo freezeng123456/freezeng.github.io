@@ -11,6 +11,9 @@ tags:
 > [!note] Reading scope
 > This chapter follows Section 2 of the paper (pp. 388–396). Sections 2.1–2.5 explain the models, parameters, boundary conditions, and Figures 2.1–2.4 in source order. Section 2.6 presents three recomputed experiments from this site. Claims from the paper and results produced by our Python project are identified separately.
 
+> [!info] Source figures
+> Figures 2.1–2.4 below are extracted directly from the paper for close reading. The graphics, coordinates, and panel order are unchanged; the accompanying explanations are newly written. The paper is distributed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); full attribution appears at the end of this page.
+
 ## 2.1 Why begin with four model problems?
 
 After spatial discretization, the paper writes a linear PDE as
@@ -41,14 +44,14 @@ The four equations form a controlled dynamical spectrum. The heat equation is st
 The first problem is
 
 $$
-u_t-\nu u_{xx}=f(x,t),
-\qquad (x,t)\in\Omega\times(0,T), \tag{2.3}
+u_t=u_{xx}+g(x,t),
+\qquad (x,t)\in\Omega\times(0,T], \tag{2.3}
 $$
 
-with $\nu>0$. Figure 2.1 uses $\nu=0.1$ and the localized source
+where the diffusion coefficient is normalized to one. Figure 2.1 uses zero initial data and the localized source
 
 $$
-f(x,t)=e^{-\sigma(x-\frac12)^2}
+g(x,t)=10e^{-\sigma(x-\frac12)^2}
 \Bigl(
 e^{-\sigma(t-0.1)^2}+e^{-\sigma(t-0.6)^2}
 +e^{-\sigma(t-1.35)^2}+e^{-\sigma(t-1.85)^2}
@@ -56,7 +59,11 @@ e^{-\sigma(t-0.1)^2}+e^{-\sigma(t-0.6)^2}
 \qquad \sigma=200. \tag{2.4}
 $$
 
-The source is concentrated around $x=1/2$ and fires near four distinct times. These well-separated space–time events make the fading memory of the solution easy to observe.
+The source is concentrated around $x=1/2$ and fires near $t=0.1,0.6,1.35,1.85$. These well-separated space–time events make the fading memory of the solution easy to observe.
+
+![Source Figure 2.1: heat-equation solutions for three boundary conditions and oscillatory initial data](assets/papers/time-parallelization/source-figures/figure-2-1.svg)
+
+**Panel-by-panel reading of Figure 2.1.** Panels (a)–(c) all use (2.4) and zero initial data, with homogeneous Dirichlet, homogeneous Neumann, and periodic boundaries, respectively. Panel (d) uses periodic boundaries, a zero source, and $u_0(x)=\sin^2(8\pi(1-x)^2)$. The four panels separate the ability of information to leave the domain from the ability of diffusion to erase fine scales.
 
 ### Homogeneous Dirichlet boundaries
 
@@ -66,13 +73,13 @@ This behavior is the temporal locality emphasized in the paper. After a long hor
 
 ### Homogeneous Neumann boundaries
 
-With $u_x(0,t)=u_x(1,t)=0$, no heat crosses the boundary. The local structure in Figure 2.1(b) is still smoothed, while the spatial mean remains. When the source is removed and the initial condition is oscillatory, Figure 2.1(c) shows the oscillations decaying toward a spatial constant.
+With $u_x(0,t)=u_x(1,t)=0$, no heat crosses the boundary. The local structure in Figure 2.1(b) is still smoothed, while the spatial means contributed by all four heating events accumulate and remain. The solution on $t\in(1.7,2.2)$ therefore still depends on the first three source pulses.
 
 The Neumann problem therefore contains two temporal scales. High frequencies are easy to eliminate locally; the constant mode must be communicated accurately across the complete horizon. A PinT method may handle the first component rapidly while still being limited by the second.
 
 ### Periodic boundaries
 
-Periodic boundaries also retain the constant spatial mode. Figure 2.1(d) resembles the Neumann case: oscillatory details disappear quickly, but the mean persists. The PDE class supplies only the first prediction of PinT behavior. Boundary conditions determine which low-frequency information can escape.
+Periodic boundaries also retain the constant spatial mode. Figure 2.1(c) has the same cumulative behavior as the Neumann case under repeated heating. Figure 2.1(d) removes the source and starts from oscillatory data; high-frequency detail vanishes rapidly, leaving almost only the spatial mean. The PDE class supplies only the first prediction of PinT behavior. Boundary conditions determine which low-frequency information can escape.
 
 ### PinT implication
 
@@ -88,6 +95,10 @@ u_t+u_x-\nu u_{xx}=f(x,t),
 $$
 
 The advection speed is one. Figure 2.2 compares $\nu=1$, $10^{-2}$, and $5\times10^{-4}$. The same signal spreads rapidly in the diffusion-dominated regime and follows a distinct characteristic path when diffusion is small.
+
+![Source Figure 2.2: eight advection–diffusion solutions with Dirichlet and periodic boundaries](assets/papers/time-parallelization/source-figures/figure-2-2.svg)
+
+**Panel-by-panel reading of Figure 2.2.** Panels (a)–(d) use zero Dirichlet boundaries, while (e)–(h) use periodic boundaries. Panels (a)–(c) and (e)–(g) use zero initial data, source (2.4), and viscosities $1,10^{-2},5\times10^{-4}$. Panels (d) and (h) use a zero source, oscillatory initial data, and $\nu=5\times10^{-4}$. Pairing the two rows isolates the effect of the boundary condition.
 
 ### Information exits under Dirichlet boundaries
 
@@ -121,6 +132,10 @@ $$
 
 The transport velocity is now the solution itself. High-amplitude regions move faster, causing different parts of the profile to catch up and form steep fronts. The paper retains the viscosity values and boundary settings used for advection–diffusion so that the linear and nonlinear results can be compared directly.
 
+![Source Figure 2.3: eight viscous Burgers solutions with Dirichlet and periodic boundaries](assets/papers/time-parallelization/source-figures/figure-2-3.svg)
+
+**Panel-by-panel reading of Figure 2.3.** Its layout and parameters match Figure 2.2. Panels (a)–(c) and (e)–(g) are driven by the same smooth source, while (d) and (h) start from the same oscillatory profile. The differences between the two figures can therefore be attributed to the state-dependent transport and shock formation introduced by $\frac12\partial_x(u^2)$.
+
 ### Deformation, diffusion, and outflow with Dirichlet boundaries
 
 Figures 2.3(a–d) show strong diffusion at large $\nu$. As viscosity decreases, source pulses deform during transport and develop sharper gradients. Homogeneous Dirichlet boundaries still allow these structures to leave, so very late intervals may gradually lose detailed dependence on the initial events.
@@ -141,6 +156,10 @@ u_{tt}-c^2u_{xx}=f(x,t),
 $$
 
 with $c^2=0.2$. The paper uses both the localized source (2.4) and an oscillatory initial displacement, always with zero initial velocity. Figure 2.4 compares Dirichlet, Neumann, and periodic boundaries.
+
+![Source Figure 2.4: wave-equation solutions for three boundary conditions and oscillatory initial data](assets/papers/time-parallelization/source-figures/figure-2-4.svg)
+
+**Panel-by-panel reading of Figure 2.4.** Panels (a)–(c) use zero displacement, zero initial velocity, and source (2.4), together with Dirichlet, Neumann, and periodic boundaries. Panel (d) uses a zero source, periodic boundaries, oscillatory initial displacement, and zero initial velocity. All four cases retain detailed propagation paths across the complete time interval.
 
 ### All three boundary conditions preserve long-range influence
 

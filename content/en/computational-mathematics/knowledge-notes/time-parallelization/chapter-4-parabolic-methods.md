@@ -11,6 +11,17 @@ tags:
 > [!note] Reading scope
 > This chapter covers Section 4 of the paper (pp. 443–481). Sections 4.1–4.6 follow the source history, algorithms, theorems, and Figures 4.1–4.22. Section 4.7 collects the Python results produced for this site. Theoretical contraction factors, measured iteration curves, and wall-clock performance carry distinct labels.
 
+## Close-reading guide
+
+This page retains the chapter-level synthesis and site reproductions. The equation-by-equation, theorem-by-theorem, and figure-by-figure arguments are split into the following pages:
+
+| Paper section | Close-reading page                                                    | Coverage                                                 |
+| ------------- | --------------------------------------------------------------------- | -------------------------------------------------------- |
+| 4, 4.1–4.2    | [[chapter-4-1-parareal\|Historical context and Parareal]]             | (4.1)–(4.9), Theorems 4.1–4.4, Figures 4.1–4.5           |
+| 4.3–4.4       | [[chapter-4-2-pfasst-mgrit\|PFASST and MGRIT]]                        | (4.10)–(4.13), Theorems 4.5–4.6, Figures 4.6–4.11        |
+| 4.5           | [[chapter-4-3-diagonalized-parareal\|Diagonalization-based Parareal]] | (4.14)–(4.29), Theorems 4.7–4.8, Figures 4.12–4.17       |
+| 4.6           | [[chapter-4-4-stmg\|Space–time multigrid]]                            | (4.30)–(4.44), Theorem 4.9, Figures 4.18–4.22, Table 4.1 |
+
 ## 4.1 What parabolic methods exploit
 
 The methods in Chapter 3 can address long-range propagation directly, but each has a constraint: SWR needs transmission operators, ParaExp is principally linear, and nonlinear ParaDiag solves Newton systems over long windows. Parabolic equations offer another route. Diffusion rapidly suppresses high-frequency error, so a late state becomes weakly dependent on fine details from the distant past. A coarse temporal model may still retain the dynamically important slow modes.

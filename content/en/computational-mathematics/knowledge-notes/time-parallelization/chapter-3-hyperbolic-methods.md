@@ -11,6 +11,18 @@ tags:
 > [!note] Reading scope
 > This chapter covers Section 3 of the paper (pp. 396–443): historical context, SWR, IDC/PIDC/RIDC, ParaExp, ParaDiag-I, and ParaDiag-II. Equations, theorems, and paper experiments follow the source argument. Python results produced for this site are identified separately near the end.
 
+## Close-reading guide
+
+This page retains the chapter-level synthesis and the site's reproduction. The complete equation-by-equation, theorem-by-theorem, and figure-by-figure reading is split into the following pages:
+
+| Paper section | Close-reading page                                                       | Coverage                                                          |
+| ------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| 3.1–3.2       | [[chapter-3-1-history-and-swr\|History and Schwarz waveform relaxation]] | (3.1)–(3.4), Theorems 3.1–3.2, Figures 3.1–3.3                    |
+| 3.3           | [[chapter-3-2-idc\|Parallel integral deferred correction]]               | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
+| 3.4           | [[chapter-3-3-paraexp\|ParaExp]]                                         | (3.13)–(3.21), Theorem 3.4, Figures 3.7–3.8                       |
+| 3.5.1         | [[chapter-3-4-paradiag-i\|Direct ParaDiag]]                              | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
+| 3.5.2         | [[chapter-3-5-paradiag-ii\|Iterative ParaDiag]]                          | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
+
 ## 3.1 Why these methods can handle long-range propagation
 
 Hyperbolic equations carry fine structures along characteristics over long distances in time. An effective PinT method must preserve path and phase information or solve the coupling across the full time domain directly. The paper places four families in this category: Schwarz waveform relaxation (SWR), parallel integral deferred correction (IDC), ParaExp, and ParaDiag.
@@ -57,7 +69,7 @@ $$
 
 The bound displays three trends. More overlap accelerates convergence. A longer time window increases the interface-coupling burden. Smaller $\nu$ makes directed transport carry data through the overlap faster, so SWR can improve for this particular model as diffusion decreases.
 
-Figure 3.2 uses $L=8.2$, $T=5$, $\Delta t=0.01$, $\Delta x=0.02$, $l=2\Delta x$, and a Gaussian initial condition. The curves confirm faster convergence at lower viscosity and a strong advantage for optimized Robin transmission. In the four-subdomain test at $\nu=0.1$, Dirichlet and optimized Robin transmission require approximately 92 and 28 iterations. The corresponding continuous two-subdomain predictions are about 32 and 4. Continuous versus discrete operators, two versus four subdomains, and the boundary configuration account for the difference; the theoretical estimate should not be treated as an exact iteration forecast for that discrete experiment.
+Figure 3.1 uses $L=8.2$, $T=5$, $\Delta t=0.01$, $\Delta x=0.02$, $l=2\Delta x$, and a Gaussian initial condition. The curves confirm faster convergence at lower viscosity and a strong advantage for optimized Robin transmission. In the four-subdomain test at $\nu=0.1$, Dirichlet and optimized Robin transmission require approximately 92 and 28 iterations. The corresponding continuous two-subdomain predictions are about 32 and 4. Continuous versus discrete operators, two versus four subdomains, and the boundary configuration account for the difference; the theoretical estimate should not be treated as an exact iteration forecast for that discrete experiment.
 
 Higher-order Ventcel conditions can improve asymptotic convergence further. A temporal convolution can approximate an exact transparent boundary and deliver a mesh-independent theoretical factor, at the cost of a more complicated and temporally nonlocal interface operator.
 
@@ -71,7 +83,7 @@ $$
 
 where $\beta-\alpha$ is the overlap width and $c$ is the wave speed. Finite propagation speed drives the result. A single iteration can expand the exact region only within characteristic cones; enough iterations make those cones cover the complete space–time domain.
 
-Figure 3.3 visualizes the cones. A portion of each subdomain solution already agrees with the exact solution, and the next interface exchange enlarges that portion. The same geometry motivates red–black SWR, in which colored space–time blocks are processed concurrently and some redundant work buys additional parallelism.
+Figure 3.2 visualizes the cones. A portion of each subdomain solution already agrees with the exact solution, and the next interface exchange enlarges that portion. The same geometry motivates red–black SWR, in which colored space–time blocks are processed concurrently and some redundant work buys additional parallelism.
 
 ### 3.2.4 Tent pitching, MTP, and UTP
 
