@@ -12,11 +12,23 @@ tags:
 
 ## 阅读顺序
 
-1. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|第一章：为什么要做时间并行？]]介绍因果性、全时间耦合形式与性能判断标准。
+1. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|第一章：为什么要做时间并行？]]逐段梳理论文摘要与引言，介绍硬件背景、因果链、四条方法谱系、双重分类和全时间系统。
 2. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|第二章：模型问题]]比较热方程、对流扩散方程、Burgers 方程和波动方程，并收录三个重新计算的解实验。
 3. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|第三章：适用于双曲问题的方法]]讨论 SWR、PIDC/RIDC、ParaExp 和 ParaDiag，并收录 Heat、ADE 与 Wave 三类 ParaDiag-II 实验。
 4. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|第四章：为抛物问题设计的方法]]介绍 Parareal、PFASST、MGRiT、基于对角化的 Parareal 和 STMG，并给出重新计算的收敛实验。
 5. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|第五章：统一视角与方法选择]]比较各类算法，记录完整实验清单和复现流程。
+
+## 论文内容覆盖进度
+
+“段落级完成”表示正文论点、公式、图示、历史线索、限定条件和章节关系都已与原文逐项核对。已有实验不会因此删除，它们会放在对应原文解释之后。
+
+| 原文范围          | 网页对应 | 当前状态                                                                                                |
+| ----------------- | -------- | ------------------------------------------------------------------------------------------------------- |
+| 摘要与 Section 1  | 第一章   | **段落级完成**：覆盖 pp. 385-388 的全部论点，并重绘 Figure 1.1                                          |
+| Section 2.1-2.4   | 第二章   | 已有四类模型的核心机制与三个复现实验；下一步逐段补全边界条件、各子图观察和抛物/双曲过渡                 |
+| Section 3.1-3.5.2 | 第三章   | 已有方法概要与 ParaDiag-II 实验；待补历史、SWR、PIDC/RIDC、ParaExp 与 ParaDiag 的完整推导和全部数值讨论 |
+| Section 4.1-4.6   | 第四章   | 已有主要算法和复现实验；待逐段补全历史、理论联系、参数条件与论文图表解释                                |
+| Section 5         | 第五章   | 已有统一视角、GPU 分析和实验清单；待与论文结论逐段对照                                                  |
 
 ## 方法图谱
 
@@ -33,9 +45,9 @@ tags:
 
 ## 三条组织原则
 
-### 因果性被重新表述，而不是被消除
+### 因果约束如何进入并行计算
 
-单步方法 $u_{n+1}=\Phi_{\Delta t}(u_n)$ 本质上是串行的。时间并行方法转而构造全时间耦合系统逆算子的并行近似，使并行工作发生在迭代、分解或变换内部。
+单步方法 $u_{n+1}=\Phi_{\Delta t}(u_n)$ 形成串行递推。时间并行方法把所有时间点的耦合显式写出，再构造其逆算子的并行近似。并发工作由此进入迭代、分解或变换过程。
 
 ### 耗散决定粗表示是否包含有效信息
 

@@ -1263,6 +1263,80 @@ function methodMap(lang) {
   })
 }
 
+function sequentialTimeStepping(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "ACTA NUMERICA · FIGURE 1.1",
+          title: "前向 Euler 的单向因果链",
+          subtitle: "时刻 tₙ₊₁ 的状态依赖 tₙ；图中以 u₉ 为当前已知状态",
+          equation: "uₙ₊₁ = uₙ + Δt f(uₙ)",
+          current: "当前已知：u₉",
+          pending: "尚待计算：u₁₀ 到 u₁₂",
+          dependency: "先获得 u₉，才能启动 u₁₀ 的更新",
+          implication: "并行方法需要重新组织跨时间段耦合，才能让多个时间区间同时工作",
+        }
+      : {
+          kicker: "ACTA NUMERICA · FIGURE 1.1",
+          title: "The One-Way Causal Chain of Forward Euler",
+          subtitle: "The state at tₙ₊₁ depends on tₙ; u₉ is the latest known state in this view",
+          equation: "uₙ₊₁ = uₙ + Δt f(uₙ)",
+          current: "known state: u₉",
+          pending: "pending: u₁₀ through u₁₂",
+          dependency: "The update for u₁₀ can start only after u₉ is available",
+          implication:
+            "Time parallelism needs a concurrent representation of the coupling across intervals",
+        }
+
+  const xs = Array.from({ length: 13 }, (_, index) => 105 + index * 99)
+  const connectors = xs
+    .slice(0, -1)
+    .map((x, index) => {
+      const color = index < 9 ? C.teal : index === 9 ? C.rose : C.line
+      return lineArrow(x + 24, 318, xs[index + 1] - 24, 318, {
+        color,
+        marker: color === C.teal ? "arrowTeal" : color === C.rose ? "arrowRose" : "arrow",
+        dashed: index > 9,
+        opacity: index > 9 ? 0.72 : 1,
+      })
+    })
+    .join("")
+  const nodes = xs
+    .map((x, index) => {
+      const known = index <= 9
+      const active = index === 9
+      const color = active ? C.rose : known ? C.teal : C.line
+      const fill = active ? C.roseSoft : known ? C.tealSoft : C.slateSoft
+      return `<g>
+        <circle cx="${x}" cy="318" r="23" fill="${fill}" stroke="${color}" stroke-width="${active ? 3 : 2}"/>
+        ${textBlock(x, 324, [`u${index}`], { size: 15, weight: 800, fill: active ? C.rose : C.ink })}
+        ${textBlock(x, 370, [`t${index}`], { size: 13, weight: 650, fill: C.muted })}
+      </g>`
+    })
+    .join("")
+
+  const body = `
+    ${card(455, 185, 490, 76, { title: t.equation, accent: C.indigo, fill: C.indigoSoft, align: "center", titleSize: 22 })}
+    <path d="M 82 391 L 1320 391" fill="none" stroke="${C.line}" stroke-width="1.8" stroke-linecap="round"/>
+    ${connectors}
+    ${nodes}
+    ${pill(780, 405, lang === "zh" ? 180 : 170, t.current, C.rose, C.roseSoft, { h: 31, size: 12 })}
+    ${pill(980, 405, lang === "zh" ? 245 : 220, t.pending, C.muted, C.slateSoft, { h: 31, size: 12 })}
+    ${card(85, 475, 550, 102, { title: t.dependency, accent: C.rose, fill: C.roseSoft, align: "center", titleSize: 17 })}
+    ${card(765, 475, 550, 102, { title: t.implication, accent: C.blue, fill: C.blueSoft, align: "center", titleSize: 16 })}
+    ${pathArrow("M 635 526 C 685 500, 715 500, 765 526", { color: C.blue, marker: "arrowBlue", width: 3 })}
+  `
+
+  return frame({
+    width: 1400,
+    height: 630,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
 const diagrams = [
   ["ml-inference", "serving-loop", servingLoop],
   ["ml-inference", "paged-kv-cache", pagedKv],
@@ -1278,6 +1352,7 @@ const diagrams = [
   ["onerec", "debugging-tree", debugTree],
   ["pint", "schwarz-waveform-relaxation", swr],
   ["pint", "method-selection", methodMap],
+  ["pint", "sequential-time-stepping", sequentialTimeStepping],
 ]
 
 let generated = 0

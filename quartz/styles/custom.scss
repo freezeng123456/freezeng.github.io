@@ -12,6 +12,13 @@ body {
   border-right: 1px solid var(--lightgray);
 }
 
+// Allow long equations, code blocks, and tables to scroll inside the article
+// without increasing the minimum width of the center grid track.
+.page > #quartz-body .center {
+  min-width: 0;
+  width: 100%;
+}
+
 .page article {
   line-height: 1.82;
 }
@@ -64,6 +71,18 @@ code {
 }
 
 @media (max-width: 800px) {
+  .page > #quartz-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .page > #quartz-body .sidebar.left {
+    flex-wrap: wrap;
+  }
+
+  .page > #quartz-body .sidebar.left > .flex-component {
+    max-width: 100%;
+  }
+
   .page article {
     line-height: 1.72;
   }
