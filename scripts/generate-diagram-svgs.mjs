@@ -1337,6 +1337,350 @@ function sequentialTimeStepping(lang) {
   })
 }
 
+function modelMemorySpectrum(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "MODEL PROBLEMS",
+          title: "从时间局部性到长程记忆",
+          subtitle: "扩散、边界与非线性共同决定旧信息在未来保留多久",
+          left: "快速遗忘",
+          right: "长期保留",
+          models: [
+            ["热方程", "高频先衰减", "低频与平均值"],
+            ["对流扩散", "相位 + 衰减", "小黏性保留轨迹"],
+            ["Burgers", "状态相关速度", "激波生成新高频"],
+            ["波动方程", "双向传播与反射", "振幅和相位长存"],
+          ],
+          boundary: "边界会移动实际位置",
+          chips: ["Dirichlet：允许出流", "Neumann：保留平均值", "周期：信号持续回返"],
+        }
+      : {
+          kicker: "MODEL PROBLEMS",
+          title: "From Temporal Locality to Long-Range Memory",
+          subtitle:
+            "Diffusion, boundaries, and nonlinearity determine how long past information survives",
+          left: "rapid forgetting",
+          right: "persistent memory",
+          models: [
+            ["Heat", "high frequencies decay first", "mean and slow modes remain"],
+            ["Advection–diffusion", "phase + damping", "small viscosity preserves paths"],
+            ["Burgers", "state-dependent velocity", "shocks regenerate fine scales"],
+            ["Wave", "bidirectional propagation", "amplitude and phase persist"],
+          ],
+          boundary: "Boundaries shift the effective position",
+          chips: [
+            "Dirichlet: permits outflow",
+            "Neumann: retains the mean",
+            "Periodic: recirculates signals",
+          ],
+        }
+
+  const colors = [C.blue, C.teal, C.amber, C.rose]
+  const fills = [C.blueSoft, C.tealSoft, C.amberSoft, C.roseSoft]
+  const xs = [55, 385, 715, 1045]
+  const cards = t.models
+    .map(
+      (model, i) => `${card(xs[i], 255, 300, 185, {
+        title: model[0],
+        body: [model[1], model[2]],
+        accent: colors[i],
+        fill: fills[i],
+        align: "center",
+        titleSize: 21,
+        bodySize: 14,
+      })}
+      <g opacity=".9">
+        <path d="M ${xs[i] + 60} 392 C ${xs[i] + 95} ${i < 2 ? 366 : 410}, ${xs[i] + 125} ${i < 2 ? 410 : 366}, ${xs[i] + 160} 392 S ${xs[i] + 225} ${i < 2 ? 378 : 405}, ${xs[i] + 250} 392" fill="none" stroke="${colors[i]}" stroke-width="3.2" stroke-linecap="round"/>
+        ${i === 0 ? `<path d="M ${xs[i] + 88} 405 L ${xs[i] + 220} 405" stroke="${colors[i]}" stroke-opacity=".25" stroke-width="2"/>` : ""}
+      </g>`,
+    )
+    .join("")
+
+  const body = `
+    ${pill(55, 190, lang === "zh" ? 120 : 138, t.left, C.blue, C.blueSoft, { h: 30, size: 12 })}
+    ${pill(1195, 190, lang === "zh" ? 150 : 150, t.right, C.rose, C.roseSoft, { h: 30, size: 12 })}
+    ${pathArrow("M 185 205 C 490 170, 875 170, 1182 205", { color: C.indigo, marker: "arrowIndigo", width: 3.2 })}
+    ${cards}
+    ${textBlock(700, 500, [t.boundary], { size: 15, weight: 750, fill: C.indigo })}
+    ${pill(130, 535, 330, t.chips[0], C.blue, C.white, { h: 42, size: 13 })}
+    ${pill(535, 535, 330, t.chips[1], C.teal, C.white, { h: 42, size: 13 })}
+    ${pill(940, 535, 330, t.chips[2], C.rose, C.white, { h: 42, size: 13 })}
+  `
+  return frame({
+    width: 1400,
+    height: 630,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function idcPipeline(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "IDC · PIDC · RIDC",
+          title: "把残差校正排成时间流水线",
+          subtitle: "流水线填满后，预测层与多个校正层在不同时间窗上同时工作",
+          lanes: ["校正层 2", "校正层 1", "预测层"],
+          window: "时间窗",
+          fill: "启动",
+          steady: "稳定并发区",
+          note: "RIDC 将完整时间窗进一步缩成滑动的 M 节点窗口",
+          residual: "积分残差向上游校正层传递",
+        }
+      : {
+          kicker: "IDC · PIDC · RIDC",
+          title: "Pipeline Residual Corrections across Time",
+          subtitle:
+            "After filling, predictor and correction levels work concurrently on different windows",
+          lanes: ["Correction 2", "Correction 1", "Predictor"],
+          window: "window",
+          fill: "fill",
+          steady: "steady concurrent region",
+          note: "RIDC replaces each full window with a sliding M-node stencil",
+          residual: "integral residual moves upward through correction levels",
+        }
+  const laneY = [245, 355, 465]
+  const laneColors = [C.indigo, C.teal, C.blue]
+  const laneFills = [C.indigoSoft, C.tealSoft, C.blueSoft]
+  let blocks = ""
+  for (let lane = 0; lane < 3; lane++) {
+    const start = 2 - lane
+    for (let w = 0; w < 5 - start; w++) {
+      const x = 320 + (w + start) * 175
+      const y = laneY[lane] - 33
+      blocks += `<g filter="url(#shadow)">
+        <rect x="${x}" y="${y}" width="140" height="66" rx="18" fill="${laneFills[lane]}" stroke="${laneColors[lane]}" stroke-opacity=".35"/>
+        ${textBlock(x + 70, y + 40, [`${t.window} ${w}`], { size: 14, weight: 750, fill: laneColors[lane] })}
+      </g>`
+      if (w > 0)
+        blocks += lineArrow(x - 34, laneY[lane], x - 10, laneY[lane], {
+          color: laneColors[lane],
+          width: 2.4,
+        })
+    }
+  }
+  let deps = ""
+  for (let col = 2; col < 5; col++) {
+    const x = 390 + col * 175
+    deps += pathArrow(`M ${x} 432 C ${x + 18} 410, ${x + 18} 388, ${x} 378`, {
+      color: C.amber,
+      dashed: true,
+      width: 2.1,
+    })
+    if (col > 2)
+      deps += pathArrow(`M ${x} 322 C ${x + 18} 300, ${x + 18} 278, ${x} 268`, {
+        color: C.amber,
+        dashed: true,
+        width: 2.1,
+      })
+  }
+  const body = `
+    ${section(55, 195, 1250, 340, lang === "zh" ? "流水线时间表" : "Pipeline schedule", C.indigo, { fill: "#fbfcff" })}
+    ${laneY.map((y, i) => `${pill(78, y - 20, 180, t.lanes[i], laneColors[i], laneFills[i], { h: 40, size: 13 })}<line x1="270" y1="${y}" x2="1270" y2="${y}" stroke="${laneColors[i]}" stroke-opacity=".12" stroke-width="2"/>`).join("")}
+    ${blocks}
+    ${deps}
+    ${pill(310, 548, 150, t.fill, C.amber, C.amberSoft, { h: 32, size: 12 })}
+    ${pill(560, 548, 300, t.steady, C.green, C.greenSoft, { h: 32, size: 12 })}
+    ${pill(920, 548, 390, t.residual, C.amber, C.amberSoft, { h: 32, size: 11 })}
+    ${card(190, 600, 1020, 72, { title: t.note, accent: C.teal, fill: C.tealSoft, align: "center", titleSize: 15 })}
+  `
+  return frame({
+    width: 1400,
+    height: 710,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function paraExpDecomposition(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "PARAEXP",
+          title: "局部受迫响应与齐次尾部分开计算",
+          subtitle: "线性叠加把各时间段的零初值解重构为完整演化",
+          intervals: ["区间 1", "区间 2", "区间 3", "区间 4"],
+          local: "零初值受迫解",
+          tail: "矩阵指数传播",
+          parallel: "第一步：四个 vₙ 并行",
+          reconstruction: "第二步：叠加到目标区间",
+          formula: "u(t) = vⱼ(t) + Σₙ<ⱼ wₙ(t)",
+        }
+      : {
+          kicker: "PARAEXP",
+          title: "Separate Local Forced Responses from Homogeneous Tails",
+          subtitle:
+            "Linearity reconstructs the full evolution from zero-initial-value interval solves",
+          intervals: ["Interval 1", "Interval 2", "Interval 3", "Interval 4"],
+          local: "zero-initial forced solve",
+          tail: "matrix-exponential tail",
+          parallel: "Step 1: all vₙ solves run concurrently",
+          reconstruction: "Step 2: superpose contributions on the target interval",
+          formula: "u(t) = vⱼ(t) + Σₙ<ⱼ wₙ(t)",
+        }
+  const xs = [75, 375, 675, 975]
+  const colors = [C.blue, C.teal, C.indigo, C.rose]
+  const fills = [C.blueSoft, C.tealSoft, C.indigoSoft, C.roseSoft]
+  const cards = xs
+    .map((x, i) =>
+      card(x, 240, 250, 145, {
+        title: `v${i + 1}(t)`,
+        body: [t.intervals[i], t.local],
+        accent: colors[i],
+        fill: fills[i],
+        align: "center",
+        titleSize: 22,
+        bodySize: 13,
+      }),
+    )
+    .join("")
+  const tails = [0, 1, 2]
+    .map((i) => {
+      const x1 = xs[i] + 230
+      const x2 = xs[3] + 125
+      const y = 425 + i * 46
+      return `${pathArrow(`M ${x1} 385 C ${x1 + 70} ${y}, ${x2 - 120} ${y}, ${x2 - 45} ${y}`, { color: colors[i], width: 2.5 })}${pill(x1 + 35, y - 17, 150, `w${i + 1}(t)`, colors[i], C.white, { h: 30, size: 12 })}`
+    })
+    .join("")
+  const body = `
+    ${pill(75, 190, lang === "zh" ? 250 : 300, t.parallel, C.blue, C.blueSoft, { h: 34, size: 12 })}
+    ${cards}
+    ${tails}
+    ${pill(930, 405, 275, t.tail, C.rose, C.roseSoft, { h: 34, size: 12 })}
+    ${card(360, 560, 680, 90, { title: t.formula, body: [t.reconstruction], accent: C.green, fill: C.greenSoft, align: "center", titleSize: 22, bodySize: 13 })}
+    ${pathArrow("M 1110 515 C 1030 545, 980 555, 1040 590", { color: C.green, width: 2.8 })}
+  `
+  return frame({
+    width: 1400,
+    height: 690,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function paraDiagStages(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "PARADIAG",
+          title: "时间变换把全时间系统拆成独立空间求解",
+          subtitle: "变换与逆变换是全局步骤，中间的复移位空间系统可以完全并发",
+          input: "全时间系统",
+          transform: "时间方向变换",
+          solve: "独立移位空间系统",
+          inverse: "逆时间变换",
+          output: "全部时间状态",
+          parallel: "并行区域",
+          notes: ["FFT / V⁻¹", "Dⱼ ⊗ Iₓ − A", "FFT⁻¹ / V"],
+        }
+      : {
+          kicker: "PARADIAG",
+          title: "A Time Transform Splits the All-at-Once System",
+          subtitle:
+            "The transforms are global; all complex-shifted spatial systems in the middle are concurrent",
+          input: "All-at-once system",
+          transform: "Transform in time",
+          solve: "Shifted spatial systems",
+          inverse: "Inverse time transform",
+          output: "states",
+          parallel: "concurrent region",
+          notes: ["FFT / V⁻¹", "Dⱼ ⊗ Iₓ − A", "FFT⁻¹ / V"],
+        }
+  let systems = ""
+  for (let i = 0; i < 4; i++) {
+    systems += `<g><rect x="610" y="${230 + i * 70}" width="300" height="52" rx="16" fill="${i % 2 ? C.tealSoft : C.indigoSoft}" stroke="${i % 2 ? C.teal : C.indigo}" stroke-opacity=".35"/>${textBlock(760, 263 + i * 70, [`shift ${i + 1}: (d${i + 1}I − A)x = b`], { size: 14, weight: 700, fill: C.ink })}</g>`
+  }
+  const body = `
+    ${card(55, 285, 210, 130, { title: t.input, body: ["K U = b"], accent: C.blue, fill: C.blueSoft, align: "center", titleSize: 18, bodySize: 20 })}
+    ${card(330, 285, 210, 130, { title: t.transform, body: [t.notes[0]], accent: C.amber, fill: C.amberSoft, align: "center", titleSize: 17, bodySize: 15 })}
+    ${section(575, 190, 370, 390, t.solve, C.indigo, { subtitle: t.parallel, fill: "#fbfaff" })}
+    ${systems}
+    ${card(980, 285, 210, 130, { title: t.inverse, body: [t.notes[2]], accent: C.amber, fill: C.amberSoft, align: "center", titleSize: 17, bodySize: 15 })}
+    ${card(1250, 285, 100, 130, { title: "U", body: [t.output], accent: C.green, fill: C.greenSoft, align: "center", titleSize: 24, bodySize: 12 })}
+    ${lineArrow(265, 350, 320, 350, { color: C.blue, width: 3 })}
+    ${lineArrow(540, 350, 565, 350, { color: C.amber, width: 3 })}
+    ${lineArrow(945, 350, 970, 350, { color: C.indigo, width: 3 })}
+    ${lineArrow(1190, 350, 1240, 350, { color: C.amber, width: 3 })}
+    ${pill(655, 595, 210, t.notes[1], C.indigo, C.indigoSoft, { h: 36, size: 13 })}
+  `
+  return frame({
+    width: 1400,
+    height: 665,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function parabolicMultilevelMap(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "PARABOLIC PINT",
+          title: "四种方法如何利用粗层传递慢模态",
+          subtitle: "扩散先削弱局部高频，粗时间或粗时空表示再承担长程校正",
+          cards: [
+            ["Parareal", "并行细传播", "顺序粗预测"],
+            ["PFASST", "配置节点 SDC", "FAS 粗 sweep"],
+            ["MGRiT", "F / C 点松弛", "递归时间粗层"],
+            ["STMG", "时间块 Jacobi", "空间 + 时间粗化"],
+          ],
+          top: "局部细节：并行处理",
+          bottom: "慢变分量：粗层长程传递",
+          warning: "黏性下降后，相位误差进入粗层，四种方法都会逐步退化",
+        }
+      : {
+          kicker: "PARABOLIC PINT",
+          title: "How Four Methods Carry Slow Modes on Coarse Levels",
+          subtitle:
+            "Diffusion first suppresses local high frequencies; coarse time or space–time levels then communicate globally",
+          cards: [
+            ["Parareal", "concurrent fine propagation", "sequential coarse prediction"],
+            ["PFASST", "SDC on collocation nodes", "coarse FAS sweep"],
+            ["MGRiT", "F/C relaxation", "recursive temporal levels"],
+            ["STMG", "time-block Jacobi", "space + time coarsening"],
+          ],
+          top: "local detail: concurrent work",
+          bottom: "slow components: long-range coarse correction",
+          warning:
+            "As viscosity falls, phase error enters the coarse level and all four methods degrade",
+        }
+  const xs = [55, 385, 715, 1045]
+  const colors = [C.blue, C.teal, C.indigo, C.green]
+  const fills = [C.blueSoft, C.tealSoft, C.indigoSoft, C.greenSoft]
+  const cards = t.cards
+    .map(
+      (m, i) => `${section(xs[i], 220, 300, 315, m[0], colors[i], { fill: C.white })}
+    ${card(xs[i] + 25, 290, 250, 88, { title: m[1], accent: colors[i], fill: fills[i], align: "center", titleSize: 15 })}
+    ${pathArrow(`M ${xs[i] + 150} 378 C ${xs[i] + 120} 405, ${xs[i] + 120} 425, ${xs[i] + 150} 445`, { color: colors[i], width: 2.4 })}
+    ${card(xs[i] + 25, 445, 250, 66, { title: m[2], accent: C.amber, fill: C.amberSoft, align: "center", titleSize: 14 })}`,
+    )
+    .join("")
+  const body = `
+    ${pill(55, 175, 300, t.top, C.blue, C.blueSoft, { h: 32, size: 12 })}
+    ${pill(1000, 175, 345, t.bottom, C.amber, C.amberSoft, { h: 32, size: 12 })}
+    ${cards}
+    ${card(210, 580, 980, 72, { title: t.warning, accent: C.rose, fill: C.roseSoft, align: "center", titleSize: 15 })}
+  `
+  return frame({
+    width: 1400,
+    height: 690,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
 const diagrams = [
   ["ml-inference", "serving-loop", servingLoop],
   ["ml-inference", "paged-kv-cache", pagedKv],
@@ -1353,6 +1697,11 @@ const diagrams = [
   ["pint", "schwarz-waveform-relaxation", swr],
   ["pint", "method-selection", methodMap],
   ["pint", "sequential-time-stepping", sequentialTimeStepping],
+  ["pint", "model-memory-spectrum", modelMemorySpectrum],
+  ["pint", "idc-pipeline", idcPipeline],
+  ["pint", "paraexp-decomposition", paraExpDecomposition],
+  ["pint", "paradiag-three-stage", paraDiagStages],
+  ["pint", "parabolic-multilevel-map", parabolicMultilevelMap],
 ]
 
 let generated = 0

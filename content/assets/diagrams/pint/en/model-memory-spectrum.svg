@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="630" viewBox="0 0 1400 630" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">From Temporal Locality to Long-Range Memory</title>
+  <desc id="diagram-desc">Diffusion, boundaries, and nonlinearity determine how long past information survives</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1384" height="614" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1384" height="614" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="190" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="149" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="149" dy="0">MODEL PROBLEMS</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">From Temporal Locality to Long-Range Memory</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">Diffusion, boundaries, and nonlinearity determine how long past information survives</tspan></text>
+
+    <g>
+    <rect x="55" y="190" width="138" height="30" rx="15" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="124" y="209.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2563eb" opacity="1"><tspan x="124" dy="0">rapid forgetting</tspan></text>
+  </g>
+    <g>
+    <rect x="1195" y="190" width="150" height="30" rx="15" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="1270" y="209.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="1270" dy="0">persistent memory</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 185 205 C 490 170, 875 170, 1182 205" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 185 205 C 490 170, 875 170, 1182 205" fill="none" stroke="#4f46e5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="55" y="255" width="300" height="185" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="55" y="255" width="8" height="185" rx="4" fill="#2563eb"/>
+
+    <text x="205" y="298" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="205" dy="0">Heat</tspan></text>
+    <text x="205" y="320" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="205" dy="0">high frequencies decay first</tspan><tspan x="205" dy="20">mean and slow modes remain</tspan></text>
+  </g>
+      <g opacity=".9">
+        <path d="M 115 392 C 150 366, 180 410, 215 392 S 280 378, 305 392" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linecap="round"/>
+        <path d="M 143 405 L 275 405" stroke="#2563eb" stroke-opacity=".25" stroke-width="2"/>
+      </g><g filter="url(#shadow)">
+    <rect x="385" y="255" width="300" height="185" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="385" y="255" width="8" height="185" rx="4" fill="#0f766e"/>
+
+    <text x="535" y="298" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="535" dy="0">Advection–diffusion</tspan></text>
+    <text x="535" y="320" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="535" dy="0">phase + damping</tspan><tspan x="535" dy="20">small viscosity preserves paths</tspan></text>
+  </g>
+      <g opacity=".9">
+        <path d="M 445 392 C 480 366, 510 410, 545 392 S 610 378, 635 392" fill="none" stroke="#0f766e" stroke-width="3.2" stroke-linecap="round"/>
+
+      </g><g filter="url(#shadow)">
+    <rect x="715" y="255" width="300" height="185" rx="22" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="715" y="255" width="8" height="185" rx="4" fill="#d97706"/>
+
+    <text x="865" y="298" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="865" dy="0">Burgers</tspan></text>
+    <text x="865" y="320" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="865" dy="0">state-dependent velocity</tspan><tspan x="865" dy="20">shocks regenerate fine scales</tspan></text>
+  </g>
+      <g opacity=".9">
+        <path d="M 775 392 C 810 410, 840 366, 875 392 S 940 405, 965 392" fill="none" stroke="#d97706" stroke-width="3.2" stroke-linecap="round"/>
+
+      </g><g filter="url(#shadow)">
+    <rect x="1045" y="255" width="300" height="185" rx="22" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="1045" y="255" width="8" height="185" rx="4" fill="#dc4c64"/>
+
+    <text x="1195" y="298" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="21" font-weight="750" fill="#14213d" opacity="1"><tspan x="1195" dy="0">Wave</tspan></text>
+    <text x="1195" y="320" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="1195" dy="0">bidirectional propagation</tspan><tspan x="1195" dy="20">amplitude and phase persist</tspan></text>
+  </g>
+      <g opacity=".9">
+        <path d="M 1105 392 C 1140 410, 1170 366, 1205 392 S 1270 405, 1295 392" fill="none" stroke="#dc4c64" stroke-width="3.2" stroke-linecap="round"/>
+
+      </g>
+    <text x="700" y="500" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="750" fill="#4f46e5" opacity="1"><tspan x="700" dy="0">Boundaries shift the effective position</tspan></text>
+    <g>
+    <rect x="130" y="535" width="330" height="42" rx="21" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="295" y="560.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#2563eb" opacity="1"><tspan x="295" dy="0">Dirichlet: permits outflow</tspan></text>
+  </g>
+    <g>
+    <rect x="535" y="535" width="330" height="42" rx="21" fill="#ffffff" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="700" y="560.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#0f766e" opacity="1"><tspan x="700" dy="0">Neumann: retains the mean</tspan></text>
+  </g>
+    <g>
+    <rect x="940" y="535" width="330" height="42" rx="21" fill="#ffffff" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="1105" y="560.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="1105" dy="0">Periodic: recirculates signals</tspan></text>
+  </g>
+
+</svg>

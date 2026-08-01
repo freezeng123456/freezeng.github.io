@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="690" viewBox="0 0 1400 690" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">局部受迫响应与齐次尾部分开计算</title>
+  <desc id="diagram-desc">线性叠加把各时间段的零初值解重构为完整演化</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1384" height="674" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1384" height="674" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="118" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="113" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="113" dy="0">PARAEXP</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">局部受迫响应与齐次尾部分开计算</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">线性叠加把各时间段的零初值解重构为完整演化</tspan></text>
+
+    <g>
+    <rect x="75" y="190" width="250" height="34" rx="17" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="200" y="211.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2563eb" opacity="1"><tspan x="200" dy="0">第一步：四个 vₙ 并行</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="75" y="240" width="250" height="145" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="75" y="240" width="8" height="145" rx="4" fill="#2563eb"/>
+
+    <text x="200" y="283" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="22" font-weight="750" fill="#14213d" opacity="1"><tspan x="200" dy="0">v1(t)</tspan></text>
+    <text x="200" y="305.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="200" dy="0">区间 1</tspan><tspan x="200" dy="19">零初值受迫解</tspan></text>
+  </g><g filter="url(#shadow)">
+    <rect x="375" y="240" width="250" height="145" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="375" y="240" width="8" height="145" rx="4" fill="#0f766e"/>
+
+    <text x="500" y="283" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="22" font-weight="750" fill="#14213d" opacity="1"><tspan x="500" dy="0">v2(t)</tspan></text>
+    <text x="500" y="305.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="500" dy="0">区间 2</tspan><tspan x="500" dy="19">零初值受迫解</tspan></text>
+  </g><g filter="url(#shadow)">
+    <rect x="675" y="240" width="250" height="145" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="675" y="240" width="8" height="145" rx="4" fill="#4f46e5"/>
+
+    <text x="800" y="283" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="22" font-weight="750" fill="#14213d" opacity="1"><tspan x="800" dy="0">v3(t)</tspan></text>
+    <text x="800" y="305.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="800" dy="0">区间 3</tspan><tspan x="800" dy="19">零初值受迫解</tspan></text>
+  </g><g filter="url(#shadow)">
+    <rect x="975" y="240" width="250" height="145" rx="22" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="975" y="240" width="8" height="145" rx="4" fill="#dc4c64"/>
+
+    <text x="1100" y="283" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="22" font-weight="750" fill="#14213d" opacity="1"><tspan x="1100" dy="0">v4(t)</tspan></text>
+    <text x="1100" y="305.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="1100" dy="0">区间 4</tspan><tspan x="1100" dy="19">零初值受迫解</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 305 385 C 375 425, 980 425, 1055 425" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.3" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 305 385 C 375 425, 980 425, 1055 425" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)" />
+  </g><g>
+    <rect x="340" y="408" width="150" height="30" rx="15" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="415" y="427.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2563eb" opacity="1"><tspan x="415" dy="0">w1(t)</tspan></text>
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 605 385 C 675 471, 980 471, 1055 471" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.3" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 605 385 C 675 471, 980 471, 1055 471" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)" />
+  </g><g>
+    <rect x="640" y="454" width="150" height="30" rx="15" fill="#ffffff" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="715" y="473.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f766e" opacity="1"><tspan x="715" dy="0">w2(t)</tspan></text>
+  </g><g class="flow-connector" opacity="1">
+    <path d="M 905 385 C 975 517, 980 517, 1055 517" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.3" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 905 385 C 975 517, 980 517, 1055 517" fill="none" stroke="#4f46e5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g><g>
+    <rect x="940" y="500" width="150" height="30" rx="15" fill="#ffffff" stroke="#4f46e5" stroke-opacity=".28"/>
+    <text x="1015" y="519.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#4f46e5" opacity="1"><tspan x="1015" dy="0">w3(t)</tspan></text>
+  </g>
+    <g>
+    <rect x="930" y="405" width="275" height="34" rx="17" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="1067.5" y="426.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="1067.5" dy="0">矩阵指数传播</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="360" y="560" width="680" height="90" rx="22" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="360" y="560" width="8" height="90" rx="4" fill="#16865b"/>
+
+    <text x="700" y="603" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="22" font-weight="750" fill="#14213d" opacity="1"><tspan x="700" dy="0">u(t) = vⱼ(t) + Σₙ&lt;ⱼ wₙ(t)</tspan></text>
+    <text x="700" y="635" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="700" dy="0">第二步：叠加到目标区间</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 1110 515 C 1030 545, 980 555, 1040 590" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.6" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 1110 515 C 1030 545, 980 555, 1040 590" fill="none" stroke="#16865b" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowGreen)" />
+  </g>
+
+</svg>

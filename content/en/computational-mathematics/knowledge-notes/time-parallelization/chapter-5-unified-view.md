@@ -1,6 +1,6 @@
 ---
-title: "Chapter 5: A Unified View and Method Selection"
-description: A common algebraic interpretation, an experiment ledger, and reproducibility limits
+title: "Chapter 5: Conclusions, a Unified View, and Reproduction Boundaries"
+description: Paper conclusions, method selection, full experiment inventory, GPU optimization, and reporting standards
 lang: en
 translation: computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view
 tags:
@@ -8,44 +8,101 @@ tags:
   - methodology
 ---
 
-## A common algebraic form
+> [!note] Content boundary
+> Section 5.1 corresponds to Section 5 of the paper (p. 481). Everything after Section 5.1 is this site's synthesis of Chapters 2–4 and its reproduction record, including an algebraic comparison, Python experiments, T4 GPU performance, and reporting standards that the source conclusion does not develop.
 
-Many PinT iterations can be written as
+## 5.1 The paper's final conclusion
+
+The paper explains the hyperbolic–parabolic distinction through temporal memory. A parabolic equation forgets a large amount of fine information during evolution and therefore has a temporally local solution. Many PinT methods can exploit this property, including Parareal, STMG, ParaExp, ParaDiag, and domain-decomposition waveform relaxation.
+
+Hyperbolic equations preserve fine structures, phases, and propagation paths over long horizons, which narrows the effective method set. The paper highlights ParaExp, ParaDiag, and SWR, with particular emphasis on the relationship between SWR and tent pitching. These methods organize concurrency through characteristic propagation, matrix exponentials, or global temporal algebra and rely less on a dissipative coarse model.
+
+For further study, the authors recommend the monograph by Gander and Lunet (2024), which provides historical context, self-contained convergence analyses, and short executable MATLAB programs for individual PinT methods. Code used for Figures 2–4 is public in [wushulin/ActaPinT](https://github.com/wushulin/ActaPinT).
+
+This conclusion suggests a useful first filter: determine how quickly the problem forgets high-frequency information, then select the parallel structure. An algorithm's name or historical category cannot replace this dynamical assessment.
+
+## 5.2 Site synthesis: solving one all-at-once system
+
+For a linear all-at-once discretization
 
 $$
-U^{k+1}=U^k+M^{-1}(b-AU^k),
+A\boldsymbol U=\boldsymbol b,
 $$
 
-where $A$ is the all-at-once space-time operator and $M^{-1}$ is a parallel approximation to its inverse.
+many PinT iterations can be written as
 
-| Method   | Source of $M^{-1}$                                            |
-| -------- | ------------------------------------------------------------- |
-| Parareal | block lower-triangular inverse defined by a coarse propagator |
-| MGRiT    | a temporal multilevel cycle                                   |
-| STMG     | a multilevel cycle on the complete space-time grid            |
-| ParaDiag | FFT inversion of a circulant temporal approximation           |
-| SWR      | local space-time inverses coupled by waveform transmission    |
+$$
+\boldsymbol U^{k+1}
+=\boldsymbol U^k+M^{-1}
+(\boldsymbol b-A\boldsymbol U^k). \tag{5.1}
+$$
 
-This formulation makes the central questions explicit: which error modes does $M^{-1}$ reduce, which physical information does it preserve, and which operations are actually concurrent?
+$M^{-1}$ is a parallel approximation to $A^{-1}$. Each method chooses a different locality, hierarchy, or transform:
 
-## Method selection
+| Method    | Main source of $M^{-1}$                           | Concurrent work                              | Carrier of long-range information            |
+| --------- | ------------------------------------------------- | -------------------------------------------- | -------------------------------------------- |
+| SWR       | space–time subdomain inverses and transmission    | complete subdomain waveforms                 | interface waveforms and characteristic cones |
+| PIDC/RIDC | integral residual correction                      | window or correction-level pipeline          | high-order error equation                    |
+| ParaExp   | local inhomogeneous solves and exponential action | local forced responses and homogeneous tails | exact $e^{tA}$ propagation                   |
+| ParaDiag  | circulant/diagonalizable time operator            | shifted spatial systems after FFT            | global temporal frequencies                  |
+| Parareal  | lower-triangular coarse propagator inverse        | fine solves on large intervals               | sequential coarse prediction                 |
+| PFASST    | multilevel preconditioner for collocation         | SDC sweeps on time steps                     | FAS coarse collocation correction            |
+| MGRiT     | temporal multilevel cycle                         | F relaxation and coarse levels               | C points and overlapping relaxation          |
+| STMG      | full space–time multilevel cycle                  | time-block Jacobi                            | coarse space–time grids                      |
 
-![A decision map for parallel-in-time methods](assets/diagrams/pint/en/method-selection.svg)
+Equation (5.1) poses three common questions. Which error modes does $M^{-1}$ reduce? Does it preserve phase, mean value, and shock position? During one application of $M^{-1}$, which operations are genuinely concurrent and which remain sequential?
 
-- **Strongly dissipative, low- or moderate-order integration:** MGRiT and STMG are natural candidates; Parareal provides a simple initial prototype.
-- **High-order temporal accuracy:** PFASST incorporates collocation and SDC but requires a more complex schedule.
-- **Large linear systems:** ParaDiag is attractive when shifted spatial solves are scalable; ParaExp is attractive when matrix-exponential actions are efficient.
-- **Transport- or wave-dominated problems:** characteristic transmission, phase correction, or SWR can preserve propagation more faithfully than a strongly dissipative coarse solver.
+## 5.3 Method-selection map
 
-## Complete experiment ledger
+![Map for selecting parallel-in-time methods](assets/diagrams/pint/en/method-selection.svg)
 
-The Python reproduction exposes eight baseline experiments and one composite paper-validation entry. The composite entry generates six paper-specific figures. All 14 SVG/PNG figure sets and their numerical conclusions are now assigned to Chapters 2-4.
+### Strong dissipation and low-to-moderate temporal order
 
-| Python output               | Website location               | Machine-readable result                              |
+Heat and sufficiently diffusive reaction–diffusion systems are natural candidates for MGRiT and STMG. Parareal provides a quick test of coarse-propagator quality and a nonintrusive baseline. STMG has greater scalability potential but requires access to the all-at-once operator, smoother, and grid transfers.
+
+### High-order collocation
+
+PFASST is attractive when high temporal order is required and a collocation solve is expensive. Nodes, SDC sweeps, the coarse collocation level, and spatial parallel resources need to be designed together. High formal order does not guarantee an efficient temporal pipeline.
+
+### Large linear or linearized systems
+
+ParaExp accurately transports long-range linear information when exponential action scales. ParaDiag removes temporal forward substitution through FFTs when complex shifted spatial systems have capable solvers. ParaDiag-I is limited by conditioning of the temporal eigenvectors. ParaDiag-II must also balance $\alpha$, outer Krylov convergence, and roundoff.
+
+### Transport, waves, and low-viscosity nonlinearity
+
+Prioritize structures that represent characteristics and phase, including SWR/OSWR, tent pitching, ParaExp, $\alpha$-ParaDiag, and phase-aware coarse propagation. Standard Parareal, MGRiT, and STMG remain useful diagnostic baselines. If fine/coarse phase mismatch grows with frequency, increasing the interval count is likely to amplify the difficulty.
+
+### Six questions before choosing a method
+
+1. Do important modes lie near the negative real axis or close to the unit circle/imaginary axis?
+2. Do boundaries permit outflow, recirculate a periodic signal, or reflect waves?
+3. Does nonlinearity continuously create shocks and high frequencies?
+4. Which reusable component is available: a time stepper, shifted spatial solver, exponential action, or all-at-once operator?
+5. Is the goal lower iteration count, higher single-node throughput, or multi-node strong/weak scaling?
+6. How much intrusive modification, global transformation, and all-time storage is acceptable?
+
+## 5.4 Parameter reference
+
+| Parameter                            | Location                       | Direct role                              | Quantities to monitor together                            |
+| ------------------------------------ | ------------------------------ | ---------------------------------------- | --------------------------------------------------------- |
+| SWR overlap and Robin $p$            | subdomain interface            | controls waveform transfer               | window length, viscosity, interface cost                  |
+| IDC node count $M$ and corrections   | error equation                 | limit formal order and pipeline depth    | regularity, fill and drain time                           |
+| Parareal intervals $N$ and ratio $J$ | fine/coarse propagation        | set concurrency and mismatch             | iteration count, sequential coarse cost, phase error      |
+| MGRiT coarsening and CF count        | time hierarchy                 | set overlap contraction and fine work    | total factor at equal fine-solve cost                     |
+| ParaDiag $\alpha$                    | cyclic head–tail approximation | smaller values improve the approximation | $\epsilon/\alpha$ roundoff and shifted-solve stability    |
+| STMG damping $\eta$                  | time-block Jacobi              | controls high-frequency smoothing        | time integrator, cycle cost, spatial coarsening condition |
+
+Each parameter interacts with the physical spectrum, discrete stability function, and machine cost. Minimizing iteration count in isolation can move the work into a much more expensive iteration.
+
+## 5.5 Complete experiment inventory
+
+The Python reproduction project provides eight baseline experiments and one combined paper-validation entry point. The combined entry point generates six paper-matched plots. Chapters 2–4 reference fourteen SVG/PNG result groups with corresponding JSON records.
+
+| Python output               | Page location                  | Machine-readable record                              |
 | --------------------------- | ------------------------------ | ---------------------------------------------------- |
-| `solution_heat_ade`         | Chapter 2, advection-diffusion | [[assets/pint/data/solution_heat_ade.json            | JSON]] |
+| `solution_heat_ade`         | Chapter 2, advection–diffusion | [[assets/pint/data/solution_heat_ade.json            | JSON]] |
 | `solution_burgers`          | Chapter 2, Burgers             | [[assets/pint/data/solution_burgers.json             | JSON]] |
-| `solution_wave`             | Chapter 2, wave equation       | [[assets/pint/data/solution_wave.json                | JSON]] |
+| `solution_wave`             | Chapter 2, wave                | [[assets/pint/data/solution_wave.json                | JSON]] |
 | `parareal_heat_ade`         | Chapter 4, Parareal            | [[assets/pint/data/parareal_heat_ade.json            | JSON]] |
 | `parareal_burgers`          | Chapter 4, Parareal            | [[assets/pint/data/parareal_burgers.json             | JSON]] |
 | `mgrit_heat_ade`            | Chapter 4, MGRiT               | [[assets/pint/data/mgrit_heat_ade.json               | JSON]] |
@@ -53,16 +110,16 @@ The Python reproduction exposes eight baseline experiments and one composite pap
 | `stmg_heat_ade`             | Chapter 4, STMG                | [[assets/pint/data/stmg_heat_ade.json                | JSON]] |
 | Figure 3.15 validation      | Chapter 3, ParaDiag            | [[assets/pint/data/figure_3_15_validation.json       | JSON]] |
 | Figure 4.5 validation       | Chapter 4, Parareal            | [[assets/pint/data/figure_4_5_validation.json        | JSON]] |
-| Figures 4.9-4.10 validation | Chapter 4, MGRiT               | [[assets/pint/data/figure_4_10_validation.json       | JSON]] |
+| Figures 4.9–4.10 validation | Chapter 4, MGRiT               | [[assets/pint/data/figure_4_10_validation.json       | JSON]] |
 | Figure 4.19 validation      | Chapter 4, STMG                | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
 | Figure 4.20 validation      | Chapter 4, STMG                | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
-| T4 GPU performance study    | This chapter, GPU acceleration | [[assets/pint/data/gpu_benchmark_t4.json             | JSON]] |
+| T4 GPU validation           | this chapter, GPU acceleration | [[assets/pint/data/gpu_benchmark_t4.json             | JSON]] |
 
-The compact cross-experiment record is available as [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]].
+The cross-experiment summary is [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]].
 
-The upstream MATLAB repository contains additional scripts for direct ParaDiag, diagonalized Parareal, ParaExp, SWR, IDC/PIDC, and wave-domain decomposition. They have been inventoried but not all ported to the current Python experiment interface; the wave ParaDiag case in Figure 3.15 is now implemented. The ledger therefore claims complete coverage of generated Python result artifacts, not complete reproduction of every MATLAB script in the upstream repository.
+The upstream MATLAB repository also contains direct ParaDiag, diagonalized Parareal, ParaExp, SWR, IDC/PIDC, and wave-domain-decomposition scripts. They are registered in the Python migration inventory but do not yet all have formal Python results. “Complete” here means that every Python artifact cited by the site has a matched parameter record, plot, and JSON file. It does not claim that every upstream MATLAB script has been ported.
 
-## Formal reproduction
+## 5.6 Formal reproduction workflow
 
 ```bash
 python3.11 -m pip install -e ".[test]"
@@ -71,26 +128,27 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   actapint paper_validation --output-dir results/paper-full
 ```
 
-The formal run on 31 July 2026 used Python 3.11, NumPy 2.4.6, SciPy 1.17.1, and Matplotlib 3.11.1 on the new experiment server. The paper suite took about 4 minutes 24 seconds of wall time and less than 280 MiB peak resident memory. The code path uses CPU sparse factorizations, Krylov methods, and FFTs.
+The formal run on July 31, 2026 used Python 3.11, NumPy 2.4.6, SciPy 1.17.1, and Matplotlib 3.11.1. The CPU paper suite took about 4 minutes 24 seconds wall time and stayed below 280 MiB peak resident memory. The code path includes CPU sparse factorization, Krylov methods, and FFTs.
 
 Each experiment writes:
 
-1. an editable SVG and a high-resolution PNG generated from the same arrays used for analysis;
-2. a JSON record of the grid, physical parameters, tolerance, and metric;
-3. deterministic random initialization where an all-at-once initial iterate is required.
+1. editable SVG and high-resolution PNG produced from the same analysis arrays;
+2. JSON containing grid, physical parameters, tolerance, stopping convention, and metrics;
+3. deterministic seeds where an all-at-once random initial vector is needed;
+4. a separate validation summary for paper-matched experiments.
 
-## GPU acceleration and profiling
+## 5.7 GPU acceleration and profiling
 
-Function-level profiling shows that Figure 4.5 consumes 43.06 of 62.95 seconds in the quick paper suite, with Burgers fine propagation accounting for 38.11 seconds. In contrast, all FFT calls require only 0.007 seconds and all GMRES calls together require 0.251 seconds. The first CUDA backend therefore does not move small FFTs mechanically. It batches the independent Burgers fine propagators in each Parareal iteration.
+Function-level profiling attributes 43.06 of 62.95 seconds in the quick paper suite to Figure 4.5, including 38.11 seconds in Burgers fine propagation. All FFTs take only 0.007 seconds and all GMRES calls total 0.251 seconds. The first CUDA backend therefore batches the 40 independent Burgers fine propagations in each Parareal iteration.
 
-CuPy keeps the spatial operators on the GPU and constructs and solves 40 independent Newton systems as one batch. The causal coarse sweep and the remaining experiments stay on the CPU, making this a hybrid CPU/GPU implementation.
+The CuPy backend keeps spatial operators resident on the GPU and assembles and solves 40 independent Newton systems in batches. Causal coarse propagation and the remaining experiments stay on the CPU, yielding a hybrid CPU/GPU implementation.
 
 | T4 double-precision test                 |      CPU |     GPU | Speedup |
 | ---------------------------------------- | -------: | ------: | ------: |
-| 40 Burgers fine propagators, 32 substeps |  2.893 s | 0.246 s |  11.76x |
-| complete paper-validation suite          | 263.57 s | 67.92 s |   3.88x |
+| 40 Burgers fine propagators, 32 substeps |  2.893 s | 0.246 s |  11.76× |
+| complete paper-validation suite          | 263.57 s | 67.92 s |   3.88× |
 
-The maximum absolute CPU/GPU difference for one batch is $2.33\times10^{-15}$. Figure 4.5 retains exactly the same stopping iterations: 14/24/35 for ADE and 14/21/25 for Burgers. Continuing well beyond the $10^{-10}$ target toward machine precision produces ordinary roundoff differences because CPU SuperLU and GPU batched LU use different floating-point operation orders.
+The maximum absolute CPU/GPU difference for one batch is $2.33\times10^{-15}$. Figure 4.5 retains stopping iterations ADE 14/24/35 and Burgers 14/21/25. Continuing beyond the $10^{-10}$ target toward machine precision produces normal rounding differences between CPU SuperLU and GPU batched LU because their floating-point operation orders differ.
 
 ```bash
 python3.11 -m pip install -e ".[gpu,test]"
@@ -99,23 +157,64 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   --output-dir results/paper-gpu
 ```
 
-Three important opportunities remain:
+### Next optimization opportunities
 
-1. replace dense batched LU with a cyclic-tridiagonal CUDA kernel so cost and storage scale appropriately with $N_x$;
-2. keep the complete Parareal state on the GPU and express the coarse propagation as a parallel prefix/scan, reducing host transfers and the serial tail;
-3. implement batched complex shifted-band solves for larger ParaDiag grids. On the current $100\times100$ paper grid, FFT and GMRES workloads are too small for a reliable standalone GPU benefit.
+1. Replace dense batched LU with a cyclic tridiagonal CUDA kernel so storage and work scale linearly with $N_x$.
+2. Keep the complete Parareal state on the GPU and investigate parallel-prefix/scan coarse propagation to reduce host transfers and the sequential tail.
+3. Implement batched complex shifted banded solves on larger ParaDiag grids. FFT and GMRES work on the current $100\times100$ grid is too small for stable GPU benefit.
+4. Separate spatial concurrency, temporal concurrency, and communication overlap in multi-GPU strong- and weak-scaling tests.
 
-The machine-readable record is [[assets/pint/data/gpu_benchmark_t4.json|gpu_benchmark_t4.json]]. These measurements establish single-GPU kernel and end-to-end acceleration, not multi-GPU strong or weak scaling.
+The machine-readable record is [[assets/pint/data/gpu_benchmark_t4.json|gpu_benchmark_t4.json]]. Current data demonstrate single-GPU kernel and end-to-end acceleration and do not establish multi-GPU scaling.
 
-## Interpretation limits
+## 5.8 Interpretation boundaries
 
-- The experiments measure numerical convergence and reproduce selected trends and values from the paper. They do not measure temporal strong or weak scaling.
-- No figure reports MPI process count, communication volume, setup cost, or wall-clock speedup.
-- The original MATLAB random generator and NumPy do not produce identical initial arrays. Convergence factors, iteration counts, and final states are the relevant comparisons.
-- Sparse factorization, FFT ordering, and GMRES reduction can produce ordinary differences near $10^{-14}$ to $10^{-16}$.
-- In `MGRiT_Heat_ADE.m`, the invalid expression `nu=0.002max;` is interpreted as $\nu=0.002$, which is consistent with the surrounding branches and the paper.
-- For the STMG paper validation, backward Euler and the original MATLAB residual convention are retained. A consistent post-smoothing residual is also stored in JSON for diagnostic comparison.
+- Current experiments measure numerical convergence and single-node CPU/GPU performance, without time-dimensional MPI strong or weak scaling.
+- Site figures do not report MPI rank count, network volume, initialization cost, or cross-node wall-clock speedup.
+- MATLAB and NumPy random generators do not produce identical initial arrays; convergence factors, phases, and final states are better comparison targets.
+- Sparse factorization, FFT ordering, and GMRES reductions can differ normally near $10^{-14}$ to $10^{-16}$.
+- The invalid expression `nu=0.002max;` in `MGRiT_Heat_ADE.m` is interpreted as $\nu=0.002$ from its branch context and the paper.
+- STMG validation retains the upstream backward-Euler residual convention and stores a consistent postsmoothing residual separately in JSON.
+- Convergence to the sequential fine solution establishes algorithmic consistency and gives no wall-clock speedup guarantee.
+- The large-scale STMG data in Table 4.1 belong to the cited three-dimensional parallel implementation and are not measurements from the present Python project.
 
-## Minimum reporting standard for future experiments
+## 5.9 Minimum reporting standard for future experiments
 
-A performance-oriented PinT study should report the spatial and temporal discretizations, fine reference, number of time intervals, hardware allocation, coarse-to-fine cost ratio, stopping criterion, communication and setup time, parameter sweeps, and strong or weak scaling. Error versus iteration alone supports an algorithmic convergence statement, not a parallel-efficiency claim.
+An algorithmic-convergence experiment should state:
+
+- PDE, boundaries, initial data, and source;
+- spatial and temporal discretizations and the fine-grid reference;
+- fine/coarse propagators, interval count, and coarsening;
+- error norm, residual definition, stopping threshold, and iteration cap;
+- parameter sweeps and observed failure points.
+
+A parallel-performance experiment should additionally state:
+
+- CPU/GPU models, precision, and rank/thread/device allocation;
+- fine/coarse cost ratio, concurrent tasks per iteration, and load balance;
+- initialization, transfer, communication, synchronization, and I/O time;
+- total wall time, speedup, efficiency, and baseline implementation;
+- strong or weak scaling as the interval count, spatial size, and device count vary.
+
+Error decay by iteration supports a numerical-convergence claim but cannot support a parallel-efficiency claim on its own. Method comparisons must also normalize fine-propagation count or total work so curves with different per-iteration costs are not ranked directly.
+
+## 5.10 Coverage table for Sections 2–5
+
+| Source range                  | Site chapter      | Completeness statement                                                                            |
+| ----------------------------- | ----------------- | ------------------------------------------------------------------------------------------------- |
+| Section 2, pp. 388–396        | Chapter 2         | four models, all boundary settings, every Figure 2.1–2.4 observation group, and PinT implications |
+| Sections 3.1–3.2, pp. 396–405 | Chapter 3.1–3.2   | history, WR/SWR, Theorems 3.1–3.2, OSWR, MTP/UTP                                                  |
+| Sections 3.3–3.4, pp. 405–415 | Chapter 3.3–3.4   | IDC/PIDC/RIDC derivation and regularity tests, linear and nonlinear ParaExp                       |
+| Section 3.5, pp. 415–443      | Chapter 3.5–3.8   | ParaDiag-I/II, Theorems 3.5–3.9, BVM, NKA, circulant and $\alpha$-circulant experiments           |
+| Sections 4.1–4.4, pp. 443–460 | Chapter 4.1–4.4   | Parareal, PFASST, MGRiT, Theorems 4.1–4.6, Figures 4.1–4.11                                       |
+| Sections 4.5–4.6, pp. 460–481 | Chapter 4.5–4.7   | both diagonalized Parareal variants, STMG, Theorems 4.7–4.9, Figures 4.12–4.22, Table 4.1         |
+| Section 5, p. 481             | this chapter, 5.1 | hyperbolic/parabolic conclusion, recommended methods, monograph, and public code                  |
+
+Each chapter ends with a more granular source-page audit. Site supplements occupy explicitly labeled sections and are not blended into claims attributed to the paper.
+
+## Summary
+
+The starting point for PinT selection is the temporal memory of the dynamics. Strong diffusion permits coarse temporal levels to represent the remaining slow modes. Transport, waves, and low-viscosity nonlinear systems require preservation of phase, characteristics, and shock position. The unified all-at-once view helps compare algorithms, while a successful implementation must satisfy three conditions together: iterations to tolerance remain controlled, concurrent work dominates runtime, and communication and memory scale. A complete reproduction reports evidence for each layer separately.
+
+## Source
+
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 5, p. 481.

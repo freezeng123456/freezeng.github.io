@@ -13,22 +13,22 @@ tags:
 ## 阅读顺序
 
 1. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|第一章：为什么要做时间并行？]]逐段梳理论文摘要与引言，介绍硬件背景、因果链、四条方法谱系、双重分类和全时间系统。
-2. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|第二章：模型问题]]比较热方程、对流扩散方程、Burgers 方程和波动方程，并收录三个重新计算的解实验。
-3. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|第三章：适用于双曲问题的方法]]讨论 SWR、PIDC/RIDC、ParaExp 和 ParaDiag，并收录 Heat、ADE 与 Wave 三类 ParaDiag-II 实验。
-4. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|第四章：为抛物问题设计的方法]]介绍 Parareal、PFASST、MGRiT、基于对角化的 Parareal 和 STMG，并给出重新计算的收敛实验。
-5. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|第五章：统一视角与方法选择]]比较各类算法，记录完整实验清单和复现流程。
+2. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|第二章：模型问题]]逐图比较热方程、对流扩散方程、Burgers 方程和波动方程的边界条件、时间记忆，并收录三个重新计算的解实验。
+3. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|第三章：对双曲问题仍然有效的方法]]完整推导 SWR、PIDC/RIDC、ParaExp 和 ParaDiag，并收录 Heat、ADE 与 Wave 三类 ParaDiag-II 实验。
+4. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|第四章：主要为抛物问题设计的方法]]分析 Parareal、PFASST、MGRiT、两种对角化 Parareal 和 STMG，并给出重新计算的收敛实验。
+5. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|第五章：结论、统一视角与复现边界]]区分论文结论与本站综合，记录方法选择、完整实验清单、GPU 性能和报告规范。
 
 ## 论文内容覆盖进度
 
 “段落级完成”表示正文论点、公式、图示、历史线索、限定条件和章节关系都已与原文逐项核对。已有实验不会因此删除，它们会放在对应原文解释之后。
 
-| 原文范围          | 网页对应 | 当前状态                                                                                                |
-| ----------------- | -------- | ------------------------------------------------------------------------------------------------------- |
-| 摘要与 Section 1  | 第一章   | **段落级完成**：覆盖 pp. 385-388 的全部论点，并重绘 Figure 1.1                                          |
-| Section 2.1-2.4   | 第二章   | 已有四类模型的核心机制与三个复现实验；下一步逐段补全边界条件、各子图观察和抛物/双曲过渡                 |
-| Section 3.1-3.5.2 | 第三章   | 已有方法概要与 ParaDiag-II 实验；待补历史、SWR、PIDC/RIDC、ParaExp 与 ParaDiag 的完整推导和全部数值讨论 |
-| Section 4.1-4.6   | 第四章   | 已有主要算法和复现实验；待逐段补全历史、理论联系、参数条件与论文图表解释                                |
-| Section 5         | 第五章   | 已有统一视角、GPU 分析和实验清单；待与论文结论逐段对照                                                  |
+| 原文范围           | 网页对应 | 当前状态                                                                                             |
+| ------------------ | -------- | ---------------------------------------------------------------------------------------------------- |
+| 摘要与 Section 1   | 第一章   | **段落级完成**：覆盖 pp. 385–388 的全部论点，并重绘 Figure 1.1                                       |
+| Sections 2.1–2.4   | 第二章   | **段落级完成**：覆盖四类模型、全部边界设置、Figures 2.1–2.4 的各组观察，并保留三个补充实验           |
+| Sections 3.1–3.5.2 | 第三章   | **段落级完成**：覆盖历史、SWR、PIDC/RIDC、ParaExp、ParaDiag-I/II 的推导、定理与全部论文数值讨论      |
+| Sections 4.1–4.6   | 第四章   | **段落级完成**：覆盖 Parareal、PFASST、MGRiT、对角化变体、STMG、Theorems 4.1–4.9 与 Figures 4.1–4.22 |
+| Section 5          | 第五章   | **段落级完成**：覆盖论文结论，并将统一视角、GPU 分析和实验清单明确标为本站补充                       |
 
 ## 方法图谱
 

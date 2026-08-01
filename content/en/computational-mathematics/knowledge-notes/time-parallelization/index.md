@@ -13,22 +13,22 @@ These notes follow M. J. Gander, S.-L. Wu, and T. Zhou, _Time Parallelization fo
 ## Reading sequence
 
 1. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|Chapter 1: Why Parallelize in Time?]] follows the abstract and introduction paragraph by paragraph, covering the hardware context, the causal chain, four historical lineages, the two-way classification, and the all-at-once system.
-2. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|Chapter 2: Model Problems]] compares the heat, advection-diffusion, Burgers, and wave equations. The chapter includes all three recomputed solution experiments.
-3. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|Chapter 3: Methods Effective for Hyperbolic Problems]] discusses SWR, PIDC/RIDC, ParaExp, and ParaDiag. The chapter includes ParaDiag-II experiments for heat, ADE, and wave problems.
-4. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|Chapter 4: Methods Designed for Parabolic Problems]] covers Parareal, PFASST, MGRiT, diagonalization-based Parareal, and STMG. It contains the recomputed convergence studies.
-5. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|Chapter 5: A Unified View and Method Selection]] compares the algorithms and records the complete experiment ledger and reproduction protocol.
+2. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|Chapter 2: Model Problems]] compares boundary conditions and temporal memory across heat, advection–diffusion, Burgers, and wave equations, then presents three recomputed solutions.
+3. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|Chapter 3: Methods Effective for Hyperbolic Problems]] derives SWR, PIDC/RIDC, ParaExp, and ParaDiag and includes ParaDiag-II experiments for heat, ADE, and wave problems.
+4. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|Chapter 4: Methods Designed Primarily for Parabolic Problems]] analyzes Parareal, PFASST, MGRiT, two diagonalized variants, and STMG, with recomputed convergence studies.
+5. [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|Chapter 5: Conclusions, a Unified View, and Reproduction Boundaries]] separates the paper conclusion from the site's method selection, experiment inventory, GPU performance, and reporting rules.
 
 ## Paper-coverage progress
 
 “Paragraph-level complete” means that the claims, equations, figures, historical links, qualifications, and section relationships have all been checked against the source. Existing experiments remain in place after the corresponding source discussion.
 
-| Source range           | Website chapter | Current status                                                                                                                                                                                  |
-| ---------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Abstract and Section 1 | Chapter 1       | **Paragraph-level complete**: all arguments on pp. 385-388 are covered, and Figure 1.1 has been redrawn                                                                                         |
-| Sections 2.1-2.4       | Chapter 2       | Core mechanisms and three reproduced experiments are present; boundary conditions, panel-by-panel observations, and the parabolic-to-hyperbolic transition still need paragraph-level expansion |
-| Sections 3.1-3.5.2     | Chapter 3       | Method summaries and ParaDiag-II experiments are present; the history, SWR, PIDC/RIDC, ParaExp, ParaDiag derivations, and full numerical discussion remain to be expanded                       |
-| Sections 4.1-4.6       | Chapter 4       | The principal algorithms and reproduced experiments are present; the history, theoretical links, parameter conditions, and paper figures remain to be covered paragraph by paragraph            |
-| Section 5              | Chapter 5       | The unified view, GPU analysis, and experiment ledger are present; a paragraph-level comparison with the paper's conclusions remains                                                            |
+| Source range           | Website chapter | Current status                                                                                                                                               |
+| ---------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Abstract and Section 1 | Chapter 1       | **Paragraph-level complete**: every argument on pp. 385–388 is covered, and Figure 1.1 has been redrawn                                                      |
+| Sections 2.1–2.4       | Chapter 2       | **Paragraph-level complete**: four models, every boundary setting, all Figure 2.1–2.4 observation groups, and three supplemental experiments                 |
+| Sections 3.1–3.5.2     | Chapter 3       | **Paragraph-level complete**: history, SWR, PIDC/RIDC, ParaExp, ParaDiag-I/II derivations, theorems, and all numerical discussions                           |
+| Sections 4.1–4.6       | Chapter 4       | **Paragraph-level complete**: Parareal, PFASST, MGRiT, diagonalized variants, STMG, Theorems 4.1–4.9, and Figures 4.1–4.22                                   |
+| Section 5              | Chapter 5       | **Paragraph-level complete**: paper conclusions are covered; unified analysis, GPU work, and the experiment ledger are explicitly marked as site supplements |
 
 ## Method map
 
