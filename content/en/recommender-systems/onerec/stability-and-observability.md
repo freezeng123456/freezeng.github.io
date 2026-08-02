@@ -12,22 +12,24 @@ tags:
 
 ## Stability Objectives
 
-| Objective    | Requirement                                                               |
-| ------------ | ------------------------------------------------------------------------- |
-| Rollback     | Instantly return a request to the legacy path without a release           |
-| Comparison   | Old and new paths use the same experiment tags and downstream conventions |
-| Localization | Attribute empty/slow requests to an operator, RPC, or funnel stage        |
-| Degradation  | OneRec failure does not block the main path                               |
-| Auditability | Final parameters and model/KV versions are traceable                      |
+| Objective    | Requirement                                                                          |
+| ------------ | ------------------------------------------------------------------------------------ |
+| Rollback     | Disable the GprHub side path or switch its internal implementation without a release |
+| Comparison   | Main/side and new/legacy-within-side comparisons use separately aligned conventions  |
+| Localization | Attribute empty/slow requests to an operator, RPC, or funnel stage                   |
+| Degradation  | OneRec failure does not block the main path                                          |
+| Auditability | Final parameters and model/KV versions are traceable                                 |
 
-## Two Levels of Switches
+## Three Layers of Switches
 
-1. **Request-level Mixer switch**: selects either the new GprHub generative RPC or legacy Retrieval Proxy.
-2. **GprHub set-level switch**: determines whether the new `generative_flow_runner` is created or enabled.
+1. **Side-path enable gate**: decides whether to create a GprHub action in addition to main Retrieval Proxy.
+2. **Side-path implementation gate**: selects the generative RPC or legacy-GPR control RPC inside the GprHub action.
+3. **GprHub service-capability gate**: determines whether the generative flow runner is created or enabled.
 
 Rollback sequence:
 
-- abnormal online metrics: first route experimental traffic back to the legacy RPC;
+- abnormal side-path metrics: disable the GprHub action and verify the continuing main result;
+- generative-only failure: route the side path to the legacy-GPR control RPC;
 - new-DAG code failure: disable the set-level switch and restart the affected set;
 - Fetch timeout: stop expansion and compare pipeline P99 with the Ranking budget;
 - model/KV version error: roll back both the model package and KV version; changing the beam alone is insufficient.
@@ -40,9 +42,11 @@ Deploy (switch off by default)
   → 5%
   → 50%
   → 100%
-  → legacy service QPS reaches zero
-  → remove legacy path
+  → legacy GPR control QPS inside the side path reaches zero
+  → evaluate removal of the side-path legacy implementation
 ```
+
+This cadence covers the generative replacement inside GprHub. Retiring the main Retrieval Proxy is a separate architecture decision and must not follow automatically from full side-path rollout.
 
 At every step, compare at least:
 
@@ -65,7 +69,7 @@ Core metrics:
 - request-to-cache latency;
 - no-ad count.
 
-This dashboard answers whether the old and new paths write healthy cache results.
+This dashboard answers whether the GprHub action is selected and writes cache results on time. Main Retrieval Proxy success and candidate volume remain a concurrent baseline.
 
 ### 2. Generative pipeline
 
@@ -100,9 +104,9 @@ Core metrics:
 
 This dashboard answers whether Ranking receives the side-path result in time.
 
-## Comparing Old and New Paths Downstream
+## Two Comparison Layers
 
-After `AdListMerge`, compare by `recall_path` + `exp_tag`:
+The first layer compares the generative and legacy-GPR control implementations inside GprHub. After the retrieval DAG's `AdListMerge`, compare by `recall_path` + `exp_tag`:
 
 | Stage              | Focus                                                     |
 | ------------------ | --------------------------------------------------------- |
@@ -112,18 +116,27 @@ After `AdListMerge`, compare by `recall_path` + `exp_tag`:
 | Scoring            | Input TIDs/AIDs, top-n, response size                     |
 | Flow node          | Per-operator latency, input/output, failure/empty result  |
 
-Attribution must proceed from upstream to downstream. If exit volumes already differ before the paths meet, the final ad difference should not be attributed to coarse ranking. If they match before the merge but diverge after PropertyFilter, field or inventory alignment is the next target.
+The second layer compares the production main path with the GprHub side path at Ranking merge. It adds:
+
+- main-only, side-only, and AID overlap;
+- creative overlap, side-added creatives, and global creative deduplication;
+- main/GPR DocWash removal reasons;
+- main/GPR prediction, pCTR, and bid-context field completeness;
+- OneRec rerank-factor on/off buckets.
+
+Attribution must proceed from upstream to downstream. If generative-exit volume already differs, the final ad difference cannot be assigned directly to coarse ranking. If retrieval-side volumes match but GPR DocWash loses candidates, Ranking fields and filter contracts are the next target.
 
 ## Review Thresholds
 
-These are current review suggestions and must not be hardened without validation against online baselines:
+Thresholds must be derived from current online baselines and position-level budgets. Absolute values from old integration snapshots must not be carried forward:
 
-| Guardrail                  | Condition to pause expansion                                 |
-| -------------------------- | ------------------------------------------------------------ |
-| GprHub cache-write P99     | $>150$ ms for 5 minutes                                      |
-| Segmented RPC failure rate | $>1\%$ for 3 minutes                                         |
-| Fetch timeout              | Clearly higher than baseline; review draft uses a 5% change  |
-| Empty result               | Significantly higher than the legacy path or same experiment |
+| Guardrail                  | Condition to pause expansion                                            |
+| -------------------------- | ----------------------------------------------------------------------- |
+| GprHub cache-ready P99     | Exceeds the position's side-path budget throughout the alert window     |
+| Segmented RPC failure rate | Significantly above the same-machine, same-position experiment baseline |
+| Fetch timeout              | Side coverage drops while wait consumes the main-path deadline          |
+| Empty result               | Significantly above the legacy-GPR control or same-experiment baseline  |
+| Main-path health           | Regression in main success, P99, or final response volume               |
 
 Thresholds must be bucketed by traffic, machine type, and position. Global averages obscure long-tail ad positions.
 
@@ -131,13 +144,15 @@ Thresholds must be bucketed by traffic, machine type, and position. Global avera
 
 ![The OneRec diagnostic path when no final ads remain](assets/diagrams/onerec/en/debugging-tree.svg)
 
-## Gate for Removing the Legacy Path
+## Gate for Removing the Side-Path Legacy Implementation
 
-The legacy path can be retired only after all of the following hold:
+The legacy-GPR control inside GprHub can be retired only after all of the following hold:
 
 1. the new path is at full traffic and remains stable throughout the observation window;
-2. request-level rollback no longer depends on the legacy service, or an equivalent disaster-recovery path exists;
-3. legacy-service QPS remains zero;
+2. side-path rollback no longer depends on the legacy implementation, or an equivalent disaster-recovery path exists;
+3. legacy-GPR control QPS remains zero;
 4. new/old dashboards, alerts, and the on-call handbook are complete;
-5. the legacy Datahub workflow, Proxy `RemoteGprOp`, service routing, and graph configuration have an explicit removal list;
+5. the legacy Datahub workflow, side-path `RemoteGprOp`, service routing, and graph configuration have an explicit removal list;
 6. a reverse traffic-switching drill is completed before deletion.
+
+Retiring the main Retrieval Proxy requires a separate proof that multi-source retrieval, full DocWash, field contracts, and disaster recovery have all been replaced. It is outside the scope of side-path legacy cleanup.

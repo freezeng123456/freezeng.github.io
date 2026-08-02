@@ -34,12 +34,12 @@ $$
 
 ### 1. Request beam width
 
-`pam_beam_width` is the primary width passed from a strategy or experiment to the Decoder. In the new AnyRecall refactoring path:
+`gpr_pam_beam_width` is the primary width passed from a strategy or experiment to the Decoder. In the new AnyRecall refactoring path:
 
 - default fallback: 180;
 - hard constraint: at most the model's exported maximum width of 180.
 
-The legacy retrieval engine has a default of 200. The two values belong to different call paths and model constraints. A legacy configuration of 200 does not justify changing the new path to 200.
+The shared `GenerativeData` structure has an initializer of 200, but Entry subsequently overwrites it with the position experiment or the safe fallback of 180. That initializer is not evidence of an effective legacy production value and does not justify changing the new path to 200.
 
 ### 2. Per-level beam width
 
@@ -110,12 +110,12 @@ but $B$ returns from each of $S$ shards do not automatically produce $S\times B$
 
 ## Interpreting Current Configurations
 
-| Scenario                        |          Observed value | Correct interpretation                                                     |
-| ------------------------------- | ----------------------: | -------------------------------------------------------------------------- |
-| New generative refactoring path |        fallback/max 180 | Default and model maximum for the request beam                             |
-| Legacy retrieval engine         |             default 200 | Legacy-path default; not transferable across paths                         |
-| One sample/experiment version   |           90, 200, etc. | Use the parameter-ID callsite to distinguish beam, top-k, and graph bucket |
-| Execution-graph list            | Several discrete widths | Runtime buckets, not strategy values                                       |
+| Scenario                        |          Observed value | Correct interpretation                                        |
+| ------------------------------- | ----------------------: | ------------------------------------------------------------- |
+| New generative refactoring path |        fallback/max 180 | Entry's effective request beam and the Decoder limit          |
+| Shared-structure initializer    |                     200 | Overwritten by Entry; not a runtime value                     |
+| One sample/experiment version   |           90, 200, etc. | Use the callsite to distinguish beam, top-k, and graph bucket |
+| Execution-graph list            | Several discrete widths | Runtime buckets, not strategy values                          |
 
 ## Tuning Experiment
 

@@ -16,7 +16,7 @@ tags:
 
 OneRec maps ads or content to multilevel discrete semantic IDs, organizes user history into a unified sequence, and uses a generative model to predict candidate SIDs level by level. Online services map those SIDs back to eligible creatives and connect them to existing filtering, coarse-ranking, fine-ranking, and bidding stages.
 
-It does not “replace every recommendation stage with a large model.” It adds a **generative retrieval and side-path ranking route** to an existing production system and ultimately remains subject to inventory, creative, budget, filtering, ranking, and auction constraints.
+It adds a **generative retrieval and side-path ranking route** to the existing production system. Main retrieval continues concurrently in production traffic; the paths merge late in Ranking and then share inventory, creative, budget, filtering, reranking, and auction constraints.
 
 ## Complete Loop
 
@@ -34,6 +34,7 @@ It does not “replace every recommendation stage with a large model.” It adds
 ## Page Map
 
 - [[en/recommender-systems/onerec/end-to-end-pipeline\|End-to-End Pipeline]]: service topology and the boundary between old and new retrieval paths.
+- [[en/recommender-systems/onerec/source-level-recall-to-reranking\|Recall, Coarse Ranking, Fine Ranking, and Reranking]]: a source-driven account of concurrent routing, asynchronous cache, dual ranking paths, and ad/creative merge.
 - [[en/recommender-systems/onerec/data-and-features\|Data and Features]]: USER/CONTEXT/sequence slots and online–offline consistency.
 - [[en/recommender-systems/onerec/semantic-id-and-rq-vae\|Semantic IDs and RQ-VAE]]: continuous vectors to hierarchical tokens.
 - [[en/recommender-systems/onerec/training-and-sample-generation\|Training and Sample Generation]]: Sample Service, reward features, and GRPO/MCTS-related sampling.
@@ -44,8 +45,9 @@ It does not “replace every recommendation stage with a large model.” It adds
 
 ## Conclusions That Matter Most in Review
 
-1. The new path does not bypass fine ranking. It uses an independent Ranking Fetch and side-path ranker before merging with the main path.
-2. `beam width` is not the only candidate-volume parameter. Request width, per-level width, final top-k, shard quota, and KV truncation must be considered together.
-3. USER/CONTEXT entries in online samples are not globally ordered by time. They are assembled in a fixed slot order, and training must preserve the same semantics.
-4. After the old and new retrieval paths enter common filtering and coarse ranking, they can be compared under the same `recall_path` convention. Inside the new path, a segmented SID→TID→AID funnel is required.
-5. Rollback requires both request-level and service-level switches, allowing traffic to return to the old path without a release.
+1. In production and gray environments, the main Retrieval Proxy and the GprHub side path normally run concurrently. The generative-versus-legacy choice occurs inside GprHub.
+2. The new path passes retrieval-side Scoring, Ranking Fetch, side-path DocWash, and independent prediction/pCTR before merging with the main path.
+3. `beam width` is one layer of the candidate budget. Per-level width, final top-k, shard quota, KV truncation, coarse top-n, and Ranking merge must be considered together.
+4. USER/CONTEXT entries in online samples follow a fixed slot order, which training must preserve.
+5. New and legacy GPR implementations can be compared by `recall_path`; the main-versus-side analysis also needs main-only, side-only, and overlap attribution.
+6. Rollback needs a side-path request gate, a generative-implementation gate, and a service-capability gate, while every side-path failure remains fail-open for the main path.

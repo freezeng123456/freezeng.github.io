@@ -19,7 +19,7 @@ The principal review question is not whether the algorithm can generate SIDs, bu
 - hierarchy of beam and candidate budgets;
 - parameter isolation across ad positions;
 - asynchronous cache and Ranking timeout budget;
-- comparable monitoring and instantaneous rollback for old and new paths.
+- layered monitoring and instantaneous rollback for main/side paths and for new/legacy implementations inside the side path.
 
 ## Itemized Confirmation
 
@@ -48,17 +48,27 @@ The principal review question is not whether the algorithm can generate SIDs, bu
 
 ### Online Retrieval
 
-- [ ] New and old paths are mutually exclusive for one position.
+- [ ] Concurrent main Retrieval Proxy and GprHub behavior is verified for production traffic.
+- [ ] One position selects only the generative or legacy-GPR control implementation inside GprHub.
 - [ ] Parameters, cache nodes, and tags are independent across positions.
 - [ ] Input/output/latency/failure are observable for all six operators.
 - [ ] The SID/TID/AID/ad funnel is complete.
 - [ ] Common downstream stages are compared by `recall_path`.
+- [ ] Main-only, side-only, AID overlap, and creative overlap can be reconciled.
 - [ ] Partial OneRec failure does not expand into main-path failure.
+
+### Ranking and Merge
+
+- [ ] Fetch fails open within its position-level timeout, with key miss, timeout, and empty counted separately.
+- [ ] Full main DocWash and lightweight GPR DocWash have field-contract and removal-reason tests.
+- [ ] Main and GPR prediction/pCTR paths are independently observable.
+- [ ] AID merge, same-creative merge, and global creative dedup have before/after counts.
+- [ ] The OneRec relevance factor in reranking has an independent gate and attribution bucket.
 
 ### Beam
 
 - [ ] New-path `beam_width ≤ 180`.
-- [ ] The legacy default of 200 does not enter the new path.
+- [ ] The shared structure's initializer of 200 is not mistaken for the effective online beam.
 - [ ] Per-level beam, final top-k, and graph bucket are reported separately.
 - [ ] Tuning considers valid-ad gain, P99, and memory together.
 - [ ] Beam growth does not overwhelm KV quota/Z-order.
@@ -81,6 +91,8 @@ To avoid exposing internal repository paths on the site, only module-level entry
 | Service entry/cache | retrieval service implementation, `DoGenerativeRetrieval`, `FetchGenerativeX` |
 | Legacy path         | `RemoteGprOp` and Retrieval Proxy flow                                        |
 | Common downstream   | OutputQuota, PropertyFilter, CreativeServer, Scoring                          |
+| Ranking side path   | Fetch, GPR DocWash, GPR Prediction/Pctr                                       |
+| Merge and reranking | `MergeMultiAds`, creative dedup, common reranking                             |
 | Beam state          | multilevel handler, SID decoder, `UpdateBeamState`                            |
 | RQ-VAE              | encoder, residual vector quantizer, trainer                                   |
 | Sample generation   | `ExampleGenerator`, OneRec generator, RL-agent configuration                  |

@@ -11,12 +11,13 @@ tags:
 
 ## Service Entry and Routing
 
-Mixer reads request-level experiment parameters:
+Mixer creates concurrent tasks for the main Retrieval Proxy and the GprHub side path. After the side path is selected, GprHub reads a position-level generative switch:
 
-- experiment enabled: call GprHub's generative-retrieval RPC;
-- control or rollback: call the legacy retrieval RPC through Retrieval Proxy.
+- enabled: call GprHub's generative-retrieval RPC;
+- disabled: call the legacy-GPR control RPC within the side path;
+- side path not selected or call failure: the main Retrieval Proxy still proceeds.
 
-The GprHub service then splits the request by position and executes asynchronously. `BuildSinglePosRequest` must rewrite the corresponding `pos_id` and `exp_param`; otherwise, multiple positions will reuse one another's parameters.
+Production and gray environments do not stop the main path on a GprHub hit; skipping main retrieval is reserved for isolated simulation under dedicated conditions. GprHub splits the request by position and executes asynchronously. `BuildSinglePosRequest` must rewrite the corresponding `pos_id` and `exp_param`; otherwise, multiple positions will reuse one another's parameters.
 
 ## Shared `GenerativeData` Context
 
@@ -44,7 +45,7 @@ The position-level experiment parameters and quota plan provide:
 - retrieval strategy and output quota;
 - multilevel/any-recall mode.
 
-The new path defaults `pam_beam_width` to 180 and requires it not to exceed the model/Decoder maximum of 180. A default of 200 exists in the legacy engine and must not be copied directly to the new path.
+The new path defaults `pam_beam_width` to 180 and requires it not to exceed the model/Decoder maximum of 180. Although the shared structure has an initializer of 200, Entry overwrites it at runtime with the position value or the safe value of 180.
 
 ### 2. Datahub
 
@@ -96,11 +97,13 @@ AdListMerge
   → RetrievalCache
 ```
 
-The common downstream structure is isomorphic for the new and old paths, forming the basis for A/B attribution:
+The generative implementation and the legacy-GPR control inside GprHub have broadly isomorphic common downstream graphs, forming the basis for A/B attribution. A small number of nodes still differ between the current static DAGs and require a structured diff during review:
 
 1. compare the generative exit volume before the paths meet;
 2. compare quota truncation, property filtering, creative serving, and coarse-ranking input/output segment by segment;
 3. finally compare cache writes with Ranking Fetch returns.
+
+“New versus legacy” here refers only to implementations inside GprHub. The main Retrieval Proxy is a concurrent production baseline and requires separate main-only, side-only, and overlap accounting.
 
 ## SID→TID→AID Funnel
 
@@ -124,3 +127,5 @@ When empty results rise, the first collapse in the funnel must be located instea
 - A request-level shared Encoder can be reused only when schemas and models are identical.
 - The merge callback must support partial success rather than discarding other positions when one fails.
 - The cache key must contain sufficient request and position dimensions to prevent Ranking Fetch from reading the wrong result.
+
+See [[en/recommender-systems/onerec/source-level-recall-to-reranking|Recall, Coarse Ranking, Fine Ranking, and Reranking]] for Scoring, Ranking Fetch, dual fine-ranking branches, and merge behavior.

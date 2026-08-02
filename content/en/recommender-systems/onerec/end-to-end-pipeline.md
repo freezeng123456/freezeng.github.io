@@ -1,6 +1,6 @@
 ---
 title: OneRec End-to-End Pipeline
-description: Training loop, online topology, and the boundary between new and legacy paths
+description: Training loop, main/side online topology, and merge boundaries
 lang: en
 translation: 推荐系统理论/onerec/端到端链路
 tags:
@@ -35,12 +35,14 @@ RQ-VAE and the sequence model are two version-coupled components. Token encoding
 
 ## 2. Online Routing
 
-For each ad position, Mixer reads experimental parameters and selects one of two paths:
+After Mixer builds the retrieval request, the main Retrieval Proxy and the GprHub side path become sibling tasks. Production and gray environments normally keep both active; a GprHub experiment hit does not stop main retrieval.
 
-- New path: `GenerativeRecall` enters GprHub's `GENERATIVE_FLOW`;
-- Legacy path: `RetrievalProxy` enters Retrieval Proxy, which calls the legacy GPR service through `RemoteGprOp`.
+Inside GprHub, a position-level generative switch selects:
 
-One position must use only one path to prevent duplicated retrieval and duplicated quota consumption. Requests containing multiple ad positions must be split at the service layer, with the correct `pos_id` and `exp_param` copied for each position instead of reusing those of the first position.
+- generative implementation: `GenerativeRecall` enters the six-operator DAG;
+- control implementation: the side path calls a Retrieval Proxy flow compatible with legacy GPR.
+
+Only an isolated simulation mode skips main retrieval under dedicated conditions. GprHub splits multi-position requests at the service layer and gives every position its own `pos_id`, experiment parameters, cache node, and monitoring tag.
 
 ## 3. New Generative Retrieval DAG
 
@@ -57,19 +59,21 @@ The six generative nodes have the following responsibilities:
 | KV Creative         | SID                                            | TID list                                          | Version mismatch, SID miss, empty shard response  |
 | Creative List Build | TIDs and scores                                | Creative list deduplicated by AID                 | Missing TID→AID mapping or complete deduplication |
 
-The path then meets the legacy path near `AdListMerge` and enters structurally equivalent quota, property-filtering, creative-service, and coarse-ranking subgraphs.
+The result then enters GprHub's common quota, property-filtering, creative-service, and coarse-ranking graph. The generative and legacy-control graphs are broadly isomorphic, although the current static graphs retain a small number of node differences that must be accounted for in attribution.
 
 ## 4. Ranking and Main-Path Merge
 
-The main path continues through conventional retrieval, coarse ranking, and the primary Ranking stage. Within GprHub, OneRec writes results to Retrieval Cache. On the Ranking side, `FetchGenerativeX` waits for `fill_done`, reads the result, and executes independent side-path fine ranking.
+The main path continues through conventional retrieval, coarse ranking, and primary Ranking. In GprHub, OneRec completes common filters and retrieval-side Scoring before writing Retrieval Cache. Ranking Fetch waits for `fill_done`, then performs candidate binding, lightweight DocWash, independent prediction/pCTR, and bid-context enrichment.
 
 ![Where the OneRec side path merges into the main path](assets/diagrams/onerec/en/merge-paths.svg)
 
 This topology provides isolation:
 
-- OneRec does not consume the primary fine-ranking candidate quota;
+- before merge, OneRec does not consume the main DocWash and main-prediction candidate set;
 - side-path results can be abandoned on failure without blocking the main path;
-- the final merge still applies cross-path deduplication, common constraints, and the auction.
+- the final merge combines and deduplicates at both AID and creative granularity before common reranking, constraints, and auction.
+
+See [[en/recommender-systems/onerec/source-level-recall-to-reranking|Recall, Coarse Ranking, Fine Ranking, and Reranking]] for the complete execution semantics.
 
 ## 5. Cache Synchronization Semantics
 
@@ -84,11 +88,12 @@ Mixer's retrieval RPC and Ranking Fetch cooperate asynchronously:
 
 ## 6. Critical Invariants
 
-- Each position selects exactly one of the new and legacy retrieval paths.
+- The main and GprHub side paths may run concurrently in production; inside GprHub, one position selects either the generative or legacy-GPR control implementation.
 - Encoder, Decoder, RQ-VAE codebook, and KV-creative versions agree.
 - SID packing and unpacking use the same number of levels and bit width at each level.
 - Decoder scores remain aligned with their SIDs.
 - Quota truncation occurs after Z-order/shard merging so that one shard cannot dominate.
 - Deduplication occurs by AID after TID→AID mapping; multiple creatives for one ad must not be counted as distinct ads.
 - Cache write volume and Ranking Fetch return volume can be cross-checked.
+- AID overlap, creative overlap, and final global-creative deduplication can be reconciled independently.
 - OneRec failure must not escalate into failure of the main path.

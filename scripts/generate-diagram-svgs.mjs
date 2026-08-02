@@ -1026,6 +1026,218 @@ function mergePaths(lang) {
   })
 }
 
+function oneRecFullOnlinePath(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "ONEREC · ONLINE TOPOLOGY",
+          title: "主路与 OneRec 侧路的完整在线拓扑",
+          subtitle: "线上主路与 GprHub 并发；侧路内部再选择生成式实现或旧 GPR 对照",
+          request: "Mixer 请求",
+          prod: "线上 / 灰度：两路并发",
+          ab: "侧路内部 A/B",
+          sim: "仿真隔离：可跳过主召回",
+          main: "主路",
+          mainCards: [
+            "Retrieval Proxy",
+            "过滤 · 配额 · 粗排",
+            "完整 DocWash",
+            "主预测 · pCTR · 出价上下文",
+          ],
+          side: "OneRec / GprHub 侧路",
+          sideCards: [
+            "生成式六节点\n或旧 GPR 对照",
+            "过滤 · 配额 · 粗排",
+            "异步缓存 → Ranking Fetch",
+            "侧路清洗 · 预测 · pCTR",
+          ],
+          merge: "按 AID 合并广告 · 按创意合并与全局去重",
+          rerank: "公共预测后处理 · 样式 / 模板 / 动态重排 · 拍卖输出",
+          failopen: "侧路 miss / timeout / empty：主路继续",
+        }
+      : {
+          kicker: "ONEREC · ONLINE TOPOLOGY",
+          title: "The Full Online Topology of the Main and OneRec Paths",
+          subtitle:
+            "Production runs the main path and GprHub concurrently; the side path then selects generative or legacy GPR",
+          request: "Mixer request",
+          prod: "production / gray: concurrent paths",
+          ab: "A/B inside the side path",
+          sim: "simulation isolation: main retrieval may be skipped",
+          main: "Main path",
+          mainCards: [
+            "Retrieval Proxy",
+            "Filter · quota · coarse rank",
+            "Full DocWash",
+            "Main prediction · pCTR · bid context",
+          ],
+          side: "OneRec / GprHub side path",
+          sideCards: [
+            "Six generative ops\nor legacy GPR control",
+            "Filter · quota · coarse rank",
+            "Async cache → Ranking Fetch",
+            "Side wash · prediction · pCTR",
+          ],
+          merge: "Merge ads by AID · merge and globally deduplicate creatives",
+          rerank: "Common prediction post-process · style / template / dynamic rerank · auction",
+          failopen: "side miss / timeout / empty: main path continues",
+        }
+
+  const laneCards = (x, y, labels, colors) =>
+    labels
+      .map((label, i) => {
+        const cy = y + i * 100
+        const lines = label.split("\n")
+        const item = card(x, cy, 480, 76, {
+          title: lines,
+          accent: colors[i],
+          fill: i % 2 === 0 ? C.white : colors[i] === C.teal ? C.tealSoft : C.blueSoft,
+          align: "center",
+          titleSize: lang === "zh" ? 16 : 15,
+          step: String(i + 1),
+        })
+        const connector =
+          i < labels.length - 1
+            ? lineArrow(x + 240, cy + 76, x + 240, cy + 92, {
+                color: colors[i],
+                width: 2.5,
+              })
+            : ""
+        return item + connector
+      })
+      .join("")
+
+  const body = `
+    ${card(555, 185, 290, 74, { title: t.request, accent: C.indigo, fill: C.indigoSoft, align: "center", titleSize: 20 })}
+    ${pill(60, 282, lang === "zh" ? 215 : 270, t.prod, C.blue, C.blueSoft, { h: 32, size: 12 })}
+    ${pill(555, 282, lang === "zh" ? 180 : 185, t.ab, C.teal, C.tealSoft, { h: 32, size: 12 })}
+    ${pill(1015, 282, lang === "zh" ? 300 : 330, t.sim, C.amber, C.amberSoft, { h: 32, size: 12 })}
+    ${section(35, 340, 620, 490, t.main, C.blue, { fill: "#f7faff" })}
+    ${laneCards(105, 405, t.mainCards, [C.blue, C.blue, C.indigo, C.indigo])}
+    ${section(745, 340, 620, 490, t.side, C.teal, { fill: "#f6fcfa" })}
+    ${laneCards(815, 405, t.sideCards, [C.teal, C.teal, C.amber, C.teal])}
+    ${pathArrow("M 625 259 C 540 300, 410 320, 345 395", { color: C.blue, width: 3 })}
+    ${pathArrow("M 775 259 C 860 300, 990 320, 1055 395", { color: C.teal, width: 3 })}
+    ${card(350, 885, 700, 82, { title: t.merge, accent: C.rose, fill: C.roseSoft, align: "center", titleSize: lang === "zh" ? 17 : 16 })}
+    ${pathArrow("M 345 781 C 365 835, 490 855, 550 875", { color: C.blue, width: 3 })}
+    ${pathArrow("M 1055 781 C 1035 835, 910 855, 850 875", { color: C.teal, width: 3 })}
+    ${card(350, 1020, 700, 82, { title: t.rerank, accent: C.green, fill: C.greenSoft, align: "center", titleSize: lang === "zh" ? 16 : 15 })}
+    ${lineArrow(700, 967, 700, 1009, { color: C.green, width: 3 })}
+    ${pill(955, 796, 350, t.failopen, C.rose, C.white, { h: 28, size: 11 })}
+    ${pathArrow("M 1295 743 C 1330 760, 1330 792, 1315 809", { color: C.rose, dashed: true, width: 2.2 })}
+  `
+  return frame({
+    width: 1400,
+    height: 1140,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function oneRecRankingMerge(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "RANKING · SOURCE WALKTHROUGH",
+          title: "OneRec 在 Ranking 中怎样进入主路",
+          subtitle: "两路独立完成候选绑定与预测，合并后共享重排图和最终约束",
+          main: "主路候选",
+          side: "GprHub 缓存候选",
+          mainSteps: ["完整 DocWash", "主预测请求", "pCTR · 出价 · 生态上下文"],
+          sideSteps: ["Fetch + 候选绑定", "GPR 轻量 DocWash", "侧路预测 · pCTR · 出价上下文"],
+          mergeTitle: "MergeMultiAds",
+          mergeBody: [
+            "AID 重合：合并召回来源与策略",
+            "同创意：合并模型分数；侧路独有创意追加",
+            "全局创意 ID 去重：出价校正值优先，其次看新鲜度",
+          ],
+          post: "预测后处理与推荐上下文合并",
+          rerank: "公共重排图",
+          rerankBody: [["样式重排"], ["模板重排"], ["动态策略图"], ["可选 OneRec", "相关性因子"]],
+          output: "统一约束 · 拍卖 · 响应",
+        }
+      : {
+          kicker: "RANKING · SOURCE WALKTHROUGH",
+          title: "How OneRec Enters the Main Path inside Ranking",
+          subtitle:
+            "The paths bind and score candidates independently, then share the reranking graph and final constraints",
+          main: "Main-path candidates",
+          side: "GprHub cached candidates",
+          mainSteps: ["Full DocWash", "Main prediction request", "pCTR · bid · ecosystem context"],
+          sideSteps: [
+            "Fetch + candidate binding",
+            "Lightweight GPR DocWash",
+            "Side prediction · pCTR · bid context",
+          ],
+          mergeTitle: "MergeMultiAds",
+          mergeBody: [
+            "AID overlap: merge retrieval sources and policies",
+            "Same creative: merge model scores; append side-only creatives",
+            "Global creative-ID dedup: adjusted value first, then freshness",
+          ],
+          post: "Prediction post-process + recommendation-context merge",
+          rerank: "Common reranking graph",
+          rerankBody: [
+            ["Style", "reranking"],
+            ["Template", "reranking"],
+            ["Dynamic strategy", "graph"],
+            ["Optional OneRec", "relevance factor"],
+          ],
+          output: "Common constraints · auction · response",
+        }
+
+  const verticalSteps = (x, labels, colors) =>
+    labels
+      .map((label, i) => {
+        const y = 300 + i * 128
+        return `${card(x, y, 430, 82, { title: label, accent: colors[i], fill: i === 1 ? C.white : colors[i] === C.teal ? C.tealSoft : C.blueSoft, align: "center", titleSize: lang === "zh" ? 16 : 15, step: String(i + 1) })}${
+          i < labels.length - 1
+            ? lineArrow(x + 215, y + 82, x + 215, y + 116, { color: colors[i], width: 2.5 })
+            : ""
+        }`
+      })
+      .join("")
+
+  const body = `
+    ${section(45, 205, 610, 480, t.main, C.blue, { fill: "#f7faff" })}
+    ${verticalSteps(135, t.mainSteps, [C.blue, C.indigo, C.blue])}
+    ${section(745, 205, 610, 480, t.side, C.teal, { fill: "#f6fcfa" })}
+    ${verticalSteps(835, t.sideSteps, [C.amber, C.teal, C.teal])}
+    ${section(350, 735, 700, 172, t.mergeTitle, C.rose, { fill: C.roseSoft })}
+    ${textBlock(700, 828, t.mergeBody, { size: lang === "zh" ? 14 : 13, weight: 600, fill: C.muted, lineHeight: 25 })}
+    ${pathArrow("M 350 638 C 370 690, 470 708, 540 725", { color: C.blue, width: 3 })}
+    ${pathArrow("M 1050 638 C 1025 690, 930 708, 860 725", { color: C.teal, width: 3 })}
+    ${card(440, 955, 520, 70, { title: t.post, accent: C.indigo, fill: C.indigoSoft, align: "center", titleSize: lang === "zh" ? 16 : 14 })}
+    ${lineArrow(700, 907, 700, 944, { color: C.indigo, width: 3 })}
+    ${section(350, 1070, 700, 205, t.rerank, C.green, { fill: "#f4fbf7" })}
+    ${t.rerankBody
+      .map((label, i) => {
+        const x = 380 + i * 162
+        return card(x, 1140, 145, 82, {
+          title: label,
+          accent: i === 3 ? C.amber : C.green,
+          fill: i === 3 ? C.amberSoft : C.white,
+          align: "center",
+          titleSize: lang === "zh" ? 13 : 12,
+        })
+      })
+      .join("")}
+    ${lineArrow(700, 1025, 700, 1058, { color: C.green, width: 3 })}
+    ${card(500, 1320, 400, 72, { title: t.output, accent: C.green, fill: C.greenSoft, align: "center", titleSize: 17 })}
+    ${lineArrow(700, 1275, 700, 1309, { color: C.green, width: 3 })}
+  `
+  return frame({
+    width: 1400,
+    height: 1440,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
 function debugTree(lang) {
   const t =
     lang === "zh"
@@ -1693,6 +1905,8 @@ const diagrams = [
   ["onerec", "overview", oneRecOverview],
   ["onerec", "retrieval-pipeline", retrievalPipeline],
   ["onerec", "merge-paths", mergePaths],
+  ["onerec", "full-online-path", oneRecFullOnlinePath],
+  ["onerec", "ranking-merge-detail", oneRecRankingMerge],
   ["onerec", "debugging-tree", debugTree],
   ["pint", "schwarz-waveform-relaxation", swr],
   ["pint", "method-selection", methodMap],

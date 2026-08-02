@@ -13,28 +13,40 @@ Parameters must be grouped by call path. The same name appearing in sampling, tr
 
 ## Online Generative Retrieval
 
-| Parameter          |         Current value/default | Hard constraint                           | Primary effect                             |
-| ------------------ | ----------------------------: | ----------------------------------------- | ------------------------------------------ |
-| `pam_beam_width`   |         New-path fallback 180 | $\le180$                                  | Decoder prefix-search width                |
-| legacy beam width  |                           200 | Constrained by legacy model/engine        | Legacy path only                           |
-| `beam_search_topk` |             Applied when $>0$ | $\le$ output candidates                   | Final SID truncation                       |
-| beam shard ratio   |        Strategy configuration | Shards must cover request budget in total | Shard load and retrieval distribution      |
-| tree level         |               From trie/model | Must agree with model and SID protocol    | Number of token-generation levels          |
-| multi-level        |                          true | Requires a multilevel model               | Whether generation proceeds level by level |
-| unique filter      |            Strategy-dependent | Consistent SID format                     | Removes duplicate SIDs                     |
-| KV/output quota    | Strategy value; fallback 1000 | Nonnegative and bounded                   | TID truncation after SID expansion         |
+| Parameter                        | Effective source/fallback                        | Hard constraint                                   | Primary effect                        |
+| -------------------------------- | ------------------------------------------------ | ------------------------------------------------- | ------------------------------------- |
+| `gpr_pam_beam_width`             | Position experiment; Entry falls back to 180     | Current Decoder maximum 180                       | Decoder search width, SID count, P99  |
+| Shared-structure initializer     | Source contains 200, but Entry overwrites it     | Must not be treated as the online effective value | Reveals default-override risk only    |
+| `gpr_beam_search_topk`           | Position experiment; effective when positive     | No greater than output SIDs                       | Final SID truncation                  |
+| `gpr_pam_beam_width_shard_ratio` | Position experiment; safe missing-value behavior | Shards must cover the request budget in aggregate | Shard load and candidate distribution |
+| Trie level/version               | Trie/model metadata                              | Must agree with model, SID packing, and KV        | Token levels and KV hit rate          |
+| Uniqueness filter                | Quota/policy plan                                | Consistent SID format                             | Duplicate-SID removal                 |
+| KV/output quota                  | Policy value; fallback 1000                      | Nonnegative and bounded                           | TID truncation after SID expansion    |
 
 See [[en/recommender-systems/onerec/beam-search\|Beam Search]] for detailed beam semantics.
 
 ## Online RPCs and Timeouts
 
-| Parameter             |         Current default/review value | Explanation                                   |
-| --------------------- | -----------------------------------: | --------------------------------------------- |
-| Datahub timeout       |                              2000 ms | Retrieves the sequence and generative context |
-| infer timeout         |                              3000 ms | Overall or segmented Encoder/Decoder/KV limit |
-| Ranking Fetch timeout | Must be no smaller than pipeline P99 | Waits for Retrieval Cache `fill_done`         |
+| Parameter                  | Source and precedence                                             | Explanation                                                                                |
+| -------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Datahub timeout            | Position/service configuration                                    | Retrieves sequence and generative context; RPC failure and business emptiness are separate |
+| Encoder/Decoder/KV timeout | Per-service stage configuration                                   | Each stage needs its own budget rather than one opaque infer timeout                       |
+| Ranking Fetch timeout      | Position-level `gpr_server_hub_timeout_ms`, then service fallback | Waits for Retrieval Cache `fill_done` and fails open at expiry                             |
+| Cache normal/hard expiry   | Cache-service configuration                                       | Cleans filled-but-unconsumed nodes and producers that never complete                       |
 
-One review snapshot had a Ranking Fetch timeout of only 140 ms while the integration pipeline took approximately 400–500 ms. These figures represent a configuration snapshot that still required correction; the value must be recalibrated against current P99 before release. A timeout cannot simply be increased because it shares the total main-path latency budget. The priority is to reduce pipeline latency and allow fast degradation of a failing side path.
+Fixed values in older review notes represent integration snapshots and must not be presented as current production settings. Fetch timeout has to cover an acceptable cache-ready percentile while remaining inside the total Ranking deadline. Increasing it may recover side-path coverage but can directly become final P99.
+
+## Ranking, Merge, and Reranking
+
+| Parameter                     | Effective rule                                             | Primary effect                                       |
+| ----------------------------- | ---------------------------------------------------------- | ---------------------------------------------------- |
+| `ranking_enable_fetch_gpr`    | Service capability and position experiment must both match | Whether the side path enters Ranking                 |
+| `gpr_bind_adtable_batch_size` | Code fallback 10                                           | Ad-table binding batches, throughput, tail latency   |
+| GPR prediction / pCTR gates   | Controlled by position experiment and Ranking capability   | Side-path fine-ranking score and cost                |
+| OneRec relevance gate         | Global gate + position experiment + designated scene       | Whether generative relevance enters common reranking |
+| Relevance threshold           | Score is clamped to $[0,1]$ after thresholding             | Factor coverage and reranking strength               |
+
+These parameters need main-only, side-only, AID-overlap, and creative-overlap buckets. Final ad count alone hides Fetch gating, missing binding fields, DocWash removal, and merge deduplication.
 
 ## Sampling and Policy Optimization
 
@@ -101,4 +113,6 @@ Each online request should report the final resolved values rather than only the
 3. Is the hard boundary imposed by code, the model, or hardware?
 4. Which metric changes first when the parameter changes?
 
-For beam width: Entry parses it, the fallback is 180, the model maximum is 180, and Decoder latency/SID count change first, followed by KV, coarse ranking, and the final ad count.
+For beam width: Entry parses it, the fallback is 180, the current Decoder maximum is 180, and Decoder latency/SID count change first, followed by KV, coarse ranking, Ranking Fetch coverage, and final ad count.
+
+See [[en/recommender-systems/onerec/source-level-recall-to-reranking|Recall, Coarse Ranking, Fine Ranking, and Reranking]] for the complete effect chain.
