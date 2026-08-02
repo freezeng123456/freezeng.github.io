@@ -178,7 +178,7 @@ At $\nu=0.1$, the measured Dirichlet and optimized Robin counts are 92 and 28. T
 Ventcel conditions use a higher-order local operator to approximate optimal nonlocal transmission. The Fourier-space optimal operator quoted in the paper has the form
 
 $$
-\partial_x-rac{1}{2\nu}
+\partial_x-\frac{1}{2\nu}
 \mathcal F^{-1}\!\left(1+\sqrt{1+4i\nu\omega}\right),
 $$
 

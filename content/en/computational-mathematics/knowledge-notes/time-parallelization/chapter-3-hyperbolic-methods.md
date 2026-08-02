@@ -15,13 +15,13 @@ tags:
 
 This page retains the chapter-level synthesis and the site's reproduction. The complete equation-by-equation, theorem-by-theorem, and figure-by-figure reading is split into the following pages:
 
-| Paper section | Close-reading page                                                       | Coverage                                                          |
-| ------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| 3.1–3.2       | [[chapter-3-1-history-and-swr\|History and Schwarz waveform relaxation]] | (3.1)–(3.4), Theorems 3.1–3.2, Figures 3.1–3.3                    |
-| 3.3           | [[chapter-3-2-idc\|Parallel integral deferred correction]]               | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
-| 3.4           | [[chapter-3-3-paraexp\|ParaExp]]                                         | (3.13)–(3.21), Theorem 3.4, Figures 3.7–3.8                       |
-| 3.5.1         | [[chapter-3-4-paradiag-i\|Direct ParaDiag]]                              | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
-| 3.5.2         | [[chapter-3-5-paradiag-ii\|Iterative ParaDiag]]                          | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
+| Paper section | Close-reading page                                                                                                                         | Coverage                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| 3.1–3.2       | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-1-history-and-swr\|History and Schwarz waveform relaxation]] | (3.1)–(3.4), Theorems 3.1–3.2, Figures 3.1–3.3                    |
+| 3.3           | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-2-idc\|Parallel integral deferred correction]]               | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
+| 3.4           | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-3-paraexp\|ParaExp]]                                         | (3.13)–(3.21), Theorem 3.4, Figures 3.7–3.8                       |
+| 3.5.1         | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i\|Direct ParaDiag]]                              | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
+| 3.5.2         | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-5-paradiag-ii\|Iterative ParaDiag]]                          | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
 
 ## 3.1 Why these methods can handle long-range propagation
 

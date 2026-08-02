@@ -15,12 +15,12 @@ tags:
 
 本页保留章节全景与本站复现实验。逐公式、逐定理和逐图表的论证拆在以下页面：
 
-| 论文小节   | 精读页                                                       | 覆盖范围                                                 |
-| ---------- | ------------------------------------------------------------ | -------------------------------------------------------- |
-| 4、4.1–4.2 | [[chapter-4-1-parareal\|历史脉络与 Parareal]]                | (4.1)–(4.9), Theorems 4.1–4.4, Figures 4.1–4.5           |
-| 4.3–4.4    | [[chapter-4-2-pfasst-mgrit\|PFASST 与 MGRIT]]                | (4.10)–(4.13), Theorems 4.5–4.6, Figures 4.6–4.11        |
-| 4.5        | [[chapter-4-3-diagonalized-parareal\|基于对角化的 Parareal]] | (4.14)–(4.29), Theorems 4.7–4.8, Figures 4.12–4.17       |
-| 4.6        | [[chapter-4-4-stmg\|时空多重网格]]                           | (4.30)–(4.44), Theorem 4.9, Figures 4.18–4.22, Table 4.1 |
+| 论文小节   | 精读页                                                                                                                      | 覆盖范围                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| 4、4.1–4.2 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-1-parareal\|历史脉络与 Parareal]]                | (4.1)–(4.9), Theorems 4.1–4.4, Figures 4.1–4.5           |
+| 4.3–4.4    | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-2-pfasst-mgrit\|PFASST 与 MGRIT]]                | (4.10)–(4.13), Theorems 4.5–4.6, Figures 4.6–4.11        |
+| 4.5        | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-3-diagonalized-parareal\|基于对角化的 Parareal]] | (4.14)–(4.29), Theorems 4.7–4.8, Figures 4.12–4.17       |
+| 4.6        | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-4-stmg\|时空多重网格]]                           | (4.30)–(4.44), Theorem 4.9, Figures 4.18–4.22, Table 4.1 |
 
 ## 4.1 抛物方法利用了什么
 

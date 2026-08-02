@@ -178,7 +178,7 @@ Figure 3.1(a) 画出 Dirichlet 和优化 Robin 条件的理论因子。$\nu$ 越
 Ventcel 条件用局部高阶算子逼近最优的非局部传输。论文给出的 Fourier 空间最优算子具有形式
 
 $$
-\partial_x-rac{1}{2\nu}
+\partial_x-\frac{1}{2\nu}
 \mathcal F^{-1}\!\left(1+\sqrt{1+4i\nu\omega}\right),
 $$
 

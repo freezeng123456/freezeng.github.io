@@ -195,14 +195,23 @@ const localizeKnowledgeBaseUi = () => {
         if (!(item instanceof HTMLElement)) return null
         const link = item.querySelector(linkSelector)
         if (!(link instanceof HTMLAnchorElement)) return null
-        const match = new URL(link.href, window.location.href).pathname.match(
-          /\\/time-parallelization\\/chapter-(\\d+)-/,
-        )
-        return match ? { item, chapter: Number(match[1]) } : null
+        const pathname = new URL(link.href, window.location.href).pathname
+        const slug = pathname.split("/").filter(Boolean).at(-1) ?? ""
+        const match = slug.match(/^chapter-(\\d+)(?:-(\\d+))?-/)
+        return match
+          ? {
+              item,
+              chapter: Number(match[1]),
+              closeReadingPage: match[2] ? Number(match[2]) : 0,
+            }
+          : null
       })
       .filter((entry) => entry !== null)
 
-    const orderedItems = [...chapterItems].sort((a, b) => a.chapter - b.chapter)
+    const orderedItems = [...chapterItems].sort(
+      (a, b) =>
+        a.chapter - b.chapter || a.closeReadingPage - b.closeReadingPage,
+    )
     const needsReordering = orderedItems.some(
       (entry, index) => entry.item !== chapterItems[index]?.item,
     )

@@ -15,13 +15,13 @@ tags:
 
 本页保留章节全景与本站复现实验。逐公式、逐定理和逐图表的完整推导拆在以下页面，便于按论文顺序阅读：
 
-| 论文小节 | 精读页                                                       | 覆盖范围                                                          |
-| -------- | ------------------------------------------------------------ | ----------------------------------------------------------------- |
-| 3.1–3.2  | [[chapter-3-1-history-and-swr\|历史脉络与 Schwarz 波形松弛]] | (3.1)–(3.4), Theorems 3.1–3.2, Figures 3.1–3.3                    |
-| 3.3      | [[chapter-3-2-idc\|并行积分延迟校正]]                        | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
-| 3.4      | [[chapter-3-3-paraexp\|ParaExp]]                             | (3.13)–(3.21), Theorem 3.4, Figures 3.7–3.8                       |
-| 3.5.1    | [[chapter-3-4-paradiag-i\|直接 ParaDiag]]                    | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
-| 3.5.2    | [[chapter-3-5-paradiag-ii\|迭代 ParaDiag]]                   | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
+| 论文小节 | 精读页                                                                                                                      | 覆盖范围                                                          |
+| -------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 3.1–3.2  | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-1-history-and-swr\|历史脉络与 Schwarz 波形松弛]] | (3.1)–(3.4), Theorems 3.1–3.2, Figures 3.1–3.3                    |
+| 3.3      | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-2-idc\|并行积分延迟校正]]                        | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
+| 3.4      | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-3-paraexp\|ParaExp]]                             | (3.13)–(3.21), Theorem 3.4, Figures 3.7–3.8                       |
+| 3.5.1    | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i\|直接 ParaDiag]]                    | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
+| 3.5.2    | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-5-paradiag-ii\|迭代 ParaDiag]]                   | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
 
 ## 3.1 这一组方法为何能处理长程传播
 
