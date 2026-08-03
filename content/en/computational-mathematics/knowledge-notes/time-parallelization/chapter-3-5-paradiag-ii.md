@@ -10,7 +10,7 @@ tags:
 ---
 
 > [!note] Reading scope
-> This page follows Section 3.5.2 (pp. 431–443). It covers equations (3.49)–(3.68), Theorems 3.8–3.9, and Figures 3.15–3.18. The discrete circulant-preconditioner route and the continuous head–tail waveform-relaxation route are derived separately and then shown to give the same ParaDiag-II iteration.
+> This page follows Section 3.5.2 (pp. 431–442). It covers equations (3.49)–(3.68), Theorems 3.8–3.9, and Figures 3.15–3.18. The discrete circulant-preconditioner route and the continuous head–tail waveform-relaxation route are derived separately and then shown to give the same ParaDiag-II iteration.
 
 ## 3.5.2 Iterative ParaDiag methods (ParaDiag-II)
 
@@ -75,7 +75,7 @@ $$
 Writing $C_l(:,1)$ for the first column,
 
 $$
-D_l=\operatorname{diag}\!\left(\sqrt{N_t},FC_l(:,1)\right),
+D_l=\operatorname{diag}\!\left(\sqrt{N_t}\,FC_l(:,1)\right),
 \qquad l=1,2. \tag{3.51}
 $$
 
@@ -134,7 +134,10 @@ $$
 \right. \tag{3.54}
 $$
 
-At $\gamma=0$ this is the classical fourth-order, conditionally stable Numerov method. For $\gamma\ge1/120$ it remains fourth order and becomes unconditionally stable.
+At $\gamma=0$ this is the classical fourth-order, conditionally stable Numerov method. For $\gamma\ge1/120$ it remains fourth order and becomes unconditionally stable (Chawla 1983).
+
+> [!warning] Source check: the last term of the second line of (3.54)
+> Both the journal version and the arXiv preprint print $\boldsymbol u_{n+1}+10\widetilde{\boldsymbol u}_n+\boldsymbol u_n$, but the Numerov scheme for $u''=f$ requires $\boldsymbol u_{n-1}$ as the last term. Substituting $\widetilde{\boldsymbol u}_n$ from the first line into the corrected second line reproduces exactly the $r_1=I_x-\frac{z}{12}+\frac{10\gamma z^2}{12}$ and $r_2=2I_x+\frac{10z}{12}+\frac{20\gamma z^2}{12}$ used later at (3.63), which the printed version does not; the printed version would also break the symmetry required by the two-step assumption in (3.64). The display above keeps the paper's typesetting and this note records the slip.
 
 ![Original Figure 3.15: spectra and GMRES residuals after circulant preconditioning for three PDE classes](assets/papers/time-parallelization/source-figures/figure-3-15.svg)
 
@@ -151,7 +154,11 @@ $$
 \alpha[\boldsymbol u^k(T)-\boldsymbol u^{k-1}(T)]+\boldsymbol u_0, \tag{3.55}
 $$
 
-with $\alpha\in\mathbb C$. At convergence, the terminal difference vanishes and the original initial condition is recovered. A generic one-step discretization is
+with $\alpha\in\mathbb C$. At convergence, the terminal difference vanishes and the original initial condition is recovered.
+
+Gander and Wu (2019) also supply the convergence theory for this route. At the continuous level, the error $\boldsymbol u^k(t)-\boldsymbol u(t)$ decays rapidly for both first- and second-order problems, at a rate determined by $\alpha$. The discrete statement is narrower: the algorithm (3.56) below preserves the continuous rate only for backward Euler and the trapezoidal rule. The paper notes that the proof relies on a special representation of $r_1^{-1}(\Delta tA)r_2(\Delta tA)$ that appears to hold only for those two integrators.
+
+A generic one-step discretization is
 
 $$
 \left\{
@@ -224,7 +231,7 @@ C_\alpha=V_\alpha D_\alpha V_\alpha^{-1}, \tag{3.59a}
 $$
 
 $$
-D_\alpha=\operatorname{diag}\!\left(\sqrt{N_t},F\Lambda_\alpha C_\alpha(:,1)\right),
+D_\alpha=\operatorname{diag}\!\left(\sqrt{N_t}\,F\Lambda_\alpha C_\alpha(:,1)\right),
 \quad
 V_\alpha=\Lambda_\alpha F^*,
 \quad
@@ -325,11 +332,17 @@ $$
 \quad
 \widetilde C_\alpha=
 \begin{bmatrix}
-1&&\alpha\\0&1&&\alpha\\1&0&1\\&\ddots&\ddots&\ddots\\&&1&0&1
+1&&&\alpha&\\0&1&&&\alpha\\1&0&1&&\\&\ddots&\ddots&\ddots&\\&&1&0&1
 \end{bmatrix}. \tag{3.65b}
 $$
 
-$C_\alpha$ and $\widetilde C_\alpha$ are simultaneously diagonalizable, so the three-stage solve (3.60) also applies.
+The two $\alpha$ entries sit in the last two columns, consistent with $\widetilde B=I+B^2$: its $\alpha$-circulant is $\widetilde C_\alpha=I+C_\alpha^2$, and $C_\alpha^2$ places its wrap-around entries exactly at $(1,N_t-1)$ and $(2,N_t)$. Hence $C_\alpha$ and $\widetilde C_\alpha$ are simultaneously diagonalizable and the three-stage solve (3.60) also applies.
+
+### Background on circulant preconditioning, and what is special here
+
+Replacing a Toeplitz matrix by a circulant one goes back to Strang (1986). Over the following three decades the properties of $\sigma(C^{-1}B)$ were characterized systematically for scalar Toeplitz and BTTB matrices (Chan and Ng 1996; Ng 2004; Bini, Latouche and Meini 2005). The paper stresses one key difference in ParaDiag II: the blocks $r_1$ and $r_2$ are themselves not Toeplitz, so systematic results on the eigenvalues of $\mathcal P_\alpha^{-1}\mathcal K$ are still lacking.
+
+Existing spectral analyses rely heavily on special properties of the integrator such as sparsity, Toeplitz structure and diagonal dominance. For parabolic problems see Gu and Wu (2020), Lin and Ng (2021), Wu and Zhou (2021a,b), Danieli, Southworth and Wathen (2022), Bouillon, Samaey and Meerbergen (2024), and Heinzelreiter and Pearson (2024); for hyperbolic problems see Danieli and Wathen (2021) and Liu and Wu (2020).
 
 ### Theorem 3.9: stability, spectral bounds, and rate
 
@@ -349,10 +362,10 @@ $$
 \qquad 0<\alpha<1. \tag{3.66, as printed}
 $$
 
-For a second-order two-step scheme, it claims the same bound when $|r_1^{-1}(z)r_2(z)|\le2$, with equality only at $z=0$.
+For a second-order two-step scheme, it claims the same bound when $|r_1^{-1}(z)r_2(z)|\le2$ for $z\in\sigma(\Delta t^2A)\subset\mathbb R_-$ (note the negative real axis here, not the left half-plane), with equality only at $z=0$.
 
 > [!warning] Check on the printed formula
-> For $0<\alpha<1$, the printed lower endpoint exceeds the upper endpoint. This note preserves the printed statement and records the likely correction as $1/(1+\alpha)\le|\lambda|\le1/(1-\alpha)$. The subsequent iteration bound is also consistent with swapping the two denominators. This is a reader's annotation, not a silent alteration of the paper.
+> For $0<\alpha<1$, the printed lower endpoint exceeds the upper endpoint, so the interval is empty and no matrix can satisfy it. The arXiv preprint prints the same ordering, so this is an author slip rather than a typesetting or extraction artifact. The correct statement swaps the endpoints: $1/(1+\alpha)\le|\lambda(\mathcal P_\alpha^{-1}\mathcal K)|\le1/(1-\alpha)$. Reducing to the scalar case, $\mathcal P_\alpha^{-1}\mathcal K$ has only the eigenvalues $1$ and $1/(1-\alpha\nu^{N_t})$ with $\nu=r_1^{-1}(z)r_2(z)$ and $|\nu|\le1$, so $|1-\alpha\nu^{N_t}|\in[1-\alpha,1+\alpha]$ and both endpoints are attained. The bound $\rho(\mathcal M)\le\alpha/(1-\alpha)$ that the paper derives from (3.66) is also self-consistent only if the upper endpoint is $1/(1-\alpha)$. This is a reader's annotation; the display above keeps the paper's typesetting.
 
 The stationary iteration matrix is
 
@@ -360,7 +373,7 @@ $$
 \mathcal M=I-P_\alpha^{-1}K, \tag{3.67}
 $$
 
-and the paper obtains $\rho(\mathcal M)\le\alpha/(1-\alpha)$. A smaller alpha therefore accelerates convergence. Stability of the underlying integrator is sufficient for the spectral result; the numerical evidence suggests it is close to necessary.
+and the paper obtains $\rho(\mathcal M)\le\alpha/(1-\alpha)$. A smaller alpha therefore accelerates convergence. Stability of the underlying integrator is sufficient for the spectral result, and the paper states that numerically it is also necessary.
 
 ![Original Figure 3.17: iteration spectra for the Numerov-type method on the two sides of its stability threshold](assets/papers/time-parallelization/source-figures/figure-3-17.svg)
 
@@ -420,7 +433,7 @@ $$
 P_\alpha=C_\alpha\otimes I_x-I_t\otimes A_l,
 $$
 
-where $A_l$ averages the Jacobian blocks. Generally $\rho(P_\alpha^{-1}J)>1$, so stationary iteration is unsuitable for this Jacobian solve. The preconditioned eigenvalues remain clustered, which is favorable for GMRES. Shorter time windows improve clustering and reduce inner iterations; the nearest Kronecker approximation from Section 3.5.1 can improve the preconditioner further.
+where $C_\alpha$ is the $\alpha$-circulant matrix of the $B$ above (not the pure shift matrix of (3.58c)) and $A_l$ averages the Jacobian blocks. Generally $\rho(P_\alpha^{-1}J)>1$, so stationary iteration is unsuitable for this Jacobian solve. The preconditioned eigenvalues remain clustered, which is favorable for GMRES. Shorter time windows improve clustering and reduce inner iterations; the nearest Kronecker approximation from Section 3.5.1 can improve the preconditioner further.
 
 ## Equation-and-figure audit
 
@@ -436,4 +449,4 @@ where $A_l$ averages the Jacobian blocks. Generally $\rho(P_\alpha^{-1}J)>1$, so
 
 ## Source
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.5.2, pp. 431–443.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.5.2, pp. 431–442.

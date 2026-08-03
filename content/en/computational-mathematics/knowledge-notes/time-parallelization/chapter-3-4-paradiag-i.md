@@ -10,15 +10,15 @@ tags:
 ---
 
 > [!note] Reading scope
-> This page follows Sections 3.5–3.5.1 (pp. 415–431) of the paper. It covers the ParaDiag classification, equations (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, and Tables 3.1–3.2. The truncation-error, roundoff-error, boundary-value-method, and nonlinear quasi-Newton branches are all retained.
+> This page follows Sections 3.5–3.5.1 (pp. 415–430) of the paper. It covers the ParaDiag classification, equations (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, and Tables 3.1–3.2. The truncation-error, roundoff-error, boundary-value-method, and nonlinear quasi-Newton branches are all retained.
 
-## 3.5.1 Direct ParaDiag methods (ParaDiag-I)
+## Section 3.5 introduction: the boundary between ParaDiag-I and ParaDiag-II
 
-### The boundary between ParaDiag-I and ParaDiag-II
-
-ParaDiag-I diagonalizes the time-stepping matrix directly. Distinct eigenvalues are obtained either by using unequal time steps or by changing the formula at the last time step. No outer iteration is required, but roundoff limits the number of time steps that can be processed in one window. With a geometric grid in double precision, the practical limit is usually about twenty steps.
+ParaDiag-I diagonalizes the time-stepping matrix directly. The paper notes that this is possible only when unequal time steps are used or when the formula is changed at the last time step. No outer iteration is required, but there are two limitations. Roundoff limits the number of time steps that can be processed in one window — with a geometric grid in double precision, the practical limit is usually about twenty steps. And the construction has **only been explored for a few low-order integrators**, namely backward Euler and the trapezoidal rule; it does not generalize easily to higher-order methods such as Runge–Kutta. A boundary-value-method discretization greatly improves the window length (Liu, Wang, Wu and Zhou 2022), but again only backward Euler and the trapezoidal rule apply.
 
 ParaDiag-II replaces the time matrix by a diagonalizable approximation and uses that approximation in a stationary iteration or as a Krylov preconditioner. It gives up a direct solve in exchange for higher-order integrators, longer windows, and better-conditioned transforms. The next close-reading page treats ParaDiag-II.
+
+## 3.5.1 Direct ParaDiag methods (ParaDiag-I)
 
 ### Backward Euler as an all-at-once system
 
@@ -107,7 +107,7 @@ Write $\mu=1+\varrho$. A large $\varrho$ enlarges the last steps and raises the 
 
 ### Theorem 3.5: balance formula for a first-order problem
 
-Assume $\sigma(A)\subset\mathbb R_-$ and $|\lambda(A)|\leq\lambda_{\max}$. Let $\boldsymbol u_{N_t}(\varrho)$ and $\boldsymbol u_{N_t}(0)$ be the geometric-grid and uniform-grid backward Euler solutions at $T$, and let $\widetilde{\boldsymbol u}_n(\varrho)$ denote the value computed through diagonalization. Then
+Theorem 3.5 is taken from Gander, Halpern, Ryan and Tran (2016a), Theorems 2 and 6. Assume $\sigma(A)\subset\mathbb R_-$ and $|\lambda(A)|\leq\lambda_{\max}$. Let $\boldsymbol u_{N_t}(\varrho)$ and $\boldsymbol u_{N_t}(0)$ be the geometric-grid and uniform-grid backward Euler solutions at $T$, and let $\widetilde{\boldsymbol u}_n(\varrho)$ denote the value computed through diagonalization. Then
 
 $$
 \left\|\boldsymbol u_{N_t}(\varrho)-\boldsymbol u_{N_t}(0)\right\|
@@ -220,7 +220,7 @@ Its all-at-once system is
 
 $$
 K\boldsymbol W=\boldsymbol b,
-\qquad K=B\otimes I_x-\widetilde B\otimes\mathbb A, \tag{3.33a}
+\qquad K=B\otimes I_{2N_x}-\widetilde B\otimes\mathbb A, \tag{3.33a}
 $$
 
 $$
@@ -235,7 +235,7 @@ Multiplication by $\widetilde B^{-1}\otimes I_x$ gives
 $$
 \mathcal K\boldsymbol W=\widetilde{\boldsymbol b},
 \quad
-\mathcal K=\widetilde B^{-1}B\otimes I_x-I_t\otimes\mathbb A,
+\mathcal K=\widetilde B^{-1}B\otimes I_{2N_x}-I_t\otimes\mathbb A,
 \quad
 \widetilde{\boldsymbol b}=(\widetilde B^{-1}\otimes I_x)\boldsymbol b. \tag{3.34}
 $$
@@ -261,7 +261,7 @@ $$
 
 ### Theorem 3.6: balance formula for a wave problem
 
-For $\lambda(A)\leq0$,
+Theorem 3.6 is taken from Gander, Halpern, Rannou and Ryan (2019), Theorems 2.1 and 2.11. For $\lambda(A)\leq0$,
 
 $$
 \left\|\boldsymbol u_{N_t}(\varrho)-\boldsymbol u_{N_t}(0)\right\|
@@ -342,7 +342,10 @@ B=\frac1{\Delta t}
 \end{bmatrix}. \tag{3.39b}
 $$
 
-**Theorem 3.7.** The matrix $B$ admits $B=VDV^{-1}$ with $\operatorname{Cond}(V)=O(N_t^2)$. The exponential ill-conditioning of the geometric grid has become polynomial.
+**Theorem 3.7.** The matrix $B$ admits $B=VDV^{-1}$ with $\operatorname{Cond}(V)=O(N_t^2)$. Closed forms for $V$, $V^{-1}$ and $D$ are given in Liu et al. (2022, Section 3).
+
+> [!note] Site supplement: comparison with the geometric grid
+> The paper does not place Theorem 3.7 next to the bounds of Theorems 3.5 and 3.6. Comparing them, the geometric grid's roundoff amplification carries $\varrho^{-(N_t-1)}$ and $2^{2N_t-1/2}/(N_t-1)!$, which grow very fast in $N_t$, whereas the BVM construction grows only polynomially as $O(N_t^2)$. Note, however, that the condition numbers measured in Table 3.1 under $\varrho_{\mathrm{num}}$ plateau as $N_t$ increases, a phenomenon the paper explicitly says merits further study, so the theoretical bounds should not be read as measured behaviour.
 
 For a second-order problem, apply the same BVM to $\boldsymbol w$:
 
@@ -417,13 +420,13 @@ $$
 \right). \tag{3.43b}
 $$
 
-The varying diagonal blocks destroy Kronecker separability. Approximate them by one average matrix:
+The varying diagonal blocks destroy Kronecker separability. Following an idea of Gander and Halpern (2017), the paper approximates them by one average matrix:
 
 $$
 A_k=\frac1{N_t}\sum_{n=1}^{N_t}\nabla f(\boldsymbol u_n^k,t_n),
 \qquad\text{or}\qquad
 A_k=\nabla f\!\left(
-\frac1{N_t}\sum_{n=1}^{N_t}\boldsymbol u_n^k,T
+\frac1{N_t}\sum_{n=1}^{N_t}\boldsymbol u_n^k,\frac{T}{N_t}
 \right). \tag{3.44}
 $$
 
@@ -455,18 +458,18 @@ Figure 3.13 uses periodic Burgers, $\Delta x=0.01$, and $N_t=T/\Delta t=200$. Th
 
 ![Original Table 3.2: Jacobian-solve counts for serial trapezoidal integration and parallel BVM ParaDiag-I](assets/papers/time-parallelization/source-figures/table-3-2.svg)
 
-With $N_t$ processors, all Jacobian systems in one ParaDiag-I iteration run concurrently, so the parallel count equals the outer iteration count. For $\nu=0.1$, Table 3.2 reports 401–443 serial solves and only 5–7 ParaDiag-I iterations. For $\nu=0.002$, the parallel count grows from 7 to 22 and the longer windows fail.
+With $N_t$ processors, all Jacobian systems in one ParaDiag-I iteration run concurrently, so the parallel count equals the outer iteration count; the corresponding serial trapezoidal count is $\sum_{n=1}^{N_t}\mathrm{It}_n$, the sum of the step-by-step Newton iterations. For $\nu=0.1$, Table 3.2 reports 401–443 serial solves and only 5–7 ParaDiag-I iterations. For $\nu=0.002$, the serial counts are 400/446/476/460/526 while the parallel count grows from 7 to 12 to 22, and the windows $T=0.8$ and $T=1.6$ fail. The paper explains the near-constant parallel count at $\nu=0.1$ by noting that $\nabla f$ varies little along the trajectory there, so a single $A_k$ represents all the blocks well.
 
 ### Nearest Kronecker approximation
 
-A single $I_t\otimes A_k$ also misses time-dependent amplitude changes. Use $\Phi_k\otimes A_k$, where $\Phi_k=\operatorname{diag}(\phi_1,\ldots,\phi_{N_t})$, and solve
+This acceleration is due to Liu and Wu (2022, Section 3.3). A single $I_t\otimes A_k$ misses time-dependent amplitude changes. Use $\Phi_k\otimes A_k$, where $\Phi_k=\operatorname{diag}(\phi_1,\ldots,\phi_{N_t})$, and solve
 
 $$
 \min_{\Phi_k\ \mathrm{diagonal}}
 \left\|\nabla F(\boldsymbol U^k)-\Phi_k\otimes A_k\right\|. \tag{3.47}
 $$
 
-Under the Frobenius norm, the nearest Kronecker approximation is
+Provided $\operatorname{trace}(A_k^\top A_k)>0$, the nearest Kronecker approximation under the Frobenius norm has the closed form (Van Loan and Pitsianis 1993, Theorem 3)
 
 $$
 \phi_n=
@@ -506,4 +509,4 @@ The two panels use different viscosities and compare $T=0.7$ with $T=1.3$. The n
 
 ## Source
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Sections 3.5–3.5.1, pp. 415–431.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Sections 3.5–3.5.1, pp. 415–430.

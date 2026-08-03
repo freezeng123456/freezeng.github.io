@@ -10,15 +10,15 @@ tags:
 ---
 
 > [!note] 阅读范围
-> 本页对应论文 Sections 3.5–3.5.1（pp. 415–431），覆盖 ParaDiag 总体分类、公式 (3.22)–(3.48)、Theorems 3.5–3.7、Figures 3.9–3.14 和 Tables 3.1–3.2。直接法的截断误差、舍入误差、BVM 以及非线性准 Newton 分支均保留。
+> 本页对应论文 Sections 3.5–3.5.1（pp. 415–430），覆盖 ParaDiag 总体分类、公式 (3.22)–(3.48)、Theorems 3.5–3.7、Figures 3.9–3.14 和 Tables 3.1–3.2。直接法的截断误差、舍入误差、BVM 以及非线性准 Newton 分支均保留。
 
-## 3.5.1 直接 ParaDiag 方法（ParaDiag-I）
+## Section 3.5 导论：ParaDiag-I 与 ParaDiag-II 的分界
 
-### ParaDiag-I 与 ParaDiag-II 的分界
-
-ParaDiag-I 直接对角化时间步进矩阵。为了让该矩阵具有互异特征值，需要使用非均匀时间步，或在最后一步换用另一种时间积分公式。它无需外层迭代，但舍入误差限制了单个时间窗内可并行的步数。双精度下，几何时间网格通常只能稳定处理约二十步。
+ParaDiag-I 直接对角化时间步进矩阵。论文指出，这只有在使用变时间步长、或在最后一步换用另一种时间积分公式时才可能做到。它无需外层迭代，但有两条限制：一是舍入误差限制了单个时间窗内可并行的步数，双精度下几何时间网格通常只能稳定处理约二十步；二是**只对少数低阶积分器成立**，实际探索过的只有后向 Euler 和梯形规则，不易推广到 Runge–Kutta 等高阶方法。改用 BVM 离散可以显著扩大时间窗（Liu、Wang、Wu 与 Zhou 2022），但同样只适用于后向 Euler 和梯形规则。
 
 ParaDiag-II 近似时间矩阵，并把对角化放入定常迭代或 Krylov 预条件。它牺牲直接性，换取更一般的积分器、更大的时间窗和条件良好的变换。下一页再完整讨论 ParaDiag-II。
+
+## 3.5.1 直接 ParaDiag 方法（ParaDiag-I）
 
 ### 后向 Euler 的全时间系统
 
@@ -108,7 +108,7 @@ $$
 
 ### Theorem 3.5：一阶问题的平衡公式
 
-假设 $\sigma(A)\subset\mathbb R_-$ 且 $|\lambda(A)|\leq\lambda_{\max}$。记 $\boldsymbol u_{N_t}(\varrho)$ 和 $\boldsymbol u_{N_t}(0)$ 为几何网格与均匀网格在 $T$ 的后向 Euler 解，$\widetilde{\boldsymbol u}_n(\varrho)$ 为对角化计算值。则
+Theorem 3.5 引自 Gander、Halpern、Ryan 与 Tran（2016a）的 Theorems 2 和 6。假设 $\sigma(A)\subset\mathbb R_-$ 且 $|\lambda(A)|\leq\lambda_{\max}$。记 $\boldsymbol u_{N_t}(\varrho)$ 和 $\boldsymbol u_{N_t}(0)$ 为几何网格与均匀网格在 $T$ 的后向 Euler 解，$\widetilde{\boldsymbol u}_n(\varrho)$ 为对角化计算值。则
 
 $$
 \left\|\boldsymbol u_{N_t}(\varrho)-\boldsymbol u_{N_t}(0)\right\|
@@ -225,7 +225,7 @@ $$
 $$
 K\boldsymbol W=\boldsymbol b,
 \qquad
-K=B\otimes I_x-\widetilde B\otimes\mathbb A, \tag{3.33a}
+K=B\otimes I_{2N_x}-\widetilde B\otimes\mathbb A, \tag{3.33a}
 $$
 
 $$
@@ -243,9 +243,9 @@ $$
 $$
 \mathcal K\boldsymbol W=\widetilde{\boldsymbol b},
 \qquad
-\mathcal K=\widetilde B^{-1}B\otimes I_x-I_t\otimes\mathbb A,
+\mathcal K=\widetilde B^{-1}B\otimes I_{2N_x}-I_t\otimes\mathbb A,
 \qquad
-\widetilde{\boldsymbol b}=(\widetilde B^{-1}\otimes I_x)\boldsymbol b. \tag{3.34}
+\widetilde{\boldsymbol b}=(\widetilde B^{-1}\otimes I_{2N_x})\boldsymbol b. \tag{3.34}
 $$
 
 时间矩阵满足
@@ -269,7 +269,7 @@ $$
 
 ### Theorem 3.6：波动问题的平衡公式
 
-对 $\lambda(A)\leq0$，几何网格与均匀网格的梯形解、以及对角化计算值满足
+Theorem 3.6 引自 Gander、Halpern、Rannou 与 Ryan（2019）的 Theorems 2.1 和 2.11。对 $\lambda(A)\leq0$，几何网格与均匀网格的梯形解、以及对角化计算值满足
 
 $$
 \left\|\boldsymbol u_{N_t}(\varrho)-\boldsymbol u_{N_t}(0)\right\|
@@ -355,7 +355,10 @@ B=\frac1{\Delta t}
 \end{bmatrix}. \tag{3.39b}
 $$
 
-**Theorem 3.7.** $B=VDV^{-1}$，且 $\operatorname{Cond}(V)=O(N_t^2)$。它把几何网格中的指数级病态改善为多项式增长。
+**Theorem 3.7.** $B=VDV^{-1}$，且 $\operatorname{Cond}(V)=O(N_t^2)$。$V$、$V^{-1}$ 和 $D$ 的闭式表达见 Liu 等（2022, Section 3）。
+
+> [!note] 本站补充：与几何网格的对比
+> 论文没有把 Theorem 3.7 与 Theorem 3.5/3.6 的界并排比较。从两组结果看，几何网格的舍入放大因子含 $\varrho^{-(N_t-1)}$ 和 $2^{2N_t-1/2}/(N_t-1)!$，随 $N_t$ 增长很快，而 BVM 构造给出 $O(N_t^2)$ 的多项式增长。但 Table 3.1 中按 $\varrho_{\mathrm{num}}$ 实测的条件数在 $N_t$ 增大后趋于平台，论文明确说明这一现象尚待进一步研究，所以不宜把理论界直接当作实测行为。
 
 二阶系统可先写成一阶系统，并对 $\boldsymbol w$ 使用同一 BVM：
 
@@ -434,14 +437,14 @@ $$
 \right). \tag{3.43b}
 $$
 
-时间变化的 Jacobian 块破坏 Kronecker 可分离性。论文用单一平均矩阵近似：
+时间变化的 Jacobian 块破坏 Kronecker 可分离性。论文借鉴 Gander 与 Halpern（2017）的思路，用单一平均矩阵近似：
 
 $$
 A_k=\frac1{N_t}\sum_{n=1}^{N_t}\nabla f(\boldsymbol u_n^k,t_n),
 \qquad\text{或}\qquad
 A_k=\nabla f\!\left(
 \frac1{N_t}\sum_{n=1}^{N_t}\boldsymbol u_n^k,
-T
+\frac{T}{N_t}
 \right). \tag{3.44}
 $$
 
@@ -473,18 +476,18 @@ Figure 3.13 使用周期 Burgers 方程、$\Delta x=0.01$，并保持 $N_t=T/\De
 
 ![原论文 Table 3.2：串行梯形规则与并行 BVM ParaDiag-I 的 Jacobian 求解次数](assets/papers/time-parallelization/source-figures/table-3-2.svg)
 
-若有 $N_t$ 个处理器，ParaDiag-I 每轮的 $N_t$ 个 Jacobian 系统同时求解，因此并行 Jacobian 求解次数等于外层轮数。Table 3.2 中，$\nu=0.1$ 时串行梯形需要 401–443 次，ParaDiag-I 只需 5–7 轮；$\nu=0.002$ 时 ParaDiag-I 从 7 增至 22 轮，并在更长窗口失效。
+若有 $N_t$ 个处理器，ParaDiag-I 每轮的 $N_t$ 个 Jacobian 系统同时求解，因此并行 Jacobian 求解次数等于外层轮数；串行梯形规则的对应计数是 $\sum_{n=1}^{N_t}\mathrm{It}_n$，即逐步 Newton 迭代数之和。Table 3.2 中，$\nu=0.1$ 时串行梯形需要 401–443 次，ParaDiag-I 只需 5–7 轮；$\nu=0.002$ 时串行计数为 400/446/476/460/526，ParaDiag-I 从 7 增至 12 再到 22 轮，并在 $T=0.8,1.6$ 失效。论文对 $\nu=0.1$ 下并行轮数几乎不随窗口变化给出的解释是：此时 $\nabla f$ 沿轨道变化很小，单个 $A_k$ 足以代表全部块。
 
 ### 最近 Kronecker 近似
 
-单一 $I_t\otimes A_k$ 忽略了 Jacobian 随时间的幅值变化。改用 $\Phi_k\otimes A_k$，其中 $\Phi_k=\operatorname{diag}(\phi_1,\ldots,\phi_{N_t})$，解
+这一加速来自 Liu 与 Wu（2022, Section 3.3）。单一 $I_t\otimes A_k$ 忽略了 Jacobian 随时间的幅值变化。改用 $\Phi_k\otimes A_k$，其中 $\Phi_k=\operatorname{diag}(\phi_1,\ldots,\phi_{N_t})$，解
 
 $$
 \min_{\Phi_k\ \mathrm{diagonal}}
 \left\|\nabla F(\boldsymbol U^k)-\Phi_k\otimes A_k\right\|. \tag{3.47}
 $$
 
-Frobenius 范数下的最近 Kronecker 近似为
+在 $\operatorname{trace}(A_k^\top A_k)>0$ 的前提下，Frobenius 范数下的最近 Kronecker 近似有闭式（Van Loan 与 Pitsianis 1993, Theorem 3）：
 
 $$
 \phi_n=
@@ -524,4 +527,4 @@ $\phi_n$ 的矩阵乘法代价较高，论文建议用粗空间模型离线计�
 
 ## 本页原文
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Sections 3.5–3.5.1, pp. 415–431.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Sections 3.5–3.5.1, pp. 415–430.

@@ -76,7 +76,7 @@ $$
 若 $C_l(:,1)$ 表示第一列，则
 
 $$
-D_l=\operatorname{diag}\!\left(\sqrt{N_t},F C_l(:,1)\right),
+D_l=\operatorname{diag}\!\left(\sqrt{N_t}\,F C_l(:,1)\right),
 \qquad l=1,2. \tag{3.51}
 $$
 
@@ -135,7 +135,10 @@ $$
 \right. \tag{3.54}
 $$
 
-$\gamma=0$ 给出经典 Numerov 四阶方法，但仅条件稳定；$\gamma\ge1/120$ 时保持四阶并达到无条件稳定。
+$\gamma=0$ 给出经典 Numerov 四阶方法，但仅条件稳定；$\gamma\ge1/120$ 时保持四阶并达到无条件稳定（Chawla 1983）。
+
+> [!warning] 原文公式核对：(3.54) 第二式末项
+> 期刊版与 arXiv 版在这里都印成 $\boldsymbol u_{n+1}+10\widetilde{\boldsymbol u}_n+\boldsymbol u_n$，但 $u''=f$ 的 Numerov 格式要求末项为 $\boldsymbol u_{n-1}$。把第一式的 $\widetilde{\boldsymbol u}_n$ 代入修正后的第二式，正好得到本页后面 (3.63) 处使用的 $r_1=I_x-\frac{z}{12}+\frac{10\gamma z^2}{12}$ 与 $r_2=2I_x+\frac{10z}{12}+\frac{20\gamma z^2}{12}$，而按印刷版则得不到；印刷版还会破坏格式的对称性，与 (3.64) 的两步对称假设冲突。上式保留原文排版，此处标注该笔误。
 
 ![原论文 Figure 3.15：三类 PDE 上循环预条件后的谱和 GMRES 残差](assets/papers/time-parallelization/source-figures/figure-3-15.svg)
 
@@ -153,6 +156,8 @@ $$
 $$
 
 其中 $\alpha\in\mathbb C$。收敛后括号内的差消失，初值回到 $\boldsymbol u_0$。
+
+Gander 与 Wu（2019）同时给出了这条路线的收敛理论。在连续层面，一阶和二阶问题的误差 $\boldsymbol u^k(t)-\boldsymbol u(t)$ 都以由 $\alpha$ 决定的速率快速衰减。离散层面的结论更受限：下面的算法 (3.56) 只在后向 Euler 和梯形规则两种积分器下保持连续层面的速率。论文说明其证明依赖 $r_1^{-1}(\Delta tA)r_2(\Delta tA)$ 的一种特殊表示，而这种表示似乎只对这两种方法成立。
 
 用一类单步公式离散：
 
@@ -230,7 +235,7 @@ C_\alpha=V_\alpha D_\alpha V_\alpha^{-1}, \tag{3.59a}
 $$
 
 $$
-D_\alpha=\operatorname{diag}\!\left(\sqrt{N_t},F\Lambda_\alpha C_\alpha(:,1)\right),
+D_\alpha=\operatorname{diag}\!\left(\sqrt{N_t}\,F\Lambda_\alpha C_\alpha(:,1)\right),
 \quad
 V_\alpha=\Lambda_\alpha F^*,
 \quad
@@ -334,15 +339,21 @@ $$
 \qquad
 \widetilde C_\alpha=
 \begin{bmatrix}
-1&&\alpha\\0&1&&\alpha\\1&0&1\\&\ddots&\ddots&\ddots\\&&1&0&1
+1&&&\alpha&\\0&1&&&\alpha\\1&0&1&&\\&\ddots&\ddots&\ddots&\\&&1&0&1
 \end{bmatrix}. \tag{3.65b}
 $$
 
-$C_\alpha$ 与 $\widetilde C_\alpha$ 可同时对角化，所以 (3.60) 的三步求解也适用于二阶预条件器。
+两个 $\alpha$ 位于最后两列，与 $\widetilde B=I+B^2$ 的 $\alpha$-循环化一致：$\widetilde C_\alpha=I+C_\alpha^2$，而 $C_\alpha^2$ 的绕回项恰好落在 $(1,N_t-1)$ 和 $(2,N_t)$。因此 $C_\alpha$ 与 $\widetilde C_\alpha$ 可同时对角化，(3.60) 的三步求解也适用于二阶预条件器。
+
+### 循环预条件的既有背景与本问题的特殊性
+
+用循环矩阵替换 Toeplitz 矩阵的想法来自 Strang（1986）。此后三十年里，$\sigma(C^{-1}B)$ 的性质在标量 Toeplitz 和 BTTB 情形都有系统结果（Chan 与 Ng 1996；Ng 2004；Bini、Latouche 与 Meini 2005）。论文强调 ParaDiag-II 与这些经典情形有一个关键差别：这里的块 $r_1,r_2$ 本身并不是 Toeplitz 矩阵，因此关于 $\mathcal P_\alpha^{-1}\mathcal K$ 特征值的系统性结果仍然缺乏。
+
+现有谱分析多依赖积分器的特殊性质，如稀疏性、Toeplitz 结构和对角占优。抛物情形见 Gu 与 Wu（2020）、Lin 与 Ng（2021）、Wu 与 Zhou（2021a,b）、Danieli、Southworth 与 Wathen（2022）、Bouillon、Samaey 与 Meerbergen（2024）以及 Heinzelreiter 与 Pearson（2024）；双曲情形见 Danieli 与 Wathen（2021）和 Liu 与 Wu（2020）。
 
 ### Theorem 3.9：稳定性、谱界与收敛因子
 
-对于一阶问题，如果 (3.63) 稳定，即
+Theorem 3.9 引自 Wu、Zhou 与 Zhou（2022），结论对一阶系统的任意稳定单步法、二阶系统的任意对称两步法都成立。对于一阶问题，如果 (3.63) 稳定，即
 
 $$
 |r_1^{-1}(z)r_2(z)|\le1,
@@ -358,10 +369,10 @@ $$
 \qquad 0<\alpha<1. \tag{3.66, as printed}
 $$
 
-二阶两步格式若满足 $|r_1^{-1}(z)r_2(z)|\le2$，且等号只在 $z=0$ 取得，也声称满足同一界。
+二阶两步格式若满足 $|r_1^{-1}(z)r_2(z)|\le2$（$z\in\sigma(\Delta t^2A)\subset\mathbb R_-$，注意这里是负实轴而非左半平面），且等号只在 $z=0$ 取得，也声称满足同一界。
 
 > [!warning] 原文公式核对
-> 对 $0<\alpha<1$，印刷式左端大于右端，区间为空。这里完整保留论文排版，并把疑似校正记为 $1/(1+\alpha)\le|\lambda|\le1/(1-\alpha)$。后文给出的迭代矩阵界也与“分母交换后的次序”相容。此处是读者核对后的注释，不改写原论文陈述。
+> 对 $0<\alpha<1$，印刷式左端大于右端，区间为空，任何矩阵都不可能满足。arXiv 预印本同一处的排版完全相同，因此这是作者的笔误而非排印或提取问题。正确形式应是两端互换：$1/(1+\alpha)\le|\lambda(\mathcal P_\alpha^{-1}\mathcal K)|\le1/(1-\alpha)$。理由是标量化后 $\mathcal P_\alpha^{-1}\mathcal K$ 的特征值只有 $1$ 和 $1/(1-\alpha\nu^{N_t})$ 两种，其中 $\nu=r_1^{-1}(z)r_2(z)$ 满足 $|\nu|\le1$，于是 $|1-\alpha\nu^{N_t}|\in[1-\alpha,1+\alpha]$，两端都可取到。论文随后由 (3.66) 推出的 $\rho(\mathcal M)\le\alpha/(1-\alpha)$ 也只有在上界为 $1/(1-\alpha)$ 时才自洽。此处是读者核对后的注释，正文仍保留原论文排版。
 
 定常迭代矩阵为
 
@@ -369,7 +380,7 @@ $$
 \mathcal M=I-P_\alpha^{-1}K, \tag{3.67}
 $$
 
-论文据此得到 $\rho(\mathcal M)\le\alpha/(1-\alpha)$。小 $\alpha$ 加快收敛，Figure 3.16 的实验与此吻合。底层积分器稳定是谱界成立的充分条件；论文的数值结果也表明它接近必要条件。
+论文据此得到 $\rho(\mathcal M)\le\alpha/(1-\alpha)$。小 $\alpha$ 加快收敛，Figure 3.16 的实验与此吻合。底层积分器稳定是谱界成立的充分条件；论文进一步声明，数值上稳定性也是必要条件。
 
 ![原论文 Figure 3.17：稳定阈值两侧的 Numerov 型方法迭代谱](assets/papers/time-parallelization/source-figures/figure-3-17.svg)
 
@@ -429,7 +440,7 @@ $$
 P_\alpha=C_\alpha\otimes I_x-I_t\otimes A_l,
 $$
 
-$A_l$ 为所有 $\nabla f(\boldsymbol u_n^l,t_n)$ 的平均。一般有 $\rho(P_\alpha^{-1}J)>1$，所以定常迭代 (3.61) 不适合该 Jacobian 系统；预条件谱仍会聚集，GMRES 因而有效。缩短时间窗会增强聚集并降低内层迭代数，Section 3.5.1 的最近 Kronecker 近似还可进一步改善预条件。
+其中 $C_\alpha$ 是上面这个 $B$ 的 $\alpha$-循环矩阵（不是 (3.58c) 中那个纯移位矩阵），$A_l$ 为所有 $\nabla f(\boldsymbol u_n^l,t_n)$ 的平均。一般有 $\rho(P_\alpha^{-1}J)>1$，所以定常迭代 (3.61) 不适合该 Jacobian 系统；预条件谱仍会聚集，GMRES 因而有效。缩短时间窗会增强聚集并降低内层迭代数，Section 3.5.1 的最近 Kronecker 近似还可进一步改善预条件。
 
 ## 公式与图表覆盖核对
 
@@ -445,4 +456,4 @@ $A_l$ 为所有 $\nabla f(\boldsymbol u_n^l,t_n)$ 的平均。一般有 $\rho(P_
 
 ## 本页原文
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.5.2, pp. 431–443.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.5.2, pp. 431–442.
