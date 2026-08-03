@@ -20,7 +20,9 @@ Chapter 2 showed that parabolic solutions are local in time except at very low f
 
 Chapter 4 exploits dissipation-induced temporal locality. Parareal, PFASST, MGRiT, and STMG handle linear and nonlinear problems effectively when diffusion is sufficient. Their performance degrades continuously toward weakly diffusive and hyperbolic regimes.
 
-Parareal has roots in multiple shooting, waveform relaxation, and the noniterative precursor of Nievergelt (1964). Lions et al. (2001) introduced the modern method independently. Later descendants include PITA, PFASST, MGRiT, and Parareal–ParaDiag combinations. Space–time multigrid followed another line: early schemes could not coarsen time effectively, while the temporal block-Jacobi smoother of Gander and Neumüller (2016) enabled scalable STMG.
+Parareal has roots in the noniterative precursor of Nievergelt (1964) and in multiple shooting (Bellen and Zennaro 1989; Chartier and Philippe 1993). Saha, Stadel and Tremaine (1997) had already presented the algorithm with a coarse model and noted its relation to waveform relaxation. Lions, Maday and Turinici (2001) introduced the modern method independently in the context of virtual control, emphasizing that it is non-intrusive. Convergence theory appears in Gander and Vandewalle (2007), Gander and Hairer (2008, 2014), and Gander and Lunet (2024). Later descendants include PITA (Farhat and Chandesris 2003; Farhat et al. 2006; Cortial and Farhat 2009), PFASST (Minion 2011; Emmett and Minion 2012; Minion et al. 2015), MGRiT (Falgout et al. 2014; Dobrev et al. 2017; Hessenthaler et al. 2020), and Parareal–ParaDiag combinations (Wu 2018; Gander and Wu 2020). Space–time multigrid followed another line, beginning with the parabolic multigrid of Hackbusch (1984) and the multigrid waveform relaxation of Lubich and Ostermann (1987); early schemes could not coarsen time effectively, while the temporal block-Jacobi smoother of Gander and Neumüller (2016) enabled scalable STMG.
+
+The paper adds two framing statements: Parareal can be regarded as a template for developing more efficient PinT methods, and Parareal-based methods use two grids (or more) in time while using just one grid in space.
 
 ## 4.2 Parareal
 
@@ -124,13 +126,27 @@ The strictly lower triangular structure also proves exactness at the first $k$ c
 
 ### Theorem 4.2: short-time superlinear and long-time linear convergence
 
-The lower triangular entries of $M_g^{-1}$ are powers of $R_g(z)$, so
+The error symbol here differs slightly from Theorem 4.1: $\boldsymbol e_n^k=V_A(\boldsymbol u_n^k-\boldsymbol u_n)$ is the modal error. The lower triangular entries of $M_g^{-1}$ are powers of $R_g(z)$, so
 
 $$
 M(z)=[R_f^J(z/J)-R_g(z)]\widetilde M(R_g(z)),
 $$
 
-where the first subdiagonal of $\widetilde M(\beta)$ is $1$ and deeper diagonals contain $\beta,\beta^2,\ldots$. Bounds on its powers give two regimes. For short horizons,
+where the first subdiagonal of $\widetilde M(\beta)$ is $1$ and deeper diagonals contain $\beta,\beta^2,\ldots$. Gander and Vandewalle (2007, Lemma 4.4) bound its powers by
+
+$$
+\|\widetilde M^k(R_g)\|_\infty\le
+\min\left\{
+\left(\frac{1-|R_g|^{N_t-1}}{1-|R_g|}\right)^k,
+\binom{N_t-1}{k}
+\right\}
+\quad(|R_g|<1),
+\qquad
+\|\widetilde M^k(R_g)\|_\infty\le\binom{N_t-1}{k}
+\quad(|R_g|=1),
+$$
+
+and the two regimes below come from the two branches: the binomial coefficient produces the $\prod_{j=1}^k(N_t-j)/k!$ of (4.5a), and the geometric sum produces the $N_t$-independent (4.5b). For short horizons,
 
 $$
 \max_n\|\boldsymbol e_n^k\|_\infty
@@ -206,17 +222,19 @@ $$
 \qquad J\ge J_{\min}. \tag{4.7}
 $$
 
-This factor is independent of $T$ and $N_t$. Suitable Radau IIA combinations can reduce the worst factor to about $0.068$.
+The theorem also assumes $A$ is negative semi-definite. This factor is independent of $T$ and $N_t$. The proof splits by case: $\mathcal F$ backward Euler in Mathew, Sarkis and Schaerer (2010); the trapezoidal rule, BDF2 and two SDIRK methods in Wu (2015) and Wu and Zhou (2015); general L-stable $\mathcal F$ in Yang, Yuan and Zhou (2023).
+
+The result originates in Gander and Vandewalle (2007, Table 5.1) **at the continuous level** (that is, with $\mathcal F$ the exact propagator $\exp(\Delta TA)$) and **for other coarse propagators**, where the contraction can be even better — about $0.068$ for Radau IIA. Note that what changes there is the coarse propagator, not the fine one.
 
 For an A-stable but non-L-stable fine method such as the trapezoidal rule, one instead has over a bounded spectrum
 
 $$
 \max_{z\in[0,z_{\max}]}\varrho_l(J,z)\approx0.3,
 \qquad
-J\ge J_{\min}=O(\log_2z_{\max}). \tag{4.8}
+J\ge J_{\min}=O(\log^2z_{\max}). \tag{4.8}
 $$
 
-More fine steps are needed to resolve the dissipative high-frequency physics. Equation (4.9) gives the two schemes explicitly:
+More fine steps are needed to resolve the dissipative high-frequency physics. This differs sharply from the case where $\mathcal F$ is the exact propagator $\exp(\Delta TA)$, for which a rate around $0.3$ holds already for $J\ge2$. Equation (4.8) was proved for the trapezoidal rule and a fourth-order Gauss Runge–Kutta method in Wu and Zhou (2015). Equation (4.9) gives the two schemes explicitly:
 
 $$
 \begin{array}{c|cc}
@@ -238,7 +256,10 @@ $$
 \qquad\text{(SDIRK23)}. \tag{4.9}
 $$
 
-The bound holds from $J_{\min}=2$ for SDIRK22 and from $J_{\min}=4$ for SDIRK23.
+The bound holds from $J_{\min}=2$ for SDIRK22 and from $J_{\min}=4$ for SDIRK23 (Wu 2015; Wu and Zhou 2015).
+
+> [!warning] Source check: the SDIRK22 Butcher tableau
+> Both the journal version and the arXiv preprint print the second SDIRK22 node as $c_2=1-\gamma$ and the weights as $b=(1-\gamma,1-\gamma)$ in (4.9). With $\gamma=(2-\sqrt2)/2$ those weights sum to $\sqrt2\ne1$, and $c_2$ contradicts the row sum $a_{21}+a_{22}=1$. The tableau above uses the standard L-stable, stiffly accurate SDIRK22, with $c_2=1$ and $b$ equal to the last row of $A$. The adjacent SDIRK23 matches the paper and needs no correction.
 
 ![Original Figure 4.3: Parareal convergence under different fine propagators and coarsening factors](assets/papers/time-parallelization/source-figures/figure-4-3.svg)
 
@@ -250,11 +271,15 @@ The remaining tests fix $T=4$, $\Delta T=0.1$, $\Delta x=1/128$, and $J=32$, wit
 
 ![Original Figure 4.4: long-time factors for every advection–diffusion eigenvalue at three viscosities](assets/papers/time-parallelization/source-figures/figure-4-4.svg)
 
-As viscosity falls, the advection–diffusion spectrum spreads from the negative real axis toward the imaginary axis and $\max\varrho_l$ approaches one.
+The experiment uses a zero source term and $u(x,0)=\sin(2\pi x)$. As viscosity falls, $\max\varrho_l$ approaches one: the three panels report $\varrho_{l,\max}=0.23$ at $\nu=1$, $0.39$ at $\nu=0.1$, and $0.79$ at $\nu=0.02$, so the coarse propagator becomes progressively less able to correct long-lived propagating modes.
 
 ![Original Figure 4.5: deterioration of Parareal on advection–diffusion and Burgers' equation as viscosity falls](assets/papers/time-parallelization/source-figures/figure-4-5.svg)
 
-Figure 4.5(a) confirms the modal prediction. Burgers' equation lacks an equally sharp modal theory, but panel (b) shows the same trend. Standard iteration typically diverges near $\nu\le10^{-3}$. The finite-step property remains algebraically true but loses practical value. Wave equations generally fail as well, marking the intended boundary of the methods in this chapter.
+Figure 4.5 uses the same three viscosities as Figure 4.4; panel (a) confirms the modal prediction. Burgers' equation lacks an equally sharp modal theory, but panel (b) shows the same trend. Standard iteration typically diverges near $\nu\le10^{-3}$. The finite-step property remains algebraically true but loses practical value.
+
+The mechanism the paper gives for the hyperbolic case is that arbitrarily small high-frequency components propagate arbitrarily far in space and time, so it is very hard to make $\mathcal G$ comparable to $\mathcal F$; and once $\mathcal G$ is made accurate enough, the coarse-grid correction itself becomes so expensive that the speed-up disappears. Analyses appear in Gander and Vandewalle (2007), Gander and Lunet (2020a,b), Gander, Lunet and Pogoželskytė (2023a), and Gander, Lunet, Ruprecht and Speck (2023b). This marks the intended boundary of the methods in this chapter.
+
+Section 4.2 closes by noting that MGRiT is the multilevel generalization of Parareal and that considerable effort has gone into making it work for advection (Howse et al. 2019; De Sterck et al. 2021, 2023a, 2023b). One route is a semi-Lagrangian optimized coarse solver, which remains difficult in the nonlinear case; another is the diagonalization-based coarse solver of Gander and Wu (2020), covered in Section 4.5 of this chapter.
 
 ## Equation, theorem, and figure audit
 

@@ -20,7 +20,9 @@ tags:
 
 第四章的方法主动利用耗散带来的时间局部性。Parareal、PFASST、MGRiT 和 STMG 在扩散充分时对线性、非线性问题都有效；把它们直接搬到弱扩散或双曲问题上，收敛会持续变慢，最后可能发散。
 
-Parareal 的思想可追溯到多重打靶、波形松弛和 Nievergelt (1964) 的非迭代先驱工作。Lions et al. (2001) 独立提出现代算法。随后出现 PITA、PFASST、MGRiT、Parareal–ParaDiag 组合。另一条路线是时空多重网格：早期方法难以有效粗化时间；Gander and Neumüller (2016) 通过时间块 Jacobi 平滑重新建立了可扩展的 STMG。
+Parareal 的思想可追溯到 Nievergelt（1964）的非迭代先驱工作和多重打靶（Bellen 与 Zennaro 1989；Chartier 与 Philippe 1993）。Saha、Stadel 与 Tremaine（1997）已经用粗模型给出过这一算法，并提到它与波形松弛的联系。Lions、Maday 与 Turinici（2001）在虚拟控制的背景下独立提出现代算法，并强调它是非侵入式的。收敛理论见 Gander 与 Vandewalle（2007）、Gander 与 Hairer（2008, 2014）以及 Gander 与 Lunet（2024）。随后出现 PITA（Farhat 与 Chandesris 2003；Farhat et al. 2006；Cortial 与 Farhat 2009）、PFASST（Minion 2011；Emmett 与 Minion 2012；Minion et al. 2015）、MGRiT（Falgout et al. 2014；Dobrev et al. 2017；Hessenthaler et al. 2020）以及 Parareal 与 ParaDiag 的组合（Wu 2018；Gander 与 Wu 2020）。另一条路线是时空多重网格，从 Hackbusch（1984）的抛物多重网格和 Lubich 与 Ostermann（1987）的多重网格波形松弛开始；早期方法难以有效粗化时间，Gander 与 Neumüller（2016）通过时间块 Jacobi 平滑重新建立了可扩展的 STMG。
+
+论文另给出两句定位：Parareal 可以看作发展更高效 PinT 方法的模板；基于 Parareal 的方法在时间上使用两层（或更多）网格，在空间上只用一层网格。
 
 ## 4.2 Parareal
 
@@ -124,13 +126,27 @@ $$
 
 ### Theorem 4.2：短时间超线性与长时间线性
 
-$M_g^{-1}$ 的下三角元素为 $R_g^j(z)$。因此
+本定理中的误差记号与 Theorem 4.1 略有不同：这里 $\boldsymbol e_n^k=V_A(\boldsymbol u_n^k-\boldsymbol u_n)$ 是模态误差。$M_g^{-1}$ 的下三角元素为 $R_g^j(z)$。因此
 
 $$
 M(z)=[R_f^J(z/J)-R_g(z)]\widetilde M(R_g(z)),
 $$
 
-其中 $\widetilde M(\beta)$ 的第一条次对角线为 $1$，再往下依次为 $\beta,\beta^2,\ldots$。对其幂取无穷范数得到两类界。
+其中 $\widetilde M(\beta)$ 的第一条次对角线为 $1$，再往下依次为 $\beta,\beta^2,\ldots$。Gander 与 Vandewalle（2007, Lemma 4.4）给出
+
+$$
+\|\widetilde M^k(R_g)\|_\infty\le
+\min\left\{
+\left(\frac{1-|R_g|^{N_t-1}}{1-|R_g|}\right)^k,
+\binom{N_t-1}{k}
+\right\}
+\quad(|R_g|<1),
+\qquad
+\|\widetilde M^k(R_g)\|_\infty\le\binom{N_t-1}{k}
+\quad(|R_g|=1),
+$$
+
+下面两类界正来自这两个分支：二项式系数给出 (4.5a) 中的 $\prod_{j=1}^k(N_t-j)/k!$，几何和给出与 $N_t$ 无关的 (4.5b)。
 
 短时间或较小 $N_t$ 下，
 
@@ -208,17 +224,19 @@ $$
 \qquad J\ge J_{\min}. \tag{4.7}
 $$
 
-这个常数不随 $T,N_t$ 增长。它来自负实谱、粗层的高频耗散和有限的粗细传播差。用 Radau IIA 等组合时最坏因子还可降到约 $0.068$。
+定理还假设 $A$ 为负半定矩阵。这个常数不随 $T,N_t$ 增长。证明分几种情形：$\mathcal F$ 取后向 Euler 见 Mathew、Sarkis 与 Schaerer（2010）；梯形规则、BDF2 和两种 SDIRK 方法见 Wu（2015）和 Wu 与 Zhou（2015）；一般 L-稳定 $\mathcal F$ 见 Yang、Yuan 与 Zhou（2023）。
+
+这一结果的源头是 Gander 与 Vandewalle（2007, Table 5.1）在**连续层面**（即 $\mathcal F$ 取精确传播子 $\exp(\Delta TA)$）对**其他粗传播子**得到的结论，收缩还可以更好，例如把粗传播子换成 Radau IIA 时约为 $0.068$。注意这里改变的是粗传播子，不是细传播子。
 
 若细传播仅 A-稳定，例如梯形规则，高频不会随 $|z|\to\infty$ 消失。此时在有限谱区间 $[0,z_{\max}]$ 上仍有
 
 $$
 \max_{z\in[0,z_{\max}]}\varrho_l(J,z)\approx0.3,
 \qquad
-J\ge J_{\min}=O(\log_2 z_{\max}). \tag{4.8}
+J\ge J_{\min}=O(\log^2 z_{\max}). \tag{4.8}
 $$
 
-细层需要更多小步，才能让其高频行为与物理耗散相符。
+细层需要更多小步，才能让其高频行为与物理耗散相符。这与 $\mathcal F$ 取精确传播子 $\exp(\Delta TA)$ 的情形差别很大：后者只要 $J\ge2$ 就有约 $0.3$ 的收敛速率。(4.8) 由 Wu 与 Zhou（2015）对梯形规则和一个四阶 Gauss Runge–Kutta 方法证明。
 
 论文还给出两个 SDIRK 方法：
 
@@ -242,7 +260,10 @@ $$
 \qquad\text{(SDIRK23)}. \tag{4.9}
 $$
 
-SDIRK22 的 (4.7) 在 $J_{\min}=2$ 成立，SDIRK23 需要 $J_{\min}=4$。
+SDIRK22 的 (4.7) 在 $J_{\min}=2$ 成立，SDIRK23 需要 $J_{\min}=4$（Wu 2015；Wu 与 Zhou 2015）。
+
+> [!warning] 原文公式核对：SDIRK22 的 Butcher 表
+> 期刊版与 arXiv 版在 (4.9) 中把 SDIRK22 的第二个节点印成 $c_2=1-\gamma$，权重印成 $b=(1-\gamma,1-\gamma)$。取 $\gamma=(2-\sqrt2)/2$ 时 $b$ 之和为 $\sqrt2\ne1$，且 $c_2$ 与该行系数之和 $a_{21}+a_{22}=1$ 不符。上表按标准的 L-稳定、刚性精确 SDIRK22（$c_2=1$，$b$ 取 $A$ 的最后一行）排印。相邻的 SDIRK23 与原文一致，无需修正。
 
 ![原论文 Figure 4.3：不同细传播子与粗细比带来的 Parareal 收敛差异](assets/papers/time-parallelization/source-figures/figure-4-3.svg)
 
@@ -254,11 +275,15 @@ Figure 4.3 取周期热方程、$\Delta x=1/256$、$\Delta T=0.1$、$T=4$、扩�
 
 ![原论文 Figure 4.4：三种黏性下每个对流扩散特征值对应的长时间因子](assets/papers/time-parallelization/source-figures/figure-4-4.svg)
 
-对流扩散的谱由负实轴附近逐渐向虚轴展开。$\nu$ 减小时，$\max\varrho_l$ 逼近 $1$，说明粗传播越来越难修正长期存在的传播模态。
+实验取零源项和 $u(x,0)=\sin(2\pi x)$。$\nu$ 减小时，$\max\varrho_l$ 逼近 $1$：三个面板分别标出 $\nu=1$ 时 $\varrho_{l,\max}=0.23$、$\nu=0.1$ 时 $0.39$、$\nu=0.02$ 时 $0.79$，说明粗传播越来越难修正长期存在的传播模态。
 
 ![原论文 Figure 4.5：对流扩散与 Burgers 方程上黏性降低导致的 Parareal 退化](assets/papers/time-parallelization/source-figures/figure-4-5.svg)
 
-Figure 4.5(a) 与谱因子预测一致。Burgers 方程缺少同样精确的模态分析，但 Figure 4.5(b) 呈现相同趋势；约在 $\nu\le10^{-3}$ 时常规迭代会发散。严格下三角结构保证的有限步性质仍在，只是需要的轮数失去实用价值。波动方程也通常不收敛，这正是第四章方法适用范围的边界。
+Figure 4.5 使用与 Figure 4.4 相同的三个黏性值，其中 (a) 与谱因子预测一致。Burgers 方程缺少同样精确的模态分析，但 Figure 4.5(b) 呈现相同趋势；约在 $\nu\le10^{-3}$ 时常规迭代会发散。严格下三角结构保证的有限步性质仍在，只是需要的轮数失去实用价值。
+
+论文对双曲情形给出的机制是：任意小的高频分量都会在时空中传播任意远，因此很难让 $\mathcal G$ 与 $\mathcal F$ 足够接近；而一旦把 $\mathcal G$ 做得足够准确，粗网格校正本身就变得昂贵，加速也随之消失。相关分析见 Gander 与 Vandewalle（2007）、Gander 与 Lunet（2020a,b）、Gander、Lunet 与 Pogoželskytė（2023a）以及 Gander、Lunet、Ruprecht 与 Speck（2023b）。这正是第四章方法适用范围的边界。
+
+论文 Section 4.2 最后指出，MGRiT 是 Parareal 的多层推广，并且为让它适用于输运问题已有不少工作（Howse et al. 2019；De Sterck et al. 2021, 2023a, 2023b），其中一条路线是使用半 Lagrange 优化粗求解器，但在非线性情形仍然困难；另一条路线是 Gander 与 Wu（2020）的对角化粗求解器，见本章第 4.5 节。
 
 ## 公式、定理与图表覆盖核对
 

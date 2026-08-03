@@ -10,13 +10,13 @@ tags:
 ---
 
 > [!note] Reading scope
-> This page follows Sections 4.3–4.4 (pp. 452–460). It covers equations (4.10)–(4.13), Theorems 4.5–4.6, and Figures 4.6–4.11. PFASST is taken down to its collocation matrices, transfer operators, and SDC approximation; MGRiT is derived as overlapping Parareal.
+> This page follows Sections 4.3–4.4 (pp. 452–461). It covers equations (4.10)–(4.13), Theorems 4.5–4.6, and Figures 4.6–4.11. PFASST is taken down to its collocation matrices, transfer operators, and SDC approximation; MGRiT is derived as overlapping Parareal.
 
 ## 4.3 PFASST
 
 ### Origin and two node sets
 
-PFASST was introduced by Emmett and Minion (2012). Its precursor replaced a complete Parareal fine solve with one spectral deferred-correction sweep. The later algebraic description views PFASST as temporal multigrid with collocation on the fine level and low-order SDC as a smoother.
+PFASST was introduced by Emmett and Minion (2012). Its precursor is due to Minion (2010), who replaced a complete Parareal fine solve with one spectral deferred-correction sweep (SDC; Dutt et al. 2000). Minion et al. (2015) gave the algebraic description, and Bolten, Moser and Speck (2017) read PFASST as temporal multigrid, with a convergence analysis in Bolten, Moser and Speck (2018): collocation on the fine level, low-order SDC as a smoother. Applications appear in Speck et al. (2012, 2014). The paper also cautions that a clear description and theoretical analysis of PFASST are rather challenging.
 
 Split $(0,T)$ into $N_t$ large intervals. On every $[T_n,T_{n+1}]$, define $M_f$ fine and $M_c$ coarse nodes
 
@@ -103,23 +103,23 @@ The block-iteration form of PFASST is
 
 $$
 \boldsymbol u_{n+1}^{k+1}
-=B_{01}\boldsymbol u_{n+1}^k
-+B_{10}(\boldsymbol\chi\boldsymbol u_n^{k+1}+\Delta t\boldsymbol b_n)
-+B_{00}(\boldsymbol\chi\boldsymbol u_n^k+\Delta t\boldsymbol b_n),
+=\mathbf B_1^0\boldsymbol u_{n+1}^k
++\mathbf B_0^1(\boldsymbol\chi\boldsymbol u_n^{k+1}+\Delta t\boldsymbol b_n)
++\mathbf B_0^0(\boldsymbol\chi\boldsymbol u_n^k+\Delta t\boldsymbol b_n),
 $$
 
 with
 
 $$
 \begin{aligned}
-B_{01}&=[I_f-T_{c\to f}\Phi_c^{-1}T_{f\to c}\Phi_f]
+\mathbf B_1^0&=[I_f-T_{c\to f}\Phi_c^{-1}T_{f\to c}\Phi_f]
 (I_f-\widetilde\Phi_f^{-1}\Phi_f),\\
-B_{10}&=T_{c\to f}\Phi_c^{-1}T_{f\to c},\\
-B_{00}&=[I_f-T_{c\to f}\Phi_c^{-1}T_{f\to c}\Phi_f]\widetilde\Phi_f^{-1}.
+\mathbf B_0^1&=T_{c\to f}\Phi_c^{-1}T_{f\to c},\\
+\mathbf B_0^0&=[I_f-T_{c\to f}\Phi_c^{-1}T_{f\to c}\Phi_f]\widetilde\Phi_f^{-1}.
 \end{aligned}
 $$
 
-These blocks represent fine SDC smoothing, new-iterate coarse propagation, and old-iterate correction. The matrix $\widetilde\Phi_f$ is an inexpensive approximation of the fine collocation matrix.
+The subscript records the time offset and the superscript the iteration offset, following the paper's notation. These blocks represent fine SDC smoothing, new-iterate coarse propagation, and old-iterate correction. The matrix $\widetilde\Phi_f$ is an inexpensive approximation of the fine collocation matrix.
 
 ### SDC approximation (4.11) and Figure 4.6
 
@@ -132,7 +132,22 @@ $$
 \quad m=0,\ldots,M_f-1. \tag{4.11}
 $$
 
-Its matrix combines node-spacing diagonal blocks with a lower bidiagonal difference matrix and $\Delta tA$. Solving it is one low-order SDC sweep rather than a full collocation solve.
+Its matrix is the Kronecker product of a lower bidiagonal difference matrix with $I_x$, minus the Kronecker product of the node-gap diagonal matrix with $\Delta tA$:
+
+$$
+\widetilde{\boldsymbol\phi}_f=
+\begin{bmatrix}
+1\\-1&1\\&\ddots&\ddots\\&&-1&1
+\end{bmatrix}\otimes I_x
+-\Delta t
+\begin{bmatrix}
+\tau_1^f-\tau_0^f\\
+&\ddots\\
+&&\tau_{M_f}^f-\tau_{M_f-1}^f
+\end{bmatrix}\otimes A.
+$$
+
+Solving it is one low-order SDC sweep rather than a full collocation solve.
 
 The experiment uses $T=3$, periodic boundaries, zero initial data, source (2.4) with $\sigma=1000$, $\Delta x=1/128$, and $\Delta t=1/64$. Fine Radau IIA nodes are
 
@@ -140,17 +155,30 @@ $$
 \left\{0,\frac{4-\sqrt6}{10},\frac{4+\sqrt6}{10},1\right\},
 $$
 
-and coarse nodes are $\{0,1/3,1\}$. The paper gives the resulting $Q_f,Q_c$ and numerical transfer matrices, all determined by the node sets and Lagrange interpolation.
+that is $M_f=3$; the coarse nodes are $\{0,1/3,1\}$, that is $M_c=2$, with Radau IIA on both levels. The paper gives the resulting $Q_f,Q_c$ and the numerical transfer matrices
+
+$$
+T^{c\to f}=
+\begin{bmatrix}1.2674&-0.2674\\0.5325&0.4674\\0&1\end{bmatrix},
+\qquad
+T^{f\to c}=
+\begin{bmatrix}0.5018&0.6833&-0.1851\\0&0&1\end{bmatrix},
+$$
+
+all determined by the node sets and Lagrange interpolation.
 
 ![Original Figure 4.6: PFASST error for the heat equation and advection–diffusion at three viscosities](assets/papers/time-parallelization/source-figures/figure-4-6.svg)
 
-Heat converges fastest. As advection–diffusion viscosity decreases, persistent high frequencies become harder for the coarse collocation level to represent, reproducing the coarse–fine mismatch mechanism of Parareal.
+The three advection–diffusion curves use $\nu=0.1,10^{-3},10^{-4}$, with the iteration index running to $300$. Heat and $\nu=0.1$ reach $10^{-12}$ near $k\approx90$–95, $\nu=10^{-3}$ near $120$, and $\nu=10^{-4}$ near $290$. The reason the paper gives is that the coarse propagator is no longer good enough for small $\nu$ once advection dominates.
+
+> [!note] Site supplement: relation to Parareal
+> In the language of Section 4.2 this is the same coarse–fine mismatch mechanism: persistent high frequencies become harder for the coarse collocation level to represent. The paper does not draw that comparison in this section.
 
 ## 4.4 MGRiT
 
 ### As overlapping Parareal
 
-MGRiT also admits algebraic-multigrid and block-iteration interpretations. Two-level FCF relaxation on a nonlinear system is
+MGRiT was introduced by Falgout et al. (2014) and also admits algebraic-multigrid and block-iteration interpretations. Two-level FCF relaxation on a nonlinear system is
 
 $$
 \boldsymbol u_0^{k+1}=\boldsymbol u_0,
@@ -174,11 +202,11 @@ One iteration uses two fine solves, compared with one for Parareal.
 
 ![Original Figure 4.7: FCF-MGRiT as Parareal with one coarse-interval overlap](assets/papers/time-parallelization/source-figures/figure-4-7.svg)
 
-The extra F relaxation advances old-iterate information across one additional coarse interval. The global error therefore vanishes in at most $\lceil N_t/2\rceil$ iterations. More generally, $F(CF)^\nu$ corresponds to overlap $\nu\Delta T$.
+The extra CF relaxation advances old-iterate information across one additional coarse interval. The global error therefore vanishes in at most $\lceil N_t/2\rceil$ iterations. More generally, $F(CF)^\nu$ corresponds to overlap $\nu\Delta T$. These results are Theorem 5, Theorem 6 and Corollary 1 of Gander et al. (2018b); Theorem 6 is a superlinear convergence result for nonlinear problems.
 
 ### Theorem 4.5: long-time modal factor
 
-Under the notation of Theorem 4.2 and $|R_g(z)|<1$,
+Theorem 4.5 is taken from Dobrev et al. (2017). Under the notation and assumptions of Theorem 4.2 ($\boldsymbol e_n^k=V_A(\boldsymbol u_n^k-\boldsymbol u_n)$, with $A$ diagonalizable and $\sigma(A)\subset\mathbb C_-$) and $|R_g(z)|<1$,
 
 $$
 \max_n\|\boldsymbol e_n^k\|_\infty
@@ -200,7 +228,7 @@ $$
 =|R_f^J(z/J)|\,\varrho_{l,\mathrm{Parareal}}.
 $$
 
-The extra F relaxation contributes one fine-propagation contraction and costs one additional parallel fine solve.
+Provided $|R_f(z)|\le1$, the extra CF relaxation contributes one fine-propagation contraction and costs one additional parallel fine solve.
 
 ![Original Figure 4.8: complex-plane convergence regions for one MGRiT iteration and two work-matched Parareal iterations](assets/papers/time-parallelization/source-figures/figure-4-8.svg)
 
@@ -208,7 +236,7 @@ Figure 4.8 uses backward Euler $R_g(z)=1/(1-z)$ and exact fine propagation $R_f(
 
 ### Theorem 4.6: work-normalized constants
 
-For an L-stable fine method and $J=O(1)$, the worst negative-real-axis factors with backward Euler coarse propagation are
+Theorem 4.6 is taken from Wu and Zhou (2019). For an L-stable fine method and $J=\Delta T/\Delta t=O(1)$, the worst negative-real-axis factors with backward Euler coarse propagation are
 
 $$
 \max\varrho_l\approx
@@ -243,24 +271,24 @@ with backward Euler coarse and SDIRK22 fine propagation.
 
 ![Original Figure 4.9: modal-factor distributions for heat and ADE at two viscosities](assets/papers/time-parallelization/source-figures/figure-4-9.svg)
 
-Figure 4.9 places MGRiT in the top row, group (a), and Parareal in the bottom row, group (b). The columns are heat, ADE with $\nu=0.1$, and ADE with $\nu=0.01$. The annotated maxima are $0.08375,0.2718,0.9021$ for MGRiT and $0.2822,0.4453,0.9986$ for Parareal. In the first two columns, the MGRiT factor is roughly comparable to the square of the Parareal factor. In the third column, both are close to one because the coarse propagator no longer represents the long-lived weak-diffusion modes accurately.
+Figure 4.9 places MGRiT in the top row, group (a), and Parareal in the bottom row, group (b). The columns are heat, ADE with $\nu=0.1$, and ADE with $\nu=0.01$. The annotated maxima are $0.08375,0.2718,0.9021$ for MGRiT and $0.2822,0.4453,0.9986$ for Parareal. In the first two columns, the MGRiT factor is roughly comparable to the square of the Parareal factor. In the third column, both are close to one; the reason the paper gives is that the coarse propagator is no longer good enough for small $\nu$ once advection dominates.
 
 ![Original Figure 4.10: measured Parareal and MGRiT errors after matching the number of fine solves](assets/papers/time-parallelization/source-figures/figure-4-10.svg)
 
-The four panels in Figure 4.10 are heat, ADE with $\nu=0.1$, ADE with $\nu=0.01$, and ADE with $\nu=0.002$. Each plotted Parareal unit contains two iterations. The first two panels show closely matched curves. At $\nu=0.01$, both are slow and Parareal deteriorates more because it inserts the inaccurate coarse solve after each fine solve. At $\nu=0.002$, both diverge; the maximum modal factors are $1.4211$ and $1.2812$. The modal quantities in Figure 4.9 and measured curves in Figure 4.10 therefore correspond case by case across the four diffusion regimes.
+The four panels in Figure 4.10 are heat, ADE with $\nu=0.1$, ADE with $\nu=0.01$, and ADE with $\nu=0.002$. Each plotted Parareal unit contains two iterations. The first two panels show closely matched curves. At $\nu=0.01$, both are slow and Parareal deteriorates more because it inserts the inaccurate coarse solve after each fine solve. A dash-dotted line marks the discretization truncation error $\max\{\Delta t^2,\Delta x^2\}$, beyond which one would not iterate in practice. At $\nu=0.002$, both diverge; the maximum modal factor is $1.4211$ for Parareal and $1.2812$ for MGRiT (these two numbers appear only in the paper's running text, since Figure 4.9 plots just the first three diffusion regimes).
 
 The nonlinear Burgers test uses homogeneous Dirichlet data, the same initial condition, $T=5$, $\Delta T=1/16$, $\Delta x=1/160$, $J=10$, centered differences, backward Euler coarse propagation, and SDIRK22 fine propagation.
 
 ![Original Figure 4.11: work-matched comparison on Burgers' equation at three viscosities](assets/papers/time-parallelization/source-figures/figure-4-11.svg)
 
-The three panels from left to right use $\nu=0.5,0.01,0.002$. In the first two, one FCF-MGRiT iteration behaves like two Parareal iterations. At $\nu=0.002$, both curves pass through a long slow phase before their later rapid decrease. The two methods deteriorate together as viscosity falls, matching the nonlinear Lipschitz analysis.
+The three panels from left to right use $\nu=0.5,0.01,0.002$. The paper's conclusion is that **for each** $\nu$ one FCF-MGRiT iteration behaves like two Parareal iterations, as in the linear results of Figure 4.10, provided the coarse solver is reasonably accurate. At $\nu=0.002$, both curves pass through a long slow phase before their later rapid decrease, so the two methods deteriorate together as viscosity falls.
 
 ## Equation, theorem, and figure audit
 
 | Source item                                  | Paper section | Coverage                                                                  |
 | -------------------------------------------- | ------------- | ------------------------------------------------------------------------- |
 | (4.10)                                       | 4.3           | fine/coarse nodes, copying matrix, collocation system                     |
-| Lagrange transfer and PFASST block iteration | 4.3           | $T_{c\to f},T_{f\to c}$ and $B_{01},B_{10},B_{00}$                        |
+| Lagrange transfer and PFASST block iteration | 4.3           | $T_{c\to f},T_{f\to c}$ and $\mathbf B_1^0,\mathbf B_0^1,\mathbf B_0^0$   |
 | (4.11), Figure 4.6                           | 4.3           | implicit-Euler SDC, Radau nodes, PFASST test                              |
 | (4.12), Figure 4.7                           | 4.4           | FCF update, two fine solves, overlap, finite-step property                |
 | (4.13), Theorem 4.5, Figure 4.8              | 4.4           | MGRiT factor, Parareal relation, work-matched regions                     |
@@ -269,4 +297,4 @@ The three panels from left to right use $\nu=0.5,0.01,0.002$. In the first two, 
 
 ## Source
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Sections 4.3–4.4, pp. 452–460.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Sections 4.3–4.4, pp. 452–461.

@@ -10,13 +10,13 @@ tags:
 ---
 
 > [!note] 阅读范围
-> 本页对应论文 Sections 4.3–4.4（pp. 452–460），覆盖公式 (4.10)–(4.13)、Theorems 4.5–4.6 和 Figures 4.6–4.11。PFASST 的配置方程、层间传递、SDC 近似以及 MGRiT 的重叠解释均展开到可实现的矩阵形式。
+> 本页对应论文 Sections 4.3–4.4（pp. 452–461），覆盖公式 (4.10)–(4.13)、Theorems 4.5–4.6 和 Figures 4.6–4.11。PFASST 的配置方程、层间传递、SDC 近似以及 MGRiT 的重叠解释均展开到可实现的矩阵形式。
 
 ## 4.3 PFASST
 
 ### 来源与两层节点
 
-PFASST 由 Emmett and Minion (2012) 提出。早期思路是用一次 SDC 迭代替代 Parareal 中昂贵的完整细传播。后来建立的代数表述把 PFASST 看作以配置方程为细层、以低阶 SDC 为平滑器的时间多重网格。
+PFASST 由 Emmett 与 Minion（2012）提出。早期思路来自 Minion（2010）：用一次 SDC 迭代（Dutt et al. 2000）替代 Parareal 中昂贵的完整细传播。Minion 等（2015）给出代数表述，Bolten、Moser 与 Speck（2017）把 PFASST 读作时间多重网格并在 (2018) 给出收敛分析，即以配置方程为细层、以低阶 SDC 为平滑器。应用见 Speck 等（2012, 2014）。论文同时提醒，PFASST 的清晰描述和理论分析都相当困难。
 
 把 $(0,T)$ 分成 $N_t$ 个大区间 $[T_n,T_{n+1}]$。每个区间内设置 $M_f$ 个细节点和 $M_c$ 个粗节点：
 
@@ -101,19 +101,21 @@ $$
 
 $$
 \boldsymbol u_{n+1}^{k+1}
-=B_{01}\boldsymbol u_{n+1}^k
-+B_{10}(\boldsymbol\chi\boldsymbol u_n^{k+1}+\Delta t\boldsymbol b_n)
-+B_{00}(\boldsymbol\chi\boldsymbol u_n^k+\Delta t\boldsymbol b_n),
+=\mathbf B_1^0\boldsymbol u_{n+1}^k
++\mathbf B_0^1(\boldsymbol\chi\boldsymbol u_n^{k+1}+\Delta t\boldsymbol b_n)
++\mathbf B_0^0(\boldsymbol\chi\boldsymbol u_n^k+\Delta t\boldsymbol b_n),
 $$
 
 $$
 \begin{aligned}
-B_{01}&=[I_f-T_{c\to f}\Phi_c^{-1}T_{f\to c}\Phi_f]
+\mathbf B_1^0&=[I_f-T_{c\to f}\Phi_c^{-1}T_{f\to c}\Phi_f]
 (I_f-\widetilde\Phi_f^{-1}\Phi_f),\\
-B_{10}&=T_{c\to f}\Phi_c^{-1}T_{f\to c},\\
-B_{00}&=[I_f-T_{c\to f}\Phi_c^{-1}T_{f\to c}\Phi_f]\widetilde\Phi_f^{-1}.
+\mathbf B_0^1&=T_{c\to f}\Phi_c^{-1}T_{f\to c},\\
+\mathbf B_0^0&=[I_f-T_{c\to f}\Phi_c^{-1}T_{f\to c}\Phi_f]\widetilde\Phi_f^{-1}.
 \end{aligned}
 $$
+
+下标记时间偏移，上标记迭代偏移，与原文记号一致。
 
 三个块分别描述细层 SDC 平滑、粗层新迭代传播和旧迭代校正。$\widetilde\Phi_f$ 是易解的细层配置矩阵近似。
 
@@ -128,7 +130,22 @@ $$
 \quad m=0,\ldots,M_f-1. \tag{4.11}
 $$
 
-它的矩阵由节点差构成的对角块乘 $I_x$，再减去下双对角差分矩阵与 $\Delta tA$ 的 Kronecker 项。一次求解对应一轮低阶 SDC sweep，成本低于完整配置求解。
+它的矩阵是下双对角差分矩阵与 $I_x$ 的 Kronecker 积，再减去由节点差 $\tau^f_{m+1}-\tau^f_m$ 构成的对角矩阵与 $\Delta tA$ 的 Kronecker 积：
+
+$$
+\widetilde{\boldsymbol\phi}_f=
+\begin{bmatrix}
+1\\-1&1\\&\ddots&\ddots\\&&-1&1
+\end{bmatrix}\otimes I_x
+-\Delta t
+\begin{bmatrix}
+\tau_1^f-\tau_0^f\\
+&\ddots\\
+&&\tau_{M_f}^f-\tau_{M_f-1}^f
+\end{bmatrix}\otimes A.
+$$
+
+一次求解对应一轮低阶 SDC sweep，成本低于完整配置求解。
 
 数值实验取 $T=3$、周期边界、零初值，源项用 (2.4) 且 $\sigma=1000$，$\Delta x=1/128$、$\Delta t=1/64$。细层采用三节点 Radau IIA：
 
@@ -136,17 +153,30 @@ $$
 \left\{0,\frac{4-\sqrt6}{10},\frac{4+\sqrt6}{10},1\right\},
 $$
 
-粗层采用 $\{0,1/3,1\}$。论文给出了相应的 $Q_f,Q_c$ 及数值传递矩阵；这些矩阵完全由节点和 Lagrange 插值确定。
+即 $M_f=3$；粗层采用 $\{0,1/3,1\}$，即 $M_c=2$，两层都使用 Radau IIA。论文给出了相应的 $Q_f,Q_c$ 以及数值传递矩阵
+
+$$
+T^{c\to f}=
+\begin{bmatrix}1.2674&-0.2674\\0.5325&0.4674\\0&1\end{bmatrix},
+\qquad
+T^{f\to c}=
+\begin{bmatrix}0.5018&0.6833&-0.1851\\0&0&1\end{bmatrix};
+$$
+
+这些矩阵完全由节点和 Lagrange 插值确定。
 
 ![原论文 Figure 4.6：热方程与三种黏性对流扩散方程上的 PFASST 误差](assets/papers/time-parallelization/source-figures/figure-4-6.svg)
 
-热方程收敛最快。对流扩散的黏性减小时，持续传播的高频越来越难由粗配置层表示，收敛按同一方向恶化。这与 Parareal 的粗细传播差机制一致。
+三条对流扩散曲线取 $\nu=0.1,10^{-3},10^{-4}$，横轴迭代指标到 $300$。热方程与 $\nu=0.1$ 在 $k\approx90$–$95$ 时降到 $10^{-12}$，$\nu=10^{-3}$ 约需 $120$ 轮，$\nu=10^{-4}$ 约需 $290$ 轮。论文给出的解释是：对流占主导时粗传播子不再够好。
+
+> [!note] 本站补充：与 Parareal 的对照
+> 用第 4.2 节的语言看，这与 Parareal 的粗细传播差机制一致：持续传播的高频越来越难由粗配置层表示。原文在本节没有作这一对照。
 
 ## 4.4 MGRiT
 
 ### 作为带重叠的 Parareal
 
-MGRiT 也可解释为代数多重网格、块迭代或 Parareal 的重叠版本。两层 FCF 松弛对非线性系统的更新为
+MGRiT 由 Falgout 等（2014）提出，也可解释为代数多重网格、块迭代或 Parareal 的重叠版本。两层 FCF 松弛对非线性系统的更新为
 
 $$
 \boldsymbol u_0^{k+1}=\boldsymbol u_0,
@@ -170,11 +200,11 @@ $$
 
 ![原论文 Figure 4.7：FCF-MGRiT 是重叠宽度为一个粗时间步的 Parareal](assets/papers/time-parallelization/source-figures/figure-4-7.svg)
 
-Figure 4.7 中深色圆是粗点。额外的 F 松弛把旧迭代信息先向前推进一个粗区间，相当于重叠宽度 $\Delta T$。因此全局误差至多 $\lceil N_t/2\rceil$ 轮归零。一般 $F(CF)^\nu$ 对应 $\nu\Delta T$ 的重叠。
+Figure 4.7 中深色圆是粗点。额外的 CF 松弛把旧迭代信息先向前推进一个粗区间，相当于重叠宽度 $\Delta T$。因此全局误差至多 $\lceil N_t/2\rceil$ 轮归零。一般 $F(CF)^\nu$ 对应 $\nu\Delta T$ 的重叠。这些结果见 Gander 等（2018b）的 Theorem 5、Theorem 6 和 Corollary 1，其中 Theorem 6 给出的是非线性问题的超线性收敛结论。
 
 ### Theorem 4.5：长时间模态因子
 
-沿用 Theorem 4.2 的记号，若 $|R_g(z)|<1$，两层 FCF-MGRiT 满足
+Theorem 4.5 引自 Dobrev 等（2017）。沿用 Theorem 4.2 的记号（$\boldsymbol e_n^k=V_A(\boldsymbol u_n^k-\boldsymbol u_n)$，$A$ 可对角化且 $\sigma(A)\subset\mathbb C_-$），若 $|R_g(z)|<1$，两层 FCF-MGRiT 满足
 
 $$
 \max_n\|\boldsymbol e_n^k\|_\infty
@@ -196,7 +226,7 @@ $$
 =|R_f^J(z/J)|\,\varrho_{l,\mathrm{Parareal}}.
 $$
 
-额外 F 松弛提供一次细传播的收缩，同时也增加一次昂贵的并行细求解。
+在 $|R_f(z)|\le1$ 的前提下，额外的 CF 松弛提供一次细传播的收缩，同时也增加一次昂贵的并行细求解。
 
 ![原论文 Figure 4.8：等细求解成本下 MGRiT 与两轮 Parareal 的复平面收敛域](assets/papers/time-parallelization/source-figures/figure-4-8.svg)
 
@@ -204,7 +234,7 @@ Figure 4.8 用后向 Euler 粗传播 $R_g(z)=1/(1-z)$ 与精确细传播 $R_f(z)
 
 ### Theorem 4.6：等成本常数比较
 
-若细传播 L-稳定且 $J=O(1)$，后向 Euler 粗传播下的负实轴最坏因子约为
+Theorem 4.6 引自 Wu 与 Zhou（2019）。若细传播 L-稳定且 $J=\Delta T/\Delta t=O(1)$，后向 Euler 粗传播下的负实轴最坏因子约为
 
 $$
 \max\varrho_l\approx
@@ -239,24 +269,24 @@ $$
 
 ![原论文 Figure 4.9：热方程与两种黏性 ADE 上的模态因子分布](assets/papers/time-parallelization/source-figures/figure-4-9.svg)
 
-Figure 4.9 上排 (a) 是 MGRiT，下排 (b) 是 Parareal；三列依次对应热方程、$\nu=0.1$ 的 ADE 和 $\nu=0.01$ 的 ADE。图中标注的最大因子分别为 MGRiT 的 $0.08375,0.2718,0.9021$，以及 Parareal 的 $0.2822,0.4453,0.9986$。前两列中，MGRiT 因子大致对应 Parareal 因子的平方；第三列两者都接近 $1$，粗传播已经难以表示弱扩散下的长寿命模态。
+Figure 4.9 上排 (a) 是 MGRiT，下排 (b) 是 Parareal；三列依次对应热方程、$\nu=0.1$ 的 ADE 和 $\nu=0.01$ 的 ADE。图中标注的最大因子分别为 MGRiT 的 $0.08375,0.2718,0.9021$，以及 Parareal 的 $0.2822,0.4453,0.9986$。前两列中，MGRiT 因子大致对应 Parareal 因子的平方；第三列两者都接近 $1$。论文给出的原因是：对流占主导时粗传播子对小 $\nu$ 已经不够好。
 
 ![原论文 Figure 4.10：按两次细求解配平后的 Parareal 与 MGRiT 实测误差](assets/papers/time-parallelization/source-figures/figure-4-10.svg)
 
-Figure 4.10 的四个面板按“热方程、$\nu=0.1$、$\nu=0.01$、$\nu=0.002$”排列，每个 Parareal 横坐标单位包含两轮。前两幅中两条曲线接近；$\nu=0.01$ 时都很慢，Parareal 退化稍强，因为它在每次细传播后都插入一次失真的粗传播；$\nu=0.002$ 时两者发散，最大模态因子分别为 $1.4211$ 和 $1.2812$。因此，Figure 4.9 的逐模态指标与 Figure 4.10 的实测曲线在四种扩散强度上形成一一对应。
+Figure 4.10 的四个面板按“热方程、$\nu=0.1$、$\nu=0.01$、$\nu=0.002$”排列，每个 Parareal 横坐标单位包含两轮，点划线标出离散截断误差 $\max\{\Delta t^2,\Delta x^2\}$，实践中不会迭代到它以下。前两幅中两条曲线接近；$\nu=0.01$ 时都很慢，Parareal 退化稍强，因为它在每次细传播后都插入一次失真的粗传播；$\nu=0.002$ 时两者发散，最大模态因子 Parareal 为 $1.4211$、MGRiT 为 $1.2812$（这两个数字只出现在原文正文中，Figure 4.9 只画了前三种扩散强度）。
 
 非线性 Burgers 实验使用齐次 Dirichlet 边界、同一初值、$T=5$、$\Delta T=1/16$、$\Delta x=1/160$、$J=10$，中心空间差分、后向 Euler 粗层和 SDIRK22 细层。
 
 ![原论文 Figure 4.11：三种黏性 Burgers 方程上等细求解成本的比较](assets/papers/time-parallelization/source-figures/figure-4-11.svg)
 
-三个面板从左到右取 $\nu=0.5,0.01,0.002$。前两幅中，一轮 FCF-MGRiT 的下降大致对应两轮 Parareal；$\nu=0.002$ 时，两条曲线都出现较长的缓慢阶段，随后才进入快速下降。黏性降低使两种方法同步恶化，这与非线性 Lipschitz 分析的结论一致。
+三个面板从左到右取 $\nu=0.5,0.01,0.002$。论文的结论是：**三种黏性下**一轮 FCF-MGRiT 的下降都大致对应两轮 Parareal，与 Figure 4.10 的线性结果一致；前提是粗求解器仍然足够准确。$\nu=0.002$ 时两条曲线都出现较长的缓慢阶段，随后才进入快速下降，说明黏性降低会让两种方法同步恶化。
 
 ## 公式、定理与图表覆盖核对
 
 | 原文项目                        | 论文小节 | 覆盖状态                                          |
 | ------------------------------- | -------- | ------------------------------------------------- |
 | (4.10)                          | 4.3      | 细/粗配置节点、复制矩阵、配置系统                 |
-| Lagrange 传递与 PFASST 块迭代   | 4.3      | $T_{c\to f},T_{f\to c}$ 和 $B_{01},B_{10},B_{00}$ |
+| Lagrange 传递与 PFASST 块迭代   | 4.3      | $T_{c\to f},T_{f\to c}$ 和 $\mathbf B_1^0,\mathbf B_0^1,\mathbf B_0^0$ |
 | (4.11), Figure 4.6              | 4.3      | 隐式 Euler SDC、Radau 节点、PFASST 实验           |
 | (4.12), Figure 4.7              | 4.4      | FCF 更新、两次细求解、重叠和有限步性质            |
 | (4.13), Theorem 4.5, Figure 4.8 | 4.4      | MGRiT 因子、与 Parareal 的关系、等成本收敛域      |
@@ -265,4 +295,4 @@ Figure 4.10 的四个面板按“热方程、$\nu=0.1$、$\nu=0.01$、$\nu=0.002
 
 ## 本页原文
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Sections 4.3–4.4, pp. 452–460.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Sections 4.3–4.4, pp. 452–461.
