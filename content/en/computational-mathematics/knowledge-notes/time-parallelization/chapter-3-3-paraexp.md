@@ -99,9 +99,9 @@ $$
 \qquad t\in[T_{n-1},T]. \tag{3.16}
 $$
 
-An algorithm for $e^{\tau A}\boldsymbol b$ can jump directly to the requested time; its cost need not scale with the number of intermediate steps. The paper lists rational Krylov and Chebyshev expansions for large sparse matrices, and scaling-and-squaring with Padé approximation for smaller matrices. MATLAB R2023b and later provide `expmv` for a matrix-exponential action. REXI and early Laplace-transform PinT methods use related exponential-approximation ideas.
+An algorithm for $e^{\tau A}\boldsymbol b$ can jump directly to the requested time; its cost need not scale with the number of intermediate steps. The paper lists rational Krylov and Chebyshev expansions for large sparse matrices, and scaling-and-squaring with Padé approximation for smaller matrices (Higham 2008; Moler and Van Loan 2003). MATLAB R2023b and later provide `expmv` for a matrix-exponential action. The REXI method of Schreiber, Peixoto, Haut and Wingate (2018) and early Laplace-transform PinT methods use related exponential-approximation ideas.
 
-The wave-equation experiment of Gander and Güttel (2013) reported time-parallel efficiency up to about 80%. This number belongs to that implementation and depends on the exponential algorithm, matrix structure, partition, and hardware.
+The wave-equation experiment of Gander and Güttel (2013) on problem (2.7) reported time-parallel efficiency up to 80%, and the paper draws an explicit conclusion from it: **ParaExp is an excellent time parallelization method for linear hyperbolic problems**. The particular number still depends on the exponential algorithm, matrix structure, partition, and hardware.
 
 ### Nonlinear splitting
 
@@ -112,11 +112,20 @@ $$
 =A\boldsymbol u(t)+B(\boldsymbol u(t))+\boldsymbol g(t). \tag{3.17}
 $$
 
-Direct superposition no longer applies because $B$ recouples the intervals. The initial construction writes $\boldsymbol u=\boldsymbol w+\boldsymbol v$, evolves $\boldsymbol w'=A\boldsymbol w$, and evaluates $B(\boldsymbol v+\boldsymbol w)$ in the $\boldsymbol v$ equation. Time parallelism then requires an iteration whose blue problems start from the previous interface iterate.
+The nonlinear extension is due to Gander, Güttel and Petcu (2018a). Direct superposition no longer applies. Writing $\boldsymbol u=\boldsymbol w+\boldsymbol v$ again, the construction is
+
+$$
+\boldsymbol w'(t)=A\boldsymbol w(t),
+\qquad
+\boldsymbol v'(t)=B\!\left(\boldsymbol v(t)+\boldsymbol w(t)\right)+\boldsymbol g(t),
+\qquad \boldsymbol v(0)=\boldsymbol 0,
+$$
+
+where the $\boldsymbol v$ equation carries no $A\boldsymbol v$ term — that is exactly what the splitting achieves. Unlike (3.14), the time intervals are now coupled: on $[T_{n-1},T_n]$ the initial value of $\boldsymbol w$ at $t=T_{n-1}$ depends on $\boldsymbol v(T_{n-1})$. Time parallelism therefore requires an iteration whose homogeneous problems start from the previous interface iterate.
 
 Explicitly evaluating the full blue sum $\sum_j\boldsymbol w_j^k(t)$ inside every nonlinear local solve would repeat expensive work when $A$ is large. The paper substitutes $\boldsymbol v_n^k=\boldsymbol u_n^k-\sum_{j=1}^n\boldsymbol w_j^k$ and obtains the following two-stage iteration.
 
-First construct the homogeneous propagations for $n=1,\ldots,N_t$:
+First construct the homogeneous propagations **sequentially** for $n=1,\ldots,N_t$:
 
 $$
 \begin{aligned}
@@ -145,7 +154,10 @@ The global iterate equals $\boldsymbol u_n^k(t)$ on interval $n$.
 
 ### Theorem 3.4: finite-step convergence and Parareal equivalence
 
-**Finite-step result.** After iteration $k$, $\boldsymbol u^k(t)$ agrees with the exact solution on $[0,T_k]$. A time-interval induction explains the result. The first interval always starts from the true initial value. If the first $k-1$ intervals are exact, (3.18) constructs the exact initial value at the next interface, and (3.19) advances exactness by one more interval.
+**Finite-step result.** Theorem 3.4, taken from Gander et al. (2018a), states that after iteration $k$ the iterate $\boldsymbol u^k(t)$ agrees with the exact solution on $[0,T_k]$, so the iteration converges in a finite number of steps.
+
+> [!note] Site supplement: the induction behind it
+> The paper states only the result. Inducting on the iteration counter $k$ makes the mechanism visible: at $k=1$ the first interval starts from the true initial value, so $[0,T_1]$ is exact; if $[0,T_{k-1}]$ is exact after iteration $k-1$, then (3.18) constructs the exact initial value at $T_{k-1}$ and (3.19) advances the exact interval by one more subinterval to $T_k$.
 
 At the coarse points, the method is equivalent to
 
@@ -174,7 +186,7 @@ $$
 \qquad t\in[T_{n-1},T_n]. \tag{3.20c}
 $$
 
-Standard Parareal normally lets its coarse propagator approximate the complete nonlinear problem as well. Here $\mathcal G$ retains only $A$, so this is a simplified Parareal. Nonlinear ParaExp succeeds when that split captures the dominant dynamics.
+Standard Parareal normally lets its coarse propagator approximate the complete nonlinear problem (3.20c) as well. Here $\mathcal G$ retains only $A$, so this is a simplified Parareal, and at the coarse points $\boldsymbol u_n^k=\boldsymbol U_n^k$ for $n=0,1,\ldots,N_t$. This is the first appearance of Parareal in the paper; Chapter 4 discusses it in detail.
 
 ### Figure 3.8: splitting failure on Burgers' equation
 
@@ -186,11 +198,11 @@ $$
 \qquad t\in(0,2), \tag{3.21}
 $$
 
-obtained from centered differences for periodic Burgers' equation. The mesh is $\Delta x=1/100$, with $A=\nu A_{xx}/\Delta x^2$ and $B=-A_x/(2\Delta x)$; the matrices $A_{xx}$ and $A_x$ are those in (3.12). The fine propagator in both methods is backward Euler with step $0.01/20$. Standard Parareal also uses backward Euler as its coarse propagator, with step $0.01$. ParaExp uses MATLAB `expmv` for the linear coarse propagation.
+obtained from centered differences for periodic Burgers' equation. The mesh is $\Delta x=1/100$, with $A=A_{xx}$ and $B=-\tfrac12A_x$; the matrices $A_{xx}$ and $A_x$ are those in (3.12). The fine propagator in both methods is backward Euler with step $0.01/20$. Standard Parareal also uses backward Euler as its coarse propagator, with step $0.01$. ParaExp uses MATLAB `expmv` for the linear coarse propagation.
 
 ![Source Figure 3.8: errors of nonlinear ParaExp and standard Parareal at three viscosities](assets/papers/time-parallelization/source-figures/figure-3-8.svg)
 
-The panels from left to right use $\nu=1,0.1,0.02$. Their horizontal lines mark the truncation level $\max\{\Delta t,\Delta x^2\}$, beyond which further iteration is unnecessary in practice. At $\nu=1$, $A$ captures the dominant dynamics and ParaExp is substantially faster than standard Parareal. At $\nu=0.1$, standard Parareal becomes faster while ParaExp still decays slowly. At $\nu=0.02$, the ParaExp error grows at every displayed step, whereas standard Parareal still crosses the truncation line. Standard Parareal eventually fails as viscosity is reduced further. The three panels show a transfer of dominant dynamics between the two parts of the split, not merely a uniform slowdown under weaker diffusion.
+The panels from left to right use $\nu=1,0.1,0.02$. Their horizontal lines mark the truncation level $\max\{\Delta t,\Delta x^2\}$, beyond which further iteration is unnecessary in practice. At $\nu=1$, $A$ captures the dominant dynamics and ParaExp is substantially faster than standard Parareal. At $\nu=0.1$, standard Parareal becomes faster while ParaExp still decays slowly. At $\nu=0.02$, the ParaExp error grows at every displayed step, whereas standard Parareal still crosses the truncation line. Standard Parareal eventually fails as viscosity is reduced further — the reason the paper gives is that standard Parareal itself does not perform well on hyperbolic problems, so its simplified version cannot be expected to, a point developed in Chapter 4. The three panels show a transfer of dominant dynamics between the two parts of the split, not merely a uniform slowdown under weaker diffusion.
 
 > [!important] Applicability boundary
 > Linear ParaExp equation (3.15) is an exact algebraic decomposition, subject only to errors in the exponential action and local forced solves. Nonlinear ParaExp is iterative and depends on the $A+B$ split. An exact exponential cannot repair a linear part that misses the dominant propagation mechanism.

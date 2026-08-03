@@ -10,11 +10,13 @@ tags:
 ---
 
 > [!note] 阅读范围
-> 本页对应论文 Section 3.3（pp. 405–412），覆盖公式 (3.5)–(3.12)、Theorem 3.3 和 Figures 3.4–3.6。推导保留每个代数步骤，PIDC 与 RIDC 的并行调度分别说明。
+> 本页对应论文 Section 3.3（pp. 405–411），覆盖公式 (3.5)–(3.12)、Theorem 3.3 和 Figures 3.4–3.6。推导保留每个代数步骤，PIDC 与 RIDC 的并行调度分别说明。
 
 ## 3.3 时间并行 IDC
 
 ### IDC 从哪里开始
+
+积分延迟校正（IDC）由 Dutt、Greengard 与 Rokhlin（2000）提出；本节讨论的两个时间并行版本分别是 Guibert 与 Tromeur-Dervout（2007）的流水线 IDC（PIDC）和 Christlieb、Macdonald 与 Ong（2010）的 revisionist IDC（RIDC）。
 
 考虑非线性初值问题。积分形式为
 
@@ -134,13 +136,13 @@ $$
 
 ### Theorem 3.3：每轮能提高多少阶
 
-若基础积分器阶数为 $p$，使用 $M$ 个等距节点，则第 $k$ 次校正后的误差阶为
+Theorem 3.3 引自 Dutt 等（2000）。若基础积分器阶数为 $p$，使用 $M$ 个等距节点，则第 $k$ 次校正后的误差阶为
 
 $$
 O\!\left(\Delta t^{\min\{M,(k+1)p\}}\right).
 $$
 
-因此每轮最多增加 $p$ 阶，并受求积的最高阶 $M$ 限制。后向 Euler 对应 $p=1$，梯形规则对应 $p=2$。Gauss–Lobatto 节点可达到 $2J-1$ 阶；这类 IDC 通常称为 spectral deferred correction（SDC），也是 PFASST 的核心部件。
+因此每轮最多增加 $p$ 阶，并受求积的最高阶 $M$ 限制。后向 Euler 对应 $\theta=1$、$p=1$，梯形规则对应 $\theta=\tfrac12$、$p=2$。Dutt 等（2000）最初的 IDC 使用 Gauss 节点，可达到更高的阶数上限；例如 Gauss–Lobatto 节点可达 $2J-1$ 阶。这类 IDC 通常称为 spectral deferred correction（SDC），也是第四章 PFASST 的核心部件。
 
 长时间区间不适合用一个高阶多项式整体近似。论文将 $[0,T]$ 划分为窗口
 
@@ -155,7 +157,7 @@ $$
 
 ### 按窗口铺开的流水线
 
-PIDC 采用 Womble (1990) 的流水思想。$I_n$ 完成第一遍 sweep 后，已经得到一个粗末值 $\boldsymbol u_{n,M}^{1}$。$I_{n+1}$ 可以立即用它启动第一遍 sweep，同时 $I_n$ 继续第二遍。一般地，在 $I_n$ 上做第 $k$ 遍时，可以同时在 $I_{n+1}$ 做第 $k-1$ 遍，在 $I_{n+2}$ 做第 $k-2$ 遍，直到 $I_{n+k-1}$ 的第一遍。
+PIDC 由 Guibert 与 Tromeur-Dervout（2007）提出，采用 Womble (1990) 的流水思想。$I_n$ 完成第一遍 sweep 后，已经得到一个粗末值 $\boldsymbol u_{n,M}^{1}$。$I_{n+1}$ 可以立即用它启动第一遍 sweep，同时 $I_n$ 继续第二遍。一般地，在 $I_n$ 上做第 $k$ 遍时，可以同时在 $I_{n+1}$ 做第 $k-1$ 遍，在 $I_{n+2}$ 做第 $k-2$ 遍，直到 $I_{n+k-1}$ 的第一遍。
 
 ![原论文 Figure 3.4：四个时间窗口上的 PIDC 流水线启动和稳态阶段](assets/papers/time-parallelization/source-figures/figure-3-4.svg)
 
@@ -213,19 +215,19 @@ Figure 3.5 的四个面板形成两组对照。
 - (a)、(c) 取 $\nu=1$；(b)、(d) 取 $\nu=10^{-3}$。
 - 每个面板同时给出初始误差、第一遍和第二遍之后的 IDC/PIDC 误差。
 
-低正则性时，第二遍无法继续降低误差。平滑源项加大黏性后，IDC 与 PIDC 的第二遍都继续改善，二者接近。小黏性会削弱升阶效果；在 (d) 中，PIDC 第二遍明显落后于串行 IDC。论文据此判断，低正则双曲解并不适合依赖高阶校正的 PIDC。
+低正则性时，第二遍无法继续降低误差。论文对面板 (b) 另有一句限定：黏性变小以后，第一次 IDC 校正的改善远不如 (a)，再加一次校正也帮助不大。平滑源项加大黏性后，IDC 与 PIDC 的第二遍都继续改善，二者接近。小黏性会削弱升阶效果；在 (d) 中，PIDC 第二遍明显落后于串行 IDC。论文据此判断，低正则双曲解并不适合依赖高阶校正的 PIDC。
 
 ## 3.3.2 修正型 IDC（RIDC）
 
 ### 滑动求积窗口
 
-RIDC 把并行粒度从“时间窗口”细化到“校正层”。第一个处理器用低阶积分器连续向前推进。它产生前 $M$ 个值后，第二个处理器开始第一层 IDC 校正。第二个处理器到达第 $M$ 步后继续前进，并将求积节点从 $1,\ldots,M$ 滑到 $2,\ldots,M+1$，再滑到 $3,\ldots,M+2$。第三个处理器在第二层数据足够后启动，并采用相同滑动规则。
+RIDC 由 Christlieb、Macdonald 与 Ong（2010）提出，使用 $M$ 个等距求积节点，把并行粒度从“时间窗口”细化到“校正层”。第一个处理器用低阶积分器连续向前推进。它产生前 $M$ 个值后，第二个处理器开始第一层 IDC 校正。第二个处理器到达第 $M$ 步后继续前进，并将求积节点从 $1,\ldots,M$ 滑到 $2,\ldots,M+1$，再滑到 $3,\ldots,M+2$。第三个处理器在第二层数据足够后启动，并采用相同滑动规则。
 
 稳定阶段中，每个处理器负责一个校正层，所有层同时推进相邻的时间步。流水线需要保存若干历史值，并处理启动和排空阶段。
 
 ![原论文 Figure 3.6：IDC 与 RIDC 在相同对流扩散数据上的逐窗口误差](assets/papers/time-parallelization/source-figures/figure-3-6.svg)
 
-Figure 3.6 沿用 Figure 3.5 的 PDE、网格、源项和黏性设置，将 PIDC 换成 RIDC。四个面板的对应关系也保持不变：上排是 $\sigma=1000$，下排是 $\sigma=5$；左列是 $\nu=1$，右列是 $\nu=10^{-3}$。因此，(a)–(d) 仍然分别表示“低正则/强扩散”“低正则/弱扩散”“高正则/强扩散”和“高正则/弱扩散”。下排允许校正层继续降低误差，上排和右列暴露正则性不足与弱扩散带来的困难。RIDC 改变了调度和内存结构，没有消除 IDC 对正则性的依赖。
+Figure 3.6 沿用 Figure 3.5 的 PDE、网格、源项、零初值和黏性设置，将 PIDC 换成 RIDC。与 Figure 3.5 不同，期刊版的 Figure 3.6 四个面板没有印 (a)–(d) 标签；按位置读，上排是 $\sigma=1000$，下排是 $\sigma=5$，左列是 $\nu=1$，右列是 $\nu=10^{-3}$，即“低正则/强扩散”“低正则/弱扩散”“高正则/强扩散”和“高正则/弱扩散”四种组合。原文对本图只说“与 Figure 3.5 使用相同数据”，下面这段逐面板解读是本站按图作出的：下排允许校正层继续降低误差，上排和右列暴露正则性不足与弱扩散带来的困难。RIDC 改变了调度和内存结构，没有消除 IDC 对正则性的依赖。
 
 ## 公式与图表覆盖核对
 
@@ -240,4 +242,4 @@ Figure 3.6 沿用 Figure 3.5 的 PDE、网格、源项和黏性设置，将 PIDC
 
 ## 本页原文
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.3, pp. 405–412.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.3, pp. 405–411.

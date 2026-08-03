@@ -10,11 +10,13 @@ tags:
 ---
 
 > [!note] Reading scope
-> This page covers Section 3.3 of the paper (pp. 405–412), including equations (3.5)–(3.12), Theorem 3.3, and Figures 3.4–3.6. Every algebraic step in the correction formula is retained, and the PIDC and RIDC schedules are explained separately.
+> This page covers Section 3.3 of the paper (pp. 405–411), including equations (3.5)–(3.12), Theorem 3.3, and Figures 3.4–3.6. Every algebraic step in the correction formula is retained, and the PIDC and RIDC schedules are explained separately.
 
 ## 3.3 Time-parallel IDC
 
 ### Starting point of IDC
+
+Integral deferred correction (IDC) was introduced by Dutt, Greengard and Rokhlin (2000). The two time-parallel variants discussed here are the pipeline IDC (PIDC) of Guibert and Tromeur-Dervout (2007) and the revisionist IDC (RIDC) of Christlieb, Macdonald and Ong (2010).
 
 Write the nonlinear initial-value problem in integral form:
 
@@ -136,13 +138,13 @@ Every correction level $k$ sweeps from left to right through $m=0,1,\ldots,M-1$.
 
 ### Theorem 3.3: order gained per correction
 
-If the base integrator has order $p$ and $M$ equally spaced nodes are used, the approximation after correction $k$ has order
+Theorem 3.3 is taken from Dutt et al. (2000). If the base integrator has order $p$ and $M$ equally spaced nodes are used, the approximation after correction $k$ has order
 
 $$
 O\!\left(\Delta t^{\min\{M,(k+1)p\}}\right).
 $$
 
-Each correction therefore adds at most $p$ orders until the quadrature ceiling $M$ is reached. Backward Euler has $p=1$, and the trapezoidal rule has $p=2$. Gauss–Lobatto nodes can reach order $2J-1$. This form of IDC is spectral deferred correction (SDC), the central integration component of PFASST.
+Each correction therefore adds at most $p$ orders until the quadrature ceiling $M$ is reached. Backward Euler corresponds to $\theta=1$ and $p=1$, the trapezoidal rule to $\theta=\tfrac12$ and $p=2$. The original IDC of Dutt et al. (2000) used Gauss nodes, which raises the ceiling; Gauss–Lobatto nodes, for instance, reach order $2J-1$. This form of IDC is spectral deferred correction (SDC), the central integration component of PFASST in Chapter 4.
 
 A single high-order polynomial becomes ineffective on a long interval. The paper partitions $[0,T]$ into windows
 
@@ -157,7 +159,7 @@ Standard IDC completes every correction on $I_n$ before passing its endpoint to 
 
 ### A pipeline across windows
 
-PIDC applies the pipeline idea of Womble (1990). After the first sweep on $I_n$, the rough endpoint $\boldsymbol u_{n,M}^{1}$ is available. Window $I_{n+1}$ immediately starts its first sweep from this value while $I_n$ performs its second. In general, when $I_n$ executes sweep $k$, $I_{n+1}$ can execute sweep $k-1$, $I_{n+2}$ sweep $k-2$, and so on through the first sweep on $I_{n+k-1}$.
+PIDC, introduced by Guibert and Tromeur-Dervout (2007), applies the pipeline idea of Womble (1990). After the first sweep on $I_n$, the rough endpoint $\boldsymbol u_{n,M}^{1}$ is available. Window $I_{n+1}$ immediately starts its first sweep from this value while $I_n$ performs its second. In general, when $I_n$ executes sweep $k$, $I_{n+1}$ can execute sweep $k-1$, $I_{n+2}$ sweep $k-2$, and so on through the first sweep on $I_{n+k-1}$.
 
 ![Source Figure 3.4: PIDC pipeline startup and steady state on four time windows](assets/papers/time-parallelization/source-figures/figure-3-4.svg)
 
@@ -215,19 +217,19 @@ The four panels in Figure 3.5 form two controlled comparisons.
 - Panels (a) and (c) use $\nu=1$; (b) and (d) use $\nu=10^{-3}$.
 - Every panel reports the initial error and the IDC/PIDC errors after one and two sweeps.
 
-With low regularity, the second sweep does not reduce the error further. With a smooth source and large viscosity, both IDC and PIDC improve again on the second sweep and remain comparable. Small viscosity weakens the order increase; in panel (d), the second PIDC sweep is clearly worse than sequential IDC. The paper concludes that PIDC is poorly suited to low-regularity hyperbolic solutions because it relies on high-order correction.
+With low regularity, the second sweep does not reduce the error further. The paper adds a separate observation about panel (b): once the diffusion becomes small, the improvement from the first IDC correction is much worse than in (a), and a further correction does not help much either. With a smooth source and large viscosity, both IDC and PIDC improve again on the second sweep and remain comparable. Small viscosity weakens the order increase; in panel (d), the second PIDC sweep is clearly worse than sequential IDC. The paper concludes that PIDC is poorly suited to low-regularity hyperbolic solutions because it relies on high-order correction.
 
 ## 3.3.2 Revisionist IDC (RIDC)
 
 ### A sliding quadrature window
 
-RIDC moves the concurrency from time windows to correction levels. The first processor advances continuously with a low-order integrator. Once it has produced the first $M$ values, a second processor starts the first IDC correction. After reaching step $M$, the second processor keeps advancing and slides its quadrature nodes from $1,\ldots,M$ to $2,\ldots,M+1$, then to $3,\ldots,M+2$. A third processor starts when sufficient first-correction data is available and follows the same sliding rule.
+RIDC, introduced by Christlieb, Macdonald and Ong (2010), uses $M$ equidistant quadrature nodes and moves the concurrency from time windows to correction levels. The first processor advances continuously with a low-order integrator. Once it has produced the first $M$ values, a second processor starts the first IDC correction. After reaching step $M$, the second processor keeps advancing and slides its quadrature nodes from $1,\ldots,M$ to $2,\ldots,M+1$, then to $3,\ldots,M+2$. A third processor starts when sufficient first-correction data is available and follows the same sliding rule.
 
 In steady state, each processor owns one correction level and all levels advance adjacent time steps concurrently. The pipeline must retain several historical values and handle both startup and drain phases.
 
 ![Source Figure 3.6: windowwise errors of IDC and RIDC on the same advection–diffusion tests](assets/papers/time-parallelization/source-figures/figure-3-6.svg)
 
-Figure 3.6 reuses the PDE, grid, source, and viscosity settings of Figure 3.5, replacing PIDC by RIDC. Its panel map is unchanged: the top row uses $\sigma=1000$, the bottom row $\sigma=5$; the left column uses $\nu=1$, the right column $\nu=10^{-3}$. Panels (a)–(d) therefore represent low-regularity/strong-diffusion, low-regularity/weak-diffusion, high-regularity/strong-diffusion, and high-regularity/weak-diffusion cases. Corrections continue to reduce error in the bottom row, while the top row and right column expose the effects of insufficient regularity and weak diffusion. RIDC changes scheduling and memory organization; it retains IDC's regularity requirement.
+Figure 3.6 reuses the PDE, grid, source, zero initial condition, and viscosity settings of Figure 3.5, replacing PIDC by RIDC. Unlike Figure 3.5, the journal version of Figure 3.6 carries no (a)–(d) panel labels; read by position, the top row uses $\sigma=1000$, the bottom row $\sigma=5$, the left column $\nu=1$, and the right column $\nu=10^{-3}$, giving the low-regularity/strong-diffusion, low-regularity/weak-diffusion, high-regularity/strong-diffusion, and high-regularity/weak-diffusion combinations. The paper says only that this figure uses the same data as Figure 3.5, so the panel-by-panel reading that follows is this site's own: corrections continue to reduce error in the bottom row, while the top row and right column expose the effects of insufficient regularity and weak diffusion. RIDC changes scheduling and memory organization; it retains IDC's regularity requirement.
 
 ## Equation and figure coverage
 
@@ -242,4 +244,4 @@ Figure 3.6 reuses the PDE, grid, source, and viscosity settings of Figure 3.5, r
 
 ## Source
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.3, pp. 405–412.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.3, pp. 405–411.

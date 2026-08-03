@@ -99,9 +99,9 @@ $$
 \qquad t\in[T_{n-1},T]. \tag{3.16}
 $$
 
-计算 $e^{\tau A}\boldsymbol b$ 可以直接跳到目标时刻，成本不必与中间步数成正比。论文列出以下工具：大型稀疏矩阵适合有理 Krylov 和 Chebyshev 展开；较小矩阵可以用 scaling-and-squaring 加 Padé；MATLAB R2023b 及之后的 `expmv` 提供矩阵指数作用实现。REXI 和基于 Laplace 变换的早期 PinT 技术也属于同一类指数近似思路。
+计算 $e^{\tau A}\boldsymbol b$ 可以直接跳到目标时刻，成本不必与中间步数成正比。论文列出以下工具：大型稀疏矩阵适合有理 Krylov 和 Chebyshev 展开；较小矩阵可以用 scaling-and-squaring 加 Padé（Higham 2008；Moler 与 Van Loan 2003）；MATLAB R2023b 及之后的 `expmv` 提供矩阵指数作用实现。Schreiber、Peixoto、Haut 与 Wingate（2018）的 REXI 以及基于 Laplace 变换的早期 PinT 技术也属于同一类指数近似思路。
 
-Gander and Güttel (2013) 的波动方程实验曾报告约 80% 的时间并行效率。这个数字依赖指数算法、矩阵结构、分区和硬件，表达的是该实现的结果。
+Gander 与 Güttel（2013）的波动方程 (2.7) 实验报告了高达 80% 的时间并行效率，论文据此给出明确判断：**ParaExp 是线性双曲问题的一个出色时间并行方法**。同时应当注意，这个具体数字依赖指数算法、矩阵结构、分区和硬件。
 
 ### 非线性拆分
 
@@ -112,11 +112,20 @@ $$
 =A\boldsymbol u(t)+B(\boldsymbol u(t))+\boldsymbol g(t). \tag{3.17}
 $$
 
-线性情形的直接叠加在这里失效，因为 $B$ 会把各段重新耦合。初始构造把 $\boldsymbol u=\boldsymbol w+\boldsymbol v$，令 $\boldsymbol w'=A\boldsymbol w$，并在 $\boldsymbol v$ 方程中使用 $B(\boldsymbol v+\boldsymbol w)$。为了并行，需要用上一轮的接口值启动蓝色问题。
+非线性扩展来自 Gander、Güttel 与 Petcu（2018a）。线性情形的直接叠加在这里失效：仍然令 $\boldsymbol u=\boldsymbol w+\boldsymbol v$，取
+
+$$
+\boldsymbol w'(t)=A\boldsymbol w(t),
+\qquad
+\boldsymbol v'(t)=B\!\left(\boldsymbol v(t)+\boldsymbol w(t)\right)+\boldsymbol g(t),
+\qquad \boldsymbol v(0)=\boldsymbol 0,
+$$
+
+注意 $\boldsymbol v$ 的方程里没有 $A\boldsymbol v$ 项，这正是拆分要达到的效果。和 (3.14) 相比，各时间区间不再解耦：在 $[T_{n-1},T_n]$ 上，$\boldsymbol w$ 在 $t=T_{n-1}$ 处的初值依赖同一时刻的 $\boldsymbol v(T_{n-1})$。为了并行，需要用上一轮的接口值启动齐次问题。
 
 若在每个非线性局部问题中显式计算全部蓝色尾部 $\sum_j\boldsymbol w_j^k(t)$，大型 $A$ 会造成冗余。论文改用 $\boldsymbol v_n^k=\boldsymbol u_n^k-\sum_{j=1}^n\boldsymbol w_j^k$，得到两步迭代。
 
-先按 $n=1,\ldots,N_t$ 构造齐次传播：
+先按 $n=1,\ldots,N_t$ **顺序**构造齐次传播：
 
 $$
 \begin{aligned}
@@ -145,7 +154,10 @@ $$
 
 ### Theorem 3.4：有限步收敛与 Parareal 等价
 
-**有限步结论。** 第 $k$ 轮后，$\boldsymbol u^k(t)$ 在 $[0,T_k]$ 上与精确解相同。理由可按时间段归纳：第一段总从真实初值出发；若前 $k-1$ 段已经精确，(3.18) 在下一个接口构造出精确初值，(3.19) 就把正确性再推进一段。
+**有限步结论。** Theorem 3.4 引自 Gander 等（2018a）：第 $k$ 轮后，$\boldsymbol u^k(t)$ 在 $[0,T_k]$ 上与精确解相同，因此迭代在有限步内收敛。
+
+> [!note] 本站补充：归纳理由
+> 原文只给出结论。按迭代次数 $k$ 归纳可以看清机制：$k=1$ 时第一段从真实初值出发，故 $[0,T_1]$ 已精确；若第 $k-1$ 轮后 $[0,T_{k-1}]$ 精确，则 (3.18) 在 $T_{k-1}$ 处构造出精确初值，(3.19) 把精确区间再推进一段到 $T_k$。
 
 在粗节点 $T_n$ 上，该迭代等价于
 
@@ -174,7 +186,7 @@ $$
 \qquad t\in[T_{n-1},T_n]. \tag{3.20c}
 $$
 
-标准 Parareal 的粗传播子通常也近似完整非线性问题。这里的 $\mathcal G$ 只保留 $A$，因此是一个简化版本。拆分是否抓住主要动力学，决定非线性 ParaExp 的表现。
+标准 Parareal 的粗传播子通常也近似完整非线性问题 (3.20c)。这里的 $\mathcal G$ 只保留 $A$，因此是一个简化版本，并且在粗节点上有 $\boldsymbol u_n^k=\boldsymbol U_n^k$，$n=0,1,\ldots,N_t$。这是全文第一次出现 Parareal，第四章会详细讨论。
 
 ### Figure 3.8：Burgers 方程上的拆分失效
 
@@ -186,11 +198,11 @@ $$
 \qquad t\in(0,2), \tag{3.21}
 $$
 
-它来自周期 Burgers 方程的中心差分，$\Delta x=1/100$，$A=\nu A_{xx}/\Delta x^2$，$B=-A_x/(2\Delta x)$，$A_{xx},A_x$ 见 (3.12)。ParaExp 和标准 Parareal 的细传播子都使用后向 Euler，细步长为 $0.01/20$。标准 Parareal 的粗传播子仍用后向 Euler，粗步长为 $0.01$；ParaExp 的线性粗传播调用 MATLAB `expmv`。
+它来自周期 Burgers 方程的中心差分，$\Delta x=1/100$，$A=A_{xx}$，$B=-\tfrac12A_x$，$A_{xx},A_x$ 见 (3.12)。ParaExp 和标准 Parareal 的细传播子都使用后向 Euler，细步长为 $0.01/20$。标准 Parareal 的粗传播子仍用后向 Euler，粗步长为 $0.01$；ParaExp 的线性粗传播调用 MATLAB `expmv`。
 
 ![原论文 Figure 3.8：三组黏性下非线性 ParaExp 与标准 Parareal 的误差](assets/papers/time-parallelization/source-figures/figure-3-8.svg)
 
-三个面板从左到右取 $\nu=1,0.1,0.02$，横线表示离散截断误差 $\max\{\Delta t,\Delta x^2\}$，实际迭代达到这条线后即可停止。$\nu=1$ 时，$A$ 捕获主要动力学，ParaExp 明显快于标准 Parareal；$\nu=0.1$ 时，标准 Parareal 反而更快，ParaExp 仍缓慢下降；$\nu=0.02$ 时，ParaExp 的误差连续增大，标准 Parareal 仍能越过截断误差线。继续减小黏性后，标准 Parareal 最终也会失效。这三个面板展示的是拆分主导项随黏性变化发生转移，不能只概括为“扩散减弱后收敛变慢”。
+三个面板从左到右取 $\nu=1,0.1,0.02$，横线表示离散截断误差 $\max\{\Delta t,\Delta x^2\}$，实际迭代达到这条线后即可停止。$\nu=1$ 时，$A$ 捕获主要动力学，ParaExp 明显快于标准 Parareal；$\nu=0.1$ 时，标准 Parareal 反而更快，ParaExp 仍缓慢下降；$\nu=0.02$ 时，ParaExp 的误差连续增大，标准 Parareal 仍能越过截断误差线。继续减小黏性后，标准 Parareal 最终也会失效——论文给出的理由是：标准 Parareal 本身对双曲问题就表现不佳，因此不能指望它的简化版本在这里有效，第四章会展开这一点。这三个面板展示的是拆分主导项随黏性变化发生转移，不能只概括为“扩散减弱后收敛变慢”。
 
 > [!important] 适用边界
 > 线性 ParaExp 的 (3.15) 是精确代数分解，只受指数作用近似和局部受迫求解误差影响。非线性 ParaExp 已变成迭代法，收敛取决于 $A+B$ 的拆分。线性部分若没有覆盖主导传播机制，矩阵指数再精确也无法补偿模型失配。
