@@ -1,6 +1,6 @@
 ---
 title: 第三章：对双曲问题有效的 PinT 方法
-description: Schwarz 波形松弛、并行延迟校正、ParaExp 与 ParaDiag 的完整推导和数值解释
+description: 第三章全景——双曲问题长程传播的挑战、四类对双曲有效的 PinT 方法（SWR、IDC、ParaExp、ParaDiag）的共享原则与历史谱系，以及完整推导和数值解释
 lang: zh
 translation: en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods
 tags:
@@ -25,13 +25,39 @@ tags:
 
 ## Section 3 导论与 3.1 历史发展
 
+### 从抛物到双曲：时间局部性为何消失
+
+第二章说明，抛物问题的解在时间上高度局部（Figure 2.1）：在 Dirichlet 边界下几乎所有信息很快被“遗忘”，在 Neumann 与周期边界下只有最低频分量（即常数）能在长时间内存活。一旦输运项出现并占主导（Figures 2.2–2.3），乃至进入双曲极限，情况发生质变——对二阶波动方程（Figure 2.4）而言，所有频率分量都能在空间与时间中传播到任意远处，并伴随多方向传播与反射。正是这种“精细信息在长时间上的传播”使双曲问题的时间并行远比抛物问题困难，也决定了必须使用与抛物方法不同的 PinT 技术。
+
+> [!tip] 本站洞见
+> 可以把“时间局部”对“时间全局”当作选择 PinT 方法的第一判据。抛物问题的耗散把远处的耦合迅速衰减，粗传播子只要抓住低频就能驱动 Parareal 一类迭代（见第四章）；双曲问题没有这种衰减，任何丢失高频或相位的粗模型都会在长时间窗内失真。因此本章四类方法的共同目标不是“构造一个好的强耗散粗传播子”，而是“让跨越整个时间区间的全时间（all-at-once）耦合系统 $K\boldsymbol u=\boldsymbol b$ 的求逆本身可并行”。
+
 ### 这一组方法为何能处理长程传播
 
-双曲方程把精细结构沿特征线带到很远的时间。有效的时间并行算法需要保留传播路径与相位，或直接求解跨越整个时间区间的耦合。论文把四类方法放在这一组：Schwarz 波形松弛（SWR）、并行积分延迟校正（IDC）、ParaExp 和 ParaDiag。
+论文把四类方法归入“对双曲有效”的一组：Schwarz 波形松弛（SWR）、并行积分延迟校正（IDC）、ParaExp 和 ParaDiag。它们来源不同，却共享同一个原则——不去近似一个强耗散的粗传播子，而是把全时间耦合系统的求逆改造成可并行的形式，分别依靠迭代、分解与变换：
 
-这些方法的来源不同。SWR 继承区域分解与波形松弛；IDC 来自缺陷校正和高阶积分；ParaExp 利用线性系统的指数传播；ParaDiag 利用全时间矩阵的可对角化结构。它们大多也能处理抛物问题。共同点在于并行机制不依赖强耗散型粗传播子。
+- **迭代加分解**：SWR 把时空区域分解成子域，让每个子域一次求解完整时间窗，仅通过界面波形迭代耦合；
+- **误差分解与流水线**：IDC 把高阶精度拆成“低阶预测 + 若干次积分残差校正”，并让不同时间窗与校正层流水化并行；
+- **精确分解**：ParaExp 把线性问题分成“局部零初值受迫响应”和“全局齐次传播”，用矩阵指数直接跳到任意后续时刻；
+- **变换对角化**：ParaDiag 沿时间方向作（近似）对角化，把全时间矩阵的逆化为多个互不依赖的复移位空间求解。
 
-历史上，SWR 与 mapped tent pitching、unmapped tent pitching 有紧密联系。IDC 的并行版本包括按时间窗排布的 PIDC 和按校正层流水化的 RIDC。ParaExp 属于线性直接方法，随后扩展出非线性迭代形式。ParaDiag 则同时发展出直接对角化、波形松弛、定常迭代和 Krylov 预条件等形态。
+论文强调一个值得注意的现象：许多为双曲问题设计的方法在抛物问题上同样有效，甚至更好；唯一的例外是 3.2 末尾介绍的 mapped tent pitching（MTP）——它在构造中直接利用了双曲问题的有限传播速度，因而是真正“双曲专属”的。反过来，为抛物问题设计的 PinT 方法（第四章）通常在双曲问题上表现不佳。这条不对称正是把这四类方法单列一章的根本理由。
+
+有限传播速度是这一组方法反复利用的物理事实。SWR 与 tent pitching 用特征锥说明：一轮迭代只能把界面上正确的信息推进一个有限的传播距离，足够多轮之后特征锥覆盖整个时空域（见 3.2.2）。ParaExp 用矩阵指数精确表达齐次传播，代价不随中间时间步数线性增长。ParaDiag 的 $\alpha$-循环则通过弱化首尾的周期闭合，避免把传播造成的首尾差异带遍整个时间域（见 3.5.2）。四者从不同角度守住了双曲解所依赖的相位与高频信息。
+
+各条谱系的逐公式、逐定理推导拆分在精读页：[[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-1-history-and-swr\|历史发展与 Schwarz 波形松弛]]、[[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-2-idc\|并行积分延迟校正]]、[[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-3-paraexp\|ParaExp]]、[[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i\|直接 ParaDiag]] 与 [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-5-paradiag-ii\|迭代 ParaDiag]]。
+
+### 3.1 四条方法谱系的历史发展
+
+论文按四条相互独立的谱系梳理这组方法，并用第二章引入的四个 PDE 逐一验证其主要理论性质。
+
+**空间–时间连续子问题：从 DD 与 WR 汇合到 SWR。** 第一条谱系源于在重叠或非重叠的“空间–时间连续”子问题上求解，最初由 Gander (1999) 针对抛物问题提出，并由 Giladi 与 Keller (2002) 独立引入。它融合了两种传统：区域分解（DD），一种可追溯到 Schwarz (1870) 的并行求解 PDE 的经典技术；以及波形松弛（WR），最早出现在电路模拟中（Lelarasmee et al. 1982）。Gander (1997) 对抛物与双曲问题同时作了发展与分析，“Schwarz 波形松弛（SWR）”这一名称由 Gander et al. (1999) 提出。非线性抛物问题的进一步结果见 Gander (1999) 与 Gander 与 Rohde (2005)。使用更有效传输条件的优化 SWR（OSWR）：抛物问题见 Gander 与 Halpern (2007)、Bennequin, Gander 与 Halpern (2009)、Bennequin, Gander, Gouarin 与 Halpern (2016)；双曲问题见 Gander, Halpern 与 Nataf (2003) 及 Gander 与 Halpern (2004)；非线性对流–扩散见 Gander, Lunowa 与 Rohde (2023c)。近期的 unmapped tent pitching（UTP）技术（Ciaramella, Gander 与 Mazzieri 2023）即建立在 SWR 之上。此外还有 Dirichlet–Neumann 与 Neumann–Neumann 波形松弛变体（Gander, Kwok 与 Mandal 2016b, 2021b）。
+
+**积分延迟校正的时间并行。** 另一条谱系基于 IDC 的时间并行。用于演化问题的 IDC 最早由 Böhmer 与 Stetter (1984) 引入，后由 Dutt, Greengard 与 Rokhlin (2000) 识别为一种专门的时间积分器——通过精确处理相应的积分，理论上可生成任意高阶的数值解。修正型 IDC（RIDC，Christlieb et al. 2010）是一种可时间并行的技术；另有 Guibert 与 Tromeur-Dervout (2007) 提出的流水线并行版本（PIDC），3.3 详述。
+
+**ParaExp。** 3.4 介绍的 ParaExp 由 Gander 与 Güttel (2013) 在约十年前提出，其核心策略是分开处理初值与源项；另见 Merkel, Niyonzima 与 Schöps (2017)、Kooij, Botchev 与 Geurts (2017)，非线性变体见 Gander, Güttel 与 Petcu (2018a)。
+
+**ParaDiag 家族。** 3.5 介绍 ParaDiag。基于对角化的时间并行方法最早由 Maday 与 Rønquist (2008) 作为无迭代的直接时间并行求解器提出；Gander, Halpern, Ryan 与 Tran (2016a) 对抛物问题作了更细致的研究，非线性变体见 Gander 与 Halpern (2017)，双曲问题见 Gander, Halpern, Rannou 与 Ryan (2019)。迭代变体随后迅速出现，既可嵌入 WR（Gander 与 Wu 2019），也可嵌入 Parareal（Gander 与 Wu 2020）。近似 ParaDiag 还被 McDonald et al. (2018) 与 Liu 与 Wu (2020) 直接用作全时间系统的 Krylov 预条件器。ParaDiag 的系统性综述见 Gander et al. (2019)；此后该家族在 PinT 领域影响迅速扩大，新进展如 Kressner, Massei 与 Zhu (2023) 的插值型直接 ParaDiag，以及 Gander 与 Palitta (2024) 结合 Sherman–Morrison–Woodbury 公式与 Krylov 技术的新变体。
 
 ## 3.2 Schwarz 波形松弛
 
@@ -83,7 +109,7 @@ $$
 k>\frac{Tc}{\beta-\alpha},
 $$
 
-第 $k$ 轮之后整个时间窗内的界面误差就会消失。这里 $\beta-\alpha$ 表示重叠宽度，$c$ 是波速。结论来自有限传播速度：一轮迭代只能把正确性扩展到一个特征锥覆盖的区域，足够多轮后特征锥覆盖完整时空域。
+第 $k$ 轮之后整个时间窗内的界面误差就会消失。这里 $\beta-\alpha$ 是重叠区相对于区域长度的比例（无量纲分数），真正的物理重叠宽度为 $(\beta-\alpha)L$，其中 $L$ 为区域长度；$c$ 是波速。结论来自有限传播速度：一轮迭代只能把正确性扩展到一个特征锥覆盖的区域，足够多轮后特征锥覆盖完整时空域。
 
 Figure 3.2 用特征锥展示这一过程。每个子域中已有一部分解与精确解一致，下一轮通过界面数据把这片正确区域继续扩大。这个几何解释也引出红黑 SWR：相邻时空块按颜色并行计算，允许一定冗余工作，以换取更大的并发度。
 
@@ -349,7 +375,7 @@ ADE 的 3 次和 13 次与 Figure 3.15(c,d) 一致。波动实验使用论文的
 
 | 原文位置                        | 本页对应 | 已覆盖内容                                                                                                        |
 | ------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
-| Section 3 与 3.1，pp. 396–398   | 3.1      | 双曲有效方法的范围、历史来源及 tent pitching 线索                                                                 |
+| Section 3 与 3.1，pp. 396–398   | 3.1      | 双曲长程传播的挑战与时间局部性判据、四类方法的共享原则、四条谱系的历史发展与文献、MTP/UTP 与有限传播速度线索      |
 | Section 3.2，pp. 398–405        | 3.2      | WR 与 SWR 差异、Robin/Dirichlet/Ventcel/卷积条件、Theorems 3.1–3.2、Figures 3.1–3.3、MTP/UTP                      |
 | Section 3.3，pp. 405–412        | 3.3      | IDC 积分残差与递推、Theorem 3.3、SDC、PIDC/RIDC 调度、Figures 3.4–3.6、正则性限制                                 |
 | Section 3.4，pp. 412–415        | 3.4      | ParaExp 线性分解与指数作用、非线性迭代、Theorem 3.4、Figures 3.7–3.8                                              |
