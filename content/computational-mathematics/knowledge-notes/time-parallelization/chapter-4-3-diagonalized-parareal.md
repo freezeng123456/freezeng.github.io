@@ -330,7 +330,7 @@ $$
 
 ![原论文 Figure 4.14：热方程上 rho=alpha 的锐利预测](assets/papers/time-parallelization/source-figures/figure-4-14.svg)
 
-热方程采用齐次 Dirichlet 边界、$u_0=\sin^2(2\pi x)$、梯形规则、$\Delta T=1/2$、$J=10$、$\Delta x=1/100$。左、右面板分别取 $N_t=36$ 与 $72$，每幅都比较 $\alpha=10^{-1},10^{-2},10^{-3}$。实测虚线与理论点线几乎平行，$N_t$ 加倍没有改变由 $\rho=\alpha$ 决定的斜率。
+热方程采用齐次 Dirichlet 边界、$u_0=\sin^2(2\pi x)$、梯形规则、$\Delta T=1/12$、$J=10$、$\Delta x=1/100$。左、右面板分别取 $N_t=36$ 与 $72$，每幅都比较 $\alpha=10^{-1},10^{-2},10^{-3}$。实测虚线与理论点线几乎平行，$N_t$ 加倍没有改变由 $\rho=\alpha$ 决定的斜率。
 
 ![原论文 Figure 4.15：波动方程上 alpha 与粗区间数的共同影响](assets/papers/time-parallelization/source-figures/figure-4-15.svg)
 

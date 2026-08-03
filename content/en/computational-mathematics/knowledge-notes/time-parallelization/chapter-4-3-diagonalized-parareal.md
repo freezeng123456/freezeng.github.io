@@ -320,7 +320,7 @@ The heat-equation factor is independent of the number of coarse intervals. The i
 
 ![Original Figure 4.14: sharp rho=alpha prediction for the heat equation](assets/papers/time-parallelization/source-figures/figure-4-14.svg)
 
-The heat test uses homogeneous Dirichlet data, $u_0=\sin^2(2\pi x)$, trapezoidal integration, $\Delta T=1/2$, $J=10$, and $\Delta x=1/100$. The left and right panels use $N_t=36$ and $72$; each compares $\alpha=10^{-1},10^{-2},10^{-3}$. The measured dashed curves are almost parallel to the theoretical dotted curves, and doubling $N_t$ does not change the slope set by $\rho=\alpha$.
+The heat test uses homogeneous Dirichlet data, $u_0=\sin^2(2\pi x)$, trapezoidal integration, $\Delta T=1/12$, $J=10$, and $\Delta x=1/100$. The left and right panels use $N_t=36$ and $72$; each compares $\alpha=10^{-1},10^{-2},10^{-3}$. The measured dashed curves are almost parallel to the theoretical dotted curves, and doubling $N_t$ does not change the slope set by $\rho=\alpha$.
 
 ![Original Figure 4.15: joint influence of alpha and the coarse-interval count on the wave equation](assets/papers/time-parallelization/source-figures/figure-4-15.svg)
 
