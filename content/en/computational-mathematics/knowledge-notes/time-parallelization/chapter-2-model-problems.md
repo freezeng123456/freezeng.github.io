@@ -268,7 +268,7 @@ $$
 u_0(x)=\sin^2\!\left(8\pi(1-x)^2\right).
 $$
 
-Multiple frequencies travel in both directions and repeatedly superpose. Dense interference patterns remain throughout $0<t<3$. The paper states that the same detailed dependence on every initial frequency would also occur with Dirichlet or Neumann boundaries. Panel (d) therefore represents general hyperbolic memory rather than an effect unique to periodicity.
+Multiple frequencies travel in both directions and repeatedly superpose. Dense interference patterns remain throughout $0<t<3$. The paper states that the same detailed dependence on every initial frequency would also occur with Dirichlet or Neumann boundaries. Panel (d) therefore represents the general long-term memory of hyperbolic problems, and the same dependence persists under all three boundary types.
 
 ### PinT conclusion of Section 2.4
 
