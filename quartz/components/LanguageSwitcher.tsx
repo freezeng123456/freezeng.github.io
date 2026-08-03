@@ -19,6 +19,7 @@ const LanguageSwitcher: QuartzComponent = ({ fileData }: QuartzComponentProps) =
     <a
       class="language-switcher internal"
       href={href}
+      data-router-ignore=""
       aria-label={label}
       title={label}
       data-current-language={isEnglish ? "en" : "zh"}
