@@ -95,6 +95,13 @@ The $N_t$ shifted spatial systems in the middle stage are independent. The first
 
 ![The time transform, independent spatial solves, and inverse transform in ParaDiag](assets/diagrams/pint/en/paradiag-three-stage.svg)
 
+Arbitrary distinct steps can be diagonalized numerically with `eig`, and
+the extra cost is usually small. Without closed-form eigenvectors,
+however, one cannot fully analyze roundoff or parameter selection. The
+theory below therefore specializes to a geometric grid. Maday and
+Rønquist (2008) tested $\mu=1.2$ on the one-dimensional heat equation
+and reported close-to-perfect speedup.
+
 ### Geometric grids and the two competing errors
 
 Maday and Rønquist (2008) set $\Delta t_n=\mu^{n-1}\Delta t_1$ with $\mu>1$. Since the steps sum to $T$,
@@ -151,19 +158,40 @@ $$
 \right)^{1/(N_t+1)}. \tag{3.28}
 $$
 
-The proof reduces every spatial eigenmode to the Dahlquist equation $y'=\lambda y$. Its first estimate compares the two grids; its second bounds the roundoff introduced by the eigenvector transforms, with the worst case attained at $|\lambda|=\lambda_{\max}$. On the geometric grid,
+The first bound compares only the geometric and uniform grids. The total
+truncation error relative to the exact solution also satisfies
+
+$$
+\|\boldsymbol u_{N_t}(\varrho)-\boldsymbol u(T)\|
+\le
+\|\boldsymbol u_{N_t}(\varrho)-\boldsymbol u_{N_t}(0)\|
++\|\boldsymbol u_{N_t}(0)-\boldsymbol u(T)\|.
+$$
+
+The second term is the familiar uniform-grid backward-Euler error and is
+normally not dominant. The proof reduces every spatial eigenmode to the
+Dahlquist equation $y'=\lambda y$. The second bound in (3.27) estimates
+roundoff from the eigenvector transforms, with the worst case attained at
+$|\lambda|=\lambda_{\max}$. On the geometric grid,
 
 $$
 V=\mathbb T(p_1,\ldots,p_{N_t-1}),
 \qquad
-p_n=\frac1{\prod_{j=1}^{n}(1-\varrho^j)},
+p_n=\frac1{\prod_{j=1}^{n}(1-\mu^j)},
 $$
 
 $$
 V^{-1}=\mathbb T(q_1,\ldots,q_{N_t-1}),
 \qquad
-q_n=(-1)^n\varrho^{n(n-1)/2}p_n, \tag{3.29a}
+q_n=(-1)^n\mu^{n(n-1)/2}p_n, \tag{3.29a}
 $$
+
+> [!warning] Source check: the grid ratio in (3.29a)
+> The journal and arXiv versions print $\varrho$ where the eigenvectors
+> require $\mu$. The $(2,1)$ entry of $BV=VD$ gives
+> $p_1=1/(1-\mu)$ directly. Using $1/(1-\varrho)$ would remain bounded
+> as $\varrho\to0$, contradicting the
+> $\varrho^{-(N_t-1)}$ amplification in (3.27).
 
 where
 
@@ -216,6 +244,17 @@ $$
 =\frac{\mathbb A}{2}(\boldsymbol w_n+\boldsymbol w_{n-1}). \tag{3.32}
 $$
 
+It preserves the quadratic energy of the linear wave system. For the
+unscaled state $\boldsymbol w=(\boldsymbol u,\boldsymbol u')$, the
+physical invariant is
+
+$$
+\|\boldsymbol u_n'\|_2^2-\boldsymbol u_n^\top A\boldsymbol u_n,
+$$
+
+not the ordinary Euclidean norm of $\boldsymbol w$ unless the
+displacement component is first scaled by $(-A)^{1/2}$.
+
 Its all-at-once system is
 
 $$
@@ -230,14 +269,14 @@ $$
 \end{bmatrix}. \tag{3.33b}
 $$
 
-Multiplication by $\widetilde B^{-1}\otimes I_x$ gives
+Multiplication by $\widetilde B^{-1}\otimes I_{2N_x}$ gives
 
 $$
 \mathcal K\boldsymbol W=\widetilde{\boldsymbol b},
 \quad
 \mathcal K=\widetilde B^{-1}B\otimes I_{2N_x}-I_t\otimes\mathbb A,
 \quad
-\widetilde{\boldsymbol b}=(\widetilde B^{-1}\otimes I_x)\boldsymbol b. \tag{3.34}
+\widetilde{\boldsymbol b}=(\widetilde B^{-1}\otimes I_{2N_x})\boldsymbol b. \tag{3.34}
 $$
 
 The time matrix has the factorization
@@ -285,14 +324,32 @@ $$
 \right)^{1/(N_t+1)}. \tag{3.37}
 $$
 
-The proof analyzes $u''+\lambda u=0$ mode by mode. It uses
+The proof takes $\lambda\in\sigma(-A)$, $\lambda>0$, analyzes
+$u''+\lambda u=0$, and sets
 
 $$
-r_1(s)=\frac{s^3}{(1+s^2)^2}\leq\frac25,
-\qquad r_2(s)=\frac1{1+s^2}\leq1,
+s=\frac{\lambda T}{2N_t}.
 $$
 
-to obtain bounds uniform in the spatial eigenvalue.
+The grid truncation term first satisfies
+
+$$
+O\!\left(
+\frac{N_t(N_t^2-1)}6r_1(s)\varrho^2
+\right),
+\qquad
+r_1(s)=\frac{s^3}{(1+s^2)^2}\le\frac25,
+$$
+
+while the roundoff term is
+
+$$
+\frac{2^{2N_t-1/2}N_t}{(N_t-1)!}
+r_2(s)\varrho^{-(N_t-1)},
+\qquad r_2(s)=\frac1{1+s^2}\le1.
+$$
+
+Taking uniform bounds on $r_1$ and $r_2$ yields (3.36).
 
 ![Original Figure 3.11: optimal geometric parameters and the step-count threshold for wave-equation ParaDiag-I](assets/papers/time-parallelization/source-figures/figure-3-11.svg)
 
@@ -318,7 +375,21 @@ $$
 \right. \tag{3.38}
 $$
 
-This is a boundary-value method (BVM), solved globally in time. Its stability is therefore not the stability of a step-by-step centered scheme. Axelsson and Verwer (1985) proved uniform second-order accuracy for the nonlinear case even though the last equation alone is first order.
+This is a boundary-value method (BVM): only $\boldsymbol u_0$ is
+prescribed and all temporal unknowns are solved simultaneously. Its
+stability is therefore not the stability of a step-by-step centered
+scheme. Axelsson and Verwer (1985) used such techniques to circumvent
+the Dahlquist barriers between convergence and stability, and proved
+uniform second-order accuracy for the nonlinear case even though the
+last equation alone is first order. Fox (1954) and Fox and Mitchell
+(1957) earlier used a BDF2 terminal equation,
+
+$$
+\frac{
+3\boldsymbol u_{N_t}-4\boldsymbol u_{N_t-1}+\boldsymbol u_{N_t-2}
+}{2\Delta t}
+=A\boldsymbol u_{N_t}+\boldsymbol g_{N_t}.
+$$
 
 $$
 K\boldsymbol U=\boldsymbol b,
@@ -400,6 +471,9 @@ $$
 The nonlinear all-at-once equation is
 
 $$
+
+Here $B$ may be the variable-step matrix (3.23b) or the BVM matrix
+(3.39b); nonlinear second-order systems can be treated analogously.
 (B\otimes I_x)\boldsymbol U-F(\boldsymbol U)=\boldsymbol b. \tag{3.42}
 $$
 

@@ -96,6 +96,11 @@ $$
 
 ![ParaDiag 的时间变换、独立空间求解与逆变换](assets/diagrams/pint/zh/paradiag-three-stage.svg)
 
+任意互异步长都可以调用数值 `eig` 得到 $V$，额外成本通常不大；
+但没有闭式特征向量，就无法完整分析舍入误差和参数选择。所以下面的
+理论专门采用几何网格。Maday 与 Rønquist（2008）曾以 $\mu=1.2$
+测试一维热方程，并获得接近理想的加速。
+
 ### 几何网格与两类误差
 
 Maday and Rønquist (2008) 采用 $\Delta t_n=\mu^{n-1}\Delta t_1$，$\mu>1$。由 $\sum_n\Delta t_n=T$，
@@ -152,19 +157,38 @@ $$
 \right)^{1/(N_t+1)}. \tag{3.28}
 $$
 
-证明把每个空间特征值化为 Dahlquist 方程 $y'=\lambda y$。第一项比较几何网格和均匀网格的离散误差；第二项估计特征向量变换引入的舍入误差，并在 $|\lambda|=\lambda_{\max}$ 达到最坏值。几何网格下
+第一条界只比较几何与均匀网格。相对于精确解的总截断误差还要分成
+
+$$
+\|\boldsymbol u_{N_t}(\varrho)-\boldsymbol u(T)\|
+\le
+\|\boldsymbol u_{N_t}(\varrho)-\boldsymbol u_{N_t}(0)\|
++\|\boldsymbol u_{N_t}(0)-\boldsymbol u(T)\|.
+$$
+
+第二项是熟知的均匀网格后向 Euler 误差，通常不占主导。证明把每个
+空间特征值化为 Dahlquist 方程 $y'=\lambda y$；(3.27) 的第二条界
+估计特征向量变换引入的舍入误差，并在
+$|\lambda|=\lambda_{\max}$ 达到最坏值。几何网格下
 
 $$
 V=\mathbb T(p_1,\ldots,p_{N_t-1}),
 \qquad
-p_n=\frac1{\prod_{j=1}^{n}(1-\varrho^j)},
+p_n=\frac1{\prod_{j=1}^{n}(1-\mu^j)},
 $$
 
 $$
 V^{-1}=\mathbb T(q_1,\ldots,q_{N_t-1}),
 \qquad
-q_n=(-1)^n\varrho^{n(n-1)/2}p_n, \tag{3.29a}
+q_n=(-1)^n\mu^{n(n-1)/2}p_n, \tag{3.29a}
 $$
+
+> [!warning] 原文公式核对：(3.29a) 的网格比
+> 期刊版与 arXiv 版把这里的 $\mu$ 误排成 $\varrho$。由
+> $BV=VD$ 的 $(2,1)$ 元素直接得到
+> $p_1=1/(1-\mu)$；若写成 $1/(1-\varrho)$，在
+> $\varrho\to0$ 时反而保持有界，也与 (3.27) 的
+> $\varrho^{-(N_t-1)}$ 放大矛盾。
 
 其中下三角 Toeplitz 算子为
 
@@ -213,12 +237,22 @@ $$
 \begin{bmatrix}0&I_x\\A&0\end{bmatrix}. \tag{3.31}
 $$
 
-为减小波动色散，论文使用梯形规则
+为减小波动色散，时间离散采用梯形规则
 
 $$
 \frac{\boldsymbol w_n-\boldsymbol w_{n-1}}{\Delta t_n}
 =\frac{\mathbb A}{2}(\boldsymbol w_n+\boldsymbol w_{n-1}). \tag{3.32}
 $$
+
+梯形规则保持线性波动系统的二次能量。对
+$\boldsymbol w=(\boldsymbol u,\boldsymbol u')$，未缩放状态的物理不变量是
+
+$$
+\|\boldsymbol u_n'\|_2^2-\boldsymbol u_n^\top A\boldsymbol u_n,
+$$
+
+而不是一般意义下的 $\|\boldsymbol w_n\|_2$；把位移分量按
+$(-A)^{1/2}$ 缩放后，才可写成普通 Euclidean 范数守恒。
 
 全时间系统为
 
@@ -293,14 +327,33 @@ $$
 \right)^{1/(N_t+1)}. \tag{3.37}
 $$
 
-证明对每个 $\lambda>0$ 考察 $u''+\lambda u=0$。几何和均匀网格的差包含
+证明对任意 $\lambda\in\sigma(-A)$、$\lambda>0$ 考察
+$u''+\lambda u=0$，并令
 
 $$
-r_1(s)=\frac{s^3}{(1+s^2)^2},
-\qquad r_1(s)\leq\frac25,
+s=\frac{\lambda T}{2N_t}.
 $$
 
-舍入误差包含 $r_2(s)=1/(1+s^2)\leq1$。这两个一致上界导出 (3.36)。
+几何和均匀网格的差先得到更细的中间界
+
+$$
+O\!\left(
+\frac{N_t(N_t^2-1)}6r_1(s)\varrho^2
+\right),
+\qquad
+r_1(s)=\frac{s^3}{(1+s^2)^2}\le\frac25.
+$$
+
+舍入项则为
+
+$$
+\frac{2^{2N_t-1/2}N_t}{(N_t-1)!}
+r_2(s)\varrho^{-(N_t-1)},
+\qquad
+r_2(s)=\frac1{1+s^2}\le1.
+$$
+
+对 $r_1,r_2$ 取一致上界便得到 (3.36)。
 
 ![原论文 Figure 3.11：波动方程上几何梯形 ParaDiag-I 的最优参数与步数阈值](assets/papers/time-parallelization/source-figures/figure-3-11.svg)
 
@@ -326,7 +379,18 @@ $$
 \right. \tag{3.38}
 $$
 
-它是边值方法（BVM），整体同时求解，稳定性不能按普通逐步中心格式判断。Axelsson and Verwer (1985) 证明一般非线性情形可取得一致二阶精度，尽管末步本身只有一阶。早期 Fox (1954) 与 Fox and Mitchell (1957) 还用 BDF2 作为末步。
+它是边值方法（BVM）：只需给定 $\boldsymbol u_0$，所有时间未知量
+一次同时求出，稳定性不能按普通逐步中心格式判断。Axelsson 与
+Verwer（1985）以这类技术绕开收敛性与稳定性之间的 Dahlquist
+屏障，并证明一般非线性情形可取得一致二阶精度，尽管末步本身只有
+一阶。Fox（1954）与 Fox 和 Mitchell（1957）更早采用过 BDF2 末步：
+
+$$
+\frac{
+3\boldsymbol u_{N_t}-4\boldsymbol u_{N_t-1}+\boldsymbol u_{N_t-2}
+}{2\Delta t}
+=A\boldsymbol u_{N_t}+\boldsymbol g_{N_t}.
+$$
 
 全时间形式仍为
 
@@ -417,6 +481,9 @@ $$
 非线性全时间方程为
 
 $$
+
+这里的 $B$ 可以取变步长矩阵 (3.23b)，也可以取 BVM 矩阵
+(3.39b)；非线性二阶系统可按同样思路处理。
 (B\otimes I_x)\boldsymbol U-F(\boldsymbol U)=\boldsymbol b. \tag{3.42}
 $$
 

@@ -51,7 +51,15 @@ P\Delta\boldsymbol U^k=\boldsymbol r^k
 \qquad k=0,1,\ldots. \tag{3.49}
 $$
 
-其渐近速度由 $\rho(P^{-1}K)$ 控制。即使谱半径不小，$P^{-1}K$ 的谱若高度聚集，预条件 GMRES 仍可能很快。
+定常迭代的误差矩阵是 $I-P^{-1}K$，所以渐近速度由
+$\rho(I-P^{-1}K)$ 控制；$P^{-1}K$ 本身应聚集在 $1$ 附近，而不是
+靠近 $0$。即使定常迭代较慢或发散，$P^{-1}K$ 的谱若高度聚集，
+预条件 GMRES 仍可能很快。
+
+> [!warning] 原文公式核对：定常迭代的谱半径
+> Section 3.5.2 开头把判据写成 $\rho(P^{-1}K)$，但 (3.49) 与
+> 后面的 (3.67) 都明确给出误差矩阵 $I-P^{-1}K$。预条件矩阵的
+> 特征值接近 $1$ 正是好现象，不能用 $\rho(P^{-1}K)\ll1$ 判断。
 
 ### Fourier 对角化与三步并行求解
 
@@ -261,7 +269,17 @@ $\alpha=1$ 时 $V_\alpha=F^*$，该算法与 (3.52) 完全一致。$\alpha\ne1$ 
 
 ![原论文 Figure 3.16：两种 alpha 下首尾耦合波形松弛的误差衰减](assets/papers/time-parallelization/source-figures/figure-3-16.svg)
 
-Figure 3.16 沿用 Figure 3.15 的 PDE 参数并改为周期边界。左、右面板分别取 $\alpha=0.1$ 与 $10^{-3}$，每个面板同时比较 $\nu=10^{-2}$、$10^{-6}$ 的对流扩散方程和波动方程。此时 $\alpha=1$ 的 $P$ 奇异，需要取 $\alpha<1$。$\alpha=0.1$ 时三条曲线均线性下降，波动方程最慢；减到 $10^{-3}$ 后，三类问题都在更少迭代内达到 $10^{-12}$ 附近。该图直接展示 $\alpha$ 对收敛斜率的控制，也表明强对流和波动问题无需 Krylov 加速即可收敛。
+Figure 3.16 沿用 Figure 3.15 的网格与初值，但改为周期边界。
+左、右面板分别取 $\alpha=0.1$ 与 $10^{-3}$；图例中的两条 ADE
+曲线是 $\nu=10^{-2}$ 与 $10^{-6}$，另有波动方程。此时
+$\alpha=1$ 的 $P$ 奇异，需要取 $\alpha<1$。$\alpha=0.1$ 时
+三条曲线均线性下降，波动方程最慢；减到 $10^{-3}$ 后，三类问题都
+在更少迭代内达到 $10^{-12}$ 附近。
+
+> [!warning] 原文参数核对：Figures 3.15 与 3.16
+> 正文称两图的 PDE 数据相同，但 Figure 3.15 图例使用
+> $\nu=10^{-3},10^{-6}$，Figure 3.16 图例使用
+> $\nu=10^{-2},10^{-6}$。本页以各图实际图例为准。
 
 ### 两条路线的离散等价
 
@@ -380,7 +398,12 @@ $$
 \mathcal M=I-P_\alpha^{-1}K, \tag{3.67}
 $$
 
-论文据此得到 $\rho(\mathcal M)\le\alpha/(1-\alpha)$。小 $\alpha$ 加快收敛，Figure 3.16 的实验与此吻合。底层积分器稳定是谱界成立的充分条件；论文进一步声明，数值上稳定性也是必要条件。
+采用校正后的谱界，迭代矩阵满足
+$\rho(\mathcal M)\le\alpha/(1-\alpha)$。这条界在
+$\alpha<1/2$ 时直接保证收缩；实验常用的有效区间是
+$\alpha\in[10^{-3},10^{-1}]$，但它只是经验范围，不是普适定理。
+小 $\alpha$ 加快收敛，Figure 3.16 的斜率与此吻合。底层积分器稳定
+是谱界成立的充分条件；原文进一步作出“数值上也必要”的观察。
 
 ![原论文 Figure 3.17：稳定阈值两侧的 Numerov 型方法迭代谱](assets/papers/time-parallelization/source-figures/figure-3-17.svg)
 
@@ -391,12 +414,18 @@ Figure 3.17 取 $\Delta t=1/16$、$\Delta x=1/128$、$\alpha=0.02$，并比较 $
 $\alpha$ 不能无限减小。由 $V_\alpha=\Lambda_\alpha F^*$、$\operatorname{Cond}_2(F^*)=1$，
 
 $$
-\operatorname{Cond}_2(V_\alpha)=\frac1\alpha,
+\operatorname{Cond}_2(V_\alpha)
+=\alpha^{-(N_t-1)/N_t}
+\le\frac1\alpha,
 \qquad
 \mathrm{err}_{\mathrm{ro}}
-=O\!\left(\epsilon\operatorname{Cond}_2(V_\alpha)\right)
-=O\!\left(\frac\epsilon\alpha\right).
+=O\!\left(\epsilon\alpha^{-(N_t-1)/N_t}\right)
+\subseteq O\!\left(\frac\epsilon\alpha\right).
 $$
+
+> [!warning] 原文公式核对：$\operatorname{Cond}_2(V_\alpha)$
+> 由 $V_\alpha=\Lambda_\alpha F^*$ 和 $F^*$ 的酉性可直接得到上面的
+> 精确条件数。期刊版把保守上界 $1/\alpha$ 写成了等式。
 
 这一矩阵分解误差并不必然等量传入最终迭代。直接由 (3.58) 求 $\boldsymbol U^k$ 会显露 $O(\epsilon/\alpha)$ 的放大；先由 (3.61) 求误差增量 $\Delta\boldsymbol U^{k-1}$，再更新解，能显著减轻舍入误差。
 
@@ -404,14 +433,34 @@ $$
 
 Figure 3.18 同时比较 $\alpha=10^{-3},10^{-6},10^{-11}$。左图直接求 $\boldsymbol U^k$：三条曲线分别停在约 $10^{-12}$、$10^{-9}$ 和 $10^{-4}$，$\alpha$ 越小，$\epsilon/\alpha$ 放大越早显现。右图先求 $\Delta\boldsymbol U^{k-1}$ 再更新，三个参数最终都降到约 $10^{-13}$。这组面板把“算法的谱收敛”和“实现的舍入稳定性”分开了；减小 $\alpha$ 只有配合增量形式才会转化为实际精度。论文把更系统的舍入分析指向 Wu, Yang and Zhou (2025)。
 
-对于一般多步法，(3.66) 未必成立。Volterra 偏积分微分方程会产生稠密下三角 Toeplitz 时间矩阵；若积分权重正且单调，已有结果给出 $|\lambda(P_\alpha^{-1}K)|=1+O(\alpha)$。
+对于一般多步法，(3.66) 未必成立。Volterra 偏积分微分方程会产生
+
+$$
+K=B\otimes I_x-I_t\otimes A,
+$$
+
+其中 $B$ 是稠密下三角 Toeplitz 矩阵，第一列
+$\boldsymbol\omega=(\omega_0,\ldots,\omega_{N_t})^\top$ 由积分项的
+求积公式决定。若这些权重正且单调，已有结果给出
+$|\lambda(P_\alpha^{-1}K)|=1+O(\alpha)$。
 
 ### 非线性 Newton–Krylov
 
 对 $\boldsymbol u'=f(t,\boldsymbol u)$ 使用后向 Euler，先在非线性全时间方程上做 Newton：
 
+定义非线性全时间算子
+
 $$
-J\Delta\boldsymbol U^l=\boldsymbol b-F(\boldsymbol U^l),
+\mathcal G(\boldsymbol U)
+=(B\otimes I_x)\boldsymbol U-F(\boldsymbol U).
+$$
+
+Newton 更新应写成
+
+$$
+J\Delta\boldsymbol U^l
+=\boldsymbol b-\mathcal G(\boldsymbol U^l)
+=\boldsymbol b-(B\otimes I_x)\boldsymbol U^l+F(\boldsymbol U^l),
 \qquad
 \boldsymbol U^{l+1}=\boldsymbol U^l+\Delta\boldsymbol U^l. \tag{3.68}
 $$
@@ -427,6 +476,13 @@ J=B\otimes I_x-\nabla F_l,
 \right),
 $$
 
+> [!warning] 原文公式核对：(3.68) 的右端
+> 期刊版写成 $\boldsymbol b-F(\boldsymbol U^l)$，但 Section 3.5.1
+> 已把 $F$ 定义成逐时间点堆叠的非线性项。除非在 (3.68) 处无说明地
+> 把 $F$ 重定义为整个全时间算子，否则该右端缺少
+> $(B\otimes I_x)\boldsymbol U^l$。上式采用不歧义的
+> $\mathcal G$ 记号。
+
 $$
 B=\frac1{\Delta t}
 \begin{bmatrix}
@@ -437,10 +493,28 @@ $$
 内层 GMRES 使用
 
 $$
-P_\alpha=C_\alpha\otimes I_x-I_t\otimes A_l,
+P_\alpha=C_{\alpha,\mathrm{BE}}\otimes I_x-I_t\otimes A_l,
 $$
 
-其中 $C_\alpha$ 是上面这个 $B$ 的 $\alpha$-循环矩阵（不是 (3.58c) 中那个纯移位矩阵），$A_l$ 为所有 $\nabla f(\boldsymbol u_n^l,t_n)$ 的平均。一般有 $\rho(P_\alpha^{-1}J)>1$，所以定常迭代 (3.61) 不适合该 Jacobian 系统；预条件谱仍会聚集，GMRES 因而有效。缩短时间窗会增强聚集并降低内层迭代数，Section 3.5.1 的最近 Kronecker 近似还可进一步改善预条件。
+其中 $A_l$ 为所有 $\nabla f(\boldsymbol u_n^l,t_n)$ 的平均，而
+
+$$
+C_{\alpha,\mathrm{BE}}
+=\frac1{\Delta t}
+\begin{bmatrix}
+1&&&-\alpha\\
+-1&1\\
+&\ddots&\ddots\\
+&&-1&1
+\end{bmatrix}
+$$
+
+是 $B$ 的 $\alpha$-循环化；它不是 (3.58c) 中未缩放的纯移位矩阵。
+若把它用于定常 Jacobian 迭代，正确判据是
+$\rho(I-P_\alpha^{-1}J)$，而不是原文所写的
+$\rho(P_\alpha^{-1}J)$。数值上后者的特征值虽然不接近 $0$，却会聚集
+在 $1$ 附近，因而适合 GMRES。缩短时间窗会增强聚集并降低内层迭代
+数，Section 3.5.1 的最近 Kronecker 近似还能进一步改善预条件。
 
 ## 公式与图表覆盖核对
 

@@ -50,7 +50,16 @@ P\Delta\boldsymbol U^k=\boldsymbol r^k
 \qquad k=0,1,\ldots. \tag{3.49}
 $$
 
-Its asymptotic rate is governed by $\rho(P^{-1}K)$. A clustered spectrum can still make preconditioned GMRES effective even when stationary iteration is slow or divergent.
+The stationary error matrix is $I-P^{-1}K$, so its asymptotic rate is
+governed by $\rho(I-P^{-1}K)$. The spectrum of $P^{-1}K$ should cluster
+near $1$, not near $0$. Such clustering can still make preconditioned
+GMRES effective when stationary iteration is slow or divergent.
+
+> [!warning] Source check: the stationary spectral radius
+> The opening discussion of Section 3.5.2 uses $\rho(P^{-1}K)$, but
+> (3.49) and the later equation (3.67) both identify the error matrix as
+> $I-P^{-1}K$. Eigenvalues of a good preconditioned matrix cluster near
+> $1$, so $\rho(P^{-1}K)\ll1$ cannot be the criterion.
 
 ### Fourier diagonalization and the three-stage solve
 
@@ -257,7 +266,18 @@ For $\alpha=1$, $V_\alpha=F^*$ and this is exactly (3.52). For $\alpha\ne1$, the
 
 ![Original Figure 3.16: error decay of head–tail waveform relaxation at two values of alpha](assets/papers/time-parallelization/source-figures/figure-3-16.svg)
 
-Figure 3.16 retains the PDE settings of Figure 3.15 and changes to periodic boundary conditions. The left and right panels use $\alpha=0.1$ and $10^{-3}$, respectively; each compares ADE at $\nu=10^{-2}$ and $10^{-6}$ with the wave equation. Here $P$ is singular at $\alpha=1$, so $\alpha<1$ is required. With $\alpha=0.1$, all three curves decay linearly and the wave case is slowest. At $\alpha=10^{-3}$, every case reaches the neighborhood of $10^{-12}$ in fewer iterations. The figure directly exposes alpha's control of the convergence slope and shows that neither strongly advective nor wave cases require Krylov acceleration in this formulation.
+Figure 3.16 retains the grid and initial data of Figure 3.15 but changes
+to periodic boundaries. The panels use $\alpha=0.1$ and $10^{-3}$;
+their legends compare ADE at $\nu=10^{-2},10^{-6}$ with the wave
+equation. Here $P$ is singular at $\alpha=1$, so $\alpha<1$ is
+required. At $\alpha=0.1$ all three curves decay linearly and the wave
+case is slowest. At $\alpha=10^{-3}$ every case reaches roughly
+$10^{-12}$ in fewer iterations.
+
+> [!warning] Source-parameter check: Figures 3.15 and 3.16
+> The running text says the PDE data are the same, but the Figure 3.15
+> legend uses $\nu=10^{-3},10^{-6}$ while Figure 3.16 uses
+> $\nu=10^{-2},10^{-6}$. This page follows each figure's legend.
 
 ### Discrete equivalence of the two routes
 
@@ -373,7 +393,14 @@ $$
 \mathcal M=I-P_\alpha^{-1}K, \tag{3.67}
 $$
 
-and the paper obtains $\rho(\mathcal M)\le\alpha/(1-\alpha)$. A smaller alpha therefore accelerates convergence. Stability of the underlying integrator is sufficient for the spectral result, and the paper states that numerically it is also necessary.
+Using the corrected spectral bound gives
+$\rho(\mathcal M)\le\alpha/(1-\alpha)$. This directly guarantees a
+contraction for $\alpha<1/2$. Experiments commonly use
+$\alpha\in[10^{-3},10^{-1}]$, but that is an empirical range rather
+than a universal theorem. A smaller alpha accelerates convergence.
+Stability of the underlying integrator is sufficient for the spectral
+result; the source also reports the numerical observation that it is
+necessary.
 
 ![Original Figure 3.17: iteration spectra for the Numerov-type method on the two sides of its stability threshold](assets/papers/time-parallelization/source-figures/figure-3-17.svg)
 
@@ -384,12 +411,19 @@ Figure 3.17 sets $\Delta t=1/16$, $\Delta x=1/128$, $\alpha=0.02$, and $T=0.5,10
 Alpha cannot be arbitrarily small. Since $V_\alpha=\Lambda_\alpha F^*$ and $\operatorname{Cond}_2(F^*)=1$,
 
 $$
-\operatorname{Cond}_2(V_\alpha)=\frac1\alpha,
+\operatorname{Cond}_2(V_\alpha)
+=\alpha^{-(N_t-1)/N_t}
+\le\frac1\alpha,
 \qquad
 \mathrm{err}_{\mathrm{ro}}
-=O\!\left(\epsilon\operatorname{Cond}_2(V_\alpha)\right)
-=O\!\left(\frac\epsilon\alpha\right).
+=O\!\left(\epsilon\alpha^{-(N_t-1)/N_t}\right)
+\subseteq O\!\left(\frac\epsilon\alpha\right).
 $$
+
+> [!warning] Source check: $\operatorname{Cond}_2(V_\alpha)$
+> Since $V_\alpha=\Lambda_\alpha F^*$ and $F^*$ is unitary, the exact
+> condition number is the one displayed above. The journal text turns
+> the conservative upper bound $1/\alpha$ into an equality.
 
 This factorization error need not pass unchanged into the final iterate. Solving directly for $\boldsymbol U^k$ as in (3.58) exposes the $O(\epsilon/\alpha)$ amplification. Solving the correction $\Delta\boldsymbol U^{k-1}$ through (3.61) and then updating is substantially more stable.
 
@@ -397,17 +431,45 @@ This factorization error need not pass unchanged into the final iterate. Solving
 
 Figure 3.18 compares $\alpha=10^{-3},10^{-6},10^{-11}$. In the left panel, direct solution for $\boldsymbol U^k$ stalls near $10^{-12}$, $10^{-9}$, and $10^{-4}$, respectively, so the $\epsilon/\alpha$ amplification appears earlier as alpha decreases. In the right panel, the correction update drives all three cases to approximately $10^{-13}$. The panels separate spectral convergence from implementation-level roundoff stability: a smaller alpha improves realized accuracy only when paired with the correction form. The paper points to Wu, Yang and Zhou (2025) for a fuller roundoff analysis.
 
-General multistep formulas need not satisfy (3.66). Dense lower triangular Toeplitz time matrices arise for Volterra partial integro-differential equations; positive, monotone quadrature weights can instead yield $|\lambda(P_\alpha^{-1}K)|=1+O(\alpha)$.
+General multistep formulas need not satisfy (3.66). Volterra partial
+integro-differential equations produce
+
+$$
+K=B\otimes I_x-I_t\otimes A,
+$$
+
+where $B$ is dense lower triangular Toeplitz and its first column
+$\boldsymbol\omega=(\omega_0,\ldots,\omega_{N_t})^\top$ is determined
+by the quadrature for the integral term. Positive, monotone weights can
+instead yield $|\lambda(P_\alpha^{-1}K)|=1+O(\alpha)$.
 
 ### Nonlinear Newton–Krylov
 
-For backward Euler applied to $\boldsymbol u'=f(t,\boldsymbol u)$, Newton's method on the nonlinear all-at-once equation is
+For backward Euler applied to $\boldsymbol u'=f(t,\boldsymbol u)$,
+define the nonlinear all-at-once operator
 
 $$
-J\Delta\boldsymbol U^l=\boldsymbol b-F(\boldsymbol U^l),
+\mathcal G(\boldsymbol U)
+=(B\otimes I_x)\boldsymbol U-F(\boldsymbol U).
+$$
+
+Newton's method is then
+
+$$
+J\Delta\boldsymbol U^l
+=\boldsymbol b-\mathcal G(\boldsymbol U^l)
+=\boldsymbol b-(B\otimes I_x)\boldsymbol U^l+F(\boldsymbol U^l),
 \qquad
 \boldsymbol U^{l+1}=\boldsymbol U^l+\Delta\boldsymbol U^l. \tag{3.68}
 $$
+
+> [!warning] Source check: the right-hand side of (3.68)
+> The journal writes $\boldsymbol b-F(\boldsymbol U^l)$, although
+> Section 3.5.1 already defines $F$ as the stacked pointwise nonlinear
+> term. Unless (3.68) silently redefines $F$ to mean the complete
+> all-at-once operator, the term
+> $(B\otimes I_x)\boldsymbol U^l$ is missing. The notation above removes
+> that ambiguity.
 
 Here
 
@@ -430,10 +492,30 @@ $$
 GMRES uses
 
 $$
-P_\alpha=C_\alpha\otimes I_x-I_t\otimes A_l,
+P_\alpha=C_{\alpha,\mathrm{BE}}\otimes I_x-I_t\otimes A_l,
 $$
 
-where $C_\alpha$ is the $\alpha$-circulant matrix of the $B$ above (not the pure shift matrix of (3.58c)) and $A_l$ averages the Jacobian blocks. Generally $\rho(P_\alpha^{-1}J)>1$, so stationary iteration is unsuitable for this Jacobian solve. The preconditioned eigenvalues remain clustered, which is favorable for GMRES. Shorter time windows improve clustering and reduce inner iterations; the nearest Kronecker approximation from Section 3.5.1 can improve the preconditioner further.
+where $A_l$ averages the Jacobian blocks and
+
+$$
+C_{\alpha,\mathrm{BE}}
+=\frac1{\Delta t}
+\begin{bmatrix}
+1&&&-\alpha\\
+-1&1\\
+&\ddots&\ddots\\
+&&-1&1
+\end{bmatrix}
+$$
+
+is the alpha-circulant of $B$, not the unscaled pure shift in (3.58c).
+For a stationary Jacobian iteration the relevant criterion would be
+$\rho(I-P_\alpha^{-1}J)$, not the source's
+$\rho(P_\alpha^{-1}J)$. Numerically the latter eigenvalues need not be
+near zero; their clustering near one is precisely what favors GMRES.
+Shorter windows improve clustering and reduce inner iterations, and the
+nearest Kronecker approximation of Section 3.5.1 can improve the
+preconditioner further.
 
 ## Equation-and-figure audit
 

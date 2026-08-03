@@ -80,10 +80,14 @@ Higher-order Ventcel conditions can improve asymptotic convergence further. A te
 For the wave equation, SWR has a direct geometric interpretation. Each iteration advances correct interface information across one finite propagation distance. Theorem 3.2 states that Dirichlet transmission on two overlapping subdomains becomes exact over the full window once
 
 $$
-k>\frac{Tc}{\beta-\alpha},
+k>\frac{Tc}{(\beta-\alpha)L},
 $$
 
-where $\beta-\alpha$ is the overlap width and $c$ is the wave speed. Finite propagation speed drives the result. A single iteration can expand the exact region only within characteristic cones; enough iterations make those cones cover the complete space–time domain.
+where the physical overlap is $(\beta-\alpha)L$ and $c$ is the wave
+speed. The journal omits $L$ from the denominator, which agrees with
+the corrected form only for $L=1$. Finite propagation speed drives the
+result: one iteration expands the exact region by one characteristic
+cone, and enough cones cover the full space–time domain.
 
 Figure 3.2 visualizes the cones. A portion of each subdomain solution already agrees with the exact solution, and the next interface exchange enlarges that portion. The same geometry motivates red–black SWR, in which colored space–time blocks are processed concurrently and some redundant work buys additional parallelism.
 
@@ -257,13 +261,16 @@ Newton linearization of the nonlinear all-at-once equations produces a different
 
 Figure 3.13 and Table 3.2 show the behavior for Burgers' equation. At $\nu=0.1$, the count of parallel Jacobian solves is far below the sequential Newton count. Lower viscosity makes convergence more sensitive to $T$, and the method fails for $\nu=0.002$ on longer windows.
 
-A richer approximation uses a low-rank Kronecker sum
+A richer approximation uses a nearest Kronecker product
 
 $$
-J\approx\sum_{q=1}^r \Phi_q\otimes A_q. \tag{3.47}
+\nabla F(\boldsymbol U^k)\approx\Phi_k\otimes A_k. \tag{3.47}
 $$
 
-The NKA strategy chooses temporal scaling matrices $\Phi_q$ offline on a coarse model and retains more time variation. Figure 3.14 shows a clear improvement, especially for longer windows such as $T=1.3$.
+Here $\Phi_k$ is diagonal in time. The NKA strategy can compute it
+offline on a coarse spatial model and retain the amplitude of the
+Jacobian's time variation. Figure 3.14 shows a clear improvement,
+especially for longer windows such as $T=1.3$.
 
 ### 3.5.2 Iterative ParaDiag methods (ParaDiag-II)
 
@@ -289,7 +296,12 @@ Figure 3.15 uses $T=2$, $\Delta t=1/50$, and $\Delta x=1/100$. The circulant pre
 
 #### $\alpha$-circulants and a waveform-relaxation interpretation
 
-The paper also derives an $\alpha$-circulant matrix from continuous head–tail waveform relaxation. The initial and terminal values of the new window are weakly coupled by $\alpha$. After discretization, the eigenvector matrix has the form $\Lambda_\alpha F^*$ and can still be applied with FFTs.
+Continuous head–tail waveform relaxation derives the same
+$\alpha$-circulant matrix. The coupling joins the initial value at
+iteration $k$ to the terminal values from iterations $k$ and $k-1$ on
+the **same time window**; it does not open a new window. After
+discretization, the eigenvector matrix has the form
+$\Lambda_\alpha F^*$ and can still be applied with FFTs.
 
 $\alpha=1$ recovers the standard circulant approximation. Purely periodic propagation can make this choice singular. Values $0<\alpha<1$ break exact cyclic closure and can greatly improve advection- and wave-dominated cases, as the stationary results in Figure 3.16 demonstrate.
 
@@ -306,7 +318,15 @@ $$
 
 These bounds are independent of the spatial grid and time-step count under the stated stability assumptions. (The printed paper reverses the endpoints as $1/(1-\alpha)\le|\lambda|\le1/(1+\alpha)$, which is an empty interval for $0<\alpha<1$; the close-reading page gives the check and the derivation.) A Numerov threshold experiment confirms their dependence on stability: $\gamma=1/120$ satisfies the condition, whereas the slightly unstable $1/120.01$ invalidates the predicted behavior.
 
-Smaller $\alpha$ improves the iteration factor and amplifies transform roundoff to roughly $\epsilon/\alpha$. Figure 3.18 displays this tradeoff. Updating through an error equation prevents repeated transformation of a large solution vector and reduces roundoff contamination. A more general multistep Volterra analysis likewise places the preconditioned eigenvalues at $1+\mathcal O(\alpha)$.
+Smaller $\alpha$ improves the iteration factor while increasing the
+transform condition number to
+$\alpha^{-(N_t-1)/N_t}\le1/\alpha$; thus
+$O(\epsilon/\alpha)$ is a convenient conservative roundoff bound.
+Figure 3.18 displays this tradeoff. Updating through an error equation
+prevents repeated transformation of a large solution vector and reduces
+roundoff contamination. A more general multistep Volterra analysis
+likewise places the preconditioned eigenvalues at
+$1+\mathcal O(\alpha)$.
 
 #### Nonlinear ParaDiag-II
 
