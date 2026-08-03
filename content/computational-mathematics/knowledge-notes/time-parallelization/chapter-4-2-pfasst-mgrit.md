@@ -165,7 +165,7 @@ $$
 它的矩阵是下双对角差分矩阵与 $I_x$ 的 Kronecker 积，再减去由节点差 $\tau^f_{m+1}-\tau^f_m$ 构成的对角矩阵与 $\Delta tA$ 的 Kronecker 积：
 
 $$
-\widetilde{\boldsymbol\phi}_f=
+\widetilde\Phi_f=
 \begin{bmatrix}
 1\\-1&1\\&\ddots&\ddots\\&&-1&1
 \end{bmatrix}\otimes I_x
@@ -213,10 +213,12 @@ $$
 
 $$
 T^{c\to f}=
-\begin{bmatrix}1.2674&-0.2674\\0.5325&0.4674\\0&1\end{bmatrix},
+\begin{bmatrix}1.2674&-0.2674\\0.5325&0.4674\\0&1\end{bmatrix}
+\otimes I_x,
 \qquad
 T^{f\to c}=
-\begin{bmatrix}0.5018&0.6833&-0.1851\\0&0&1\end{bmatrix};
+\begin{bmatrix}0.5018&0.6833&-0.1851\\0&0&1\end{bmatrix}
+\otimes I_x;
 $$
 
 这些矩阵完全由节点和 Lagrange 插值确定。
@@ -229,7 +231,9 @@ $10^{-12}$，$\nu=10^{-3}$ 约需 $120$ 轮，$\nu=10^{-4}$ 约需
 $290$ 轮。黏性减弱后粗传播子不再足以表示主导对流，迭代数随之增加。
 
 > [!note] 本站补充：与 Parareal 的对照
-> 用第 4.2 节的语言看，这与 Parareal 的粗细传播差机制一致：持续传播的高频越来越难由粗配置层表示。原文在本节没有作这一对照。
+> 原文已把弱扩散下的退化与 Parareal、MGRiT 作现象层面的对照。
+> 进一步用第 4.2 节的语言解释，则是持续传播的高频越来越难由粗配置层
+> 表示；这一机制化解读属于本站补充。
 
 ## 4.4 MGRiT
 

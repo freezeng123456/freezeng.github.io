@@ -38,6 +38,22 @@ $$
 其中 $B_1,B_2$ 是由 $\{a_l\}$ 和 $\{b_l\}$ 生成的下三角带状 Toeplitz 矩阵。把两者换成 Strang 型循环矩阵 $C_1,C_2$，得到
 
 $$
+
+更具体地，对系数 $c_0,\ldots,c_m$（分别取 $a_l$ 或 $b_l$），
+对应循环矩阵满足
+
+$$
+C(c)_{ij}=
+\begin{cases}
+c_r,&r=(i-j)\bmod N_t\in\{0,\ldots,m\},\\
+0,&\text{其他},
+\end{cases}
+$$
+
+其中索引从 $0$ 开始。也就是说，第一列是
+$(c_0,c_1,\ldots,c_m,0,\ldots,0)^\top$，第一行把
+$c_m,\ldots,c_1$ 绕回右上角；其余行循环平移。这条 wrap-around
+规则就是从 $B_l$ 构造 $C_l$ 的可实施定义。
 P=C_1\otimes I_x-C_2\otimes(\Delta t A).
 $$
 
@@ -455,13 +471,23 @@ K=B\otimes I_x-I_t\otimes A,
 $$
 
 其中 $B$ 是稠密下三角 Toeplitz 矩阵，第一列
-$\boldsymbol\omega=(\omega_0,\ldots,\omega_{N_t})^\top$ 由积分项的
+$\boldsymbol\omega=(\omega_0,\ldots,\omega_{N_t-1})^\top$ 由积分项的
 求积公式决定。若这些权重正且单调，已有结果给出
 $|\lambda(P_\alpha^{-1}K)|=1+O(\alpha)$。
 
 ### 非线性 Newton–Krylov
 
-对 $\boldsymbol u'=f(t,\boldsymbol u)$ 使用后向 Euler，先在非线性全时间方程上做 Newton：
+对 $\boldsymbol u'=f(\boldsymbol u,t)$ 使用后向 Euler，并定义
+
+$$
+F(\boldsymbol U)=
+\left(
+f(\boldsymbol u_1,t_1)^\top,\ldots,
+f(\boldsymbol u_{N_t},t_{N_t})^\top
+\right)^\top.
+$$
+
+先在非线性全时间方程上做 Newton：
 
 定义非线性全时间算子
 

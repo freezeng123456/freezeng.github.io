@@ -128,7 +128,9 @@ $$
 \qquad
 \boldsymbol v'(t)=A\boldsymbol v(t)
 +B\!\left(\boldsymbol v(t)+\boldsymbol w(t)\right)+\boldsymbol g(t),
-\qquad \boldsymbol v(0)=\boldsymbol 0,
+\qquad
+\boldsymbol w(0)=\boldsymbol u_0,\quad
+\boldsymbol v(0)=\boldsymbol 0,
 $$
 
 because $(\boldsymbol w+\boldsymbol v)'=
@@ -146,8 +148,8 @@ $\boldsymbol w$ at $T_{n-1}$ depends on $\boldsymbol v(T_{n-1})$.
 > $\boldsymbol u=\boldsymbol v+\sum_j\boldsymbol w_j$ as printed; this
 > page follows the variable definitions.
 
-Starting the homogeneous problems from the previous interface iterate
-gives the first parallel formulation:
+Initialize $\boldsymbol v_n^0(T_n)=0$ (or another interface
+approximation) and start with $k=1$. The first parallel formulation is
 
 $$
 \begin{aligned}
@@ -172,7 +174,10 @@ Explicitly evaluating the full blue sum
 $\sum_j\boldsymbol w_j^k(t)$ inside every nonlinear local solve repeats
 expensive work when $A$ is large. Substituting
 $\boldsymbol v_n^k=\boldsymbol u_n^k-\sum_{j=1}^n\boldsymbol w_j^k$
-eliminates this explicit dependence and yields (3.18)–(3.19).
+eliminates this explicit dependence. For the rewritten form, initialize
+$\boldsymbol u_n^0(T_n)=\boldsymbol w_j^0(T_n)=0$ for the relevant
+$j,n$ and start at $k=1$. Other initializations are possible, but a
+Parareal comparison must use matching coarse-node values.
 
 First construct the homogeneous propagations for all
 $n=1,\ldots,N_t$:
@@ -210,7 +215,9 @@ $$
 \end{aligned} \tag{3.19}
 $$
 
-The global iterate equals $\boldsymbol u_n^k(t)$ on interval $n$.
+Use the half-open convention
+$\boldsymbol u^k(t)=\boldsymbol u_n^k(t)$ on
+$[T_{n-1},T_n)$, with the final endpoint taken from the last interval.
 
 ### Theorem 3.4: finite-step convergence and Parareal equivalence
 
@@ -252,8 +259,17 @@ only $A$, so this is a simplified Parareal. The equivalence holds only
 at the coarse nodes:
 
 $$
-\boldsymbol u^k(T_n)=\boldsymbol u_n^k(T_n)=\boldsymbol U_n^k,
-\qquad n=0,1,\ldots,N_t,\qquad \boldsymbol U_0^k=\boldsymbol u_0.
+\boldsymbol u^k(T_n)=\boldsymbol u_{n+1}^k(T_n)=\boldsymbol U_n^k,
+\qquad n=0,\ldots,N_t-1.
+$$
+
+At the final endpoint,
+
+$$
+\boldsymbol u^k(T_{N_t})
+=\boldsymbol u_{N_t}^k(T_{N_t})
+=\boldsymbol U_{N_t}^k,
+\qquad \boldsymbol U_0^k=\boldsymbol u_0.
 $$
 
 The local trajectories do not coincide pointwise with Parareal

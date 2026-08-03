@@ -244,7 +244,8 @@ $$
 =\frac{\mathbb A}{2}(\boldsymbol w_n+\boldsymbol w_{n-1}). \tag{3.32}
 $$
 
-It preserves the quadratic energy of the linear wave system. For the
+When $A=A^\top\preceq0$, it preserves the quadratic energy of the
+linear wave system. For the
 unscaled state $\boldsymbol w=(\boldsymbol u,\boldsymbol u')$, the
 physical invariant is
 
@@ -344,8 +345,11 @@ $$
 while the roundoff term is
 
 $$
+O\!\left(
+\epsilon
 \frac{2^{2N_t-1/2}N_t}{(N_t-1)!}
-r_2(s)\varrho^{-(N_t-1)},
+r_2(s)\varrho^{-(N_t-1)}
+\right),
 \qquad r_2(s)=\frac1{1+s^2}\le1.
 $$
 
@@ -471,11 +475,11 @@ $$
 The nonlinear all-at-once equation is
 
 $$
+(B\otimes I_x)\boldsymbol U-F(\boldsymbol U)=\boldsymbol b. \tag{3.42}
+$$
 
 Here $B$ may be the variable-step matrix (3.23b) or the BVM matrix
 (3.39b); nonlinear second-order systems can be treated analogously.
-(B\otimes I_x)\boldsymbol U-F(\boldsymbol U)=\boldsymbol b. \tag{3.42}
-$$
 
 Newton's method can be written
 

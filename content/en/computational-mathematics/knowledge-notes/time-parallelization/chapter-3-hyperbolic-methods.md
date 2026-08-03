@@ -261,10 +261,13 @@ Newton linearization of the nonlinear all-at-once equations produces a different
 
 Figure 3.13 and Table 3.2 show the behavior for Burgers' equation. At $\nu=0.1$, the count of parallel Jacobian solves is far below the sequential Newton count. Lower viscosity makes convergence more sensitive to $T$, and the method fails for $\nu=0.002$ on longer windows.
 
-A richer approximation uses a nearest Kronecker product
+A richer approximation solves the nearest-Kronecker-product problem
 
 $$
-\nabla F(\boldsymbol U^k)\approx\Phi_k\otimes A_k. \tag{3.47}
+\min_{\Phi_k\ \mathrm{diagonal}}
+\left\|
+\nabla F(\boldsymbol U^k)-\Phi_k\otimes A_k
+\right\|. \tag{3.47}
 $$
 
 Here $\Phi_k$ is diagonal in time. The NKA strategy can compute it

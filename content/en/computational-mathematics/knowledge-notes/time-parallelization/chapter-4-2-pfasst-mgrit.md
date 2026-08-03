@@ -163,7 +163,7 @@ $$
 Its matrix is the Kronecker product of a lower bidiagonal difference matrix with $I_x$, minus the Kronecker product of the node-gap diagonal matrix with $\Delta tA$:
 
 $$
-\widetilde{\boldsymbol\phi}_f=
+\widetilde\Phi_f=
 \begin{bmatrix}
 1\\-1&1\\&\ddots&\ddots\\&&-1&1
 \end{bmatrix}\otimes I_x
@@ -211,10 +211,12 @@ The same nodes give the numerical transfer matrices
 
 $$
 T^{c\to f}=
-\begin{bmatrix}1.2674&-0.2674\\0.5325&0.4674\\0&1\end{bmatrix},
+\begin{bmatrix}1.2674&-0.2674\\0.5325&0.4674\\0&1\end{bmatrix}
+\otimes I_x,
 \qquad
 T^{f\to c}=
-\begin{bmatrix}0.5018&0.6833&-0.1851\\0&0&1\end{bmatrix},
+\begin{bmatrix}0.5018&0.6833&-0.1851\\0&0&1\end{bmatrix}
+\otimes I_x,
 $$
 
 all determined by the node sets and Lagrange interpolation.
@@ -229,7 +231,10 @@ weakens, the coarse propagator no longer represents the dominant
 advection well enough, so the iteration count rises.
 
 > [!note] Site supplement: relation to Parareal
-> In the language of Section 4.2 this is the same coarse–fine mismatch mechanism: persistent high frequencies become harder for the coarse collocation level to represent. The paper does not draw that comparison in this section.
+> The source already compares the weak-diffusion deterioration
+> qualitatively with Parareal and MGRiT. Interpreting it as persistent
+> high frequencies becoming harder for the coarse collocation level to
+> represent is this site's more specific mechanism-level explanation.
 
 ## 4.4 MGRiT
 

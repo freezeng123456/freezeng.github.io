@@ -317,14 +317,30 @@ $$
 \end{bmatrix},
 $$
 
-精确 Jacobian 具有
+令
+$J_0=\nabla f(\alpha\boldsymbol v_J^l+(1-\alpha)\boldsymbol u_n)$、
+$J_j=\nabla f(\boldsymbol v_j^l)$。由 (4.24) 中已经带权的
+$F(\boldsymbol V)$ 直接求导，得到
 
 $$
-\nabla K(\boldsymbol V^l)
-=C_\alpha\otimes I_x
--\Delta t(\widetilde C_{\alpha,\theta}\otimes I_x)
-\nabla F(\boldsymbol V^l),
+\mathcal J_F(\boldsymbol V^l)=
+\begin{bmatrix}
+\theta J_1&&&\alpha(1-\theta)J_0\\
+(1-\theta)J_1&\theta J_2\\
+&\ddots&\ddots\\
+&&(1-\theta)J_{J-1}&\theta J_J
+\end{bmatrix},
+\qquad
+\nabla K=C_\alpha\otimes I_x-\Delta t\,\mathcal J_F.
 $$
+
+> [!warning] 原文公式核对：$\nabla F$ 的记号重载
+> 正式版写成
+> $(\widetilde C_{\alpha,\theta}\otimes I_x)\nabla F$，但 (4.24)
+> 已把 $\theta$、$1-\theta$ 和 head–tail 权重放进 $F$。
+> 若 $\nabla F$ 仍指这个带权向量的 Jacobian，再乘一次
+> $\widetilde C_{\alpha,\theta}$ 就会重复计权。上式直接对 (4.24)
+> 求导，避免该歧义。
 
 而可分离近似使用特殊平均
 

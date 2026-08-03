@@ -127,7 +127,9 @@ $$
 \qquad
 \boldsymbol v'(t)=A\boldsymbol v(t)
 +B\!\left(\boldsymbol v(t)+\boldsymbol w(t)\right)+\boldsymbol g(t),
-\qquad \boldsymbol v(0)=\boldsymbol 0,
+\qquad
+\boldsymbol w(0)=\boldsymbol u_0,\quad
+\boldsymbol v(0)=\boldsymbol 0,
 $$
 
 因为 $(\boldsymbol w+\boldsymbol v)'=
@@ -144,7 +146,8 @@ $T_{n-1}$ 的初值依赖同一时刻的 $\boldsymbol v(T_{n-1})$。
 > $\boldsymbol u=\boldsymbol v+\sum_j\boldsymbol w_j$ 不自洽；
 > 本页按变量定义修正。
 
-用上一轮接口值启动齐次问题后，第一种并行迭代写成
+取 $\boldsymbol v_n^0(T_n)=0$（或其他接口近似），并从 $k=1$
+开始，用上一轮接口值启动齐次问题。第一种并行迭代写成
 
 $$
 \begin{aligned}
@@ -168,7 +171,10 @@ $$
 若在每个局部问题中显式计算全部蓝色尾部
 $\sum_j\boldsymbol w_j^k(t)$，大型 $A$ 会造成冗余。代入
 $\boldsymbol v_n^k=\boldsymbol u_n^k-\sum_{j=1}^n\boldsymbol w_j^k$
-可消去这项显式依赖，得到 (3.18)–(3.19)。
+可消去这项显式依赖。改写后的初始化取
+$\boldsymbol u_n^0(T_n)=\boldsymbol w_j^0(T_n)=0$（所有相关
+$j,n$），并从 $k=1$ 开始执行 (3.18)–(3.19)。其他初始化也可以，
+但与 Parareal 比较时必须在粗节点上保持一致。
 
 先对所有 $n=1,\ldots,N_t$ 构造齐次传播：
 
@@ -203,7 +209,9 @@ $$
 \end{aligned} \tag{3.19}
 $$
 
-第 $k$ 轮的全局近似在第 $n$ 段上取 $\boldsymbol u^k(t)=\boldsymbol u_n^k(t)$。
+第 $k$ 轮的全局近似采用半开区间约定
+$\boldsymbol u^k(t)=\boldsymbol u_n^k(t)$，
+$t\in[T_{n-1},T_n)$；最终端点单独取最后一段的末值。
 
 ### Theorem 3.4：有限步收敛与 Parareal 等价
 
@@ -244,8 +252,17 @@ $$
 粗节点成立：
 
 $$
-\boldsymbol u^k(T_n)=\boldsymbol u_n^k(T_n)=\boldsymbol U_n^k,
-\qquad n=0,1,\ldots,N_t,\qquad \boldsymbol U_0^k=\boldsymbol u_0.
+\boldsymbol u^k(T_n)=\boldsymbol u_{n+1}^k(T_n)=\boldsymbol U_n^k,
+\qquad n=0,\ldots,N_t-1,
+$$
+
+且最终端点满足
+
+$$
+\boldsymbol u^k(T_{N_t})
+=\boldsymbol u_{N_t}^k(T_{N_t})
+=\boldsymbol U_{N_t}^k,
+\qquad \boldsymbol U_0^k=\boldsymbol u_0.
 $$
 
 整段局部轨迹并不与 Parareal 轨迹逐点相同。第四章再详细讨论标准

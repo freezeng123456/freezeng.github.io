@@ -276,10 +276,13 @@ $$
 
 Figure 3.13 与 Table 3.2 的 Burgers 实验显示：$\nu=0.1$ 时并行 Jacobian 求解数量远少于顺序 Newton；黏性下降后，收敛对总时间 $T$ 越来越敏感；$\nu=0.002$ 且时间窗较长时方法失败。
 
-近似 Jacobian 还可改成最近 Kronecker 乘积
+近似 Jacobian 还可通过最近 Kronecker 乘积问题选择：
 
 $$
-\nabla F(\boldsymbol U^k)\approx\Phi_k\otimes A_k, \tag{3.47}
+\min_{\Phi_k\ \mathrm{diagonal}}
+\left\|
+\nabla F(\boldsymbol U^k)-\Phi_k\otimes A_k
+\right\|. \tag{3.47}
 $$
 
 其中 $\Phi_k$ 是对角时间缩放。NKA 可在粗空间模型上离线计算

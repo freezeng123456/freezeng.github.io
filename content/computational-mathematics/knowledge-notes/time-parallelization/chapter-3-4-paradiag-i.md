@@ -249,7 +249,7 @@ $$
 =\frac{\mathbb A}{2}(\boldsymbol w_n+\boldsymbol w_{n-1}). \tag{3.32}
 $$
 
-梯形规则保持线性波动系统的二次能量。对
+当 $A=A^\top\preceq0$ 时，梯形规则保持线性波动系统的二次能量。对
 $\boldsymbol w=(\boldsymbol u,\boldsymbol u')$，未缩放状态的物理不变量是
 
 $$
@@ -277,7 +277,7 @@ $$
 \end{bmatrix}. \tag{3.33b}
 $$
 
-左乘 $\widetilde B^{-1}\otimes I_x$：
+左乘 $\widetilde B^{-1}\otimes I_{2N_x}$：
 
 $$
 \mathcal K\boldsymbol W=\widetilde{\boldsymbol b},
@@ -352,8 +352,11 @@ $$
 舍入项则为
 
 $$
+O\!\left(
+\epsilon
 \frac{2^{2N_t-1/2}N_t}{(N_t-1)!}
-r_2(s)\varrho^{-(N_t-1)},
+r_2(s)\varrho^{-(N_t-1)}
+\right),
 \qquad
 r_2(s)=\frac1{1+s^2}\le1.
 $$
@@ -491,11 +494,11 @@ $$
 非线性全时间方程为
 
 $$
+(B\otimes I_x)\boldsymbol U-F(\boldsymbol U)=\boldsymbol b. \tag{3.42}
+$$
 
 这里的 $B$ 可以取变步长矩阵 (3.23b)，也可以取 BVM 矩阵
 (3.39b)；非线性二阶系统可按同样思路处理。
-(B\otimes I_x)\boldsymbol U-F(\boldsymbol U)=\boldsymbol b. \tag{3.42}
-$$
 
 精确 Newton 更新整理成
 

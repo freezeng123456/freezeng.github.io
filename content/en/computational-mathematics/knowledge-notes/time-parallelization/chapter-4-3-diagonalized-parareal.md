@@ -304,14 +304,30 @@ $$
 \end{bmatrix},
 $$
 
-The exact Jacobian is
+Let
+$J_0=\nabla f(\alpha\boldsymbol v_J^l+(1-\alpha)\boldsymbol u_n)$ and
+$J_j=\nabla f(\boldsymbol v_j^l)$. Differentiating the already weighted
+$F(\boldsymbol V)$ in (4.24) gives
 
 $$
-\nabla K(\boldsymbol V^l)
-=C_\alpha\otimes I_x
--\Delta t(\widetilde C_{\alpha,\theta}\otimes I_x)
-\nabla F(\boldsymbol V^l),
+\mathcal J_F(\boldsymbol V^l)=
+\begin{bmatrix}
+\theta J_1&&&\alpha(1-\theta)J_0\\
+(1-\theta)J_1&\theta J_2\\
+&\ddots&\ddots\\
+&&(1-\theta)J_{J-1}&\theta J_J
+\end{bmatrix},
+\qquad
+\nabla K=C_\alpha\otimes I_x-\Delta t\,\mathcal J_F.
 $$
+
+> [!warning] Source check: the overloaded $\nabla F$
+> The source writes
+> $(\widetilde C_{\alpha,\theta}\otimes I_x)\nabla F$, although (4.24)
+> has already placed the theta and head–tail weights inside $F$.
+> Multiplying by $\widetilde C_{\alpha,\theta}$ again would double
+> those weights if $\nabla F$ retains that definition. The display
+> above differentiates (4.24) directly and removes the ambiguity.
 
 and the separable approximation uses the special average
 
