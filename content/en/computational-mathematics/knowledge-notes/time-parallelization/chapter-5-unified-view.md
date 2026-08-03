@@ -1,6 +1,6 @@
 ---
 title: "Chapter 5: Conclusions"
-description: Paper conclusions, method selection, full experiment inventory, GPU optimization, and reporting standards
+description: Paper conclusion (the hyperbolic/parabolic temporal-memory criterion), methods recommended by class, full experiment inventory, GPU optimization, and minimum reporting standards
 lang: en
 translation: computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view
 tags:
@@ -9,17 +9,51 @@ tags:
 ---
 
 > [!note] Content boundary
-> Section 5 of the paper (p. 481) contains no numbered subsections or numbered equations. This page first explains the source conclusion paragraph by paragraph. The subsequent algebraic synthesis, method selection, Python experiments, T4 GPU performance, and reporting standards are marked as site supplements and do not use 5.x numbering.
+> Section 5 of the paper (p. 481) contains no numbered subsections or numbered equations. This page first explains the source conclusion paragraph by paragraph. The subsequent unified algebraic view, method selection, Python experiments, T4 GPU performance, and reporting standards are marked as site supplements and do not use 5.x numbering.
 
 ## Section 5: Conclusions
 
-The paper explains the hyperbolic–parabolic distinction through temporal memory. A parabolic equation forgets a large amount of fine information during evolution and therefore has a temporally local solution. Many PinT methods can exploit this property, including Parareal, STMG, ParaExp, ParaDiag, and domain-decomposition waveform relaxation.
+The paper's conclusion condenses the whole analysis into a single criterion: what decides whether a given parallel-in-time method applies is not the algorithm's name, nor a traditional classification such as "iterative/direct" or "Section 3/Section 4", but the problem's own **temporal memory**—how much fine information the solution retains as it evolves.
 
-Hyperbolic equations preserve fine structures, phases, and propagation paths over long horizons, which narrows the effective method set. The paper highlights ParaExp, ParaDiag, and SWR, with particular emphasis on the relationship between SWR and tent pitching. These methods organize concurrency through characteristic propagation, matrix exponentials, or global temporal algebra and rely less on a dissipative coarse model.
+**Parabolic problems forget information quickly, and their solutions are temporally local.** The heat equation and sufficiently diffusive reaction–diffusion equations dissipate high-frequency components rapidly, so the solution at any instant depends mainly on recent history. Even a cheap coarse temporal model that discards high frequencies can still capture the dominant slow modes, and the error between coarse prediction and fine correction decays across iterations. The paper notes that this class admits many highly effective PinT methods, including Parareal, space–time multigrid (STMG), ParaExp, ParaDiag, and waveform relaxation (WR) built on domain decomposition (DD).
 
-For further study, the authors recommend the monograph by Gander and Lunet (2024), which provides historical context, self-contained convergence analyses, and short executable MATLAB programs for individual PinT methods. Code used for Figures 2–4 is public in [wushulin/ActaPinT](https://github.com/wushulin/ActaPinT).
+**Hyperbolic problems retain fine structure, phase, and propagation paths over very long horizons.** Waves, transport, and low-viscosity conservation laws do not dissipate high frequencies, so errors lack a natural decay mechanism; any phase or amplitude mismatch between coarse and fine propagation accumulates along characteristics and amplifies as the number of time intervals grows. Only a subset of methods therefore remain effective: ParaExp, ParaDiag, and Schwarz waveform relaxation (SWR)—the paper particularly emphasizes the connection between SWR and tent pitching. What these methods share is that they do not rely on a dissipative coarse temporal model; instead they move long-range information through exact matrix-exponential propagation, all-at-once algebraic (frequency) structure, or subdomain solves along the characteristic cone.
 
-This conclusion suggests a useful first filter: determine how quickly the problem forgets high-frequency information, then select the parallel structure. An algorithm's name or historical category cannot replace this dynamical assessment.
+> [!tip] Insight
+> Temporal memory can be read off from the spectrum of the discrete evolution operator. For parabolic discretizations the eigenvalues cluster near the negative real axis, $e^{\lambda\Delta t}$ strongly damps high-frequency modes, and coarse propagation only needs to track the few slowly decaying low-frequency modes; cross-iteration error is suppressed by the same decay mechanism. For hyperbolic discretizations the eigenvalues sit close to the imaginary axis, modes rotate approximately as $e^{i\omega t}$ with almost no decay, and the phase difference between coarse and fine propagation is not absorbed by damping but instead accumulates along characteristics. This is the algebraic expression of "parabolic forgets, hyperbolic remembers", and it explains why a coarse model that only seeks dissipative smoothing fails on hyperbolic problems.
+
+**Further reading and code.** The paper recommends the research monograph by Gander and Lunet (2024), _Time Parallel Time Integration_ (SIAM), as systematic reading: it provides, for each PinT method, historical context, concise yet fully self-contained convergence analyses, and short directly runnable MATLAB programs. The paper also states that **the code used to generate all of the paper's results** is public at [wushulin/ActaPinT](https://github.com/wushulin/ActaPinT); that is, every experiment and figure in the entire paper can be reproduced from that repository, not just a few figures.
+
+This conclusion offers a practical first-pass principle: first judge whether the problem quickly forgets high-frequency information, then choose the parallel-in-time structure. An algorithm's name or a traditional classification cannot replace this dynamical judgment by itself.
+
+> [!tip] Insight
+> This criterion is orthogonal to traditional classifications such as "iterative/direct" and "Section 3/Section 4". Methods within the same classification may fall on opposite sides of the criterion: the iterative SWR is hyperbolic-friendly, whereas the equally iterative standard Parareal/MGRiT, which rely on a dissipative coarse level, tend to fail on hyperbolic problems; conversely, ParaExp and ParaDiag, because they do not rely on a dissipative coarse model (moving long-range information through exact matrix-exponential propagation and all-at-once frequency structure, respectively), are usable on both the parabolic and hyperbolic sides. On the parabolic side, the Section 4 multilevel methods in the paper (PFASST, MGRiT) and the Section 3 methods (SWR, IDC/PIDC/RIDC, ParaExp, ParaDiag) apply equally well; on the hyperbolic side one can additionally add methods such as parallel IDC that pipeline along a high-order error equation without forcing dissipative coarsening. The grouping by class above is a site synthesis; the paper's conclusion itself explicitly lists only the few representative methods named earlier.
+
+> [!tip] Insight
+> The natural questions after the conclusion center on how to construct a "memory-friendly" coarse level for hyperbolic problems and how to turn iterative convergence into real wall-clock gains:
+>
+> - Transport-oriented coarse operators: replace naive coarse propagation with semi-Lagrangian or corrected coarse-grid operators to ease phase mismatch (e.g., the MGRiT work of De Sterck et al. on linear advection);
+> - Coarse-propagation-free Parareal: explore variants that do not rely on sequential coarse prediction, to shorten the serial tail (Gander, Ohlberger, Rave 2024);
+> - Mixed precision and roundoff control: balance $\alpha$, outer Krylov, and floating-point error in ParaDiag (Wu, Yang, Zhou 2025);
+> - Phase awareness and characteristic preservation: combine tent pitching, SWR transmission conditions, and all-at-once algebraic structure for waves and conservation laws;
+> - Multilevel and multi-device scaling: design temporal concurrency, spatial concurrency, and communication overlap together, and build strong/weak scaling evidence.
+>   These directions are a site synthesis based on the paper's main text and references; the paper's conclusion itself gives only directional guidance and leaves the systematic development to the Gander and Lunet (2024) monograph.
+
+## Site synthesis: representative literature for the methods in the conclusion
+
+The table below maps the methods mentioned in the conclusion to representative works in the paper's references, for convenient lookup by class. This is a site-compiled search aid, not part of the original conclusion text; class membership follows the paper's "temporal memory" criterion.
+
+| Method            | Applicable class                                      | Representative literature (all in the paper's references)                             |
+| ----------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Parareal          | parabolic (usable as a hyperbolic baseline)           | Lions, Maday & Turinici (2001); convergence analysis Gander & Vandewalle (2007)       |
+| STMG              | parabolic                                             | Gander & Neumüller (2016); Horton & Vandewalle (1995)                                 |
+| PFASST            | parabolic (high-order collocation)                    | Emmett & Minion (2012); Bolten, Moser & Speck (2017)                                  |
+| MGRiT             | parabolic; advection needs a modified coarse operator | Falgout et al. (2014); De Sterck et al. (2021, 2023a)                                 |
+| ParaExp           | parabolic and hyperbolic                              | Gander & Güttel (2013); nonlinear Gander, Güttel & Petcu (2018)                       |
+| ParaDiag          | parabolic and hyperbolic                              | Gander et al. (2021c); Gander & Wu (2020); McDonald, Pestana & Wathen (2018)          |
+| SWR / OSWR        | parabolic and hyperbolic                              | Gander & Stuart (1998); Gander & Halpern (2007); waves Gander, Halpern & Nataf (2003) |
+| tent pitching     | hyperbolic                                            | Gopalakrishnan, Schöberl & Wintersteiger (2017); Ciaramella, Gander & Mazzieri (2023) |
+| IDC / PIDC / RIDC | parabolic; parallel IDC also for hyperbolic           | Dutt, Greengard & Rokhlin (2000); Christlieb, Macdonald & Ong (2010)                  |
 
 ## Site synthesis: solving one all-at-once system
 
@@ -51,6 +85,9 @@ $M^{-1}$ is a parallel approximation to $A^{-1}$. Each method chooses a differen
 | STMG      | full space–time multilevel cycle                  | time-block Jacobi                            | coarse space–time grids                      |
 
 This common form poses three questions. Which error modes does $M^{-1}$ reduce? Does it preserve phase, mean value, and shock position? During one application of $M^{-1}$, which operations are genuinely concurrent and which remain sequential?
+
+> [!tip] Insight
+> Viewed through this unified form, the conclusion's criterion can be restated as a spectral requirement on $M^{-1}$: parabolic problems allow $M^{-1}$ to be accurate only at low frequencies and to strongly damp high frequencies, because the true solution's high frequencies are also decaying; hyperbolic problems require $M^{-1}$ to preserve phase and amplitude across the frequency band of interest, and any approximation that "only smooths without transporting phase" drives the spectral radius of $I-M^{-1}A$ toward or even beyond 1 near the hyperbolic band. ParaExp and ParaDiag are usable across both classes precisely because their $M^{-1}$ comes from exact exponentials and all-at-once frequency diagonalization, respectively, rather than from a dissipative coarse level.
 
 ## Site synthesis: method-selection map
 
@@ -117,7 +154,7 @@ The Python reproduction project provides eight baseline experiments and one comb
 
 The cross-experiment summary is [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]].
 
-The upstream MATLAB repository also contains direct ParaDiag, diagonalized Parareal, ParaExp, SWR, IDC/PIDC, and wave-domain-decomposition scripts. They are registered in the Python migration inventory but do not yet all have formal Python results. “Complete” here means that every Python artifact cited by the site has a matched parameter record, plot, and JSON file. It does not claim that every upstream MATLAB script has been ported.
+The upstream MATLAB repository also contains direct ParaDiag, diagonalized Parareal, ParaExp, SWR, IDC/PIDC, and wave-domain-decomposition scripts. They are registered in the Python migration inventory but do not yet all have formal Python results. "Complete" here means that every Python artifact cited by the site has a matched parameter record, plot, and JSON file. It does not claim that every upstream MATLAB script has been ported.
 
 ## Site reproduction: formal run workflow
 
@@ -200,15 +237,15 @@ Error decay by iteration supports a numerical-convergence claim but cannot suppo
 
 ## Site-wide coverage table
 
-| Source range                  | Site chapter    | Completeness statement                                                                            |
-| ----------------------------- | --------------- | ------------------------------------------------------------------------------------------------- |
-| Section 2, pp. 388–396        | Chapter 2       | four models, all boundary settings, every Figure 2.1–2.4 observation group, and PinT implications |
-| Sections 3.1–3.2, pp. 396–405 | Chapter 3.1–3.2 | history, WR/SWR, Theorems 3.1–3.2, OSWR, MTP/UTP                                                  |
-| Sections 3.3–3.4, pp. 405–415 | Chapter 3.3–3.4 | IDC/PIDC/RIDC derivation and regularity tests, linear and nonlinear ParaExp                       |
-| Section 3.5, pp. 415–443      | Chapter 3.5     | ParaDiag-I/II, Theorems 3.5–3.9, BVM, NKA, circulant and $\alpha$-circulant experiments           |
-| Sections 4.1–4.4, pp. 443–460 | Chapter 4.1–4.4 | Parareal, PFASST, MGRiT, Theorems 4.1–4.6, Figures 4.1–4.11                                       |
-| Sections 4.5–4.6, pp. 460–481 | Chapter 4.5–4.6 | both diagonalized Parareal variants, STMG, Theorems 4.7–4.9, Figures 4.12–4.22, Table 4.1         |
-| Section 5, p. 481             | Chapter 5       | hyperbolic/parabolic conclusion, recommended methods, monograph, and public code                  |
+| Source range                  | Site chapter    | Completeness statement                                                                                                                    |
+| ----------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Section 2, pp. 388–396        | Chapter 2       | four models, all boundary settings, every Figure 2.1–2.4 observation group, and PinT implications                                         |
+| Sections 3.1–3.2, pp. 396–405 | Chapter 3.1–3.2 | history, WR/SWR, Theorems 3.1–3.2, OSWR, MTP/UTP                                                                                          |
+| Sections 3.3–3.4, pp. 405–415 | Chapter 3.3–3.4 | IDC/PIDC/RIDC derivation and regularity tests, linear and nonlinear ParaExp                                                               |
+| Section 3.5, pp. 415–443      | Chapter 3.5     | ParaDiag-I/II, Theorems 3.5–3.9, BVM, NKA, circulant and $\alpha$-circulant experiments                                                   |
+| Sections 4.1–4.4, pp. 443–460 | Chapter 4.1–4.4 | Parareal, PFASST, MGRiT, Theorems 4.1–4.6, Figures 4.1–4.11                                                                               |
+| Sections 4.5–4.6, pp. 460–481 | Chapter 4.5–4.6 | both diagonalized Parareal variants, STMG, Theorems 4.7–4.9, Figures 4.12–4.22, Table 4.1                                                 |
+| Section 5, p. 481             | Chapter 5       | hyperbolic/parabolic temporal-memory summary, methods recommended by class, the monograph, and the public code that generates all results |
 
 Each chapter ends with a more granular source-page audit. Site supplements occupy explicitly labeled sections and are not blended into claims attributed to the paper.
 
