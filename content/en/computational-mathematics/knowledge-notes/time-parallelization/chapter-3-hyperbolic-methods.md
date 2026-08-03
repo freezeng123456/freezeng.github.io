@@ -1,6 +1,6 @@
 ---
 title: "Chapter 3: Effective PinT Methods for Hyperbolic Problems"
-description: Complete derivations and numerical interpretation of SWR, parallel deferred correction, ParaExp, and ParaDiag
+description: A Chapter 3 overview—the challenge of long-range propagation in hyperbolic problems, the shared principles and historical lineages of the four hyperbolic-effective PinT methods (SWR, IDC, ParaExp, ParaDiag), together with complete derivations and numerical interpretation
 lang: en
 translation: computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods
 tags:
@@ -9,11 +9,11 @@ tags:
 ---
 
 > [!note] Reading scope
-> This chapter covers Section 3 of the paper (pp. 396–443) and retains its exact hierarchy: the Section 3 introduction, 3.1 historical development, 3.2 SWR, 3.3 IDC, 3.4 ParaExp, and the two ParaDiag branches in 3.5.1–3.5.2. Equations, theorems, and paper experiments follow the source argument. Python results, parameter comparisons, and coverage audits are marked as site supplements and do not take paper section numbers.
+> This chapter corresponds to Section 3 of the paper (pp. 396–443). The main text strictly retains the original paper's hierarchy: the Section 3 introduction, 3.1 historical development, 3.2 SWR, 3.3 IDC, 3.4 ParaExp, and the two ParaDiag families in 3.5.1/3.5.2. Equations, theorems, and paper experiments are explained in the order of the argument; Python results, parameter comparisons, and coverage audits are marked separately as site supplements and do not take up paper section numbers.
 
 ## Source-to-page map
 
-This page retains the chapter-level synthesis and the site's reproduction. The complete equation-by-equation, theorem-by-theorem, and figure-by-figure reading is split into the following pages:
+This page retains the chapter-level overview and the site's reproduction experiments. The complete equation-by-equation, theorem-by-theorem, and figure-by-figure derivations are split into the following pages, for reading in the paper's order:
 
 | Paper section      | Source pages | Close-reading page                                                                                                                                        | Coverage                                                          |
 | ------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
@@ -25,36 +25,62 @@ This page retains the chapter-level synthesis and the site's reproduction. The c
 
 ## Section 3 introduction and 3.1 Historical development
 
-### Why these methods can handle long-range propagation
+### From parabolic to hyperbolic: why temporal locality disappears
 
-Hyperbolic equations carry fine structures along characteristics over long distances in time. An effective PinT method must preserve path and phase information or solve the coupling across the full time domain directly. The paper places four families in this category: Schwarz waveform relaxation (SWR), parallel integral deferred correction (IDC), ParaExp, and ParaDiag.
+Chapter 2 showed that the solution of a parabolic problem is highly local in time (Figure 2.1): under Dirichlet boundaries almost all information is quickly "forgotten," while under Neumann and periodic boundaries only the lowest-frequency component (the constant) survives over long times. Once a transport term appears and dominates (Figures 2.2–2.3), and all the more so in the hyperbolic limit, the situation changes qualitatively—for the second-order wave equation (Figure 2.4) every frequency component can propagate arbitrarily far in space and time, accompanied by multidirectional propagation and reflection. It is precisely this "propagation of fine information over long times" that makes time parallelization far harder for hyperbolic problems than for parabolic ones, and that dictates the use of PinT techniques different from the parabolic methods.
 
-Their origins differ. SWR combines domain decomposition with waveform relaxation. IDC grows out of defect correction and high-order integration. ParaExp exploits exponential propagation in linear systems. ParaDiag uses a diagonalizable all-at-once time matrix. Most of these techniques also work on parabolic problems. Their common feature is a parallel mechanism that does not require a strongly dissipative coarse propagator.
+> [!tip] Insight
+> "Temporal locality" versus "temporal globality" can serve as the first criterion for choosing a PinT method. The dissipation of a parabolic problem rapidly damps distant coupling, so a coarse propagator only needs to capture the low frequencies to drive a Parareal-type iteration (see Chapter 4); a hyperbolic problem has no such damping, and any coarse model that loses high frequencies or phase becomes distorted over a long time window. The shared goal of this chapter's four families is therefore not to "construct a good, strongly dissipative coarse propagator," but to "make the inversion of the all-at-once coupling system $K\boldsymbol u=\boldsymbol b$ spanning the entire time interval parallelizable in itself."
 
-Historically, SWR connects closely to mapped and unmapped tent pitching. Parallel IDC includes window-level PIDC and correction-level RIDC pipelines. ParaExp began as a linear direct construction and later acquired nonlinear iterative variants. ParaDiag developed direct, waveform-relaxation, stationary-iteration, and Krylov-preconditioned forms.
+### Why this group of methods can handle long-range propagation
+
+The paper groups four families as "hyperbolic-effective": Schwarz waveform relaxation (SWR), parallel integral deferred correction (IDC), ParaExp, and ParaDiag. They have different origins but share one principle—rather than approximating a strongly dissipative coarse propagator, they recast the inversion of the all-at-once coupling system into a parallelizable form, relying respectively on iteration, decomposition, and transformation:
+
+- **Iteration plus decomposition**: SWR decomposes the space–time domain into subdomains, lets each subdomain solve a full time window at once, and couples them only through iterated interface waveforms;
+- **Error decomposition and pipelining**: IDC splits high-order accuracy into "a low-order prediction plus several integral-residual corrections," and pipelines different time windows and correction levels in parallel;
+- **Exact decomposition**: ParaExp splits the linear problem into "local zero-initial-value forced responses" and "global homogeneous propagation," using the matrix exponential to jump directly to any later time;
+- **Transform diagonalization**: ParaDiag performs an (approximate) diagonalization along the time direction, turning the inverse of the all-at-once matrix into several mutually independent complex-shifted spatial solves.
+
+The paper stresses a noteworthy phenomenon: many methods designed for hyperbolic problems are equally effective, or even better, on parabolic problems; the sole exception is mapped tent pitching (MTP), introduced at the end of 3.2—its construction directly exploits the finite propagation speed of hyperbolic problems and is therefore genuinely "hyperbolic-only." Conversely, PinT methods designed for parabolic problems (Chapter 4) usually perform poorly on hyperbolic problems. This asymmetry is the fundamental reason for devoting a separate chapter to these four families.
+
+Finite propagation speed is the physical fact this group of methods exploits repeatedly. SWR and tent pitching explain it through characteristic cones: one iteration can advance correct interface information only across a finite propagation distance, and after enough iterations the characteristic cones cover the entire space–time domain (see 3.2.2). ParaExp expresses homogeneous propagation exactly with the matrix exponential, at a cost that does not grow linearly with the number of intermediate time steps. The $\alpha$-circulant of ParaDiag weakens the periodic head–tail closure and so avoids carrying the head–tail mismatch produced by propagation throughout the entire time domain (see 3.5.2). From different angles, all four preserve the phase and high-frequency information on which hyperbolic solutions depend.
+
+The equation-by-equation and theorem-by-theorem derivations of each lineage are split into the close-reading pages: [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-1-history-and-swr\|Historical development and Schwarz waveform relaxation]], [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-2-idc\|Parallel integral deferred correction]], [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-3-paraexp\|ParaExp]], [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i\|Direct ParaDiag]], and [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-5-paradiag-ii\|Iterative ParaDiag]].
+
+### 3.1 Historical development of the four method lineages
+
+The paper organizes this group of methods along four mutually independent lineages and validates each of their main theoretical properties on the four PDEs introduced in Chapter 2.
+
+**Space–time continuous subproblems: from the confluence of DD and WR to SWR.** The first lineage originates in solving on overlapping or nonoverlapping "space–time continuous" subproblems, first proposed for parabolic problems by Gander (1999) and independently introduced by Giladi and Keller (2002). It merges two traditions: domain decomposition (DD), a classical technique for solving PDEs in parallel that traces back to Schwarz (1870); and waveform relaxation (WR), which first appeared in circuit simulation (Lelarasmee et al. 1982). Gander (1997) developed and analyzed both parabolic and hyperbolic problems simultaneously, and the name "Schwarz waveform relaxation (SWR)" was coined by Gander et al. (1999). Further results for nonlinear parabolic problems appear in Gander (1999) and Gander and Rohde (2005). Optimized SWR (OSWR) with more effective transmission conditions: for parabolic problems see Gander and Halpern (2007), Bennequin, Gander and Halpern (2009), and Bennequin, Gander, Gouarin and Halpern (2016); for hyperbolic problems see Gander, Halpern and Nataf (2003) and Gander and Halpern (2004); for nonlinear advection–diffusion see Gander, Lunowa and Rohde (2023c). The recent unmapped tent pitching (UTP) technique (Ciaramella, Gander and Mazzieri 2023) is built directly on SWR. There are also Dirichlet–Neumann and Neumann–Neumann waveform-relaxation variants (Gander, Kwok and Mandal 2016b, 2021b).
+
+**Time parallelization of integral deferred correction.** Another lineage is based on the time parallelization of IDC. IDC for evolution problems was first introduced by Böhmer and Stetter (1984) and later identified by Dutt, Greengard and Rokhlin (2000) as a dedicated time integrator—by treating the corresponding integrals accurately it can in principle generate numerical solutions of arbitrarily high order. Revisionist IDC (RIDC, Christlieb et al. 2010) is a time-parallelizable technique; there is also the pipelined parallel version (PIDC) proposed by Guibert and Tromeur-Dervout (2007), detailed in 3.3.
+
+**ParaExp.** The ParaExp method introduced in 3.4 was proposed by Gander and Güttel (2013) about a decade ago, and its core strategy is to treat the initial value and the source term separately; see also Merkel, Niyonzima and Schöps (2017) and Kooij, Botchev and Geurts (2017), with a nonlinear variant in Gander, Güttel and Petcu (2018a).
+
+**The ParaDiag family.** ParaDiag is introduced in 3.5. Diagonalization-based time-parallel methods were first proposed by Maday and Rønquist (2008) as a noniterative direct time-parallel solver; Gander, Halpern, Ryan and Tran (2016a) carried out a more detailed study of parabolic problems, with a nonlinear variant in Gander and Halpern (2017) and hyperbolic problems in Gander, Halpern, Rannou and Ryan (2019). Iterative variants soon followed and can be embedded either in WR (Gander and Wu 2019) or in Parareal (Gander and Wu 2020). Approximate ParaDiag has also been used directly as a Krylov preconditioner for the all-at-once system by McDonald et al. (2018) and Liu and Wu (2020). A systematic survey of ParaDiag appears in Gander et al. (2019); the family's influence in the PinT field then expanded rapidly, with new developments such as the interpolatory direct ParaDiag of Kressner, Massei and Zhu (2023) and the variant of Gander and Palitta (2024) combining the Sherman–Morrison–Woodbury formula with Krylov techniques.
 
 ## 3.2 Schwarz waveform relaxation
 
 ### From classical waveform relaxation to space–time decomposition
 
-For $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$, classical waveform relaxation splits $A=M+N$ and iterates
+For the linear system $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$, classical waveform relaxation first splits $A=M+N$ and then iterates
 
 $$
 \boldsymbol u^{k+1\prime}-M\boldsymbol u^{k+1}
 =N\boldsymbol u^k+\boldsymbol g.
 $$
 
-A block-diagonal or colored $M$ permits concurrent component solves. The performance depends directly on the algebraic splitting, and a poor choice may converge slowly or diverge. Classical spatial domain decomposition also solves a new elliptic problem at each time step and normally ties every subdomain to the same temporal discretization.
+If $M$ has a block-diagonal or colored structure, several components can be computed in parallel. This approach depends directly on the algebraic splitting; an unsuitable $M$ can converge very slowly or even diverge. Classical spatial domain decomposition usually solves an elliptic problem at each time step and also ties every subdomain to the same temporal discretization.
 
-SWR decomposes the continuous spatial domain first and solves an entire time window on each subdomain. Neighboring subdomains exchange a time-dependent interface waveform over overlaps or artificial boundaries. Each subdomain may use a locally suitable discretization, and the transmission condition can be designed from the PDE's propagation mechanism.
+SWR decomposes the continuous spatial domain first and then lets each subdomain solve an entire time window at once. Neighboring subdomains exchange whole time-dependent waveforms over the overlap or interface. Each subdomain may use a discretization suited to its local equation and mesh, and the transmission condition can be designed from the PDE's propagation mechanism.
 
 ![Schwarz waveform relaxation exchanges interface waveforms over a complete time window](assets/diagrams/pint/en/schwarz-waveform-relaxation.svg)
 
-The iterated unknown is an interface function. Dirichlet transmission communicates only solution values. Robin, Ventcel, and convolution conditions also approximate normal fluxes or a fuller Dirichlet-to-Neumann map. Versions with optimized transmission conditions are usually called OSWR.
+The iterated unknown of this method is an interface function. Dirichlet conditions exchange only solution values; Robin, Ventcel, or convolution conditions additionally approximate normal fluxes and a fuller Dirichlet-to-Neumann map. Versions with optimized transmission conditions are usually called OSWR.
 
-### 3.2.1 First-order parabolic problems: overlap and Robin optimization
+### 3.2.1 First-order parabolic problems: overlap width and the Robin parameter
 
-The paper illustrates the mechanism on a one-dimensional advection–diffusion equation. Two subdomains overlap by a width $l$. At each iteration, both complete time-window problems are solved in parallel with Robin transmission
+The paper illustrates the mechanism on a one-dimensional advection–diffusion equation. The domain is split into two overlapping subdomains with overlap width $l$. Each iteration solves both complete time-window problems in parallel and imposes Robin conditions on the artificial boundaries,
 
 $$
 (\partial_x+p)u_1^{k+1}=(\partial_x+p)u_2^k,
@@ -62,115 +88,115 @@ $$
 (\partial_x-p)u_2^{k+1}=(\partial_x-p)u_1^k. \tag{3.1}
 $$
 
-The parameter $p>0$ controls the interface operator; $p\to\infty$ gives Dirichlet exchange. The analysis proceeds in Laplace/Fourier space. Theorem 3.1 supplies an optimized Robin parameter and a worst-frequency estimate for the continuous problem. The Dirichlet case satisfies a bound of the form
+Here $p>0$ controls the transmission condition, and $p\to\infty$ corresponds to Dirichlet exchange. The error analysis is carried out in Laplace/Fourier frequency space. Theorem 3.1 supplies the optimized Robin parameter and a worst-frequency convergence estimate for the continuous problem. The Dirichlet case satisfies a bound of the form
 
 $$
 \rho_{\mathrm D}\leq
-\exp\!\left(-\frac{l\pi}{\nu T}\right).
+\exp\!\left(-\frac{l\pi}{\nu T}\right)
 $$
 
-The bound displays three trends. More overlap accelerates convergence. A longer time window increases the interface-coupling burden. Smaller $\nu$ makes directed transport carry data through the overlap faster, so SWR can improve for this particular model as diffusion decreases.
+The bound clearly displays three trends: more overlap accelerates convergence; a longer time window makes the cross-window coupling harder; and as $\nu$ decreases, directed transport carries information through the overlap faster, so SWR can in fact speed up in this particular model.
 
-Figure 3.1 uses $L=8.2$, $T=5$, $\Delta t=0.01$, $\Delta x=0.02$, $l=2\Delta x$, and a Gaussian initial condition. The curves confirm faster convergence at lower viscosity and a strong advantage for optimized Robin transmission. In the four-subdomain test at $\nu=0.1$, Dirichlet and optimized Robin transmission require approximately 92 and 28 iterations. The corresponding continuous two-subdomain predictions are about 32 and 4. Continuous versus discrete operators, two versus four subdomains, and the boundary configuration account for the difference; the theoretical estimate should not be treated as an exact iteration forecast for that discrete experiment.
+Figure 3.1 uses $L=8.2$, $T=5$, $\Delta t=0.01$, $\Delta x=0.02$, $l=2\Delta x$, and a Gaussian initial condition. The numerical curves confirm that convergence improves as viscosity decreases, and also show that Robin conditions clearly outperform Dirichlet ones. In the four-subdomain experiment at $\nu=0.1$, Dirichlet and optimized Robin transmission require about 92 and 28 iterations respectively, while the continuous two-subdomain theory predicts about 32 and 4. The gap comes from the differences between continuous/discrete operators, two/four subdomains, and boundary configurations, so the theoretical bound should not be taken as the exact iteration count for this discrete experiment.
 
-Higher-order Ventcel conditions can improve asymptotic convergence further. A temporal convolution can approximate an exact transparent boundary and deliver a mesh-independent theoretical factor, at the cost of a more complicated and temporally nonlocal interface operator.
+Higher-order Ventcel conditions can improve asymptotic convergence further. If a temporal convolution is used to approximate an exact transparent boundary, a mesh-independent convergence factor is theoretically attainable, at the cost of a more complicated, temporally nonlocal interface operator.
 
 ### 3.2.2 Second-order hyperbolic problems: finite-step propagation
 
-For the wave equation, SWR has a direct geometric interpretation. Each iteration advances correct interface information across one finite propagation distance. Theorem 3.2 states that Dirichlet transmission on two overlapping subdomains becomes exact over the full window once
+For the wave equation, the properties of SWR are more direct. Each iteration advances correct interface information into the neighboring subdomain by one finite propagation distance. Theorem 3.2 states that, using Dirichlet transmission on two overlapping subdomains, once
 
 $$
 k>\frac{Tc}{\beta-\alpha},
 $$
 
-where $\beta-\alpha$ is the overlap width and $c$ is the wave speed. Finite propagation speed drives the result. A single iteration can expand the exact region only within characteristic cones; enough iterations make those cones cover the complete space–time domain.
+the interface error over the whole time window vanishes after iteration $k$. Here $\beta-\alpha$ is the overlap expressed as a fraction of the domain length (a dimensionless fraction), the true physical overlap width being $(\beta-\alpha)L$, where $L$ is the domain length; $c$ is the wave speed. The result follows from finite propagation speed: one iteration can extend correctness only over the region covered by a characteristic cone, and after enough iterations the cones cover the complete space–time domain.
 
-Figure 3.2 visualizes the cones. A portion of each subdomain solution already agrees with the exact solution, and the next interface exchange enlarges that portion. The same geometry motivates red–black SWR, in which colored space–time blocks are processed concurrently and some redundant work buys additional parallelism.
+Figure 3.2 visualizes this process with characteristic cones. A portion of each subdomain solution already agrees with the exact solution, and the next iteration enlarges that correct region through the interface data. This geometric interpretation also motivates red–black SWR: neighboring space–time blocks are computed concurrently by color, allowing some redundant work in exchange for greater concurrency.
 
 ### Tent pitching, MTP, and UTP
 
-Tent pitching builds inclined space–time elements according to finite propagation speed. Once data on a tent's lower boundary is available, its interior can be computed independently. Mapped tent pitching (MTP) maps each inclined tent to a regular cylinder so a standard solver can be applied. Mapping adds implementation work and can reduce the observed order.
+Tent pitching builds inclined space–time elements according to finite propagation speed. Once data on a tent's lower boundary is available, its interior can be computed independently. Mapped tent pitching (MTP) maps each inclined tent to a regular cylinder so that standard solvers can be used; the mapping increases implementation cost and can also cause order reduction.
 
-Unmapped tent pitching (UTP) retains the original geometry and can be interpreted as red–black SWR or restricted additive Schwarz on the all-at-once system. A residual determines how far a tent can advance, eliminating the explicit mapping and its associated order loss. Strictly independent tents are unavailable for parabolic equations because their propagation speed is infinite. With weak diffusion, SWR/UTP may still work by iteratively correcting the cross-tent influence.
+Unmapped tent pitching (UTP) retains the original space–time geometry and can be interpreted as red–black SWR or restricted additive Schwarz on the all-at-once system. A residual determines how far a given tent can still advance, dispensing with explicit mapping and the associated order loss. Parabolic equations have infinite propagation speed and cannot form strictly independent tents; when diffusion is small, SWR/UTP can still correct the cross-tent influence through a few iterations.
 
 ## 3.3 Time-parallel IDC
 
-### The residual error equation
+### The residual error equation of IDC
 
-Consider
+Consider the initial-value problem
 
 $$
 u'(t)=f(u(t),t),\qquad u(0)=u_0.
 $$
 
-For a current approximation $u^k(t)$, define the integral residual
+For a current approximation $u^k(t)$, the integral defect or residual can be written as
 
 $$
 r^k(t)=u_0+\int_0^t f(u^k(s),s)\,ds-u^k(t). \tag{3.6}
 $$
 
-Let $e^k=u-u^k$. Substitution into the integral equation gives an integral error relation; differentiation gives
+Let the true error be $e^k=u-u^k$. Substituting $u=u^k+e^k$ back into the integral equation gives the integral form of the error; differentiating in time yields
 
 $$
 e^{k\prime}(t)
 =f(u^k(t)+e^k(t),t)-f(u^k(t),t)+r^{k\prime}(t). \tag{3.8}
 $$
 
-IDC obtains a low-order predictor, discretely solves this error equation, and updates $u^{k+1}=u^k+e^k$. The paper derives the correction for a $\theta$ method, then introduces quadrature weights from interpolatory integration to obtain recurrence (3.11). Integrating the residual avoids direct numerical differentiation of a noisy defect.
+IDC first obtains a predicted solution with a low-order method, then discretely solves this error equation and updates $u^{k+1}=u^k+e^k$. The paper gives the discrete correction formula for a $\theta$ method and the weights produced by interpolatory integration, ultimately forming the nodal recurrence (3.11). The correction uses the integral residual, avoiding direct numerical differentiation of a noisy residual.
 
 ![Correction and pipeline structure of IDC, PIDC, and RIDC](assets/diagrams/pint/en/idc-pipeline.svg)
 
-Theorem 3.3 states that a base method of order $p$ on $M$ uniform nodes reaches
+Theorem 3.3 states that if the base integrator has order $p$, then after $k$ corrections on $M$ uniform nodes the overall order reaches
 
 $$
-\mathcal O\!\left(\Delta t^{\min\{M,(k+1)p\}}\right)
+\mathcal O\!\left(\Delta t^{\min\{M,(k+1)p\}}\right).
 $$
 
-after $k$ corrections. Node count eventually limits the order. Spectral deferred correction (SDC) with $J$ Gauss–Lobatto nodes can reach order $2J-1$. PFASST in Chapter 4 places SDC inside a multilevel parallel structure.
+The correction order is eventually limited by the node count. Spectral deferred correction (SDC) with $J$ Gauss–Lobatto nodes can reach order $2J-1$; PFASST in Chapter 4 places SDC inside a multilevel time-parallel structure.
 
 ### Why standard IDC remains sequential
 
-A long horizon is usually divided into windows. The predictor and corrections finish on one window before its endpoint initializes the next. Standard IDC therefore processes windows sequentially, while each correction also contains a recurrence across nodes. High-order accuracy alone creates no temporal concurrency.
+A long time interval is usually cut into several windows. After the prediction and several corrections are completed on one window, its endpoint value becomes the initial value of the next window. Standard IDC still processes windows sequentially, and each correction level also contains a nodal recurrence, so high-order accuracy by itself brings no automatic time parallelism.
 
 ### 3.3.1 Pipeline IDC (PIDC)
 
-PIDC executes different correction sweeps on different windows at the same time. Once the pipeline is full, the predictor works on a later window, the first correction works on the preceding window, and higher corrections trail behind. The correction count roughly determines concurrency; fill and drain phases reduce efficiency for short runs.
+PIDC lets different windows execute correction sweeps of different numbers at the same time. Once the pipeline is full, the prediction level works on a later window, the first correction level works on the preceding window, and higher correction levels lag further behind. The degree of concurrency is roughly determined by the number of correction levels; the fill and drain phases reduce efficiency for short jobs.
 
-There is an accuracy risk. A later window begins from an endpoint that keeps changing as the previous window receives higher corrections. A high correction level may therefore start from rough, unsettled initial data. IDC order theory requires adequate temporal regularity. Irregular initial data, weak diffusion, and persistent high-frequency structure can remove the expected order gain.
+This scheduling carries an accuracy risk. The initial value of a later window keeps changing as the previous window receives higher-order corrections. A higher correction level may start from an initial value that is not yet smooth or settled. IDC's order-raising theory requires sufficient temporal regularity; when the initial data is irregular, the diffusion is too weak, or the solution contains high-frequency structure, the expected high order is lost.
 
-Figure 3.5 uses periodic advection–diffusion with $\Delta x=1/64$, $T=3$, window length $\Delta T=0.1$, $M=5$ nodes per window, and backward Euler as the base method. A narrow source with $\sigma=1000$ has low regularity, while $\sigma=5$ is smooth. The results separate into three regimes: repeated IDC/PIDC corrections do not reliably raise order for low-regularity data; smooth data with strong diffusion benefits clearly; smooth data with weak diffusion still suffers because long-lived high frequencies undermine the ideal correction assumptions.
+Figure 3.5 uses the periodic advection–diffusion equation with $\Delta x=1/64$, $T=3$, window length $\Delta T=0.1$, $M=5$ nodes per window, and backward Euler as the base integrator. A narrow source with $\sigma=1000$ produces low regularity, while $\sigma=5$ gives smoother input. The results separate into three regimes: at low regularity, repeated IDC/PIDC corrections cannot reliably achieve high order; with smooth data and stronger diffusion, the corrections are clearly effective; with smooth data but very small diffusion, long-lived high frequencies still spoil the ideal order-raising.
 
 ### 3.3.2 Revisionist IDC (RIDC)
 
-RIDC maintains a sliding $M$-node window for every correction level. The levels advance across successive time steps like an assembly line, without waiting for a whole time window to finish. This design reduces global synchronization and keeps different correction levels active on separate cores.
+RIDC maintains a sliding $M$-node window for each correction level. The levels advance across successive time steps like an assembly line, without waiting for a complete window to finish. This reduces global synchronization and is well suited to keeping different correction levels running continuously on several cores.
 
-RIDC improves scheduling while retaining the regularity requirement. Figure 3.6 again shows limited order improvement under low regularity and weak diffusion. For hyperbolic problems, preservation of high frequencies is physically valuable and numerically hazardous for deferred-correction order recovery.
+RIDC improves scheduling but does not remove the regularity requirement. Figure 3.6 again shows that low regularity and weak diffusion limit the accuracy gain from the correction levels. For hyperbolic problems, preserving high frequencies is both a physical advantage and a numerical hazard for IDC order-raising.
 
 ## 3.4 ParaExp
 
-### Exact decomposition for linear systems
+### Exact decomposition for linear problems
 
-ParaExp constructs a direct parallel solution for
+ParaExp constructs a direct time-parallel solution for
 
 $$
-\boldsymbol u'(t)=A\boldsymbol u(t)+\boldsymbol g(t).
+\boldsymbol u'(t)=A\boldsymbol u(t)+\boldsymbol g(t)
 $$
 
-Partition $[0,T]$ into $N$ intervals $[T_{n-1},T_n]$. First solve the zero-initial-value inhomogeneous problems concurrently:
+Partition $[0,T]$ into $N$ subintervals $[T_{n-1},T_n]$. The first step solves the zero-initial-value inhomogeneous problems in parallel on all subintervals,
 
 $$
 \boldsymbol v_n'(t)=A\boldsymbol v_n(t)+\boldsymbol g(t),
 \qquad \boldsymbol v_n(T_{n-1})=0. \tag{3.13}
 $$
 
-Then propagate every endpoint contribution through a homogeneous tail:
+The second step propagates each segment's endpoint contribution to later times through the homogeneous equation:
 
 $$
 \boldsymbol w_n'(t)=A\boldsymbol w_n(t),
 \qquad \boldsymbol w_n(T_n)=\boldsymbol v_n(T_n). \tag{3.14}
 $$
 
-Linearity gives the exact reconstruction
+Linear superposition gives the exact reconstruction
 
 $$
 \boldsymbol u(t)=\boldsymbol v_j(t)+
@@ -180,13 +206,13 @@ $$
 
 ![ParaExp separates local forced responses from global homogeneous propagation](assets/diagrams/pint/en/paraexp-decomposition.svg)
 
-The central operation is
+The key point lies in the homogeneous tails:
 
 $$
 \boldsymbol w_n(t)=e^{(t-T_n)A}\boldsymbol v_n(T_n).
 $$
 
-An exponential action can jump directly to any later time. Its cost is controlled by the matrix, tolerance, and approximation method and need not grow linearly with the number of intermediate time steps. Rational Krylov or polynomial/Chebyshev methods are common for large sparse systems. Scaling-and-squaring with Padé approximation is appropriate for smaller dense matrices. A cited wave-equation study reported parallel efficiency up to roughly 80%; the value is specific to its exponential implementation, partition, and machine.
+The matrix-exponential action can jump directly to any later time; its cost depends on the matrix and the target accuracy and usually does not grow linearly with the number of intermediate time steps. Large sparse systems commonly use rational Krylov or polynomial/Chebyshev approximations, while small dense matrices can use scaling-and-squaring with Padé. A wave-equation experiment cited in the paper reached about 80% parallel efficiency; that figure depends on the specific exponential algorithm, partition, and hardware.
 
 ### Nonlinear extension and its limits
 
@@ -196,104 +222,104 @@ $$
 \boldsymbol u'=A\boldsymbol u+B(\boldsymbol u)+\boldsymbol g, \tag{3.17}
 $$
 
-the linear homogeneous part continues to use exponential propagation, while $B(\boldsymbol u)$ enters iterative inhomogeneous subproblems. Theorem 3.4 has two consequences. After iteration $k$, the first $k$ time intervals agree with the sequential fine solution. At coarse time points, the iteration is identical to a simplified Parareal method whose coarse propagator is the linear homogeneous evolution and whose fine propagator resolves the full nonlinearity.
+the paper continues to hand the linear homogeneous part to exponential propagation and places $B(\boldsymbol u)$ into iterative, inhomogeneous local problems. Theorem 3.4 gives two important conclusions: after iteration $k$, the first $k$ time subintervals already agree with the sequential fine solution; and at the coarse time points, the iteration is equivalent to a simplified Parareal, whose coarse propagator is the linear homogeneous evolution and whose fine propagator resolves the full nonlinearity.
 
-Figure 3.8 compares ParaExp with standard Parareal for Burgers' equation using spatial step $0.01$, $T=2$, fine step $0.01/20$, and standard-Parareal coarse step $0.01$. ParaExp is faster at large viscosity because linear diffusion dominates. Standard Parareal becomes faster as nonlinear transport gains importance. ParaExp diverges at $\nu=0.02$, and standard Parareal also fails deeper in the hyperbolic regime. The linear ParaExp construction is powerful; the nonlinear splitting quality sets the range of its extension.
+Figure 3.8 compares ParaExp with standard Parareal on Burgers' equation, with spatial step $0.01$, $T=2$, fine step $0.01/20$, and standard-Parareal coarse step $0.01$. At large viscosity, linear diffusion is the dominant dynamics and ParaExp's coarse model is very effective; as viscosity decreases, nonlinear transport grows in importance and standard Parareal is faster for a while; at $\nu=0.02$ ParaExp diverges. Moving still closer to the hyperbolic limit, standard Parareal also fails. The linear ParaExp construction is strong, and the quality of the nonlinear split determines the applicable range of the extended version.
 
-## 3.5 ParaDiag: diagonalization in time
+## 3.5 ParaDiag: diagonalization along time
 
 ### Two ParaDiag routes
 
-ParaDiag converts an all-at-once system into independent spatial systems. The paper distinguishes:
+The goal of ParaDiag is to turn the all-at-once coupling system into several independent spatial systems. The paper distinguishes two classes:
 
-1. **ParaDiag-I**, which exactly diagonalizes a specially designed time discretization and acts as a direct solver;
-2. **ParaDiag-II**, which approximates the original time matrix by a circulant or $\alpha$-circulant one and uses the result as a stationary iteration or Krylov preconditioner.
+1. **ParaDiag-I** exactly diagonalizes a specially designed time discretization to form a direct solver;
+2. **ParaDiag-II** approximates the original matrix with a circulant or $\alpha$-circulant time matrix and then performs a stationary iteration or Krylov preconditioning.
 
-Both need a well-conditioned temporal eigenvector matrix and efficient solvers for complex shifted spatial systems. Both use three stages: transform in time, solve all shifted spatial problems concurrently, and apply the inverse transform.
+Both require a well-conditioned temporal eigenvector matrix and that every complex-shifted spatial system can be solved efficiently. Their three-stage structure is the same: transform in time, solve the shifted problems in parallel, and apply the inverse transform.
 
 ![ParaDiag time transform, independent spatial solves, and inverse transform](assets/diagrams/pint/en/paradiag-three-stage.svg)
 
 ### 3.5.1 Direct ParaDiag methods (ParaDiag-I)
 
-#### Backward Euler on a geometric time mesh
+#### Backward Euler on a geometric variable-step mesh
 
-For the linear system (2.1), variable-step backward Euler gives
+For the linear system (2.1), the all-at-once matrix of variable-step backward Euler has the form
 
 $$
 K=B\otimes I_x-I_t\otimes A. \tag{3.23}
 $$
 
-When $\Delta t_n=\mu^{n-1}\Delta t_1$, the matrix $B$ admits $B=VDV^{-1}$. Hence
+If the time steps grow geometrically as $\Delta t_n=\mu^{n-1}\Delta t_1$, then $B$ can be written as $B=VDV^{-1}$. Hence
 
 $$
 K^{-1}
 =(V\otimes I_x)
 (D\otimes I_x-I_t\otimes A)^{-1}
-(V^{-1}\otimes I_x). \tag{3.25}
+(V^{-1}\otimes I_x), \tag{3.25}
 $$
 
-The middle block diagonal contains $N_t$ independent shifted spatial problems.
+and the middle block-diagonal system contains $N_t$ mutually independent shifted spatial problems.
 
-Writing $\mu=1+\rho$ exposes the main conflict. A larger $\rho$ produces substantial step variation and truncation error of order $\mathcal O(\rho^2)$. A very small $\rho$ makes $B$ approach a nondiagonalizable Jordan structure, amplifying roundoff like $\epsilon\rho^{-(N_t-1)}$. Theorem 3.5 balances these contributions and gives the scale of an optimal $\rho$. Figures 3.9–3.10 confirm the U-shaped error curve and the severe limit on useful time steps in double precision. Increasing $N_t$ eventually lets conditioning and roundoff dominate.
+The parameter $\mu=1+\rho$ exposes the core conflict of the direct method. A larger $\rho$ makes the step variation pronounced, with truncation error of order $\mathcal O(\rho^2)$; when $\rho$ is too small, $B$ approaches a nondiagonalizable Jordan structure and roundoff error is amplified like $\epsilon\rho^{-(N_t-1)}$. Theorem 3.5 gives the balance between the two and the scale of the optimal $\rho$. Figures 3.9–3.10 confirm the U-shaped error curve and also show that the number of usable time steps is very limited in double precision. Directly increasing $N_t$ soon lets conditioning and roundoff dominate.
 
-#### Wave equation and the trapezoidal rule
+#### The wave equation and the trapezoidal rule
 
-The wave equation is converted to a first-order system and integrated by a variable-step trapezoidal rule to retain its energy behavior. The all-at-once system remains diagonalizable. Theorem 3.6 yields the same competition between truncation and $\epsilon\rho^{-(N_t-1)}$ roundoff. Figure 3.11 and Table 3.1 show rapid growth of the eigenvector condition number; the error starts increasing beyond roughly $N_t=32$.
+The wave equation is first converted to a first-order system and then integrated with a variable-step trapezoidal rule to preserve its energy property. The corresponding all-at-once system is again diagonalizable. Theorem 3.6 still obtains the competition between truncation error and $\epsilon\rho^{-(N_t-1)}$ roundoff amplification. Figure 3.11 and Table 3.1 show that as $N_t$ grows the eigenvector condition number increases rapidly, and the error starts to rise beyond roughly $N_t>32$.
 
-#### Boundary-value methods improve conditioning
+#### Boundary-value methods mitigate the ill-conditioning
 
-A boundary-value method (BVM) applies centered differences at the first $N_t-1$ nodes and backward Euler to close the final node:
+A boundary-value method (BVM) uses centered differences at the first $N_t-1$ nodes and backward Euler at the last node to close the all-at-once system:
 
 $$
 \frac{\boldsymbol u_{n+1}-\boldsymbol u_{n-1}}{2\Delta t}
-=A\boldsymbol u_n+\boldsymbol g_n.
+=A\boldsymbol u_n+\boldsymbol g_n,
 $$
 
-The complete diagonalizable system remains second order even though the terminal formula is first order. Theorem 3.7 gives $\operatorname{Cond}(V)=\mathcal O(N_t^2)$, a substantial improvement over the geometric-step construction. Figure 3.12 shows second-order decay on a uniform mesh without the earlier rapid deterioration. A direct second-order wave formulation can use $B^2\otimes I_x-I_t\otimes A$ and avoid the doubled storage of a first-order conversion.
+which, together with the terminal discretization, forms a diagonalizable matrix. Even though the terminal formula is first order, the whole scheme still attains second order. Theorem 3.7 gives $\operatorname{Cond}(V)=\mathcal O(N_t^2)$, far more stable than the geometric variable-step scheme. Figure 3.12 shows second-order error decay as the uniform time step shrinks, without the rapid deterioration seen earlier. For the second-order wave equation, one can also directly construct a system containing $B^2\otimes I_x-I_t\otimes A$, avoiding the doubled storage caused by first-order conversion.
 
 #### Nonlinear ParaDiag-I
 
-Newton linearization of the nonlinear all-at-once equations produces a different Jacobian block at every time point. Replacing these blocks by an average Jacobian recovers a Kronecker approximation and gives a quasi-Newton method whose shifted Jacobian systems remain concurrent after the time transform. Multiple sequential windows are preferable when the Jacobian changes too much over a long horizon.
+The nonlinear all-at-once system is first linearized by Newton. The true Jacobian differs at each time point, losing a single Kronecker structure. The paper approximates all time blocks with an average Jacobian to obtain a quasi-Newton system; after the time transform, the shifted Jacobian problems remain parallel. If the solution varies too much over a long time interval, the average Jacobian degrades, and one can switch to several sequential windows.
 
-Figure 3.13 and Table 3.2 show the behavior for Burgers' equation. At $\nu=0.1$, the count of parallel Jacobian solves is far below the sequential Newton count. Lower viscosity makes convergence more sensitive to $T$, and the method fails for $\nu=0.002$ on longer windows.
+The Burgers experiments in Figure 3.13 and Table 3.2 show that at $\nu=0.1$ the number of parallel Jacobian solves is far below that of sequential Newton; as viscosity decreases, convergence becomes increasingly sensitive to the total time $T$; and at $\nu=0.002$ with a longer time window the method fails.
 
-A richer approximation uses a low-rank Kronecker sum
+The approximate Jacobian can also be extended into a low-rank Kronecker sum
 
 $$
 J\approx\sum_{q=1}^r \Phi_q\otimes A_q. \tag{3.47}
 $$
 
-The NKA strategy chooses temporal scaling matrices $\Phi_q$ offline on a coarse model and retains more time variation. Figure 3.14 shows a clear improvement, especially for longer windows such as $T=1.3$.
+NKA chooses the temporal scaling matrices $\Phi_q$ offline on a coarse model, retaining more of the Jacobian's variation in time. Figure 3.14 shows that it clearly improves quasi-Newton convergence on longer windows such as $T=1.3$.
 
 ### 3.5.2 Iterative ParaDiag methods (ParaDiag-II)
 
 #### Strang circulant preconditioner
 
-The all-at-once matrix for a linear multistep method is
+The all-at-once system of a linear multistep method is written as
 
 $$
 K=B_1\otimes I_x-B_2\otimes\Delta t A.
 $$
 
-ParaDiag-II replaces the Toeplitz-like matrices $B_1,B_2$ by Strang circulants $C_1,C_2$:
+ParaDiag-II replaces the Toeplitz-like matrices $B_1,B_2$ with Strang circulant matrices $C_1,C_2$ to construct
 
 $$
 P=C_1\otimes I_x-C_2\otimes\Delta t A.
 $$
 
-The discrete Fourier matrix simultaneously diagonalizes the circulants, so applying $P^{-1}$ again consists of an FFT, independent shifted spatial solves, and an inverse FFT. A close approximation supports stationary iteration. When its contraction is weak, $P$ is usually more effective inside GMRES. Krylov convergence can remain rapid with clustered eigenvalues even when the stationary spectral radius exceeds one.
+Circulant matrices are simultaneously diagonalized by the discrete Fourier matrix, so applying $P^{-1}$ is again realized by "FFT, independent shifted spatial solves, inverse FFT." If $P$ is very close to $K$, a stationary iteration can be used directly; when the convergence factor is poor, $P$ is better suited as a GMRES preconditioner. Even when the spectral radius of the stationary iteration exceeds one, Krylov methods can still exploit clustered spectra for fast convergence.
 
-Theorem 3.8 gives a structural finite-step result for symmetric negative $A$: only a limited collection of eigenvalues differs from one, so exact-arithmetic GMRES has a finite termination bound. The bound grows with spatial dimension and alone does not imply rapid convergence for large or nonsymmetric systems.
+Theorem 3.8 gives a structural result for symmetric negative definite $A$: the preconditioned matrix has only a finite set of nonunit eigenvalues, so GMRES has a finite-step upper bound in exact arithmetic. This bound grows with the spatial dimension and alone cannot guarantee fast convergence on large problems.
 
-Figure 3.15 uses $T=2$, $\Delta t=1/50$, and $\Delta x=1/100$. The circulant preconditioner is excellent for the heat equation and advection–diffusion at $\nu=10^{-3}$. Spectral clustering deteriorates as viscosity falls. For the wave equation, the nonunit eigenvalues spread in the complex plane and require many more outer iterations. This behavior directly reflects Chapter 2: diffusion localizes the head–tail mismatch introduced by cyclic closure, while persistent propagation carries that mismatch throughout the horizon.
+Figure 3.15 uses $T=2$, $\Delta t=1/50$, $\Delta x=1/100$. The circulant preconditioner is very effective for the heat equation and for advection–diffusion at $\nu=10^{-3}$; as $\nu$ falls further the spectral clustering worsens; for the wave equation the nonunit eigenvalues spread across the complex plane and the outer iterations increase markedly. This set of experiments connects directly to the conclusions of Chapter 2: dissipation localizes the head–tail mismatch caused by cyclic closure, while persistent propagation carries that mismatch throughout the entire time domain.
 
 #### $\alpha$-circulants and a waveform-relaxation interpretation
 
-The paper also derives an $\alpha$-circulant matrix from continuous head–tail waveform relaxation. The initial and terminal values of the new window are weakly coupled by $\alpha$. After discretization, the eigenvector matrix has the form $\Lambda_\alpha F^*$ and can still be applied with FFTs.
+The paper also derives the $\alpha$-circulant matrix from continuous-time head–tail waveform relaxation. The initial and terminal values of a new time window are weakly coupled through the parameter $\alpha$; after discretization, the eigenvector matrix has the form $\Lambda_\alpha F^*$ and can still use FFTs.
 
-$\alpha=1$ recovers the standard circulant approximation. Purely periodic propagation can make this choice singular. Values $0<\alpha<1$ break exact cyclic closure and can greatly improve advection- and wave-dominated cases, as the stationary results in Figure 3.16 demonstrate.
+$\alpha=1$ corresponds to the standard circulant approximation. Periodic propagation problems can become singular at this value; $0<\alpha<1$ breaks the exact periodic head–tail closure and often significantly improves advection and wave problems. Figure 3.16 shows strong convergence without Krylov acceleration.
 
-For stable one-step methods and symmetric two-step methods, Theorem 3.9 gives
+For stable one-step methods and symmetric two-step methods, Theorem 3.9 gives spectral bounds:
 
 $$
 \frac{1}{1+\alpha}
@@ -304,62 +330,62 @@ $$
 \le \frac{\alpha}{1-\alpha}.
 $$
 
-These bounds are independent of the spatial grid and time-step count under the stated stability assumptions. A Numerov threshold experiment confirms their dependence on stability: $\gamma=1/120$ satisfies the condition, whereas the slightly unstable $1/120.01$ invalidates the predicted behavior.
+These bounds are independent of the spatial grid and the number of time steps, but require the time integrator to satisfy the corresponding stability. A critical Numerov-parameter experiment shows that $\gamma=1/120$ satisfies the condition, whereas slightly crossing the stability bound to $1/120.01$ destroys the prediction.
 
-Smaller $\alpha$ improves the iteration factor and amplifies transform roundoff to roughly $\epsilon/\alpha$. Figure 3.18 displays this tradeoff. Updating through an error equation prevents repeated transformation of a large solution vector and reduces roundoff contamination. A more general multistep Volterra analysis likewise places the preconditioned eigenvalues at $1+\mathcal O(\alpha)$.
+Decreasing $\alpha$ improves the iteration factor but at the same time amplifies the roundoff error of the time transform to roughly $\epsilon/\alpha$. Figure 3.18 displays this tradeoff. Updating through an error equation avoids repeatedly bringing a large solution vector into an ill-conditioned transform, thereby reducing roundoff contamination. A more general multistep Volterra analysis likewise concludes that the eigenvalues deviate from one by $\mathcal O(\alpha)$.
 
 #### Nonlinear ParaDiag-II
 
-Nonlinear problems use Newton–Krylov. Each Newton step produces an all-at-once Jacobian, and GMRES is preconditioned by $P_\alpha$ built from an average Jacobian. Stationary iteration often fails on long nonlinear windows, while Krylov methods can still exploit spectral clustering. Shorter windows make Jacobian blocks more similar; NKA retains additional temporal variation. Both improve preconditioner quality.
+Nonlinear problems use Newton–Krylov. Each Newton linearization produces an all-at-once Jacobian, and GMRES is then preconditioned by $P_\alpha$ built from an average Jacobian. Stationary iteration often fails on long nonlinear windows, while Krylov methods can still exploit eigenvalue clustering. Shortening the time window makes the Jacobian more uniform, and NKA can also retain more temporal variation; both improve preconditioner quality.
 
 ## Site numerical supplement: Python validation of Figure 3.15
 
 ### Baseline experiment
 
-The recomputed baseline uses $N_x=N_t=100$, $T=2$, $\nu=10^{-6}$, $\alpha=1$, and GMRES tolerance $10^{-12}$. It converges in 13 iterations with true relative residual $1.152\times10^{-14}$.
+The recomputed baseline uses $N_x=N_t=100$, $T=2$, $\nu=10^{-6}$, $\alpha=1$, and GMRES tolerance $10^{-12}$. The algorithm converges after 13 iterations with a true relative residual of $1.152\times10^{-14}$.
 
 ![GMRES convergence baseline for ParaDiag-II on advection–diffusion](assets/pint/paradiag-baseline.svg)
 
 ### Paper-grid validation
 
-| Problem                            |                                         Python result | Interpretation                                                  |
-| ---------------------------------- | ----------------------------------------------------: | --------------------------------------------------------------- |
-| heat                               |                                      2 Krylov updates | eigenvalues tightly clustered near one                          |
-| advection–diffusion, $\nu=10^{-3}$ |                                                     3 | circulant and original all-at-once systems are close            |
-| advection–diffusion, $\nu=10^{-6}$ |                                                    13 | weak diffusion transports the cyclic-closure mismatch           |
-| wave                               | preconditioned residual below $10^{-11}$ at update 89 | nonunit eigenvalues spread along $\operatorname{Re}\lambda=0.5$ |
+| Problem                            |                                         Python result | Interpretation                                                            |
+| ---------------------------------- | ----------------------------------------------------: | ------------------------------------------------------------------------- |
+| heat                               |                                      2 Krylov updates | eigenvalues tightly clustered near one                                    |
+| advection–diffusion, $\nu=10^{-3}$ |                                                     3 | circulant preconditioner is close to the original all-at-once system      |
+| advection–diffusion, $\nu=10^{-6}$ |                                                    13 | weak diffusion lets the head–tail closure error propagate for a long time |
+| wave                               | preconditioned residual below $10^{-11}$ at update 89 | nonunit eigenvalues spread along $\operatorname{Re}\lambda=0.5$           |
 
-![ParaDiag-II spectra and GMRES convergence for heat, advection–diffusion, and wave equations](assets/pint/paradiag-figure-3-15.svg)
+![ParaDiag-II spectra and GMRES convergence for the heat, advection–diffusion, and wave equations](assets/pint/paradiag-figure-3-15.svg)
 
-The 3- and 13-update ADE results match Figures 3.15(c,d). The wave run uses the paper's $\gamma=1/100$ and $\alpha=1$. Single-threaded SciPy crosses a preconditioned residual of $10^{-11}$ at update 89, close to the paper curve ending around 88. SciPy requires 103 updates under its true-relative-residual threshold of $10^{-12}$. MATLAB and SciPy differ in residual normalization, restart, and stopping conventions, so the spectral geometry and convergence phase are more meaningful than a single raw count.
+The ADE counts of 3 and 13 agree with Figure 3.15(c,d). The wave experiment uses the paper's $\gamma=1/100$ and $\alpha=1$; single-threaded SciPy reaches a preconditioned residual of $10^{-11}$ at update 89, close to the paper curve's endpoint of about 88. If stopped at SciPy's true relative residual of $10^{-12}$, it needs 103 updates. MATLAB and SciPy differ in residual normalization, restart, and stopping rules, so one should compare the spectral geometry and the convergence phase rather than a single iteration count.
 
 ## Site method comparison: parameters, applicability, and implementation cost
 
-| Method      | Key parameter or choice                                | Property controlled                         | Main risk                                                               |
-| ----------- | ------------------------------------------------------ | ------------------------------------------- | ----------------------------------------------------------------------- |
-| SWR         | overlap, window length, transmission operator          | rate of characteristic information transfer | poor tuning or expensive interface operator                             |
-| PIDC/RIDC   | nodes, correction levels, window and pipeline depth    | formal order and concurrency                | loss of order under low regularity                                      |
-| ParaExp     | exponential-action method, linear/nonlinear split      | cost of homogeneous tails                   | expensive action or inaccurate nonlinear split                          |
-| ParaDiag-I  | time discretization, $N_t$, eigenvector conditioning   | direct concurrency                          | conflict between truncation and roundoff                                |
-| ParaDiag-II | $\alpha$, outer Krylov method, shifted-solve tolerance | clustering and stability                    | small $\alpha$ amplifies roundoff; large $\alpha$ weakens approximation |
+| Method      | Key parameter or choice                                  | Property determined                                   | Main risk                                                               |
+| ----------- | -------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------- |
+| SWR         | overlap width, time window, transmission condition       | speed of characteristic information across subdomains | poor tuning or overly expensive interface operator                      |
+| PIDC/RIDC   | node count, correction levels, window and pipeline depth | formal order and concurrency                          | loss of order under low regularity                                      |
+| ParaExp     | exponential-action algorithm, linear/nonlinear split     | cost of homogeneous tail propagation                  | expensive matrix exponential or inaccurate nonlinear split              |
+| ParaDiag-I  | time discretization, $N_t$, eigenvector conditioning     | direct concurrency scale                              | conflict between truncation and roundoff error                          |
+| ParaDiag-II | $\alpha$, outer Krylov method, shifted-solve tolerance   | preconditioner clustering and stability               | small $\alpha$ amplifies roundoff, large $\alpha$ weakens approximation |
 
-The public [ActaPinT-Python](https://github.com/freezeng123456/ActaPinT-Python) project covers the Heat, ADE, and Wave experiments in Figures 3.15(a–f), with SVG, PNG, and JSON outputs. The upstream MATLAB repository also contains SWR, PIDC/RIDC, ParaExp, direct ParaDiag, and wave-domain-decomposition scripts. Those scripts do not yet have formal Python results, so this page does not invent replacement curves for them.
+The public [ActaPinT-Python](https://github.com/freezeng123456/ActaPinT-Python) project already covers the Heat, ADE, and Wave experiments of Figure 3.15(a–f) and saves SVG, PNG, and JSON outputs. The upstream MATLAB repository also contains SWR, PIDC/RIDC, ParaExp, direct ParaDiag, and wave-domain-decomposition scripts; the current formal Python results do not yet cover these scripts, so this page does not fabricate numerical curves for them.
 
 ## Source coverage audit
 
-| Source location                 | This page | Material covered                                                                                                                          |
-| ------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Sections 3 and 3.1, pp. 396–398 | 3.1       | scope and origins of hyperbolic-effective methods, tent-pitching context                                                                  |
-| Section 3.2, pp. 398–405        | 3.2       | WR versus SWR, Dirichlet/Robin/Ventcel/convolution transmission, Theorems 3.1–3.2, Figures 3.1–3.3, MTP/UTP                               |
-| Section 3.3, pp. 405–412        | 3.3       | IDC residual and recurrence, Theorem 3.3, SDC, PIDC/RIDC schedules, Figures 3.4–3.6, regularity limitation                                |
-| Section 3.4, pp. 412–415        | 3.4       | linear ParaExp decomposition and exponential action, nonlinear iteration, Theorem 3.4, Figures 3.7–3.8                                    |
-| Sections 3.5–3.5.1, pp. 415–431 | 3.5.1     | ParaDiag-I stages, geometric steps, Theorems 3.5–3.7, wave/BVM variants, nonlinear quasi-Newton and NKA, Figures 3.9–3.14, Tables 3.1–3.2 |
-| Section 3.5.2, pp. 431–443      | 3.5.2     | Strang and $\alpha$-circulant preconditioners, Theorems 3.8–3.9, Figures 3.15–3.18, stability/roundoff tradeoff, nonlinear Newton–Krylov  |
+| Source location                 | This page | Material covered                                                                                                                                                                                                                              |
+| ------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Sections 3 and 3.1, pp. 396–398 | 3.1       | the challenge of long-range hyperbolic propagation and the temporal-locality criterion, the shared principle of the four families, the historical development and literature of the four lineages, MTP/UTP and finite-propagation-speed clues |
+| Section 3.2, pp. 398–405        | 3.2       | WR versus SWR, Robin/Dirichlet/Ventcel/convolution conditions, Theorems 3.1–3.2, Figures 3.1–3.3, MTP/UTP                                                                                                                                     |
+| Section 3.3, pp. 405–412        | 3.3       | IDC integral residual and recurrence, Theorem 3.3, SDC, PIDC/RIDC scheduling, Figures 3.4–3.6, regularity limitation                                                                                                                          |
+| Section 3.4, pp. 412–415        | 3.4       | ParaExp linear decomposition and exponential action, nonlinear iteration, Theorem 3.4, Figures 3.7–3.8                                                                                                                                        |
+| Sections 3.5–3.5.1, pp. 415–431 | 3.5.1     | ParaDiag-I three-stage method, geometric steps, Theorems 3.5–3.7, wave/BVM, nonlinear quasi-Newton and NKA, Figures 3.9–3.14, Tables 3.1–3.2                                                                                                  |
+| Section 3.5.2, pp. 431–443      | 3.5.2     | Strang and $\alpha$-circulant preconditioners, Theorems 3.8–3.9, Figures 3.15–3.18, stability/roundoff tradeoff, nonlinear Newton–Krylov                                                                                                      |
 
 ## Summary
 
-The four families preserve long-range information in different ways. SWR transports interface waveforms along characteristic geometry. IDC pipelines high-order residual corrections. ParaExp applies the matrix exponential to linear homogeneous responses. ParaDiag transforms the global temporal coupling into concurrent spatial solves. Each avoids exclusive reliance on a dissipative coarse propagator and introduces its own constraint: SWR needs effective transmission, IDC needs temporal regularity, ParaExp needs an efficient exponential action and a meaningful split, and ParaDiag needs stable diagonalization plus scalable shifted solvers.
+The four families of this chapter preserve long-range information in different ways. SWR propagates waveforms along interfaces and characteristics; IDC arranges high-order error corrections into a pipeline; ParaExp uses the matrix exponential to propagate the linear homogeneous response directly; and ParaDiag transforms the all-at-once coupling into parallel spatial solves. All of them avoid exclusive reliance on a strongly dissipative coarse propagator, and each carries its own constraint: SWR needs suitable transmission conditions, IDC needs temporal regularity, ParaExp depends on the exponential action and the linear split, and ParaDiag needs stable temporal diagonalization and scalable shifted solvers.
 
-## Source
+## Source of this chapter
 
 - M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3, pp. 396–443.
