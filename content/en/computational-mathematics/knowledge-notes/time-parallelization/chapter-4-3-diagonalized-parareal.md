@@ -171,7 +171,32 @@ P_\alpha^{k+1,l}
 =C_\alpha\otimes I_x-I_t\otimes\Delta TA^{k+1,l}, \tag{4.19b}
 $$
 
-where $A^{k+1,l}$ averages the temporal Jacobian blocks. The matrix has the structure of (4.16), so every increment uses (4.17). A nearest Kronecker approximation could replace the average Jacobian but is not pursued in the paper.
+The exact block Jacobian and its separable approximation are
+
+$$
+\nabla F(\boldsymbol U^{k+1,l})
+=\operatorname{blkdiag}_{n=1}^{N_t}
+\nabla f(\boldsymbol u_n^{k+1,l}-\boldsymbol b_n^k),
+$$
+
+$$
+A^{k+1,l}
+=\frac1{N_t}\sum_{n=1}^{N_t}
+\nabla f(\boldsymbol u_n^{k+1,l}-\boldsymbol b_n^k),
+\qquad
+\nabla F\approx I_t\otimes A^{k+1,l}.
+$$
+
+> [!warning] Source check: the average-Jacobian index
+> The journal prints
+> $J^{-1}\sum_{j=1}^J\nabla f(\boldsymbol u_n-\boldsymbol b_n)$:
+> the summand contains no $j$, and the Section 4.5.1 all-at-once system
+> has $N_t$ blocks rather than $J$. The display above follows the block
+> Jacobian definition.
+
+The preconditioner has the structure of (4.16), so every increment uses
+(4.17). A nearest Kronecker approximation could replace the average
+Jacobian but is not pursued here.
 
 ![Original Figure 4.13: the two CGCs for Burgers' equation at two viscosities](assets/papers/time-parallelization/source-figures/figure-4-13.svg)
 
@@ -227,7 +252,11 @@ $$
 \quad \boldsymbol v_0=\boldsymbol u_n. \tag{4.21}
 $$
 
-$\theta=1$ is backward Euler and $\theta=1/2$ is trapezoidal. The special coarse propagator $\mathcal F_\alpha^*$ changes only the condition to
+$\theta=1$ is backward Euler and $\theta=1/2$ is trapezoidal. The
+linear-theta method exposes the structure; an $s$-stage Runge–Kutta
+generalization is given in the appendix of Gander and Wu (2020). The
+special coarse propagator $\mathcal F_\alpha^*$ changes only the
+condition to
 
 $$
 \boldsymbol v_0=\alpha\boldsymbol v_J+(1-\alpha)\boldsymbol u_n. \tag{4.22}
@@ -275,7 +304,30 @@ $$
 \end{bmatrix},
 $$
 
-and $\overline{\nabla f}$ averages the $J$ Jacobian blocks. The two temporal matrices are simultaneously diagonalizable. The outer iteration is
+The exact Jacobian is
+
+$$
+\nabla K(\boldsymbol V^l)
+=C_\alpha\otimes I_x
+-\Delta t(\widetilde C_{\alpha,\theta}\otimes I_x)
+\nabla F(\boldsymbol V^l),
+$$
+
+and the separable approximation uses the special average
+
+$$
+\overline{\nabla f}(\boldsymbol V^l)
+=\frac1J\left[
+\sum_{j=1}^{J-1}\nabla f(\boldsymbol v_j^l)
++\nabla f\!\left(
+\alpha\boldsymbol v_J^l+(1-\alpha)\boldsymbol u_n
+\right)
+\right].
+$$
+
+The final block is evaluated at the head–tail state rather than at
+$\boldsymbol v_J^l$. The two temporal matrices are simultaneously
+diagonalizable. The outer iteration is
 
 $$
 \boldsymbol u_{n+1}^{k+1}
@@ -290,7 +342,7 @@ For $f(\boldsymbol u)=A\boldsymbol u$,
 
 $$
 (C_\alpha\otimes I_x
--\widetilde C_{\theta,\alpha}\otimes\Delta tA)\boldsymbol V
+-\widetilde C_{\alpha,\theta}\otimes\Delta tA)\boldsymbol V
 =\boldsymbol b(\boldsymbol u_n), \tag{4.27}
 $$
 
@@ -299,7 +351,11 @@ $$
 =([(I_x+\Delta t(1-\theta)A)(1-\alpha)\boldsymbol u_n]^\top,0,\ldots,0)^\top.
 $$
 
-The coarse output is $\mathcal F_\alpha^*=(H_J\otimes I_x)\boldsymbol V=\boldsymbol v_J$, equivalently
+We use $\widetilde C_{\alpha,\theta}$ consistently; the source
+alternates it with $\widetilde C_{\theta,\alpha}$ for the same matrix.
+Let $H_J=(0,\ldots,0,1)\in\mathbb R^{1\times J}$. The coarse output is
+$\mathcal F_\alpha^*=(H_J\otimes I_x)\boldsymbol V=\boldsymbol v_J$,
+equivalently
 
 $$
 \left\{
@@ -315,7 +371,12 @@ At $\alpha=0$, coarse propagation equals sequential fine propagation and outer P
 
 ### Theorem 4.8: parabolic and hyperbolic spectra
 
-Theorem 4.8 is due to Gander and Wu (2020). For linear initial value problems $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$ with $A\in\mathbb C^{N_x\times N_x}$, where both $\mathcal F$ and $\mathcal F_\alpha^*$ use a stable one-step Runge–Kutta method, let
+Theorem 4.8 is due to Gander and Wu (2020). For
+$\boldsymbol u'=A\boldsymbol u+\boldsymbol g$,
+$\boldsymbol u(0)=\boldsymbol u_0$, with
+$A\in\mathbb C^{N_x\times N_x}$, suppose both $\mathcal F$ and
+$\mathcal F_\alpha^*$ use a stable one-step Runge–Kutta method and
+$\{\boldsymbol u_n^k\}$ is iteration $k$ of (4.26). Let
 
 $$
 e^k=\max_{1\le n\le N_t}\|\boldsymbol u_n-\boldsymbol u_n^k\|_\infty,

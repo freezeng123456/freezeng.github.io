@@ -106,14 +106,42 @@ $K_c$ is rediscretized with $\Delta T=2\Delta t$ and $\Delta X=2\Delta x$ and ha
 
 ### Difference from early parabolic multigrid
 
-Hackbusch-style parabolic multigrid uses a pointwise, time-sequential Gauss–Seidel smoother,
+Hackbusch-style parabolic multigrid uses the following pointwise,
+time-sequential Gauss–Seidel smoother:
 
 $$
 \boldsymbol U^{\mathrm{new}}
-=S_{GS}(\boldsymbol b,\boldsymbol U^{\mathrm{ini}},s), \tag{4.35}
+=S_{GS}(\boldsymbol b,\boldsymbol U^{\mathrm{ini}},s):
+\left\{
+\begin{aligned}
+&\text{for }n=0,\ldots,N_t-1,\\
+&\qquad \boldsymbol u_{n+1}^0=\boldsymbol u_{n+1}^{\mathrm{ini}},\\
+&\qquad \text{for }j=0,\ldots,s-1,\\
+&\qquad\quad
+(D+L)\Delta\boldsymbol u_{n+1}^j
+=\widetilde{\boldsymbol f}_n+r_2\boldsymbol u_n^s
+-r_1\boldsymbol u_{n+1}^j,\\
+&\qquad\quad
+\boldsymbol u_{n+1}^{j+1}
+=\boldsymbol u_{n+1}^j+\Delta\boldsymbol u_{n+1}^j,\\
+&\qquad \boldsymbol u_{n+1}^{\mathrm{new}}
+=\boldsymbol u_{n+1}^s,
+\end{aligned}
+\right. \tag{4.35}
 $$
 
-solving $(D+L)\Delta\boldsymbol u_{n+1}^j=\widetilde{\boldsymbol f}_n+r_2\boldsymbol u_n^s-r_1\boldsymbol u_{n+1}^j$ at each time step and updating immediately, where $D$ and $L$ are the diagonal and **upper** triangular parts of $r_1$. The next time point depends on the completed smoothed value at the current point. This works rapidly for heat when only space is coarsened but becomes slow under simultaneous space–time coarsening. Horton and Vandewalle (1995) improved on that slow convergence with multigrid components adapted to reading the time direction as a strongly advective term. STMG's decisive change (Gander and Neumüller 2016) is temporal block Jacobi, which parallelizes the full time direction and suppresses high-frequency error before coarse correction, so that only standard multigrid components are needed.
+Here $\boldsymbol u_0^s=\boldsymbol u_0$, and both
+$\boldsymbol U^{\mathrm{ini}}$ and $\boldsymbol U^{\mathrm{new}}$
+include the initial value. The matrices $D$ and $L$ are the diagonal
+and **upper** triangular parts of $r_1$. The next time point depends on
+the completed smoothed value at the current point. This works rapidly
+for heat when only space is coarsened but becomes slow under
+simultaneous space–time coarsening. Horton and Vandewalle (1995)
+improved that behavior by reading time as a strongly advective
+direction and designing special components. STMG's decisive change
+(Gander and Neumüller 2016) is temporal block Jacobi: all time points
+are smoothed concurrently using otherwise standard multigrid
+components.
 
 ### Starting point of local Fourier analysis
 
@@ -158,11 +186,33 @@ $$
 \right). \tag{4.39}
 $$
 
-This symbol quantifies how one sweep damps each temporal and spatial frequency.
+The amplification factor is $|\rho|$. To decide whether time
+coarsening is admissible, define
+
+$$
+\Theta_t^{\mathrm{high}}
+=(-\pi,-\pi/2)\cup(\pi/2,\pi)
+$$
+
+and the smoothing factor
+
+$$
+\mu_t(\eta)=
+\sup_{\substack{\xi\Delta x\in(-\pi,\pi)\\
+\omega\Delta t\in\Theta_t^{\mathrm{high}}}}
+|\rho(\omega,\xi,\eta)|.
+$$
+
+Including the zero mode in the maximum would give
+$\rho(0,0,\eta)=1$ for every $\eta$, so it cannot determine a unique
+damping parameter.
 
 ### Theorem 4.9: optimal damping for backward Euler
 
-Theorem 4.9 is proved in Gander and Lunet (2024). "Optimal" here means first maximizing $\rho$ over $\xi$ and $\omega$ (over $\omega\Delta t\in(-\pi,\pi)$ and $\xi\Delta x\in(-\pi,\pi)$) and then minimizing that maximum. For centered differences in space and backward Euler in time, the optimal damping that always permits time coarsening is
+Theorem 4.9 is proved in Gander and Lunet (2024). “Optimal” means
+minimizing the high-temporal-frequency factor $\mu_t(\eta)$ above. For
+centered differences in space and backward Euler in time, the damping
+that always permits time coarsening is
 
 $$
 \eta_{\mathrm{opt}}=\frac12.
@@ -199,7 +249,23 @@ $$
 
 ![Original Figure 4.18: maximum high-frequency smoothing factors for ADE at three viscosities](assets/papers/time-parallelization/source-figures/figure-4-18.svg)
 
-The panels from left to right use $\nu=0.1,0.01,0.001$; each compares $\Delta x=\Delta t=1/64,1/128,1/256$. The vertical axis $\rho_{\max}$ is defined as $\max_{(\Delta x\xi,\Delta t\omega)\in(-\pi,\pi)\times(\pi/2,\pi)}\rho$, that is, a maximum over all spatial frequencies but only over high temporal frequencies. Within each panel the minima for all three grids essentially coincide, making the choice reasonably grid-robust; as $\nu$ falls the minimizer drifts slowly to the right of $0.5$ and the minimum worst factor rises from roughly $0.71$ to $0.79$, so the achievable high-frequency contraction weakens. The paper claims only that $\eta=\tfrac12$ remains usable, not that it is the minimizer for every $\nu$.
+The panels from left to right use $\nu=0.1,0.01,0.001$; each compares
+$\Delta x=\Delta t=1/64,1/128,1/256$. The vertical quantity should be
+read as
+
+$$
+\rho_{\max}=
+\max_{\substack{\Delta x\xi\in(-\pi,\pi)\\
+\Delta t\omega\in\Theta_t^{\mathrm{high}}}}
+|\rho(\omega,\xi,\eta)|.
+$$
+
+The journal caption shows only the positive half of the temporal set
+and omits the modulus; conjugate symmetry gives the expression above.
+Within each panel the three grid minima nearly coincide. As $\nu$
+falls, the minimizer drifts slowly right of $0.5$ and the minimum rises
+from roughly $0.71$ to $0.79$. Thus $\eta=\tfrac12$ is a robust
+starting point, not the exact optimizer for every viscosity.
 
 ### Damping, sweep count, and time-integrator dependence
 
@@ -228,6 +294,20 @@ $$
 \qquad \boldsymbol u(0)=\boldsymbol u_0,
 \quad t\in(0,T). \tag{4.41}
 $$
+
+For the stacked state, define explicitly
+
+$$
+\boldsymbol U=(\boldsymbol u_1^\top,\ldots,\boldsymbol u_{N_t}^\top)^\top,
+\qquad
+f(\boldsymbol U)=
+\left(
+f(\boldsymbol u_1)^\top,\ldots,f(\boldsymbol u_{N_t})^\top
+\right)^\top.
+$$
+
+The journal display mistakenly writes the state blocks themselves in
+place of the $f(\boldsymbol u_n)$ blocks.
 
 The linear-theta method gives
 
@@ -266,10 +346,29 @@ $$
 &=\widetilde{\boldsymbol U}^j+\Delta\widetilde{\boldsymbol U}^j,\\
 \boldsymbol U^{\mathrm{new}}&=\widetilde{\boldsymbol U}^s.
 \end{aligned}
-\right. \tag{4.43}
+\right. \tag{4.43, as printed}
 $$
 
-Each temporal nonlinear block can use an inner Newton solve and run concurrently. LFA no longer supplies an optimized eta.
+> [!warning] Source check: what “block Jacobi” means in (4.43)
+> If $\Delta\widetilde{\boldsymbol U}^j$ is the correction added to the
+> current state, a consistent nonlinear correction for
+> $D(\boldsymbol U)=\boldsymbol U-\Delta t\theta f(\boldsymbol U)$
+> would satisfy
+> $$
+> \Delta\widetilde{\boldsymbol U}^j
+> -\Delta t\theta\left[
+> f(\widetilde{\boldsymbol U}^j+\Delta\widetilde{\boldsymbol U}^j)
+> -f(\widetilde{\boldsymbol U}^j)
+> \right]
+> =\eta[\boldsymbol b-K(\widetilde{\boldsymbol U}^j)].
+> $$
+> The printed $f(\Delta\widetilde{\boldsymbol U}^j)$ agrees only in
+> special cases such as a linear $f$. Equation (4.43) is therefore
+> safer to read as a separately defined nonlinear preconditioned
+> iteration, not the exact inverse of the nonlinear block diagonal.
+
+Each temporal nonlinear block can use an inner Newton solve and run
+concurrently. LFA no longer supplies an optimized eta.
 
 The two-level full approximation scheme is
 
@@ -278,25 +377,43 @@ $$
 \begin{aligned}
 \boldsymbol U^{k+1/3}&=S_{\mathrm{non},\eta}(\boldsymbol b,\boldsymbol U^k,s_1),\\
 \boldsymbol r&=\boldsymbol b-K(\boldsymbol U^{k+1/3}),\\
-\boldsymbol r_c&=[R_x\operatorname{Mat}(\boldsymbol r)]R_t^\top,\\
-\boldsymbol U_c^{k+1/3}&=[R_x\operatorname{Mat}(\boldsymbol U^{k+1/3})]R_t^\top,\\
+\boldsymbol r_c&=\operatorname{Vec}\!\left(
+[R_x\operatorname{Mat}(\boldsymbol r)]R_t^\top
+\right),\\
+\boldsymbol U_c^{k+1/3}&=\operatorname{Vec}\!\left(
+[R_x\operatorname{Mat}(\boldsymbol U^{k+1/3})]R_t^\top
+\right),\\
 K_c(\boldsymbol U_c^{k+2/3})
 &=\boldsymbol r_c+K_c(\boldsymbol U_c^{k+1/3}),\\
 \boldsymbol e_c&=\boldsymbol U_c^{k+2/3}-\boldsymbol U_c^{k+1/3},\\
-\boldsymbol e&=[P_x\operatorname{Mat}(\boldsymbol e_c)]P_t^\top,\\
-\boldsymbol U^{k+2/3}&=\boldsymbol U^{k+1/3}+\operatorname{Vec}(\boldsymbol e),\\
+\boldsymbol e&=\operatorname{Vec}\!\left(
+[P_x\operatorname{Mat}(\boldsymbol e_c)]P_t^\top
+\right),\\
+\boldsymbol U^{k+2/3}&=\boldsymbol U^{k+1/3}+\boldsymbol e,\\
 \boldsymbol U^{k+1}&=S_{\mathrm{non},\eta}(\boldsymbol b,\boldsymbol U^{k+2/3},s_2).
 \end{aligned}
 \right. \tag{4.44}
 $$
 
-FAS (Brandt 1977) solves for a full coarse approximation and uses $\boldsymbol r_c+K_c(\boldsymbol U_c)$ to maintain nonlinear consistency, unlike a linear coarse error equation.
+FAS (Brandt 1977) solves for a full coarse approximation and uses
+$\boldsymbol r_c+K_c(\boldsymbol U_c)$ to maintain nonlinear
+consistency, unlike a linear coarse error equation. The explicit
+`Vec` operations above keep the coarse residual and every argument of
+$K_c$ as vectors; the journal omits these conversions between matrix
+and vector views.
 
 ![Original Figure 4.22: Burgers STMG with two block-Jacobi sweeps](assets/papers/time-parallelization/source-figures/figure-4-22.svg)
 
 The experiment uses two sweeps and the empirically best $\eta=1/4$. The $\nu=1$ curve crosses the plotted discretization-error line after roughly four cycles and continues toward $10^{-4}$; the $\nu=0.1$ curve remains above that line after 16 cycles. Nonlinear STMG therefore retains the viscosity sensitivity seen in the linear case (the $\nu$ sweep of Figure 4.20).
 
-STMG is the paper's strongest PinT solver for parabolic problems, while being more intrusive than Parareal. The paper closes with two explicit research statements: for hyperbolic problems (Figures 4.20 and 4.22) STMG **appears to be less efficient, indicating that additional efforts are required in this domain**, and the dependence on the time integrator (Figure 4.21) **merits further investigation**.
+Among the surveyed parabolic methods, STMG is judged the most
+effective, although it is more intrusive than Parareal. Figures 4.20
+and 4.22 actually test low-diffusion ADE and viscous Burgers rather
+than strictly hyperbolic equations; they directly establish
+deterioration near a hyperbolic limit. The authors extrapolate from
+this evidence that truly hyperbolic problems still need further work.
+Figure 4.21 separately leaves dependence on the time integrator as an
+open question even for parabolic problems.
 
 ## Equation, theorem, and figure audit
 

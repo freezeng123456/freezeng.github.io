@@ -175,7 +175,30 @@ P_\alpha^{k+1,l}
 =C_\alpha\otimes I_x-I_t\otimes\Delta TA^{k+1,l}, \tag{4.19b}
 $$
 
-其中 $A^{k+1,l}$ 是时间节点 Jacobian 的平均，$I_t\otimes A^{k+1,l}$ 近似完整块对角 Jacobian。该矩阵与 (4.16) 同构，增量仍由 (4.17) 并行求解。NKA 可以替换平均 Jacobian，论文在此未继续展开。
+精确 Jacobian 与可分离近似分别是
+
+$$
+\nabla F(\boldsymbol U^{k+1,l})
+=\operatorname{blkdiag}_{n=1}^{N_t}
+\nabla f(\boldsymbol u_n^{k+1,l}-\boldsymbol b_n^k),
+$$
+
+$$
+A^{k+1,l}
+=\frac1{N_t}\sum_{n=1}^{N_t}
+\nabla f(\boldsymbol u_n^{k+1,l}-\boldsymbol b_n^k),
+\qquad
+\nabla F\approx I_t\otimes A^{k+1,l}.
+$$
+
+> [!warning] 原文公式核对：平均 Jacobian 的求和指标
+> 期刊版把这里印成
+> $J^{-1}\sum_{j=1}^J\nabla f(\boldsymbol u_n-\boldsymbol b_n)$：
+> 被加项不含 $j$，且 4.5.1 的全时间系统有 $N_t$ 个块而非 $J$ 个。
+> 上式按完整块对角 Jacobian 的定义修正。
+
+预条件矩阵与 (4.16) 同构，增量仍由 (4.17) 并行求解。NKA 可以
+替换平均 Jacobian，但此处不再展开。
 
 ![原论文 Figure 4.13：两种黏性 Burgers 方程上的两类 CGC](assets/papers/time-parallelization/source-figures/figure-4-13.svg)
 
@@ -231,7 +254,10 @@ $$
 \quad \boldsymbol v_0=\boldsymbol u_n. \tag{4.21}
 $$
 
-$\theta=1$ 为后向 Euler，$\theta=1/2$ 为梯形规则。特殊粗传播 $\mathcal F_\alpha^*$ 使用同一差分式，改用
+$\theta=1$ 为后向 Euler，$\theta=1/2$ 为梯形规则。这里以线性
+$\theta$ 方法展示结构；$s$ 级 Runge–Kutta 的推广见 Gander 与
+Wu（2020）的附录。特殊粗传播 $\mathcal F_\alpha^*$ 使用同一差分式，
+改用
 
 $$
 \boldsymbol v_0=\alpha\boldsymbol v_J+(1-\alpha)\boldsymbol u_n. \tag{4.22}
@@ -283,7 +309,30 @@ $$
 \end{bmatrix},
 $$
 
-$\overline{\nabla f}$ 是 $J$ 个 Jacobian 块的平均。$C_\alpha$ 与 $\widetilde C_{\alpha,\theta}$ 同时对角化，内层空间系统可并行。
+精确 Jacobian 具有
+
+$$
+\nabla K(\boldsymbol V^l)
+=C_\alpha\otimes I_x
+-\Delta t(\widetilde C_{\alpha,\theta}\otimes I_x)
+\nabla F(\boldsymbol V^l),
+$$
+
+而可分离近似使用特殊平均
+
+$$
+\overline{\nabla f}(\boldsymbol V^l)
+=\frac1J\left[
+\sum_{j=1}^{J-1}\nabla f(\boldsymbol v_j^l)
++\nabla f\!\left(
+\alpha\boldsymbol v_J^l+(1-\alpha)\boldsymbol u_n
+\right)
+\right].
+$$
+
+最后一块取 head–tail 状态的 Jacobian，并不是
+$\nabla f(\boldsymbol v_J^l)$。$C_\alpha$ 与
+$\widetilde C_{\alpha,\theta}$ 同时对角化，内层空间系统因而可以并行。
 
 外层 Parareal 仍写成
 
@@ -300,7 +349,7 @@ $f(\boldsymbol u)=A\boldsymbol u$ 时，
 
 $$
 (C_\alpha\otimes I_x
--\widetilde C_{\theta,\alpha}\otimes\Delta tA)\boldsymbol V
+-\widetilde C_{\alpha,\theta}\otimes\Delta tA)\boldsymbol V
 =\boldsymbol b(\boldsymbol u_n), \tag{4.27}
 $$
 
@@ -309,7 +358,12 @@ $$
 =([(I_x+\Delta t(1-\theta)A)(1-\alpha)\boldsymbol u_n]^\top,0,\ldots,0)^\top.
 $$
 
-粗传播取 $\mathcal F_\alpha^*=(H_J\otimes I_x)\boldsymbol V=\boldsymbol v_J$。它等价于
+这里统一使用 $\widetilde C_{\alpha,\theta}$；正式版在
+$\widetilde C_{\theta,\alpha}$ 与 $\widetilde C_{\alpha,\theta}$
+之间交替，但二者指同一个矩阵。令
+$H_J=(0,\ldots,0,1)\in\mathbb R^{1\times J}$，粗传播取
+$\mathcal F_\alpha^*=(H_J\otimes I_x)\boldsymbol V=\boldsymbol v_J$。
+它等价于
 
 $$
 \left\{
@@ -325,7 +379,12 @@ $\alpha=0$ 时粗传播等于顺序细传播，外层一轮收敛，同时完全
 
 ### Theorem 4.8：抛物谱与双曲谱
 
-Theorem 4.8 引自 Gander 与 Wu（2020）。对线性初值问题 $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$，$A\in\mathbb C^{N_x\times N_x}$，若 $\mathcal F$ 与 $\mathcal F_\alpha^*$ 都使用稳定单步 Runge–Kutta 方法，令
+Theorem 4.8 引自 Gander 与 Wu（2020）。对线性初值问题
+$\boldsymbol u'=A\boldsymbol u+\boldsymbol g$、
+$\boldsymbol u(0)=\boldsymbol u_0$，
+$A\in\mathbb C^{N_x\times N_x}$，若 $\mathcal F$ 与
+$\mathcal F_\alpha^*$ 都使用稳定单步 Runge–Kutta 方法，并令
+$\{\boldsymbol u_n^k\}$ 为 (4.26) 的第 $k$ 轮迭代，
 
 $$
 e^k=\max_{1\le n\le N_t}\|\boldsymbol u_n-\boldsymbol u_n^k\|_\infty,
