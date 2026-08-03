@@ -211,7 +211,7 @@ $$
 
 第 $k$ 轮的全局近似采用半开区间约定
 $\boldsymbol u^k(t)=\boldsymbol u_n^k(t)$，
-$t\in[T_{n-1},T_n)$；最终端点单独取最后一段的末值。
+$t\in[T_{n-1},T_n)$；最终端点单独由粗节点值定义。
 
 ### Theorem 3.4：有限步收敛与 Parareal 等价
 
@@ -260,13 +260,13 @@ $$
 
 $$
 \boldsymbol u^k(T_{N_t})
-=\boldsymbol u_{N_t}^k(T_{N_t})
-=\boldsymbol U_{N_t}^k,
+:=\boldsymbol U_{N_t}^k,
 \qquad \boldsymbol U_0^k=\boldsymbol u_0.
 $$
 
-整段局部轨迹并不与 Parareal 轨迹逐点相同。第四章再详细讨论标准
-Parareal。
+一般而言，$\boldsymbol u_{N_t}^k(T_{N_t})$ 是最后一次局部细传播的
+末值，并不等于校正后的 $\boldsymbol U_{N_t}^k$。整段局部轨迹也不与
+Parareal 轨迹逐点相同。第四章再详细讨论标准 Parareal。
 
 ### Figure 3.8：Burgers 方程上的拆分失效
 

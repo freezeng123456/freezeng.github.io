@@ -217,7 +217,8 @@ $$
 
 Use the half-open convention
 $\boldsymbol u^k(t)=\boldsymbol u_n^k(t)$ on
-$[T_{n-1},T_n)$, with the final endpoint taken from the last interval.
+$[T_{n-1},T_n)$, with the final endpoint defined separately by the
+coarse-node value.
 
 ### Theorem 3.4: finite-step convergence and Parareal equivalence
 
@@ -267,13 +268,15 @@ At the final endpoint,
 
 $$
 \boldsymbol u^k(T_{N_t})
-=\boldsymbol u_{N_t}^k(T_{N_t})
-=\boldsymbol U_{N_t}^k,
+:=\boldsymbol U_{N_t}^k,
 \qquad \boldsymbol U_0^k=\boldsymbol u_0.
 $$
 
-The local trajectories do not coincide pointwise with Parareal
-trajectories. Chapter 4 discusses standard Parareal in detail.
+In general, $\boldsymbol u_{N_t}^k(T_{N_t})$ is the endpoint of the
+last local fine propagation and need not equal the corrected
+$\boldsymbol U_{N_t}^k$. The local trajectories likewise do not
+coincide pointwise with Parareal trajectories. Chapter 4 discusses
+standard Parareal in detail.
 
 ### Figure 3.8: splitting failure on Burgers' equation
 

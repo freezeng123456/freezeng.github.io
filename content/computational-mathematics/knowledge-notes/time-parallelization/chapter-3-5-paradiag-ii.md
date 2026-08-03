@@ -35,9 +35,8 @@ $$
 K=B_1\otimes I_x-B_2\otimes(\Delta t A),
 $$
 
-其中 $B_1,B_2$ 是由 $\{a_l\}$ 和 $\{b_l\}$ 生成的下三角带状 Toeplitz 矩阵。把两者换成 Strang 型循环矩阵 $C_1,C_2$，得到
-
-$$
+其中 $B_1,B_2$ 是由 $\{a_l\}$ 和 $\{b_l\}$ 生成的下三角带状
+Toeplitz 矩阵。把两者换成 Strang 型循环矩阵 $C_1,C_2$。
 
 更具体地，对系数 $c_0,\ldots,c_m$（分别取 $a_l$ 或 $b_l$），
 对应循环矩阵满足
@@ -54,6 +53,10 @@ $$
 $(c_0,c_1,\ldots,c_m,0,\ldots,0)^\top$，第一行把
 $c_m,\ldots,c_1$ 绕回右上角；其余行循环平移。这条 wrap-around
 规则就是从 $B_l$ 构造 $C_l$ 的可实施定义。
+
+由此得到预条件器
+
+$$
 P=C_1\otimes I_x-C_2\otimes(\Delta t A).
 $$
 
