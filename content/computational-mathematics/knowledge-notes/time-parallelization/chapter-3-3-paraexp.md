@@ -123,13 +123,13 @@ $$
 $\boldsymbol u=\boldsymbol w+\boldsymbol v$，则保持原方程所需的精确拆分是
 
 $$
-\boldsymbol w'(t)=A\boldsymbol w(t),
-\qquad
-\boldsymbol v'(t)=A\boldsymbol v(t)
+\begin{aligned}
+\boldsymbol w'(t)&=A\boldsymbol w(t),
+&\boldsymbol w(0)&=\boldsymbol u_0,\\
+\boldsymbol v'(t)&=A\boldsymbol v(t)
 +B\!\left(\boldsymbol v(t)+\boldsymbol w(t)\right)+\boldsymbol g(t),
-\qquad
-\boldsymbol w(0)=\boldsymbol u_0,\quad
-\boldsymbol v(0)=\boldsymbol 0,
+&\boldsymbol v(0)&=\boldsymbol 0.
+\end{aligned}
 $$
 
 因为 $(\boldsymbol w+\boldsymbol v)'=
@@ -152,19 +152,19 @@ $T_{n-1}$ 的初值依赖同一时刻的 $\boldsymbol v(T_{n-1})$。
 $$
 \begin{aligned}
 (\boldsymbol w_n^k)'&=A\boldsymbol w_n^k,
-&&t\in[T_{n-1},T],\\
-\boldsymbol w_1^k(T_0)&=\boldsymbol u_0,
-&
+&t&\in[T_{n-1},T],\\
+\boldsymbol w_1^k(T_0)&=\boldsymbol u_0,\\
 \boldsymbol w_n^k(T_{n-1})
 &=\boldsymbol v_{n-1}^{k-1}(T_{n-1}),
-&&n=2,\ldots,N_t,\\
-(\boldsymbol v_n^k)'&=A\boldsymbol v_n^k+
-B\!\left(\boldsymbol v_n^k+\sum_{j=1}^n\boldsymbol w_j^k\right)
-+\boldsymbol g,
-&&t\in[T_{n-1},T_n],\\
+&n&=2,\ldots,N_t,\\
+(\boldsymbol v_n^k)'&=A\boldsymbol v_n^k\\
+&\quad+B\!\left(
+\boldsymbol v_n^k+\sum_{j=1}^n\boldsymbol w_j^k
+\right)+\boldsymbol g,
+&t&\in[T_{n-1},T_n],\\
 \boldsymbol v_n^k(T_{n-1})&=\boldsymbol 0,\\
 \boldsymbol u_n^k&=\boldsymbol v_n^k+\sum_{j=1}^n\boldsymbol w_j^k,
-&&n=1,\ldots,N_t.
+&n&=1,\ldots,N_t.
 \end{aligned}
 $$
 

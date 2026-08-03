@@ -316,8 +316,12 @@ $$
 (1-\theta)J_1&\theta J_2\\
 &\ddots&\ddots\\
 &&(1-\theta)J_{J-1}&\theta J_J
-\end{bmatrix},
-\qquad
+\end{bmatrix}.
+$$
+
+Therefore
+
+$$
 \nabla K=C_\alpha\otimes I_x-\Delta t\,\mathcal J_F.
 $$
 

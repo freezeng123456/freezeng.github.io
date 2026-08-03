@@ -215,10 +215,12 @@ $$
 T_{c\to f}=
 \begin{bmatrix}1.2674&-0.2674\\0.5325&0.4674\\0&1\end{bmatrix}
 \otimes I_x,
-\qquad
+$$
+
+$$
 T_{f\to c}=
 \begin{bmatrix}0.5018&0.6833&-0.1851\\0&0&1\end{bmatrix}
-\otimes I_x;
+\otimes I_x.
 $$
 
 这些矩阵完全由节点和 Lagrange 插值确定。
