@@ -1893,6 +1893,247 @@ function parabolicMultilevelMap(lang) {
   })
 }
 
+function longSequenceDesignSpace(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "长序列推荐",
+          title: "五条路线把成本约束放在不同位置",
+          subtitle: "从可复用的用户状态，逐步走向候选相关的事件级交互",
+          routes: [
+            ["压缩", "L → M 个兴趣", "预算键：M", "长期状态可复用"],
+            ["层次化", "局部块 → 全局 token", "预算键：块长 B", "保留时间结构"],
+            ["线性模型", "序列 → 递归状态", "预算键：状态维度 d", "长度近似线性扩展"],
+            ["检索", "L → Top-Kᵣ 行为", "预算键：Kᵣ", "候选相关性优先"],
+            ["稀疏交互", "每点保留 Kₛ 条边", "预算键：Kₛ / W", "保留更多原始细节"],
+          ],
+          left: "可复用的用户状态",
+          right: "候选相关的精细交互",
+          dense: "稠密端到端：信息路径最完整，计算与显存成本最高",
+        }
+      : {
+          kicker: "LONG-SEQUENCE REC",
+          title: "Five Routes Place the Cost Constraint at Different Points",
+          subtitle:
+            "The design spectrum moves from reusable user state to candidate-specific event interaction",
+          routes: [
+            ["Compression", "L → M interests", "budget key: M", "reusable long-term state"],
+            [
+              "Hierarchy",
+              "local blocks → global tokens",
+              "budget key: block B",
+              "preserves temporal structure",
+            ],
+            [
+              "Linear model",
+              "sequence → recurrent state",
+              "budget key: state width d",
+              "near-linear length scaling",
+            ],
+            ["Retrieval", "L → Top-Kᵣ events", "budget key: Kᵣ", "prioritizes target relevance"],
+            [
+              "Sparse interaction",
+              "Kₛ edges per event",
+              "budget key: Kₛ / W",
+              "retains more raw detail",
+            ],
+          ],
+          left: "reusable user state",
+          right: "candidate-specific interaction",
+          dense:
+            "Dense end to end: the most complete paths, with the highest compute and memory cost",
+        }
+  const xs = [40, 310, 580, 850, 1120]
+  const colors = [C.teal, C.green, C.indigo, C.blue, C.amber]
+  const fills = [C.tealSoft, C.greenSoft, C.indigoSoft, C.blueSoft, C.amberSoft]
+  const cards = t.routes
+    .map(
+      (route, i) => `${section(xs[i], 215, 240, 300, route[0], colors[i], { fill: C.white })}
+      ${pill(xs[i] + 18, 287, 204, route[1], colors[i], fills[i], { h: 38, size: 13 })}
+      ${textBlock(xs[i] + 120, 376, [route[2]], { size: 15, weight: 750, fill: colors[i] })}
+      ${textBlock(xs[i] + 120, 428, [route[3]], { size: 14, weight: 550, fill: C.muted })}
+      <circle cx="${xs[i] + 120}" cy="478" r="7" fill="${colors[i]}" opacity=".8"/>`,
+    )
+    .join("")
+  const body = `
+    ${cards}
+    ${pathArrow("M 78 575 C 390 612, 1010 612, 1322 575", { color: C.teal, width: 3 })}
+    ${textBlock(58, 646, [t.left], { size: 14, weight: 700, fill: C.teal, anchor: "start" })}
+    ${textBlock(1342, 646, [t.right], { size: 14, weight: 700, fill: C.amber, anchor: "end" })}
+    ${pill(295, 670, 810, t.dense, C.rose, C.roseSoft, { h: 36, size: 13 })}
+  `
+  return frame({
+    width: 1400,
+    height: 750,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function longSequenceHybridMemory(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "混合架构",
+          title: "长期压缩记忆与候选精细路径并行工作",
+          subtitle: "两条路径使用不同容量与刷新频率，在融合层汇合",
+          history: "完整行为历史",
+          historyBody: ["长度 L · 长期偏好"],
+          compressor: "兴趣压缩器",
+          compressorBody: ["学习查询 · 异步更新"],
+          interests: "M 个兴趣 token",
+          interestsBody: ["跨候选复用 · 固定容量"],
+          candidate: "当前候选 q",
+          candidateBody: ["ID · 上下文 · 多模态"],
+          sparse: "语义检索 + 局部窗口",
+          sparseBody: ["Top-Kᵣ 行为 / 每点 Kₛ 条边"],
+          events: "候选相关行为子图",
+          eventsBody: ["最新事件 · 保留原始细节"],
+          fusion: "目标感知融合",
+          fusionBody: ["长期状态 + 精细行为"],
+          output: "排序表示 / 分数",
+          memory: "长期记忆路径",
+          detail: "候选精细路径",
+          fallback: "语义索引异常时：近期窗口 + 缓存兴趣",
+        }
+      : {
+          kicker: "HYBRID ARCHITECTURE",
+          title: "Compressed Long-Term Memory and Candidate Detail Run in Parallel",
+          subtitle:
+            "The paths use different capacities and refresh rates, then meet at target-aware fusion",
+          history: "Full behavior history",
+          historyBody: ["length L · long-term signals"],
+          compressor: "Interest compressor",
+          compressorBody: ["learned queries · async refresh"],
+          interests: "M interest tokens",
+          interestsBody: ["reusable · fixed capacity"],
+          candidate: "Current candidate q",
+          candidateBody: ["ID · context · multimodal"],
+          sparse: "Semantic sparse selection",
+          sparseBody: ["Top-Kᵣ events / Kₛ edges"],
+          events: "Candidate-relevant subgraph",
+          eventsBody: ["latest events · raw detail"],
+          fusion: "Target-aware fusion",
+          fusionBody: ["long-term state + event detail"],
+          output: "Ranking state / score",
+          memory: "long-term memory path",
+          detail: "candidate-detail path",
+          fallback: "Index failure fallback: recent window + cached interests",
+        }
+  const body = `
+    ${section(35, 195, 1030, 205, t.memory, C.teal, { fill: "#fbfffe" })}
+    ${card(65, 260, 230, 105, { title: t.history, body: t.historyBody, accent: C.teal, fill: C.tealSoft, titleSize: 16, bodySize: 12 })}
+    ${card(380, 260, 250, 105, { title: t.compressor, body: t.compressorBody, accent: C.green, fill: C.greenSoft, titleSize: 16, bodySize: 12 })}
+    ${card(720, 260, 260, 105, { title: t.interests, body: t.interestsBody, accent: C.indigo, fill: C.indigoSoft, titleSize: 16, bodySize: 12 })}
+    ${lineArrow(295, 312, 368, 312, { color: C.teal, width: 2.8 })}
+    ${lineArrow(630, 312, 708, 312, { color: C.green, width: 2.8 })}
+
+    ${section(35, 435, 1030, 205, t.detail, C.blue, { fill: "#fbfdff" })}
+    ${card(65, 500, 230, 105, { title: t.candidate, body: t.candidateBody, accent: C.blue, fill: C.blueSoft, titleSize: 16, bodySize: 12 })}
+    ${card(380, 500, 250, 105, { title: t.sparse, body: t.sparseBody, accent: C.amber, fill: C.amberSoft, titleSize: 15, bodySize: 12 })}
+    ${card(720, 500, 260, 105, { title: t.events, body: t.eventsBody, accent: C.rose, fill: C.roseSoft, titleSize: 15, bodySize: 12 })}
+    ${lineArrow(295, 552, 368, 552, { color: C.blue, width: 2.8 })}
+    ${lineArrow(630, 552, 708, 552, { color: C.amber, width: 2.8 })}
+
+    ${card(1120, 310, 225, 190, { title: t.fusion, body: t.fusionBody, accent: C.indigo, fill: C.white, align: "center", titleSize: 17, bodySize: 12 })}
+    ${pathArrow("M 980 312 C 1050 312, 1050 362, 1108 385", { color: C.indigo, width: 3 })}
+    ${pathArrow("M 980 552 C 1050 552, 1050 470, 1108 435", { color: C.rose, width: 3 })}
+    ${pathArrow("M 295 552 C 790 720, 1110 670, 1228 512", { color: C.blue, width: 2.1, dashed: true, opacity: 0.75 })}
+    ${pill(1088, 555, 265, t.output, C.green, C.greenSoft, { h: 38, size: 14 })}
+    ${lineArrow(1232, 500, 1232, 543, { color: C.green, width: 2.5 })}
+    ${pill(480, 677, 440, t.fallback, C.amber, C.amberSoft, { h: 36, size: 13 })}
+  `
+  return frame({
+    width: 1400,
+    height: 750,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function longSequenceDecisionFramework(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "技术选型",
+          title: "先识别主要信号，再检查工程门槛",
+          subtitle: "每个场景给出起点；最终方案仍需在等成本条件下做消融",
+          question: "哪一种信号决定收益？",
+          cases: [
+            ["目标相关性", "广告 / 强关联", "检索", "Top-Kᵣ"],
+            ["极长 + 多模态", "内容流 / 兴趣漂移", "稀疏 + 压缩", "Kₛ + M"],
+            ["稳定长期偏好", "电商 / 工具", "压缩", "M"],
+            ["局部时间连续", "会话 / 周期行为", "层次化", "B + W"],
+            ["显存或长度约束", "研究基线 / 离线", "线性模型", "d"],
+          ],
+          gate: "工程门槛",
+          checks: [
+            ["索引与表示", "版本、刷新、陈旧率"],
+            ["运行时", "真稀疏 kernel、低精度、批处理"],
+            ["可靠性", "近期窗口 / 缓存兴趣回退"],
+            ["证据", "相同硬件、预算、输入分布"],
+          ],
+        }
+      : {
+          kicker: "METHOD SELECTION",
+          title: "Identify the Dominant Signal, Then Check Engineering Gates",
+          subtitle:
+            "Each setting suggests a starting point; the final choice still needs equal-cost ablation",
+          question: "Which signal drives value?",
+          cases: [
+            ["Target relevance", "ads / tight relation", "Retrieval", "Top-Kᵣ"],
+            ["Extreme + multimodal", "feeds / rapid drift", "Sparse + compression", "Kₛ + M"],
+            ["Stable long-term taste", "commerce / utility", "Compression", "M"],
+            ["Local temporal continuity", "sessions / periodicity", "Hierarchy", "B + W"],
+            ["Memory or length limit", "research baseline / offline", "Linear model", "d"],
+          ],
+          gate: "engineering gates",
+          checks: [
+            ["Index + representation", "versions, refresh, staleness"],
+            ["Runtime", "true sparse kernels, low precision, batching"],
+            ["Reliability", "recent-window / cached-interest fallback"],
+            ["Evidence", "same hardware, budget, and input distribution"],
+          ],
+        }
+  const xs = [30, 305, 580, 855, 1130]
+  const colors = [C.blue, C.amber, C.teal, C.green, C.indigo]
+  const fills = [C.blueSoft, C.amberSoft, C.tealSoft, C.greenSoft, C.indigoSoft]
+  const cases = t.cases
+    .map(
+      (entry, i) => `${section(xs[i], 250, 240, 250, entry[0], colors[i], { fill: C.white })}
+      ${textBlock(xs[i] + 120, 332, [entry[1]], { size: 14, weight: 550, fill: C.muted })}
+      ${pill(xs[i] + 20, 372, 200, entry[2], colors[i], fills[i], { h: 44, size: 15 })}
+      ${textBlock(xs[i] + 120, 462, [entry[3]], { size: 17, weight: 800, fill: colors[i] })}`,
+    )
+    .join("")
+  const checkXs = [65, 395, 725, 1055]
+  const checks = t.checks
+    .map(
+      (entry, i) =>
+        `${card(checkXs[i], 585, 280, 90, { title: entry[0], body: [entry[1]], accent: [C.teal, C.blue, C.rose, C.green][i], fill: C.white, titleSize: 15, bodySize: 12 })}`,
+    )
+    .join("")
+  const body = `
+    ${pill(505, 185, 390, t.question, C.indigo, C.indigoSoft, { h: 40, size: 16 })}
+    ${cases}
+    ${textBlock(54, 548, [t.gate.toUpperCase()], { size: 13, weight: 800, fill: C.muted, anchor: "start" })}
+    <path d="M 55 560 L 1345 560" stroke="${C.line}" stroke-width="1.5" stroke-dasharray="5 8"/>
+    ${checks}
+  `
+  return frame({
+    width: 1400,
+    height: 720,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
 const diagrams = [
   ["ml-inference", "serving-loop", servingLoop],
   ["ml-inference", "paged-kv-cache", pagedKv],
@@ -1916,6 +2157,9 @@ const diagrams = [
   ["pint", "paraexp-decomposition", paraExpDecomposition],
   ["pint", "paradiag-three-stage", paraDiagStages],
   ["pint", "parabolic-multilevel-map", parabolicMultilevelMap],
+  ["long-sequence-recommendation", "design-space", longSequenceDesignSpace],
+  ["long-sequence-recommendation", "hybrid-memory", longSequenceHybridMemory],
+  ["long-sequence-recommendation", "decision-framework", longSequenceDecisionFramework],
 ]
 
 let generated = 0
