@@ -13,13 +13,14 @@ tags:
 
 ## Section 5: Conclusions
 
-The paper explains the hyperbolic–parabolic distinction through temporal memory. A parabolic equation forgets a large amount of fine information during evolution and therefore has a temporally local solution. Many PinT methods can exploit this property, including Parareal, STMG, ParaExp, ParaDiag, and domain-decomposition waveform relaxation.
+The paper separates the two classes by whether the solution forgets information. A parabolic equation forgets a large amount of information in time and therefore has a solution that is local in time. Many PinT methods can exploit this property, including Parareal, STMG, ParaExp, ParaDiag, and domain-decomposition waveform relaxation.
 
-Hyperbolic equations preserve fine structures, phases, and propagation paths over long horizons, which narrows the effective method set. The paper highlights ParaExp, ParaDiag, and SWR, with particular emphasis on the relationship between SWR and tent pitching. These methods organize concurrency through characteristic propagation, matrix exponentials, or global temporal algebra and rely less on a dissipative coarse model.
+Hyperbolic equations retain very fine solution features over very long times, which narrows the effective method set. The paper highlights ParaExp, ParaDiag, and SWR, with particular emphasis on the relationship between SWR and tent pitching.
 
-For further study, the authors recommend the monograph by Gander and Lunet (2024), which provides historical context, self-contained convergence analyses, and short executable MATLAB programs for individual PinT methods. Code used for Figures 2–4 is public in [wushulin/ActaPinT](https://github.com/wushulin/ActaPinT).
+For further study, the authors recommend the monograph by Gander and Lunet (2024, SIAM), which provides historical context, self-contained convergence analyses, and short executable MATLAB programs for individual PinT methods. The code used to produce the results in the paper is public in [wushulin/ActaPinT](https://github.com/wushulin/ActaPinT).
 
-This conclusion suggests a useful first filter: determine how quickly the problem forgets high-frequency information, then select the parallel structure. An algorithm's name or historical category cannot replace this dynamical assessment.
+> [!note] Site supplement: from the conclusion to method selection
+> The following first filter is this site's extension of the conclusion above, not the paper's wording: determine how quickly the problem forgets high-frequency information, then select the parallel structure; an algorithm's name or historical category cannot replace this dynamical assessment. The phrase "temporal memory" used later on this page is likewise this site's coinage. The paper's own wording is that parabolic problems "tend to forget a lot of information in time and thus have solutions that are local in time" and that hyperbolic problems "retain very fine solution features over very long times".
 
 ## Site synthesis: solving one all-at-once system
 

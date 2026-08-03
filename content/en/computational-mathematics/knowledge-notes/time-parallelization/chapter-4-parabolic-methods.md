@@ -18,8 +18,8 @@ This page retains the chapter-level synthesis and site reproductions. The equati
 | Paper section      | Source pages | Close-reading page                                                                                                                      | Coverage                                                 |
 | ------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | Section 4, 4.1–4.2 | pp. 443–452  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-1-parareal\|Historical development and Parareal]]         | (4.1)–(4.9), Theorems 4.1–4.4, Figures 4.1–4.5           |
-| 4.3–4.4            | pp. 452–460  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-2-pfasst-mgrit\|PFASST and MGRiT]]                        | (4.10)–(4.13), Theorems 4.5–4.6, Figures 4.6–4.11        |
-| 4.5                | pp. 460–472  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-3-diagonalized-parareal\|Diagonalization-based Parareal]] | (4.14)–(4.29), Theorems 4.7–4.8, Figures 4.12–4.17       |
+| 4.3–4.4            | pp. 452–461  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-2-pfasst-mgrit\|PFASST and MGRiT]]                        | (4.10)–(4.13), Theorems 4.5–4.6, Figures 4.6–4.11        |
+| 4.5                | pp. 460–471  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-3-diagonalized-parareal\|Diagonalization-based Parareal]] | (4.14)–(4.29), Theorems 4.7–4.8, Figures 4.12–4.17       |
 | 4.6                | pp. 472–481  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-4-stmg\|Space–time multigrid]]                            | (4.30)–(4.44), Theorem 4.9, Figures 4.18–4.22, Table 4.1 |
 
 ## Section 4 introduction and 4.1 Historical development
@@ -71,7 +71,7 @@ Under Lipschitz stability of the coarse propagator and a local error of order $p
 
 ### The time integrator sets the limiting factor
 
-Theorem 4.4 analyzes parabolic modes on the negative real axis. With an L-stable fine method, backward Euler coarse propagation, and enough fine steps per interval, the worst long-time factor is about $0.3$. If the fine method is only A-stable, high-frequency modes are insufficiently damped and the required $J$ grows with the most dangerous frequency. Figure 4.3 compares backward Euler, trapezoidal, and Radau IIA combinations. It demonstrates that the fine method and fine/coarse step ratio materially change the convergence region even after the coarse method has been fixed. A suitable Radau IIA combination can reduce the theoretical worst factor to roughly $0.068$.
+Theorem 4.4 analyzes parabolic modes on the negative real axis. With an L-stable fine method, backward Euler coarse propagation, and enough fine steps per interval, the worst long-time factor is about $0.3$. If the fine method is only A-stable, high-frequency modes are insufficiently damped and the required $J$ grows with the most dangerous frequency. Figure 4.3 compares the trapezoidal rule with two SDIRK fine propagators. It demonstrates that the fine method and fine/coarse step ratio materially change the convergence region even after the coarse method has been fixed. Switching to Radau IIA as the **coarse** propagator at the continuous level (with $\mathcal F$ the exact propagator) reduces the theoretical worst factor to roughly $0.068$.
 
 ### From the heat equation toward the hyperbolic limit
 
@@ -151,7 +151,7 @@ $$
 \alpha\le \frac{\rho}{1+\rho}
 $$
 
-retains the same convergence scale. In Figure 4.12, the heat equation has $\rho\approx0.22$ and threshold about $0.18$; ADE at $\nu=0.1$ has $\rho\approx0.39$ and threshold about $0.28$, in agreement with the prediction.
+retains the same convergence scale. The result is proved for negative real spectra; for complex spectra there is only numerical evidence. In Figure 4.12, the heat equation has $\rho\approx0.22$ and threshold about $0.18$; ADE at $\nu=0.1$ (complex spectrum) has $\rho\approx0.39$ and threshold about $0.28$, in agreement with the prediction.
 
 The nonlinear version applies quasi-Newton to the all-at-once coarse equation and builds a block $\alpha$-circulant system from an average Jacobian. The Burgers results in Figure 4.13 exhibit the same threshold behavior.
 
@@ -337,7 +337,7 @@ $$
 | Section 4.2, pp. 444–452        | 4.2       | Parareal update, Theorems 4.1–4.4, Figures 4.1–4.5, nonlinear behavior and hyperbolic degradation               |
 | Section 4.3, pp. 452–455        | 4.3       | collocation equations, SDC, FAS transfer, PFASST iteration, Figure 4.6                                          |
 | Section 4.4, pp. 455–460        | 4.4       | FCF structure, Theorems 4.5–4.6, Figures 4.7–4.11, cost-fair comparison, Burgers                                |
-| Section 4.5, pp. 460–472        | 4.5       | two diagonalization locations, Theorems 4.7–4.8, Figures 4.12–4.17, nonlinearity and consistent MGRiT condition |
+| Section 4.5, pp. 460–471        | 4.5       | two diagonalization locations, Theorems 4.7–4.8, Figures 4.12–4.17, nonlinearity and consistent MGRiT condition |
 | Section 4.6, pp. 472–481        | 4.6       | all-at-once STMG, block Jacobi, Theorem 4.9, Figures 4.18–4.22, Table 4.1, nonlinear FAS                        |
 
 ## Summary

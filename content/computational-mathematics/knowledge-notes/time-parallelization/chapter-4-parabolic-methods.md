@@ -18,8 +18,8 @@ tags:
 | 论文小节           | 原文页码    | 精读页                                                                                                                      | 覆盖范围                                                 |
 | ------------------ | ----------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | Section 4、4.1–4.2 | pp. 443–452 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-1-parareal\|历史发展与 Parareal]]                | (4.1)–(4.9), Theorems 4.1–4.4, Figures 4.1–4.5           |
-| 4.3–4.4            | pp. 452–460 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-2-pfasst-mgrit\|PFASST 与 MGRiT]]                | (4.10)–(4.13), Theorems 4.5–4.6, Figures 4.6–4.11        |
-| 4.5                | pp. 460–472 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-3-diagonalized-parareal\|基于对角化的 Parareal]] | (4.14)–(4.29), Theorems 4.7–4.8, Figures 4.12–4.17       |
+| 4.3–4.4            | pp. 452–461 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-2-pfasst-mgrit\|PFASST 与 MGRiT]]                | (4.10)–(4.13), Theorems 4.5–4.6, Figures 4.6–4.11        |
+| 4.5                | pp. 460–471 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-3-diagonalized-parareal\|基于对角化的 Parareal]] | (4.14)–(4.29), Theorems 4.7–4.8, Figures 4.12–4.17       |
 | 4.6                | pp. 472–481 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-4-stmg\|时空多重网格]]                           | (4.30)–(4.44), Theorem 4.9, Figures 4.18–4.22, Table 4.1 |
 
 ## Section 4 导论与 4.1 历史发展
@@ -71,7 +71,7 @@ Theorem 4.3 在粗传播具有 Lipschitz 稳定性和 $p$ 阶局部误差时，�
 
 ### 时间积分器怎样决定极限因子
 
-Theorem 4.4 研究负实轴上的抛物模态。若细传播使用 L-稳定方法，粗传播使用后向 Euler，并且每个大区间包含足够多的细步，最坏长时间因子约为 $0.3$。若细方法仅 A-稳定，高频模态不会被充分衰减，所需 $J$ 会随最危险频率增长。Figure 4.3 对比后向 Euler、梯形规则和 Radau IIA 等组合，说明选定粗方法以后，细方法与粗细步数比仍然会显著改变收敛区域。合适的 Radau IIA 组合可把理论最坏因子降到约 $0.068$。
+Theorem 4.4 研究负实轴上的抛物模态。若细传播使用 L-稳定方法，粗传播使用后向 Euler，并且每个大区间包含足够多的细步，最坏长时间因子约为 $0.3$。若细方法仅 A-稳定，高频模态不会被充分衰减，所需 $J$ 会随最危险频率增长。Figure 4.3 对比梯形规则与两种 SDIRK 细传播，说明选定粗方法以后，细方法与粗细步数比仍然会显著改变收敛区域。若在连续层面（$\mathcal F$ 取精确传播子）改用 Radau IIA 作为**粗**传播子，理论最坏因子可降到约 $0.068$。
 
 ### 从热方程走向双曲极限
 
@@ -151,7 +151,7 @@ $$
 \alpha\le \frac{\rho}{1+\rho}
 $$
 
-可保持同量级收敛。Figure 4.12 对热方程测得 $\rho\approx0.22$、阈值约 $0.18$；对 $\nu=0.1$ 的 ADE 测得 $\rho\approx0.39$、阈值约 $0.28$，与理论一致。
+可保持同量级收敛。该结论是对负实谱证明的；复谱只有数值证据。Figure 4.12 对热方程测得 $\rho\approx0.22$、阈值约 $0.18$；对 $\nu=0.1$ 的 ADE（复谱）测得 $\rho\approx0.39$、阈值约 $0.28$，与理论预测吻合。
 
 非线性版本把全时间粗方程做准 Newton 线性化，再用平均 Jacobian 构造块 $\alpha$-循环系统。Figure 4.13 的 Burgers 实验显示了相同的 $\alpha$ 阈值现象。
 
@@ -337,7 +337,7 @@ $$
 | Section 4.2，pp. 444–452       | 4.2      | Parareal 更新、Theorems 4.1–4.4、Figures 4.1–4.5、非线性与双曲退化                 |
 | Section 4.3，pp. 452–455       | 4.3      | 配置方程、SDC、FAS 传递、PFASST 迭代与 Figure 4.6                                  |
 | Section 4.4，pp. 455–460       | 4.4      | FCF 结构、Theorems 4.5–4.6、Figures 4.7–4.11、等成本比较与 Burgers                 |
-| Section 4.5，pp. 460–472       | 4.5      | 两种对角化位置、Theorems 4.7–4.8、Figures 4.12–4.17、非线性和 MGRiT 一致性条件     |
+| Section 4.5，pp. 460–471       | 4.5      | 两种对角化位置、Theorems 4.7–4.8、Figures 4.12–4.17、非线性和 MGRiT 一致性条件     |
 | Section 4.6，pp. 472–481       | 4.6      | all-at-once STMG、块 Jacobi、Theorem 4.9、Figures 4.18–4.22、Table 4.1、非线性 FAS |
 
 ## 小结

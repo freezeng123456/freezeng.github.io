@@ -18,10 +18,10 @@ tags:
 | 论文小节           | 原文页码    | 精读页                                                                                                                      | 覆盖范围                                                          |
 | ------------------ | ----------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | Section 3、3.1–3.2 | pp. 396–405 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-1-history-and-swr\|历史发展与 Schwarz 波形松弛]] | (3.1)–(3.4), Theorems 3.1–3.2, Figures 3.1–3.3                    |
-| 3.3                | pp. 405–412 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-2-idc\|并行积分延迟校正]]                        | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
+| 3.3                | pp. 405–411 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-2-idc\|并行积分延迟校正]]                        | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
 | 3.4                | pp. 412–415 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-3-paraexp\|ParaExp]]                             | (3.13)–(3.21), Theorem 3.4, Figures 3.7–3.8                       |
-| 3.5、3.5.1         | pp. 415–431 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i\|直接 ParaDiag]]                    | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
-| 3.5.2              | pp. 431–443 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-5-paradiag-ii\|迭代 ParaDiag]]                   | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
+| 3.5、3.5.1         | pp. 415–430 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i\|直接 ParaDiag]]                    | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
+| 3.5.2              | pp. 431–442 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-5-paradiag-ii\|迭代 ParaDiag]]                   | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
 
 ## Section 3 导论与 3.1 历史发展
 
@@ -304,7 +304,7 @@ $$
 \le \frac{\alpha}{1-\alpha}.
 $$
 
-这组界与空间网格和时间步数无关，但要求时间积分器满足相应稳定性。Numerov 参数的临界实验说明，$\gamma=1/120$ 满足条件，略微越过稳定界的 $1/120.01$ 就会破坏预测。
+这组界与空间网格和时间步数无关，但要求时间积分器满足相应稳定性。（原文印刷版把两端写反成 $1/(1-\alpha)\le|\lambda|\le1/(1+\alpha)$，对 $0<\alpha<1$ 是空区间；精读页给出了核对与推导。）Numerov 参数的临界实验说明，$\gamma=1/120$ 满足条件，略微越过稳定界的 $1/120.01$ 就会破坏预测。
 
 减小 $\alpha$ 会改善迭代因子，同时把时间变换的舍入误差放大到约 $\epsilon/\alpha$。Figure 3.18 展示了这条折中。采用误差方程更新可以避免反复把大解向量带入病态变换，从而降低舍入污染。更一般的多步 Volterra 分析也给出特征值偏离 1 为 $\mathcal O(\alpha)$ 的结论。
 
@@ -351,10 +351,10 @@ ADE 的 3 次和 13 次与 Figure 3.15(c,d) 一致。波动实验使用论文的
 | ------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
 | Section 3 与 3.1，pp. 396–398   | 3.1      | 双曲有效方法的范围、历史来源及 tent pitching 线索                                                                 |
 | Section 3.2，pp. 398–405        | 3.2      | WR 与 SWR 差异、Robin/Dirichlet/Ventcel/卷积条件、Theorems 3.1–3.2、Figures 3.1–3.3、MTP/UTP                      |
-| Section 3.3，pp. 405–412        | 3.3      | IDC 积分残差与递推、Theorem 3.3、SDC、PIDC/RIDC 调度、Figures 3.4–3.6、正则性限制                                 |
+| Section 3.3，pp. 405–411        | 3.3      | IDC 积分残差与递推、Theorem 3.3、SDC、PIDC/RIDC 调度、Figures 3.4–3.6、正则性限制                                 |
 | Section 3.4，pp. 412–415        | 3.4      | ParaExp 线性分解与指数作用、非线性迭代、Theorem 3.4、Figures 3.7–3.8                                              |
-| Sections 3.5–3.5.1，pp. 415–431 | 3.5.1    | ParaDiag-I 三步法、几何步长、Theorems 3.5–3.7、波动/BVM、非线性准 Newton 与 NKA、Figures 3.9–3.14、Tables 3.1–3.2 |
-| Section 3.5.2，pp. 431–443      | 3.5.2    | Strang 与 $\alpha$-循环预条件、Theorems 3.8–3.9、Figures 3.15–3.18、稳定性/舍入折中、非线性 Newton–Krylov         |
+| Sections 3.5–3.5.1，pp. 415–430 | 3.5.1    | ParaDiag-I 三步法、几何步长、Theorems 3.5–3.7、波动/BVM、非线性准 Newton 与 NKA、Figures 3.9–3.14、Tables 3.1–3.2 |
+| Section 3.5.2，pp. 431–442      | 3.5.2    | Strang 与 $\alpha$-循环预条件、Theorems 3.8–3.9、Figures 3.15–3.18、稳定性/舍入折中、非线性 Newton–Krylov         |
 
 ## 小结
 

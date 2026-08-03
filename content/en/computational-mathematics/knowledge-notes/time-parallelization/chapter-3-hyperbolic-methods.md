@@ -18,10 +18,10 @@ This page retains the chapter-level synthesis and the site's reproduction. The c
 | Paper section      | Source pages | Close-reading page                                                                                                                                        | Coverage                                                          |
 | ------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | Section 3, 3.1–3.2 | pp. 396–405  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-1-history-and-swr\|Historical development and Schwarz waveform relaxation]] | (3.1)–(3.4), Theorems 3.1–3.2, Figures 3.1–3.3                    |
-| 3.3                | pp. 405–412  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-2-idc\|Parallel integral deferred correction]]                              | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
+| 3.3                | pp. 405–411  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-2-idc\|Parallel integral deferred correction]]                              | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
 | 3.4                | pp. 412–415  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-3-paraexp\|ParaExp]]                                                        | (3.13)–(3.21), Theorem 3.4, Figures 3.7–3.8                       |
-| 3.5, 3.5.1         | pp. 415–431  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i\|Direct ParaDiag]]                                             | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
-| 3.5.2              | pp. 431–443  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-5-paradiag-ii\|Iterative ParaDiag]]                                         | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
+| 3.5, 3.5.1         | pp. 415–430  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i\|Direct ParaDiag]]                                             | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
+| 3.5.2              | pp. 431–442  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-5-paradiag-ii\|Iterative ParaDiag]]                                         | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
 
 ## Section 3 introduction and 3.1 Historical development
 
@@ -304,7 +304,7 @@ $$
 \le \frac{\alpha}{1-\alpha}.
 $$
 
-These bounds are independent of the spatial grid and time-step count under the stated stability assumptions. A Numerov threshold experiment confirms their dependence on stability: $\gamma=1/120$ satisfies the condition, whereas the slightly unstable $1/120.01$ invalidates the predicted behavior.
+These bounds are independent of the spatial grid and time-step count under the stated stability assumptions. (The printed paper reverses the endpoints as $1/(1-\alpha)\le|\lambda|\le1/(1+\alpha)$, which is an empty interval for $0<\alpha<1$; the close-reading page gives the check and the derivation.) A Numerov threshold experiment confirms their dependence on stability: $\gamma=1/120$ satisfies the condition, whereas the slightly unstable $1/120.01$ invalidates the predicted behavior.
 
 Smaller $\alpha$ improves the iteration factor and amplifies transform roundoff to roughly $\epsilon/\alpha$. Figure 3.18 displays this tradeoff. Updating through an error equation prevents repeated transformation of a large solution vector and reduces roundoff contamination. A more general multistep Volterra analysis likewise places the preconditioned eigenvalues at $1+\mathcal O(\alpha)$.
 
@@ -351,10 +351,10 @@ The public [ActaPinT-Python](https://github.com/freezeng123456/ActaPinT-Python) 
 | ------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | Sections 3 and 3.1, pp. 396–398 | 3.1       | scope and origins of hyperbolic-effective methods, tent-pitching context                                                                  |
 | Section 3.2, pp. 398–405        | 3.2       | WR versus SWR, Dirichlet/Robin/Ventcel/convolution transmission, Theorems 3.1–3.2, Figures 3.1–3.3, MTP/UTP                               |
-| Section 3.3, pp. 405–412        | 3.3       | IDC residual and recurrence, Theorem 3.3, SDC, PIDC/RIDC schedules, Figures 3.4–3.6, regularity limitation                                |
+| Section 3.3, pp. 405–411        | 3.3       | IDC residual and recurrence, Theorem 3.3, SDC, PIDC/RIDC schedules, Figures 3.4–3.6, regularity limitation                                |
 | Section 3.4, pp. 412–415        | 3.4       | linear ParaExp decomposition and exponential action, nonlinear iteration, Theorem 3.4, Figures 3.7–3.8                                    |
-| Sections 3.5–3.5.1, pp. 415–431 | 3.5.1     | ParaDiag-I stages, geometric steps, Theorems 3.5–3.7, wave/BVM variants, nonlinear quasi-Newton and NKA, Figures 3.9–3.14, Tables 3.1–3.2 |
-| Section 3.5.2, pp. 431–443      | 3.5.2     | Strang and $\alpha$-circulant preconditioners, Theorems 3.8–3.9, Figures 3.15–3.18, stability/roundoff tradeoff, nonlinear Newton–Krylov  |
+| Sections 3.5–3.5.1, pp. 415–430 | 3.5.1     | ParaDiag-I stages, geometric steps, Theorems 3.5–3.7, wave/BVM variants, nonlinear quasi-Newton and NKA, Figures 3.9–3.14, Tables 3.1–3.2 |
+| Section 3.5.2, pp. 431–442      | 3.5.2     | Strang and $\alpha$-circulant preconditioners, Theorems 3.8–3.9, Figures 3.15–3.18, stability/roundoff tradeoff, nonlinear Newton–Krylov  |
 
 ## Summary
 
