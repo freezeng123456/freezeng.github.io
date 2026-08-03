@@ -99,7 +99,14 @@ $$
 \qquad t\in[T_{n-1},T]. \tag{3.16}
 $$
 
-An algorithm for $e^{\tau A}\boldsymbol b$ can jump directly to the requested time; its cost need not scale with the number of intermediate steps. The paper lists rational Krylov and Chebyshev expansions for large sparse matrices, and scaling-and-squaring with Padé approximation for smaller matrices (Higham 2008; Moler and Van Loan 2003). MATLAB R2023b and later provide `expmv` for a matrix-exponential action. The REXI method of Schreiber, Peixoto, Haut and Wingate (2018) and early Laplace-transform PinT methods use related exponential-approximation ideas.
+An algorithm for $e^{\tau A}\boldsymbol b$ can jump directly to the
+requested time; its cost need not scale with the number of intermediate
+steps. Rational Krylov and Chebyshev expansions suit large sparse
+matrices, while scaling-and-squaring with Padé approximation suits
+smaller ones (Higham 2008; Moler and Van Loan 2003). MATLAB R2023b and
+later provide `expmv` for a matrix-exponential action. The REXI method of
+Schreiber, Peixoto, Haut and Wingate (2018) and early Laplace-transform
+PinT methods use related exponential-approximation ideas.
 
 The wave-equation experiment of Gander and Güttel (2013) on problem (2.7) reported time-parallel efficiency up to 80%, and the paper draws an explicit conclusion from it: **ParaExp is an excellent time parallelization method for linear hyperbolic problems**. The particular number still depends on the exponential algorithm, matrix structure, partition, and hardware.
 
@@ -112,22 +119,75 @@ $$
 =A\boldsymbol u(t)+B(\boldsymbol u(t))+\boldsymbol g(t). \tag{3.17}
 $$
 
-The nonlinear extension is due to Gander, Güttel and Petcu (2018a). Direct superposition no longer applies. Writing $\boldsymbol u=\boldsymbol w+\boldsymbol v$ again, the construction is
+The nonlinear extension is due to Gander, Güttel and Petcu (2018a).
+Writing $\boldsymbol u=\boldsymbol w+\boldsymbol v$, the exact split
+required to preserve the original equation is
 
 $$
 \boldsymbol w'(t)=A\boldsymbol w(t),
 \qquad
-\boldsymbol v'(t)=B\!\left(\boldsymbol v(t)+\boldsymbol w(t)\right)+\boldsymbol g(t),
+\boldsymbol v'(t)=A\boldsymbol v(t)
++B\!\left(\boldsymbol v(t)+\boldsymbol w(t)\right)+\boldsymbol g(t),
 \qquad \boldsymbol v(0)=\boldsymbol 0,
 $$
 
-where the $\boldsymbol v$ equation carries no $A\boldsymbol v$ term — that is exactly what the splitting achieves. Unlike (3.14), the time intervals are now coupled: on $[T_{n-1},T_n]$ the initial value of $\boldsymbol w$ at $t=T_{n-1}$ depends on $\boldsymbol v(T_{n-1})$. Time parallelism therefore requires an iteration whose homogeneous problems start from the previous interface iterate.
+because $(\boldsymbol w+\boldsymbol v)'=
+A(\boldsymbol w+\boldsymbol v)+B(\boldsymbol w+\boldsymbol v)+\boldsymbol g$.
+Unlike (3.14), the time intervals are now coupled: the initial value of
+$\boldsymbol w$ at $T_{n-1}$ depends on $\boldsymbol v(T_{n-1})$.
 
-Explicitly evaluating the full blue sum $\sum_j\boldsymbol w_j^k(t)$ inside every nonlinear local solve would repeat expensive work when $A$ is large. The paper substitutes $\boldsymbol v_n^k=\boldsymbol u_n^k-\sum_{j=1}^n\boldsymbol w_j^k$ and obtains the following two-stage iteration.
+> [!warning] Source check: the nonlinear split
+> The journal and arXiv versions first omit $A\boldsymbol v$ from the
+> $\boldsymbol v$ equation. In the following unnumbered interval
+> iteration they then print $A\boldsymbol u_n^k$ and
+> $\boldsymbol u_n^k(T_{n-1})=0$ where consistency requires
+> $A\boldsymbol v_n^k$ and $\boldsymbol v_n^k(T_{n-1})=0$. Those
+> expressions do not satisfy
+> $\boldsymbol u=\boldsymbol v+\sum_j\boldsymbol w_j$ as printed; this
+> page follows the variable definitions.
 
-First construct the homogeneous propagations **sequentially** for $n=1,\ldots,N_t$:
+Starting the homogeneous problems from the previous interface iterate
+gives the first parallel formulation:
 
 $$
+\begin{aligned}
+(\boldsymbol w_n^k)'&=A\boldsymbol w_n^k,
+&&t\in[T_{n-1},T],\\
+\boldsymbol w_1^k(T_0)&=\boldsymbol u_0,
+&
+\boldsymbol w_n^k(T_{n-1})
+&=\boldsymbol v_{n-1}^{k-1}(T_{n-1}),
+&&n=2,\ldots,N_t,\\
+(\boldsymbol v_n^k)'&=A\boldsymbol v_n^k+
+B\!\left(\boldsymbol v_n^k+\sum_{j=1}^n\boldsymbol w_j^k\right)
++\boldsymbol g,
+&&t\in[T_{n-1},T_n],\\
+\boldsymbol v_n^k(T_{n-1})&=\boldsymbol 0,\\
+\boldsymbol u_n^k&=\boldsymbol v_n^k+\sum_{j=1}^n\boldsymbol w_j^k,
+&&n=1,\ldots,N_t.
+\end{aligned}
+$$
+
+Explicitly evaluating the full blue sum
+$\sum_j\boldsymbol w_j^k(t)$ inside every nonlinear local solve repeats
+expensive work when $A$ is large. Substituting
+$\boldsymbol v_n^k=\boldsymbol u_n^k-\sum_{j=1}^n\boldsymbol w_j^k$
+eliminates this explicit dependence and yields (3.18)–(3.19).
+
+First construct the homogeneous propagations for all
+$n=1,\ldots,N_t$:
+
+$$
+
+Every initial value contains only iteration-$k-1$ data, so the
+different values of $n$ are independent during iteration $k$ and can
+be solved concurrently.
+
+> [!warning] Source check: `sequentially`
+> The journal text says “sequentially” before (3.18), but the right-hand
+> side of (3.18) contains only previous-iteration data. That word also
+> conflicts with the “in parallel” descriptions immediately before and
+> after it. This page follows the algorithm's data dependencies.
 \begin{aligned}
 (\boldsymbol w_n^k)'(t)&=A\boldsymbol w_n^k(t),
 &&t\in[T_{n-1},T],\\
@@ -186,11 +246,22 @@ $$
 \qquad t\in[T_{n-1},T_n]. \tag{3.20c}
 $$
 
-Standard Parareal normally lets its coarse propagator approximate the complete nonlinear problem (3.20c) as well. Here $\mathcal G$ retains only $A$, so this is a simplified Parareal, and at the coarse points $\boldsymbol u_n^k=\boldsymbol U_n^k$ for $n=0,1,\ldots,N_t$. This is the first appearance of Parareal in the paper; Chapter 4 discusses it in detail.
+Standard Parareal normally lets its coarse propagator approximate the
+complete nonlinear problem (3.20c) as well. Here $\mathcal G$ retains
+only $A$, so this is a simplified Parareal. The equivalence holds only
+at the coarse nodes:
+
+$$
+\boldsymbol u^k(T_n)=\boldsymbol u_n^k(T_n)=\boldsymbol U_n^k,
+\qquad n=0,1,\ldots,N_t,\qquad \boldsymbol U_0^k=\boldsymbol u_0.
+$$
+
+The local trajectories do not coincide pointwise with Parareal
+trajectories. Chapter 4 discusses standard Parareal in detail.
 
 ### Figure 3.8: splitting failure on Burgers' equation
 
-The experiment uses
+Periodic Burgers' equation tests the nonlinear split:
 
 $$
 \boldsymbol f(\boldsymbol u(t),t)
@@ -198,11 +269,43 @@ $$
 \qquad t\in(0,2), \tag{3.21}
 $$
 
-obtained from centered differences for periodic Burgers' equation. The mesh is $\Delta x=1/100$, with $A=A_{xx}$ and $B=-\tfrac12A_x$; the matrices $A_{xx}$ and $A_x$ are those in (3.12). The fine propagator in both methods is backward Euler with step $0.01/20$. Standard Parareal also uses backward Euler as its coarse propagator, with step $0.01$. ParaExp uses MATLAB `expmv` for the linear coarse propagation.
+Here $\boldsymbol u^2$ is componentwise and $A_{xx},A_x$ are the
+dimensionless stencils in (3.12). With $\Delta x=1/100$, a consistent
+semidiscretization is
+
+$$
+A=\frac{\nu}{\Delta x^2}A_{xx},
+\qquad
+B=-\frac{1}{4\Delta x}A_x.
+$$
+
+The second coefficient follows from
+$-\frac12\partial_x(u^2)\approx
+-\frac1{4\Delta x}A_x\boldsymbol u^2$. Both methods use backward Euler
+as the fine propagator with step $0.01/20$. Standard Parareal also uses
+backward Euler as its coarse propagator with step $0.01$; ParaExp uses
+MATLAB `expmv` for the linear coarse propagation.
+
+> [!warning] Source check: spatial scaling in Figure 3.8
+> The journal and arXiv versions write $A=A_{xx}$ and $B=-A_x/2$,
+> omitting the factors involving $\nu$ and $\Delta x$. Read literally,
+> $A$ would not depend on $\nu$, making the three-viscosity experiment
+> impossible. The display above follows model equation (2.6) and the
+> stencil definitions in (3.12).
 
 ![Source Figure 3.8: errors of nonlinear ParaExp and standard Parareal at three viscosities](assets/papers/time-parallelization/source-figures/figure-3-8.svg)
 
-The panels from left to right use $\nu=1,0.1,0.02$. Their horizontal lines mark the truncation level $\max\{\Delta t,\Delta x^2\}$, beyond which further iteration is unnecessary in practice. At $\nu=1$, $A$ captures the dominant dynamics and ParaExp is substantially faster than standard Parareal. At $\nu=0.1$, standard Parareal becomes faster while ParaExp still decays slowly. At $\nu=0.02$, the ParaExp error grows at every displayed step, whereas standard Parareal still crosses the truncation line. Standard Parareal eventually fails as viscosity is reduced further — the reason the paper gives is that standard Parareal itself does not perform well on hyperbolic problems, so its simplified version cannot be expected to, a point developed in Chapter 4. The three panels show a transfer of dominant dynamics between the two parts of the split, not merely a uniform slowdown under weaker diffusion.
+The panels from left to right use $\nu=1,0.1,0.02$. Their horizontal
+lines mark the truncation level $\max\{\Delta t,\Delta x^2\}$, beyond
+which further iteration is unnecessary. At $\nu=1$, the linear part
+captures the dominant dynamics and ParaExp is substantially faster than
+standard Parareal. At $\nu=0.1$ the ordering reverses. At $\nu=0.02$
+the ParaExp error grows at every displayed step, whereas standard
+Parareal still crosses the truncation line; it too eventually fails as
+viscosity falls further. The important change is not a uniform slowdown
+under weaker diffusion but a transfer of dominant dynamics between the
+two parts of the split: the simplified coarse propagation loses
+representative power before standard Parareal does.
 
 > [!important] Applicability boundary
 > Linear ParaExp equation (3.15) is an exact algebraic decomposition, subject only to errors in the exponential action and local forced solves. Nonlinear ParaExp is iterative and depends on the $A+B$ split. An exact exponential cannot repair a linear part that misses the dominant propagation mechanism.

@@ -109,10 +109,10 @@ y=\frac{l\omega}{\nu},
 \omega\in\left[\frac\pi T,\frac\pi{\Delta t}\right].
 $$
 
-The optimized parameter scales as
+The dimensionless minimizer and the physical Robin parameter are related by
 
 $$
-p^*=\frac{\widetilde p^*s}{\nu}.
+p^*=\frac{\widetilde p^*\nu}{l}.
 $$
 
 Define the single-frequency factor
@@ -170,8 +170,13 @@ $$
 =\exp\!\left(-\frac{l\pi}{\nu T}\right). \tag{3.3}
 $$
 
-> [!warning] Source check: the symbol $s$ in $p^*$
-> The journal version prints the scaling as $p^*=\widetilde p^*s/\nu$, but $s$ is never defined anywhere else in the paper; reading it as the unit advection speed of model problem (2.5) reduces it to $p^*=\widetilde p^*/\nu$. The arXiv preprint prints the reciprocal factor, $p^*=\widetilde p^*\nu/s$. This page follows the journal version and records the discrepancy here so that readers comparing the two are not confused.
+> [!warning] Source check: the scaling of $p^*$
+> The cited original result, Gander and Halpern (2007, Theorem 5.13), gives
+> $p^*=\widetilde p^*\nu/l$, where $l$ is the overlap width. The arXiv
+> preprint replaces $l$ by an undefined $s$, yielding
+> $\widetilde p^*\nu/s$; the journal version additionally reverses the
+> fraction to $\widetilde p^*s/\nu$. The display above follows the cited
+> theorem rather than guessing what the undefined $s$ means.
 
 > [!tip] Derivation intuition: why the theorem uses an equal-peak condition
 > A temporal Fourier transform turns every frequency $\omega$ into an independent spatial interface-error problem. Crossing the overlap contributes $e^{-y}$, while Robin transmission contributes the rational reflection factor in front of it. Optimizing $p$ minimizes the largest peak over the frequency interval. Once the two candidate peaks have equal height, lowering either one raises the other; equation (3.2a) states this minimax balance. The value $y_0=y_c$ marks a change in the interior-peak structure. Note that the equal-peak condition holds at $y=y_0$ and $y=\bar y$, whereas (3.2c) maximizes over $[y_{\min},y_{\max}]$; the paper does not comment on the fact that these intervals do not coincide exactly.
@@ -235,15 +240,24 @@ u_2^k(\alpha L,t)&=u_1^{k-1}(\alpha L,t),
 \right. \tag{3.4}
 $$
 
-**Theorem 3.2** (Gander 1997, Theorem 6.3.3)**.** For $0<\alpha<\beta<1$, if
+**Theorem 3.2** (Gander 1997, Theorem 6.3.3). For
+$0<\alpha<\beta<1$, if
 
 $$
-k>\frac{Tc}{\beta-\alpha},
+k>\frac{Tc}{(\beta-\alpha)L},
 $$
 
 then both artificial-interface errors vanish over the complete interval $(0,T)$:
 
 $$
+
+> [!warning] Source check: the missing $L$ in the finite-step condition
+> Both the journal and arXiv versions print $k>Tc/(\beta-\alpha)$.
+> Equation (3.4), however, has overlap width $(\beta-\alpha)L$, so one
+> iteration advances the exact time region by $(\beta-\alpha)L/c$.
+> Dimensional consistency and the propagation geometry therefore give the
+> corrected condition above. The printed and corrected forms agree on the
+> unit interval $L=1$ used for the model problems.
 u_1^k(\alpha L,t)-u(\alpha L,t)=0,
 \qquad
 u_2^k(\beta L,t)-u(\beta L,t)=0.

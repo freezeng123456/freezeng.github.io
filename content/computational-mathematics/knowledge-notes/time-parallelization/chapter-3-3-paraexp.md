@@ -99,9 +99,16 @@ $$
 \qquad t\in[T_{n-1},T]. \tag{3.16}
 $$
 
-计算 $e^{\tau A}\boldsymbol b$ 可以直接跳到目标时刻，成本不必与中间步数成正比。论文列出以下工具：大型稀疏矩阵适合有理 Krylov 和 Chebyshev 展开；较小矩阵可以用 scaling-and-squaring 加 Padé（Higham 2008；Moler 与 Van Loan 2003）；MATLAB R2023b 及之后的 `expmv` 提供矩阵指数作用实现。Schreiber、Peixoto、Haut 与 Wingate（2018）的 REXI 以及基于 Laplace 变换的早期 PinT 技术也属于同一类指数近似思路。
+计算 $e^{\tau A}\boldsymbol b$ 可以直接跳到目标时刻，成本不必与中间步数
+成正比。大型稀疏矩阵适合有理 Krylov 或 Chebyshev 展开；较小矩阵可用
+scaling-and-squaring 加 Padé（Higham 2008；Moler 与 Van Loan 2003）。
+MATLAB R2023b 及之后的 `expmv` 提供矩阵指数作用实现。
+Schreiber、Peixoto、Haut 与 Wingate（2018）的 REXI 以及早期
+Laplace 变换 PinT 技术也属于这类指数近似。
 
-Gander 与 Güttel（2013）的波动方程 (2.7) 实验报告了高达 80% 的时间并行效率，论文据此给出明确判断：**ParaExp 是线性双曲问题的一个出色时间并行方法**。同时应当注意，这个具体数字依赖指数算法、矩阵结构、分区和硬件。
+Gander 与 Güttel（2013）的波动方程 (2.7) 算例报告了高达 80% 的
+时间并行效率，支持了一个明确判断：**ParaExp 很适合线性双曲问题**。
+这个具体数字仍取决于指数算法、矩阵结构、分区和硬件。
 
 ### 非线性拆分
 
@@ -112,20 +119,58 @@ $$
 =A\boldsymbol u(t)+B(\boldsymbol u(t))+\boldsymbol g(t). \tag{3.17}
 $$
 
-非线性扩展来自 Gander、Güttel 与 Petcu（2018a）。线性情形的直接叠加在这里失效：仍然令 $\boldsymbol u=\boldsymbol w+\boldsymbol v$，取
+非线性扩展来自 Gander、Güttel 与 Petcu（2018a）。仍令
+$\boldsymbol u=\boldsymbol w+\boldsymbol v$，则保持原方程所需的精确拆分是
 
 $$
 \boldsymbol w'(t)=A\boldsymbol w(t),
 \qquad
-\boldsymbol v'(t)=B\!\left(\boldsymbol v(t)+\boldsymbol w(t)\right)+\boldsymbol g(t),
+\boldsymbol v'(t)=A\boldsymbol v(t)
++B\!\left(\boldsymbol v(t)+\boldsymbol w(t)\right)+\boldsymbol g(t),
 \qquad \boldsymbol v(0)=\boldsymbol 0,
 $$
 
-注意 $\boldsymbol v$ 的方程里没有 $A\boldsymbol v$ 项，这正是拆分要达到的效果。和 (3.14) 相比，各时间区间不再解耦：在 $[T_{n-1},T_n]$ 上，$\boldsymbol w$ 在 $t=T_{n-1}$ 处的初值依赖同一时刻的 $\boldsymbol v(T_{n-1})$。为了并行，需要用上一轮的接口值启动齐次问题。
+因为 $(\boldsymbol w+\boldsymbol v)'=
+A(\boldsymbol w+\boldsymbol v)+B(\boldsymbol w+\boldsymbol v)+\boldsymbol g$。
+与 (3.14) 不同，各时间区间不再解耦：$\boldsymbol w$ 在
+$T_{n-1}$ 的初值依赖同一时刻的 $\boldsymbol v(T_{n-1})$。
 
-若在每个非线性局部问题中显式计算全部蓝色尾部 $\sum_j\boldsymbol w_j^k(t)$，大型 $A$ 会造成冗余。论文改用 $\boldsymbol v_n^k=\boldsymbol u_n^k-\sum_{j=1}^n\boldsymbol w_j^k$，得到两步迭代。
+> [!warning] 原文公式核对：非线性拆分
+> 期刊版与 arXiv 版先漏掉了 $\boldsymbol v'$ 中的
+> $A\boldsymbol v$，随后在未编号的区间迭代中又把
+> $A\boldsymbol v_n^k$、$\boldsymbol v_n^k(T_{n-1})=0$
+> 误排成 $A\boldsymbol u_n^k$、
+> $\boldsymbol u_n^k(T_{n-1})=0$。这些写法与
+> $\boldsymbol u=\boldsymbol v+\sum_j\boldsymbol w_j$ 不自洽；
+> 本页按变量定义修正。
 
-先按 $n=1,\ldots,N_t$ **顺序**构造齐次传播：
+用上一轮接口值启动齐次问题后，第一种并行迭代写成
+
+$$
+\begin{aligned}
+(\boldsymbol w_n^k)'&=A\boldsymbol w_n^k,
+&&t\in[T_{n-1},T],\\
+\boldsymbol w_1^k(T_0)&=\boldsymbol u_0,
+&
+\boldsymbol w_n^k(T_{n-1})
+&=\boldsymbol v_{n-1}^{k-1}(T_{n-1}),
+&&n=2,\ldots,N_t,\\
+(\boldsymbol v_n^k)'&=A\boldsymbol v_n^k+
+B\!\left(\boldsymbol v_n^k+\sum_{j=1}^n\boldsymbol w_j^k\right)
++\boldsymbol g,
+&&t\in[T_{n-1},T_n],\\
+\boldsymbol v_n^k(T_{n-1})&=\boldsymbol 0,\\
+\boldsymbol u_n^k&=\boldsymbol v_n^k+\sum_{j=1}^n\boldsymbol w_j^k,
+&&n=1,\ldots,N_t.
+\end{aligned}
+$$
+
+若在每个局部问题中显式计算全部蓝色尾部
+$\sum_j\boldsymbol w_j^k(t)$，大型 $A$ 会造成冗余。代入
+$\boldsymbol v_n^k=\boldsymbol u_n^k-\sum_{j=1}^n\boldsymbol w_j^k$
+可消去这项显式依赖，得到 (3.18)–(3.19)。
+
+先对所有 $n=1,\ldots,N_t$ 构造齐次传播：
 
 $$
 \begin{aligned}
@@ -137,6 +182,14 @@ $$
 &&\boldsymbol w_1^k(T_0)=\boldsymbol u_0.
 \end{aligned} \tag{3.18}
 $$
+
+这些初值只含第 $k-1$ 轮数据，因此各个 $n$ 在第 $k$ 轮彼此独立，
+可以并行求解。
+
+> [!warning] 原文公式核对：`sequentially`
+> 正式版在 (3.18) 前写成 “sequentially”，但 (3.18) 的右端只依赖
+> 上一轮数据，与它前后两次 “in parallel” 的说明及公式依赖都冲突。
+> 本页按算法的数据依赖把这一阶段解释为并行。
 
 随后在所有时间子区间上并行求解完整非线性问题：
 
@@ -186,11 +239,21 @@ $$
 \qquad t\in[T_{n-1},T_n]. \tag{3.20c}
 $$
 
-标准 Parareal 的粗传播子通常也近似完整非线性问题 (3.20c)。这里的 $\mathcal G$ 只保留 $A$，因此是一个简化版本，并且在粗节点上有 $\boldsymbol u_n^k=\boldsymbol U_n^k$，$n=0,1,\ldots,N_t$。这是全文第一次出现 Parareal，第四章会详细讨论。
+标准 Parareal 的粗传播子通常也近似完整非线性问题 (3.20c)。
+这里的 $\mathcal G$ 只保留 $A$，因此是一个简化版本。等价关系只在
+粗节点成立：
+
+$$
+\boldsymbol u^k(T_n)=\boldsymbol u_n^k(T_n)=\boldsymbol U_n^k,
+\qquad n=0,1,\ldots,N_t,\qquad \boldsymbol U_0^k=\boldsymbol u_0.
+$$
+
+整段局部轨迹并不与 Parareal 轨迹逐点相同。第四章再详细讨论标准
+Parareal。
 
 ### Figure 3.8：Burgers 方程上的拆分失效
 
-论文使用
+用周期 Burgers 方程检验这项非线性拆分：
 
 $$
 \boldsymbol f(\boldsymbol u(t),t)
@@ -198,11 +261,37 @@ $$
 \qquad t\in(0,2), \tag{3.21}
 $$
 
-它来自周期 Burgers 方程的中心差分，$\Delta x=1/100$，$A=A_{xx}$，$B=-\tfrac12A_x$，$A_{xx},A_x$ 见 (3.12)。ParaExp 和标准 Parareal 的细传播子都使用后向 Euler，细步长为 $0.01/20$。标准 Parareal 的粗传播子仍用后向 Euler，粗步长为 $0.01$；ParaExp 的线性粗传播调用 MATLAB `expmv`。
+这里 $\boldsymbol u^2$ 按分量计算，$A_{xx},A_x$ 是 (3.12) 的
+无量纲 stencil。取 $\Delta x=1/100$ 后，一致的半离散系数为
+
+$$
+A=\frac{\nu}{\Delta x^2}A_{xx},
+\qquad
+B=-\frac{1}{4\Delta x}A_x.
+$$
+
+第二个系数来自
+$-\frac12\partial_x(u^2)\approx-\frac1{4\Delta x}A_x\boldsymbol u^2$。
+ParaExp 和标准 Parareal 的细传播子都使用后向 Euler，细步长为
+$0.01/20$。标准 Parareal 的粗传播仍用后向 Euler，粗步长为
+$0.01$；ParaExp 的线性粗传播调用 MATLAB `expmv`。
+
+> [!warning] 原文公式核对：Figure 3.8 的空间缩放
+> 期刊版与 arXiv 版写成 $A=A_{xx}$、$B=-A_x/2$，遗漏了
+> $\nu$ 与 $\Delta x$ 的缩放。若照字面实现，$A$ 不含 $\nu$，
+> 三组黏性实验便无法成立。上式由模型方程 (2.6) 和 (3.12) 的
+> stencil 定义直接得到。
 
 ![原论文 Figure 3.8：三组黏性下非线性 ParaExp 与标准 Parareal 的误差](assets/papers/time-parallelization/source-figures/figure-3-8.svg)
 
-三个面板从左到右取 $\nu=1,0.1,0.02$，横线表示离散截断误差 $\max\{\Delta t,\Delta x^2\}$，实际迭代达到这条线后即可停止。$\nu=1$ 时，$A$ 捕获主要动力学，ParaExp 明显快于标准 Parareal；$\nu=0.1$ 时，标准 Parareal 反而更快，ParaExp 仍缓慢下降；$\nu=0.02$ 时，ParaExp 的误差连续增大，标准 Parareal 仍能越过截断误差线。继续减小黏性后，标准 Parareal 最终也会失效——论文给出的理由是：标准 Parareal 本身对双曲问题就表现不佳，因此不能指望它的简化版本在这里有效，第四章会展开这一点。这三个面板展示的是拆分主导项随黏性变化发生转移，不能只概括为“扩散减弱后收敛变慢”。
+三个面板从左到右取 $\nu=1,0.1,0.02$，横线表示离散截断误差
+$\max\{\Delta t,\Delta x^2\}$，迭代达到这条线后即可停止。
+$\nu=1$ 时，线性部分覆盖主导动力学，ParaExp 明显快于标准
+Parareal；$\nu=0.1$ 时次序反转；$\nu=0.02$ 时 ParaExp 误差持续
+增长，而标准 Parareal 仍能越过截断误差线。继续减小黏性后，
+标准 Parareal 也会失效。关键不是统一的“扩散越弱、收敛越慢”，
+而是 $A+B$ 拆分中主导动力学发生了转移；简化后的粗传播比标准
+Parareal 更早失去代表性。
 
 > [!important] 适用边界
 > 线性 ParaExp 的 (3.15) 是精确代数分解，只受指数作用近似和局部受迫求解误差影响。非线性 ParaExp 已变成迭代法，收敛取决于 $A+B$ 的拆分。线性部分若没有覆盖主导传播机制，矩阵指数再精确也无法补偿模型失配。

@@ -73,7 +73,8 @@ $$
 \qquad \boldsymbol u_m^k\approx\boldsymbol u(t_m),
 $$
 
-并令 $\Delta t_m=t_{m+1}-t_m$。对 (3.8) 使用线性 $\theta$ 方法，得到
+并令 $\Delta t_m=t_{m+1}-t_m$。对 (3.8) 使用
+$\theta\in[0,1]$ 的线性 $\theta$ 方法，得到
 
 $$
 \begin{aligned}
@@ -96,7 +97,8 @@ $$
 -\left(\boldsymbol u_{m+1}^k-\boldsymbol u_m^k\right).
 $$
 
-局部积分由全组节点上的 Lagrange 插值求积：
+局部积分用 $t_1,\ldots,t_M$ 上的 Lagrange 插值求积。注意离散轨道
+共有 $M+1$ 个点 $t_0,\ldots,t_M$，但 (3.10) 的插值节点不含 $t_0$：
 
 $$
 \int_{t_m}^{t_{m+1}}\boldsymbol f(\boldsymbol u^k(\tau),\tau)\,d\tau
@@ -129,7 +131,9 @@ $$
 \end{aligned}
 $$
 
-每个校正层 $k$ 都从左向右扫过 $m=0,1,\ldots,M-1$。$\theta=1$ 给出后向 Euler 型校正，$\theta=1/2$ 给出梯形型校正。
+校正指标取 $k=0,1,\ldots,k_{\max}-1$；每一层都从左向右扫过
+$m=0,1,\ldots,M-1$。$\theta=1$ 给出后向 Euler 型校正，
+$\theta=1/2$ 给出梯形型校正。
 
 > [!tip] 公式 (3.11) 的三项分工
 > 第一行沿用简单积分器推进新解；中间两项修正新旧轨道在局部端点上的动力学差；最后的求积项注入旧轨道在整个节点集上的高阶积分信息。校正能够升阶，原因就在于最后一项比基础步进器看到了更完整的时间区间。
@@ -142,13 +146,20 @@ $$
 O\!\left(\Delta t^{\min\{M,(k+1)p\}}\right).
 $$
 
-因此每轮最多增加 $p$ 阶，并受求积的最高阶 $M$ 限制。后向 Euler 对应 $\theta=1$、$p=1$，梯形规则对应 $\theta=\tfrac12$、$p=2$。Dutt 等（2000）最初的 IDC 使用 Gauss 节点，可达到更高的阶数上限；例如 Gauss–Lobatto 节点可达 $2J-1$ 阶。这类 IDC 通常称为 spectral deferred correction（SDC），也是第四章 PFASST 的核心部件。
+因此每轮最多增加 $p$ 阶，并受求积的最高阶 $M$ 限制。后向 Euler
+对应 $\theta=1$、$p=1$，梯形规则对应 $\theta=\tfrac12$、$p=2$。
+Dutt 等（2000）最初的 IDC 使用 Gauss 节点，可达到更高的阶数上限；
+若 $J$ 表示子区间数，即使用 $J+1$ 个 Gauss–Lobatto 点，相应阶数可达
+$2J-1$。这类 IDC 通常称为 spectral deferred correction（SDC），
+也是第四章 PFASST 的核心部件。
 
-长时间区间不适合用一个高阶多项式整体近似。论文将 $[0,T]$ 划分为窗口
+节点数限制了单窗校正的阶数，而长时间区间又不适合由一个高阶多项式
+整体覆盖。因此把 $[0,T]$ 划分为窗口
 
 $$
 I_n=[T_{n-1},T_n],
-\qquad n=1,\ldots,N_t.
+\qquad n=1,\ldots,N_t,
+\qquad T_0=0,\quad T_{N_t}=T.
 $$
 
 普通 IDC 先把 $I_n$ 的全部校正完成，再把末值传给 $I_{n+1}$。窗口之间串行，窗口内部的节点更新也按 $m$ 串行。
@@ -167,7 +178,8 @@ PIDC 的每个窗口会收到不断变化的粗初值。校正次数增加时，
 
 ### 周期对流扩散实验与离散矩阵 (3.12)
 
-论文使用周期边界和 $\Delta x=1/64$。半离散矩阵写成
+为检验流水线对正则性的要求，实验取周期边界和
+$\Delta x=1/64$。半离散矩阵写成
 
 $$
 A=\frac{\nu}{\Delta x^2}A_{xx}
@@ -195,6 +207,11 @@ A_x=
 1&&&-1&0
 \end{bmatrix}. \tag{3.12}
 $$
+
+这里
+$\frac{\nu}{\Delta x^2}A_{xx}\approx\nu\partial_{xx}$，
+$\frac1{2\Delta x}A_x\approx\partial_x$，所以
+$A$ 离散的是 $\nu\partial_{xx}-\partial_x$。
 
 取 $T=3$、窗口宽度 $\Delta T=0.1$、$M=5$，基础积分器为后向 Euler。第 $n$ 个窗口、第 $k$ 遍后的误差定义为
 

@@ -111,7 +111,8 @@ $$
 u_{n+1}-\Phi u_n=g_{n+1}.
 $$
 
-Stacking all temporal unknowns gives
+Let $g_0:=u_{\mathrm{init}}$ denote the prescribed initial value. Stacking
+$u_0$ together with the later temporal unknowns gives
 
 $$
 \begin{bmatrix}

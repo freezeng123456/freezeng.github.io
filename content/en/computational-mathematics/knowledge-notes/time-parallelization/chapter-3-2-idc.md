@@ -75,7 +75,8 @@ $$
 \qquad \boldsymbol u_m^k\approx\boldsymbol u(t_m),
 $$
 
-and let $\Delta t_m=t_{m+1}-t_m$. Applying the linear $\theta$ method to (3.8) gives
+and let $\Delta t_m=t_{m+1}-t_m$. Applying the linear $\theta$ method
+with $\theta\in[0,1]$ to (3.8) gives
 
 $$
 \begin{aligned}
@@ -98,7 +99,9 @@ $$
 -\left(\boldsymbol u_{m+1}^k-\boldsymbol u_m^k\right).
 $$
 
-Lagrange interpolation over the complete node set approximates the local integral:
+Lagrange interpolation over $t_1,\ldots,t_M$ approximates the local
+integral. The discrete trajectory has $M+1$ points
+$t_0,\ldots,t_M$, but the interpolation nodes in (3.10) exclude $t_0$:
 
 $$
 \int_{t_m}^{t_{m+1}}\boldsymbol f(\boldsymbol u^k(\tau),\tau)\,d\tau
@@ -131,7 +134,10 @@ $$
 \end{aligned}
 $$
 
-Every correction level $k$ sweeps from left to right through $m=0,1,\ldots,M-1$. The choice $\theta=1$ gives a backward-Euler correction, and $\theta=1/2$ gives a trapezoidal correction.
+The correction index is $k=0,1,\ldots,k_{\max}-1$, and every level
+sweeps from left to right through $m=0,1,\ldots,M-1$. The choice
+$\theta=1$ gives a backward-Euler correction and $\theta=1/2$ a
+trapezoidal correction.
 
 > [!tip] Roles of the terms in (3.11)
 > The first line advances the new trajectory with a simple integrator. The middle terms correct the difference between the new and old dynamics at the local endpoints. The final quadrature term injects high-order integral information from the complete old node set. The last term is what lets the correction exceed the order of the base stepper.
@@ -144,13 +150,23 @@ $$
 O\!\left(\Delta t^{\min\{M,(k+1)p\}}\right).
 $$
 
-Each correction therefore adds at most $p$ orders until the quadrature ceiling $M$ is reached. Backward Euler corresponds to $\theta=1$ and $p=1$, the trapezoidal rule to $\theta=\tfrac12$ and $p=2$. The original IDC of Dutt et al. (2000) used Gauss nodes, which raises the ceiling; Gauss–Lobatto nodes, for instance, reach order $2J-1$. This form of IDC is spectral deferred correction (SDC), the central integration component of PFASST in Chapter 4.
+Each correction therefore adds at most $p$ orders until the quadrature
+ceiling $M$ is reached. Backward Euler corresponds to $\theta=1$ and
+$p=1$, the trapezoidal rule to $\theta=\tfrac12$ and $p=2$. The
+original IDC of Dutt et al. (2000) used Gauss nodes, which raises the
+ceiling. If $J$ denotes the number of subintervals, so that there are
+$J+1$ Gauss–Lobatto points, the corresponding order reaches $2J-1$.
+This form of IDC is spectral deferred correction (SDC), the central
+integration component of PFASST in Chapter 4.
 
-A single high-order polynomial becomes ineffective on a long interval. The paper partitions $[0,T]$ into windows
+The node count limits the order available on one window, while one
+high-order polynomial becomes ineffective over a long interval.
+The remedy is to partition $[0,T]$ into windows
 
 $$
 I_n=[T_{n-1},T_n],
-\qquad n=1,\ldots,N_t.
+\qquad n=1,\ldots,N_t,
+\qquad T_0=0,\quad T_{N_t}=T.
 $$
 
 Standard IDC completes every correction on $I_n$ before passing its endpoint to $I_{n+1}$. Windows are sequential, and the node updates within a window are also sequential in $m$.
@@ -169,7 +185,8 @@ Every PIDC window receives a rough initial value that changes as the upstream wi
 
 ### Periodic advection–diffusion experiment and matrix (3.12)
 
-The paper uses periodic boundaries and $\Delta x=1/64$. The semidiscrete matrix is
+To test the pipeline's regularity requirement, the experiment uses
+periodic boundaries and $\Delta x=1/64$. The semidiscrete matrix is
 
 $$
 A=\frac{\nu}{\Delta x^2}A_{xx}
@@ -197,6 +214,11 @@ A_x=
 1&&&-1&0
 \end{bmatrix}. \tag{3.12}
 $$
+
+Here
+$\frac{\nu}{\Delta x^2}A_{xx}\approx\nu\partial_{xx}$ and
+$\frac1{2\Delta x}A_x\approx\partial_x$, so $A$ discretizes
+$\nu\partial_{xx}-\partial_x$.
 
 The remaining parameters are $T=3$, window width $\Delta T=0.1$, $M=5$, and backward Euler as the base stepper. Error on window $n$ after sweep $k$ is
 
