@@ -354,6 +354,7 @@ $$
 > current state, a consistent nonlinear correction for
 > $D(\boldsymbol U)=\boldsymbol U-\Delta t\theta f(\boldsymbol U)$
 > would satisfy
+>
 > $$
 > \Delta\widetilde{\boldsymbol U}^j
 > -\Delta t\theta\left[
@@ -362,6 +363,7 @@ $$
 > \right]
 > =\eta[\boldsymbol b-K(\widetilde{\boldsymbol U}^j)].
 > $$
+>
 > The printed $f(\Delta\widetilde{\boldsymbol U}^j)$ agrees only in
 > special cases such as a linear $f$. Equation (4.43) is therefore
 > safer to read as a separately defined nonlinear preconditioned

@@ -125,16 +125,20 @@ $$
 > [!note] Remark 4.1：预条件视角
 > $M(z)=I_t-M_g^{-1}(z)M_f(z)$。若 $M_fU=b$ 是细传播子的
 > 全时间系统，则一次预条件校正显式写成
+>
 > $$
 > M_g(z)\Delta U^k=r^k:=b-M_f(z)U^k,
 > \qquad U^{k+1}=U^k+\Delta U^k.
 > $$
+>
 > 第 $n$ 个残差块是
+>
 > $$
 > r_n^k=b_n-
 > \left[u_n^k-\mathcal F(T_{n-1},T_n,u_{n-1}^k)\right]
 > =b_n-u_n^k+R_f^J(z/J)u_{n-1}^k.
 > $$
+>
 > 因而各残差块中的细传播可以并行计算，$M_g$ 的粗预条件求解仍沿
 > 时间顺序进行。这一视角直接导向 Section 4.5 的对角化粗校正。
 

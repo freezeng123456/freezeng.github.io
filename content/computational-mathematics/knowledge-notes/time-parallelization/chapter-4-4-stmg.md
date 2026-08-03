@@ -363,6 +363,7 @@ $$
 > 对角块
 > $D(\boldsymbol U)=\boldsymbol U-\Delta t\theta f(\boldsymbol U)$
 > 的一致非线性修正应满足
+>
 > $$
 > \Delta\widetilde{\boldsymbol U}^j
 > -\Delta t\theta\left[
@@ -371,6 +372,7 @@ $$
 > \right]
 > =\eta[\boldsymbol b-K(\widetilde{\boldsymbol U}^j)].
 > $$
+>
 > 原文使用 $f(\Delta\widetilde{\boldsymbol U}^j)$，只在线性等特殊
 > 情形下与上式相同。因此 (4.43) 更安全的理解是一种另行定义的
 > 非线性预条件迭代，而不是精确块 Jacobi 逆。

@@ -250,6 +250,10 @@ $$
 then both artificial-interface errors vanish over the complete interval $(0,T)$:
 
 $$
+u_1^k(\alpha L,t)-u(\alpha L,t)=0,
+\qquad
+u_2^k(\beta L,t)-u(\beta L,t)=0.
+$$
 
 > [!warning] Source check: the missing $L$ in the finite-step condition
 > Both the journal and arXiv versions print $k>Tc/(\beta-\alpha)$.
@@ -258,10 +262,6 @@ $$
 > Dimensional consistency and the propagation geometry therefore give the
 > corrected condition above. The printed and corrected forms agree on the
 > unit interval $L=1$ used for the model problems.
-u_1^k(\alpha L,t)-u(\alpha L,t)=0,
-\qquad
-u_2^k(\beta L,t)-u(\beta L,t)=0.
-$$
 
 Finite propagation speed drives the result. One exchange moves correct interface data only a finite distance along characteristics. Every iteration adds another exact space–time cone. Once their cumulative height exceeds $T$, the complete interface waveform is exact. Higher-dimensional decompositions are covered in Gander and Halpern (2004) and one-dimensional nonlinear conservation laws in Gander and Rohde (2005).
 

@@ -122,16 +122,20 @@ so $\boldsymbol\xi^k=M^k(z)\boldsymbol\xi^0$, which proves (4.2) after taking bo
 > [!note] Remark 4.1: preconditioner interpretation
 > $M(z)=I_t-M_g^{-1}(z)M_f(z)$. If $M_fU=b$ is the fine
 > all-at-once system, one preconditioned correction is
+>
 > $$
 > M_g(z)\Delta U^k=r^k:=b-M_f(z)U^k,
 > \qquad U^{k+1}=U^k+\Delta U^k.
 > $$
+>
 > Its $n$th residual block is
+>
 > $$
 > r_n^k=b_n-
 > \left[u_n^k-\mathcal F(T_{n-1},T_n,u_{n-1}^k)\right]
 > =b_n-u_n^k+R_f^J(z/J)u_{n-1}^k.
 > $$
+>
 > Fine propagation in the residual blocks is concurrent; application
 > of the coarse preconditioner remains sequential. Section 4.5 replaces
 > this serial correction by a diagonalizable one.

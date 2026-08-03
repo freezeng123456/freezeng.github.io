@@ -183,6 +183,15 @@ First construct the homogeneous propagations for all
 $n=1,\ldots,N_t$:
 
 $$
+\begin{aligned}
+(\boldsymbol w_n^k)'(t)&=A\boldsymbol w_n^k(t),
+&&t\in[T_{n-1},T],\\
+\boldsymbol w_n^k(T_{n-1})
+&=\boldsymbol u_{n-1}^{k-1}(T_{n-1})
+-\sum_{j=1}^{n-1}\boldsymbol w_j^{k-1}(T_{n-1}),
+&&\boldsymbol w_1^k(T_0)=\boldsymbol u_0.
+\end{aligned} \tag{3.18}
+$$
 
 Every initial value contains only iteration-$k-1$ data, so the
 different values of $n$ are independent during iteration $k$ and can
@@ -193,15 +202,6 @@ be solved concurrently.
 > side of (3.18) contains only previous-iteration data. That word also
 > conflicts with the “in parallel” descriptions immediately before and
 > after it. This page follows the algorithm's data dependencies.
-\begin{aligned}
-(\boldsymbol w_n^k)'(t)&=A\boldsymbol w_n^k(t),
-&&t\in[T_{n-1},T],\\
-\boldsymbol w_n^k(T_{n-1})
-&=\boldsymbol u_{n-1}^{k-1}(T_{n-1})
--\sum_{j=1}^{n-1}\boldsymbol w_j^{k-1}(T_{n-1}),
-&&\boldsymbol w_1^k(T_0)=\boldsymbol u_0.
-\end{aligned} \tag{3.18}
-$$
 
 Then solve the complete nonlinear problems concurrently on all local intervals:
 
