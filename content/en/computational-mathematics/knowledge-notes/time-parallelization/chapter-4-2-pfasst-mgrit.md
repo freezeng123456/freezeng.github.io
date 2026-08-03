@@ -18,7 +18,10 @@ tags:
 
 PFASST was introduced by Emmett and Minion (2012). Its precursor is due to Minion (2010), who replaced a complete Parareal fine solve with one spectral deferred-correction sweep (SDC; Dutt et al. 2000). Minion et al. (2015) gave the algebraic description, and Bolten, Moser and Speck (2017) read PFASST as temporal multigrid, with a convergence analysis in Bolten, Moser and Speck (2018): collocation on the fine level, low-order SDC as a smoother. Applications appear in Speck et al. (2012, 2014). The paper also cautions that a clear description and theoretical analysis of PFASST are rather challenging.
 
-Split $(0,T)$ into $N_t$ large intervals. On every $[T_n,T_{n+1}]$, define $M_f$ fine and $M_c$ coarse nodes
+Split $(0,T)$ into $N_t$ intervals. This section reuses
+$\Delta t=T_{n+1}-T_n$ for one PFASST interval; it is not the fine
+Parareal step from the preceding page. On every $[T_n,T_{n+1}]$,
+define $M_f$ fine and $M_c$ coarse collocation unknowns
 
 $$
 t_{n,m}^{f}=T_n+\tau_m^f\Delta t,
@@ -26,7 +29,9 @@ t_{n,m}^{f}=T_n+\tau_m^f\Delta t,
 t_{n,m}^{c}=T_n+\tau_m^c\Delta t,
 $$
 
-with $\tau_0^{f,c}=0$, $\tau_{M_{f,c}}^{f,c}=1$, and $M_f>M_c$.
+where $\tau_0^{f,c}=0$ is the separately listed initial location,
+$\tau_{M_{f,c}}^{f,c}=1$, and $M_f>M_c$. Thus $M_f=3$ means three
+collocation unknowns plus $\tau_0^f$, for four local time locations.
 
 ### Collocation equation (4.10)
 
@@ -45,6 +50,16 @@ Let
 $$
 Q=(q_{m,j}),\qquad
 \boldsymbol u_n=(\boldsymbol u_{n,1}^\top,\ldots,\boldsymbol u_{n,M}^\top)^\top,
+$$
+
+$$
+\boldsymbol g_n=
+\left(
+\boldsymbol g(t_{n,1})^\top,\ldots,
+\boldsymbol g(t_{n,M})^\top
+\right)^\top,
+\qquad
+\boldsymbol b_n=(Q\otimes I_x)\boldsymbol g_n,
 $$
 
 $$
@@ -74,6 +89,13 @@ $$
 \Phi_c=I_c-\Delta tQ_c\otimes A.
 $$
 
+Here
+
+$$
+I_f=I_{M_f}\otimes I_x,
+\qquad I_c=I_{M_c}\otimes I_x.
+$$
+
 Then
 
 $$
@@ -99,13 +121,19 @@ $$
 
 Evaluation at the fine nodes yields $T_{c\to f}$; evaluating fine Lagrange basis functions at coarse nodes yields $T_{f\to c}$. Both matrices are tensored with $I_x$, so transfer acts only in the collocation-node direction.
 
+> [!warning] Source check: the Lagrange basis
+> The journal and arXiv versions misprint both the node index in the
+> numerator and the denominator orientation. The numerical transfer
+> matrices that follow correspond to the standard basis above, not to
+> the printed expression.
+
 The block-iteration form of PFASST is
 
 $$
 \boldsymbol u_{n+1}^{k+1}
 =\mathbf B_1^0\boldsymbol u_{n+1}^k
-+\mathbf B_0^1(\boldsymbol\chi\boldsymbol u_n^{k+1}+\Delta t\boldsymbol b_n)
-+\mathbf B_0^0(\boldsymbol\chi\boldsymbol u_n^k+\Delta t\boldsymbol b_n),
++\mathbf B_0^1(\boldsymbol\chi\boldsymbol u_n^{k+1}+\Delta t\boldsymbol b_n^f)
++\mathbf B_0^0(\boldsymbol\chi\boldsymbol u_n^k+\Delta t\boldsymbol b_n^f),
 $$
 
 with
@@ -155,7 +183,31 @@ $$
 \left\{0,\frac{4-\sqrt6}{10},\frac{4+\sqrt6}{10},1\right\},
 $$
 
-that is $M_f=3$; the coarse nodes are $\{0,1/3,1\}$, that is $M_c=2$, with Radau IIA on both levels. The paper gives the resulting $Q_f,Q_c$ and the numerical transfer matrices
+that is $M_f=3$; the coarse nodes are $\{0,1/3,1\}$, that is
+$M_c=2$, with Radau IIA on both levels. The weight matrices are
+
+$$
+Q_f=
+\begin{bmatrix}
+\frac{88-7\sqrt6}{360}
+&\frac{296-169\sqrt6}{1800}
+&\frac{-2+3\sqrt6}{225}\\
+\frac{296+169\sqrt6}{1800}
+&\frac{88+7\sqrt6}{360}
+&\frac{-2-3\sqrt6}{225}\\
+\frac{16-\sqrt6}{36}
+&\frac{16+\sqrt6}{36}
+&\frac19
+\end{bmatrix},
+\qquad
+Q_c=
+\begin{bmatrix}
+\frac5{12}&-\frac1{12}\\
+\frac34&\frac14
+\end{bmatrix}.
+$$
+
+The same nodes give the numerical transfer matrices
 
 $$
 T^{c\to f}=
@@ -169,7 +221,12 @@ all determined by the node sets and Lagrange interpolation.
 
 ![Original Figure 4.6: PFASST error for the heat equation and advection–diffusion at three viscosities](assets/papers/time-parallelization/source-figures/figure-4-6.svg)
 
-The three advection–diffusion curves use $\nu=0.1,10^{-3},10^{-4}$, with the iteration index running to $300$. Heat and $\nu=0.1$ reach $10^{-12}$ near $k\approx90$–95, $\nu=10^{-3}$ near $120$, and $\nu=10^{-4}$ near $290$. The reason the paper gives is that the coarse propagator is no longer good enough for small $\nu$ once advection dominates.
+The three advection–diffusion curves use
+$\nu=0.1,10^{-3},10^{-4}$, with the iteration index running to $300$.
+Heat and $\nu=0.1$ reach $10^{-12}$ near $k\approx90$–95,
+$\nu=10^{-3}$ near $120$, and $\nu=10^{-4}$ near $290$. As viscosity
+weakens, the coarse propagator no longer represents the dominant
+advection well enough, so the iteration count rises.
 
 > [!note] Site supplement: relation to Parareal
 > In the language of Section 4.2 this is the same coarse–fine mismatch mechanism: persistent high frequencies become harder for the coarse collocation level to represent. The paper does not draw that comparison in this section.
@@ -206,7 +263,11 @@ The extra CF relaxation advances old-iterate information across one additional c
 
 ### Theorem 4.5: long-time modal factor
 
-Theorem 4.5 is taken from Dobrev et al. (2017). Under the notation and assumptions of Theorem 4.2 ($\boldsymbol e_n^k=V_A(\boldsymbol u_n^k-\boldsymbol u_n)$, with $A$ diagonalizable and $\sigma(A)\subset\mathbb C_-$) and $|R_g(z)|<1$,
+Theorem 4.5 is taken from Dobrev et al. (2017). Under the notation and
+assumptions of Theorem 4.2, $\mathcal F$ and $\mathcal G$ are one-step
+integrators, $\boldsymbol u_n$ is the sequential fine solution,
+$\boldsymbol e_n^k=V_A(\boldsymbol u_n^k-\boldsymbol u_n)$, and $A$ is
+diagonalizable with $\sigma(A)\subset\mathbb C_-$. If $|R_g(z)|<1$,
 
 $$
 \max_n\|\boldsymbol e_n^k\|_\infty
@@ -228,7 +289,11 @@ $$
 =|R_f^J(z/J)|\,\varrho_{l,\mathrm{Parareal}}.
 $$
 
-Provided $|R_f(z)|\le1$, the extra CF relaxation contributes one fine-propagation contraction and costs one additional parallel fine solve.
+Provided $|R_f(z/J)|\le1$ (equivalently,
+$|R_f^J(z/J)|\le1$), the extra CF relaxation contributes one
+fine-propagation contraction and costs one additional parallel fine
+solve. A-stability of the fine method on the entire left half-plane is
+sufficient.
 
 ![Original Figure 4.8: complex-plane convergence regions for one MGRiT iteration and two work-matched Parareal iterations](assets/papers/time-parallelization/source-figures/figure-4-8.svg)
 
@@ -236,7 +301,9 @@ Figure 4.8 uses backward Euler $R_g(z)=1/(1-z)$ and exact fine propagation $R_f(
 
 ### Theorem 4.6: work-normalized constants
 
-Theorem 4.6 is taken from Wu and Zhou (2019). For an L-stable fine method and $J=\Delta T/\Delta t=O(1)$, the worst negative-real-axis factors with backward Euler coarse propagation are
+Theorem 4.6 is taken from Wu and Zhou (2019). For an L-stable fine
+method and $J=\Delta T/\Delta t=O(1)$, let $s=-z\ge0$. With backward
+Euler coarse propagation, $\max_{s\ge0}\varrho_l(J,-s)$ is
 
 $$
 \max\varrho_l\approx
@@ -246,7 +313,8 @@ $$
 \end{cases}
 $$
 
-With second-order Lobatto IIIC coarse propagation they are
+With second-order Lobatto IIIC coarse propagation, the same
+$\max_{s\ge0}\varrho_l(J,-s)$ is
 
 $$
 \max\varrho_l\approx
@@ -277,11 +345,23 @@ Figure 4.9 places MGRiT in the top row, group (a), and Parareal in the bottom ro
 
 The four panels in Figure 4.10 are heat, ADE with $\nu=0.1$, ADE with $\nu=0.01$, and ADE with $\nu=0.002$. Each plotted Parareal unit contains two iterations. The first two panels show closely matched curves. At $\nu=0.01$, both are slow and Parareal deteriorates more because it inserts the inaccurate coarse solve after each fine solve. A dash-dotted line marks the discretization truncation error $\max\{\Delta t^2,\Delta x^2\}$, beyond which one would not iterate in practice. At $\nu=0.002$, both diverge; the maximum modal factor is $1.4211$ for Parareal and $1.2812$ for MGRiT (these two numbers appear only in the paper's running text, since Figure 4.9 plots just the first three diffusion regimes).
 
-The nonlinear Burgers test uses homogeneous Dirichlet data, the same initial condition, $T=5$, $\Delta T=1/16$, $\Delta x=1/160$, $J=10$, centered differences, backward Euler coarse propagation, and SDIRK22 fine propagation.
+The nonlinear case requires nonlinear solvers inside both
+$\mathcal F$ and $\mathcal G$. The comparison also assumes Lipschitz
+conditions on $\mathcal F$, $\mathcal G$, and their difference, so the
+“one FCF iteration behaves like two Parareal iterations” statement is
+not unconditional. The Burgers test uses homogeneous Dirichlet data,
+the same initial condition, $T=5$, $\Delta T=1/16$,
+$\Delta x=1/160$, $J=10$, centered differences, backward Euler coarse
+propagation, and SDIRK22 fine propagation.
 
 ![Original Figure 4.11: work-matched comparison on Burgers' equation at three viscosities](assets/papers/time-parallelization/source-figures/figure-4-11.svg)
 
-The three panels from left to right use $\nu=0.5,0.01,0.002$. The paper's conclusion is that **for each** $\nu$ one FCF-MGRiT iteration behaves like two Parareal iterations, as in the linear results of Figure 4.10, provided the coarse solver is reasonably accurate. At $\nu=0.002$, both curves pass through a long slow phase before their later rapid decrease, so the two methods deteriorate together as viscosity falls.
+The three panels from left to right use $\nu=0.5,0.01,0.002$.
+Provided the coarse solver remains reasonably accurate, one FCF-MGRiT
+iteration behaves like two Parareal iterations at all three
+viscosities, as in Figure 4.10. At $\nu=0.002$ both curves pass through
+a long slow phase before their later rapid decrease, so the two methods
+deteriorate together as viscosity falls.
 
 ## Equation, theorem, and figure audit
 

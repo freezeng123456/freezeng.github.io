@@ -120,7 +120,20 @@ $$
 于是 $\boldsymbol\xi^k=M^k(z)\boldsymbol\xi^0$，再取模态和时间节点的最大值便得 (4.2)。
 
 > [!note] Remark 4.1：预条件视角
-> $M(z)=I_t-M_g^{-1}(z)M_f(z)$。$M_fU=b$ 是细传播子的全时间系统，$M_g$ 是粗传播预条件器。残差中的每个细传播可以并行计算，粗预条件求解则沿时间顺序进行。这一视角直接导向 Section 4.5 的对角化粗校正。
+> $M(z)=I_t-M_g^{-1}(z)M_f(z)$。若 $M_fU=b$ 是细传播子的
+> 全时间系统，则一次预条件校正显式写成
+> $$
+> M_g(z)\Delta U^k=r^k:=b-M_f(z)U^k,
+> \qquad U^{k+1}=U^k+\Delta U^k.
+> $$
+> 第 $n$ 个残差块是
+> $$
+> r_n^k=b_n-
+> \left[u_n^k-\mathcal F(T_{n-1},T_n,u_{n-1}^k)\right]
+> =b_n-u_n^k+R_f^J(z/J)u_{n-1}^k.
+> $$
+> 因而各残差块中的细传播可以并行计算，$M_g$ 的粗预条件求解仍沿
+> 时间顺序进行。这一视角直接导向 Section 4.5 的对角化粗校正。
 
 严格下三角结构还说明：第 $k$ 轮后前 $k$ 个粗节点已与顺序细解一致，精确算术下至多 $N_t$ 轮终止。
 
@@ -183,11 +196,19 @@ $$
 
 ![原论文 Figure 4.2：短时间超线性与长时间线性两种收敛阶段](assets/papers/time-parallelization/source-figures/figure-4-2.svg)
 
-Figure 4.2 使用周期热方程、零源、$u_0(x)=\sin^2(2\pi x)$、$\Delta x=1/5$，粗细层都用后向 Euler，$J=10$。$T=0.02,N_t=6$ 时 $\varrho_s$ 准确描述超线性下降；更长区间中，误差按近似固定斜率下降，$\varrho_l$ 更合适。把空间网格细化到 $\Delta x=1/8$ 后，也会更早进入线性阶段。
+Figure 4.2 使用周期热方程、零源、
+$u_0(x)=\sin^2(2\pi x)$、$\Delta x=1/5$，粗细层都用后向
+Euler，$J=10$。左图 $(T,N_t)=(0.02,6)$，$\varrho_s$ 准确描述
+超线性下降；右图 $(T,N_t)=(0.5,64)$，误差按近似固定斜率下降，
+$\varrho_l$ 更合适。空间网格细化到 $\Delta x=1/8$ 后也观察到
+线性收敛，但原文没有断言它“更早进入”同一两阶段过程。
 
 ### Theorem 4.3：非线性超线性界
 
-令 $\mathcal F$ 为精确传播，$\mathcal G$ 为 $p$ 阶方法，局部截断误差不超过 $C_3\Delta T^{p+1}$。假设
+Theorem 4.3 引自 Gander 与 Hairer（2008, Theorem 1；另见
+Gander 与 Lunet 2024, Theorem 2.6）。令 $\mathcal F$ 为精确传播，
+$\mathcal G$ 为 $p$ 阶方法，局部截断误差不超过
+$C_3\Delta T^{p+1}$。在相关有界状态集上，假设
 
 $$
 \|\mathcal G(T_n,T_n+\Delta T,\boldsymbol v)
@@ -207,14 +228,31 @@ $$
 各系数对 $\boldsymbol v$ 连续可微，则
 
 $$
+\|(\mathcal F-\mathcal G)(\boldsymbol v)
+-(\mathcal F-\mathcal G)(\boldsymbol w)\|
+\le C_1\Delta T^{p+1}\|\boldsymbol v-\boldsymbol w\|,
+$$
+
+其中 $C_1$ 来自展开系数导数的一致界。对充分小的 $\Delta T$，
+
+$$
 \|\boldsymbol u(T_n)-\boldsymbol u_n^k\|
 \le
-\frac{C_3\Delta T^{p+1}(C_1\Delta T^{p+1})^{k+1}}{(k+1)!}
+\frac{C_3}{C_1}
+\frac{(C_1\Delta T^{p+1})^{k+1}}{(k+1)!}
 (1+C_2\Delta T)^{n-k-1}
 \prod_{j=0}^{k}(n-j). \tag{4.6}
 $$
 
 当 $k\ge n$ 时乘积出现零，前 $n$ 个界面已经精确。小 $\Delta T$ 下，每多一轮又带来一份 $\Delta T^{p+1}$，这就是非线性超线性阶段的来源。
+
+> [!warning] 原文公式核对：(4.6) 多出的一份 $\Delta T^{p+1}$
+> 期刊版与 arXiv 版把前因子印成
+> $C_3\Delta T^{p+1}(C_1\Delta T^{p+1})^{k+1}$。
+> 但被引用的 Gander–Hairer 定理是上面的
+> $(C_3/C_1)(C_1\Delta T^{p+1})^{k+1}$。取 $n=1,k=0$ 也能看出：
+> 一次粗步的误差应为 $O(\Delta T^{p+1})$，不是
+> $O(\Delta T^{2p+2})$。
 
 ### Theorem 4.4：约 0.3 的抛物长时间因子
 
@@ -225,17 +263,30 @@ $$
 \qquad J\ge J_{\min}. \tag{4.7}
 $$
 
-定理还假设 $A$ 为负半定矩阵。这个常数不随 $T,N_t$ 增长。证明分几种情形：$\mathcal F$ 取后向 Euler 见 Mathew、Sarkis 与 Schaerer（2010）；梯形规则、BDF2 和两种 SDIRK 方法见 Wu（2015）和 Wu 与 Zhou（2015）；一般 L-稳定 $\mathcal F$ 见 Yang、Yuan 与 Zhou（2023）。
+定理还假设 $A$ 为负半定矩阵。这个常数不随 $T,N_t$ 增长。
+$\mathcal F$ 取后向 Euler 的情形见 Mathew、Sarkis 与
+Schaerer（2010），一般 L-稳定 Runge–Kutta 方法见 Yang、Yuan 与
+Zhou（2023）。Wu（2015）和 Wu 与 Zhou（2015）还分析了 BDF2
+以及下面的 SDIRK 方法；梯形规则不属于本定理的 L-稳定情形，而属于
+(4.8) 的有限谱扩展。
 
 这一结果的源头是 Gander 与 Vandewalle（2007, Table 5.1）在**连续层面**（即 $\mathcal F$ 取精确传播子 $\exp(\Delta TA)$）对**其他粗传播子**得到的结论，收缩还可以更好，例如把粗传播子换成 Radau IIA 时约为 $0.068$。注意这里改变的是粗传播子，不是细传播子。
 
-若细传播仅 A-稳定，例如梯形规则，高频不会随 $|z|\to\infty$ 消失。此时在有限谱区间 $[0,z_{\max}]$ 上仍有
+若细传播仅 A-稳定，例如梯形规则，高频不会随
+$|z|\to\infty$ 消失。由于 $z=\Delta T\lambda(A)\le0$，有限谱区间应
+写成 $[-z_{\max},0]$：
 
 $$
-\max_{z\in[0,z_{\max}]}\varrho_l(J,z)\approx0.3,
+\max_{z\in[-z_{\max},0]}\varrho_l(J,z)\approx0.3,
 \qquad
 J\ge J_{\min}=O(\log^2 z_{\max}). \tag{4.8}
 $$
+
+> [!warning] 原文公式核对：(4.8) 的谱区间
+> 正式版印成 $z\in[0,z_{\max}]$，但同一节定义
+> $z=\Delta T\lambda(A)$ 且 $A$ 负半定，所以 $z\le0$。也可令
+> $s=-z\ge0$，把左端写成
+> $\max_{s\in[0,z_{\max}]}\varrho_l(J,-s)$。
 
 细层需要更多小步，才能让其高频行为与物理耗散相符。这与 $\mathcal F$ 取精确传播子 $\exp(\Delta TA)$ 的情形差别很大：后者只要 $J\ge2$ 就有约 $0.3$ 的收敛速率。(4.8) 由 Wu 与 Zhou（2015）对梯形规则和一个四阶 Gauss Runge–Kutta 方法证明。
 

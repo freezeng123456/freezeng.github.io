@@ -120,7 +120,21 @@ $$
 so $\boldsymbol\xi^k=M^k(z)\boldsymbol\xi^0$, which proves (4.2) after taking both maxima.
 
 > [!note] Remark 4.1: preconditioner interpretation
-> $M(z)=I_t-M_g^{-1}(z)M_f(z)$. The equation $M_fU=b$ is the fine all-at-once system, and $M_g$ is a coarse temporal preconditioner. Fine residual blocks are computed concurrently; application of the coarse preconditioner is sequential. Section 4.5 replaces this serial correction by a diagonalizable one.
+> $M(z)=I_t-M_g^{-1}(z)M_f(z)$. If $M_fU=b$ is the fine
+> all-at-once system, one preconditioned correction is
+> $$
+> M_g(z)\Delta U^k=r^k:=b-M_f(z)U^k,
+> \qquad U^{k+1}=U^k+\Delta U^k.
+> $$
+> Its $n$th residual block is
+> $$
+> r_n^k=b_n-
+> \left[u_n^k-\mathcal F(T_{n-1},T_n,u_{n-1}^k)\right]
+> =b_n-u_n^k+R_f^J(z/J)u_{n-1}^k.
+> $$
+> Fine propagation in the residual blocks is concurrent; application
+> of the coarse preconditioner remains sequential. Section 4.5 replaces
+> this serial correction by a diagonalizable one.
 
 The strictly lower triangular structure also proves exactness at the first $k$ coarse points after iteration $k$ and termination in at most $N_t$ iterations in exact arithmetic.
 
@@ -181,11 +195,20 @@ The numerator measures coarse–fine mismatch; the denominator measures the diss
 
 ![Original Figure 4.2: short-time superlinear and long-time linear convergence](assets/papers/time-parallelization/source-figures/figure-4-2.svg)
 
-Figure 4.2 uses the periodic heat equation, zero source, $u_0(x)=\sin^2(2\pi x)$, $\Delta x=1/5$, backward Euler on both levels, and $J=10$. For $T=0.02,N_t=6$, $\varrho_s$ predicts the superlinear decrease. A longer horizon gives an approximately fixed slope described by $\varrho_l$. Refining to $\Delta x=1/8$ also brings the linear regime forward.
+Figure 4.2 uses the periodic heat equation, zero source,
+$u_0(x)=\sin^2(2\pi x)$, $\Delta x=1/5$, backward Euler on both
+levels, and $J=10$. The left panel has $(T,N_t)=(0.02,6)$ and is
+predicted by $\varrho_s$; the right has $(T,N_t)=(0.5,64)$ and shows
+the fixed slope described by $\varrho_l$. A mesh refined to
+$\Delta x=1/8$ also converges linearly, but the source does not claim
+that it enters the same two-stage process earlier.
 
 ### Theorem 4.3: nonlinear superlinear estimate
 
-Let $\mathcal F$ be exact and $\mathcal G$ an order-$p$ method with local error at most $C_3\Delta T^{p+1}$. Assume
+Theorem 4.3 is due to Gander and Hairer (2008, Theorem 1; see also
+Gander and Lunet 2024, Theorem 2.6). Let $\mathcal F$ be exact and
+$\mathcal G$ an order-$p$ method with local error at most
+$C_3\Delta T^{p+1}$. On the relevant bounded set of states, assume
 
 $$
 \|\mathcal G(T_n,T_n+\Delta T,\boldsymbol v)
@@ -202,17 +225,35 @@ $$
 +c_{p+2}(\boldsymbol v)\Delta T^{p+2}+\cdots,
 $$
 
-with continuously differentiable coefficients. Then
+with continuously differentiable coefficients. Their derivative bounds
+give a defect Lipschitz constant $C_1$:
+
+$$
+\|(\mathcal F-\mathcal G)(\boldsymbol v)
+-(\mathcal F-\mathcal G)(\boldsymbol w)\|
+\le C_1\Delta T^{p+1}\|\boldsymbol v-\boldsymbol w\|.
+$$
+
+For sufficiently small $\Delta T$,
 
 $$
 \|\boldsymbol u(T_n)-\boldsymbol u_n^k\|
 \le
-\frac{C_3\Delta T^{p+1}(C_1\Delta T^{p+1})^{k+1}}{(k+1)!}
+\frac{C_3}{C_1}
+\frac{(C_1\Delta T^{p+1})^{k+1}}{(k+1)!}
 (1+C_2\Delta T)^{n-k-1}
 \prod_{j=0}^{k}(n-j). \tag{4.6}
 $$
 
 The product vanishes once $k\ge n$, and every iteration introduces another factor of $\Delta T^{p+1}$ on short intervals.
+
+> [!warning] Source check: the extra $\Delta T^{p+1}$ in (4.6)
+> The journal and arXiv versions print
+> $C_3\Delta T^{p+1}(C_1\Delta T^{p+1})^{k+1}$.
+> The cited Gander–Hairer theorem instead has
+> $(C_3/C_1)(C_1\Delta T^{p+1})^{k+1}$, as displayed above. The
+> one-step case $n=1,k=0$ makes the issue immediate: a coarse local
+> error is $O(\Delta T^{p+1})$, not $O(\Delta T^{2p+2})$.
 
 ### Theorem 4.4: the parabolic long-time factor near 0.3
 
@@ -223,17 +264,31 @@ $$
 \qquad J\ge J_{\min}. \tag{4.7}
 $$
 
-The theorem also assumes $A$ is negative semi-definite. This factor is independent of $T$ and $N_t$. The proof splits by case: $\mathcal F$ backward Euler in Mathew, Sarkis and Schaerer (2010); the trapezoidal rule, BDF2 and two SDIRK methods in Wu (2015) and Wu and Zhou (2015); general L-stable $\mathcal F$ in Yang, Yuan and Zhou (2023).
+The theorem also assumes $A$ is negative semi-definite. This factor is
+independent of $T$ and $N_t$. Backward Euler for $\mathcal F$ is
+treated by Mathew, Sarkis and Schaerer (2010), and general L-stable
+Runge–Kutta methods by Yang, Yuan and Zhou (2023). Wu (2015) and Wu and
+Zhou (2015) also analyze BDF2 and the SDIRK methods below. The
+trapezoidal rule is not an L-stable case of this theorem; it belongs to
+the bounded-spectrum extension (4.8).
 
 The result originates in Gander and Vandewalle (2007, Table 5.1) **at the continuous level** (that is, with $\mathcal F$ the exact propagator $\exp(\Delta TA)$) and **for other coarse propagators**, where the contraction can be even better — about $0.068$ for Radau IIA. Note that what changes there is the coarse propagator, not the fine one.
 
-For an A-stable but non-L-stable fine method such as the trapezoidal rule, one instead has over a bounded spectrum
+For an A-stable but non-L-stable fine method such as the trapezoidal
+rule, note that $z=\Delta T\lambda(A)\le0$. The bounded-spectrum
+statement should therefore be written
 
 $$
-\max_{z\in[0,z_{\max}]}\varrho_l(J,z)\approx0.3,
+\max_{z\in[-z_{\max},0]}\varrho_l(J,z)\approx0.3,
 \qquad
 J\ge J_{\min}=O(\log^2z_{\max}). \tag{4.8}
 $$
+
+> [!warning] Source check: the spectral interval in (4.8)
+> The published formula uses $z\in[0,z_{\max}]$, although this section
+> defines $z=\Delta T\lambda(A)$ with negative semidefinite $A$. An
+> equivalent positive variable is $s=-z$, giving
+> $\max_{s\in[0,z_{\max}]}\varrho_l(J,-s)$.
 
 More fine steps are needed to resolve the dissipative high-frequency physics. This differs sharply from the case where $\mathcal F$ is the exact propagator $\exp(\Delta TA)$, for which a rate around $0.3$ holds already for $J\ge2$. Equation (4.8) was proved for the trapezoidal rule and a fourth-order Gauss Runge–Kutta method in Wu and Zhou (2015). Equation (4.9) gives the two schemes explicitly:
 
