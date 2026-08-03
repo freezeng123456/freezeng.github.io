@@ -136,14 +136,15 @@ where the first subdiagonal of $\widetilde M(\beta)$ is $1$ and deeper diagonals
 
 $$
 \|\widetilde M^k(R_g)\|_\infty\le
+\begin{cases}
 \min\left\{
-\left(\frac{1-|R_g|^{N_t-1}}{1-|R_g|}\right)^k,
-\binom{N_t-1}{k}
-\right\}
-\quad(|R_g|<1),
-\qquad
-\|\widetilde M^k(R_g)\|_\infty\le\binom{N_t-1}{k}
-\quad(|R_g|=1),
+\left(\dfrac{1-|R_g|^{N_t-1}}{1-|R_g|}\right)^{\!k},\
+\dbinom{N_t-1}{k}
+\right\},
+&|R_g|<1,\\[10pt]
+\dbinom{N_t-1}{k},
+&|R_g|=1,
+\end{cases}
 $$
 
 and the two regimes below come from the two branches: the binomial coefficient produces the $\prod_{j=1}^k(N_t-j)/k!$ of (4.5a), and the geometric sum produces the $N_t$-independent (4.5b). For short horizons,

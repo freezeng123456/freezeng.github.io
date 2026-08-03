@@ -136,14 +136,15 @@ $$
 
 $$
 \|\widetilde M^k(R_g)\|_\infty\le
+\begin{cases}
 \min\left\{
-\left(\frac{1-|R_g|^{N_t-1}}{1-|R_g|}\right)^k,
-\binom{N_t-1}{k}
-\right\}
-\quad(|R_g|<1),
-\qquad
-\|\widetilde M^k(R_g)\|_\infty\le\binom{N_t-1}{k}
-\quad(|R_g|=1),
+\left(\dfrac{1-|R_g|^{N_t-1}}{1-|R_g|}\right)^{\!k},\
+\dbinom{N_t-1}{k}
+\right\},
+&|R_g|<1,\\[10pt]
+\dbinom{N_t-1}{k},
+&|R_g|=1,
+\end{cases}
 $$
 
 下面两类界正来自这两个分支：二项式系数给出 (4.5a) 中的 $\prod_{j=1}^k(N_t-j)/k!$，几何和给出与 $N_t$ 无关的 (4.5b)。
