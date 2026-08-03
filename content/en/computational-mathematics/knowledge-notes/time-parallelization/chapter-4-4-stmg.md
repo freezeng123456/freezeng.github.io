@@ -14,9 +14,11 @@ tags:
 
 ## 4.6 Space–time multigrid (STMG)
 
+Space–time multigrid goes back to the parabolic multigrid of Hackbusch (1984) and its improvement by Horton and Vandewalle (1995). The STMG of this section is due to Gander and Neumüller (2016), whose central finding is that replacing the temporal smoother by block Jacobi makes the method as effective as multigrid applied to Poisson problems, using only standard multigrid components. Related work includes Janssen and Vandewalle (1996), Van Lent and Vandewalle (2002), and Chaudet-Dumas, Gander and Pogozelskyte (2024).
+
 ### All-at-once system (4.30)–(4.31)
 
-Spatial discretization of heat or advection–diffusion gives
+As in the ParaDiag methods of Section 3.5, all time unknowns are first collected into one system. Spatial discretization of heat or advection–diffusion gives
 
 $$
 \boldsymbol u'=A\boldsymbol u+\boldsymbol f.
@@ -111,7 +113,7 @@ $$
 =S_{GS}(\boldsymbol b,\boldsymbol U^{\mathrm{ini}},s), \tag{4.35}
 $$
 
-solving $(D+L)\Delta\boldsymbol u_{n+1}^j$ and updating immediately. The next time point depends on the completed smoothed value at the current point. This works rapidly for heat when only space is coarsened but becomes slow under simultaneous space–time coarsening. STMG's decisive change is temporal block Jacobi, which parallelizes the full time direction and suppresses high-frequency error before coarse correction.
+solving $(D+L)\Delta\boldsymbol u_{n+1}^j=\widetilde{\boldsymbol f}_n+r_2\boldsymbol u_n^s-r_1\boldsymbol u_{n+1}^j$ at each time step and updating immediately, where $D$ and $L$ are the diagonal and **upper** triangular parts of $r_1$. The next time point depends on the completed smoothed value at the current point. This works rapidly for heat when only space is coarsened but becomes slow under simultaneous space–time coarsening. Horton and Vandewalle (1995) improved on that slow convergence with multigrid components adapted to reading the time direction as a strongly advective term. STMG's decisive change (Gander and Neumüller 2016) is temporal block Jacobi, which parallelizes the full time direction and suppresses high-frequency error before coarse correction, so that only standard multigrid components are needed.
 
 ### Starting point of local Fourier analysis
 
@@ -160,7 +162,7 @@ This symbol quantifies how one sweep damps each temporal and spatial frequency.
 
 ### Theorem 4.9: optimal damping for backward Euler
 
-For centered differences in space and backward Euler in time, the optimal damping that always permits time coarsening is
+Theorem 4.9 is proved in Gander and Lunet (2024). "Optimal" here means first maximizing $\rho$ over $\xi$ and $\omega$ (over $\omega\Delta t\in(-\pi,\pi)$ and $\xi\Delta x\in(-\pi,\pi)$) and then minimizing that maximum. For centered differences in space and backward Euler in time, the optimal damping that always permits time coarsening is
 
 $$
 \eta_{\mathrm{opt}}=\frac12.
@@ -192,15 +194,18 @@ $$
 \right). \tag{4.40}
 $$
 
+> [!warning] Source check: the ADE matrix versus (4.40)
+> The $A$ above and (4.40) cannot both be right. Under the paper's own convention, $\operatorname{Tri}(-1,0,1)/(2\Delta x)$ acting on a Fourier mode gives $+i\sin(\xi\Delta x)/\Delta x$, so the symbol of $r_1=I_x-\Delta tA$ carries the opposite imaginary sign from the $+i\frac{\Delta t}{\Delta x}\sin(\xi\Delta x)$ in the denominator of (4.40). Model problem (2.5) is $\partial_tu+\partial_xu-\nu\partial_{xx}u=g$, so $A$ discretizes $-\partial_x+\nu\partial_{xx}$ and should read $A=\frac{\nu}{\Delta x^2}\operatorname{Tri}(1,-2,1)-\frac1{2\Delta x}\operatorname{Tri}(-1,0,1)$, with which (4.40) holds as printed. The display above keeps the paper's typesetting. Because $\rho_{\max}$ is a maximum over $\xi\Delta x\in(-\pi,\pi)$ and $\sin$ is odd, the sign does not affect any number quoted on this page.
+
 ![Original Figure 4.18: maximum high-frequency smoothing factors for ADE at three viscosities](assets/papers/time-parallelization/source-figures/figure-4-18.svg)
 
-The panels from left to right use $\nu=0.1,0.01,0.001$; each compares $\Delta x=\Delta t=1/64,1/128,1/256$. The minima on all three grids remain near $\eta=1/2$, making the choice reasonably grid-robust. As viscosity falls, the minimum worst factor rises from roughly $0.71$ to $0.79$, so the achievable high-frequency contraction weakens.
+The panels from left to right use $\nu=0.1,0.01,0.001$; each compares $\Delta x=\Delta t=1/64,1/128,1/256$. The vertical axis $\rho_{\max}$ is defined as $\max_{(\Delta x\xi,\Delta t\omega)\in(-\pi,\pi)\times(\pi/2,\pi)}\rho$, that is, a maximum over all spatial frequencies but only over high temporal frequencies. Within each panel the minima for all three grids essentially coincide, making the choice reasonably grid-robust; as $\nu$ falls the minimizer drifts slowly to the right of $0.5$ and the minimum worst factor rises from roughly $0.71$ to $0.79$, so the achievable high-frequency contraction weakens. The paper claims only that $\eta=\tfrac12$ remains usable, not that it is the minimizer for every $\nu$.
 
 ### Damping, sweep count, and time-integrator dependence
 
 ![Original Figure 4.19: error after five, ten, and fifteen cycles versus damping](assets/papers/time-parallelization/source-figures/figure-4-19.svg)
 
-With one block-Jacobi sweep per cycle, panel (a) is heat and panel (b) is ADE at $\nu=0.01$; each reports errors after 5, 10, and 15 cycles. More cycles sharpen the low-error valley. The heat valley is broad, while the 15-cycle ADE minimum lies somewhat below $1/2$, near $0.4$. Figure 4.19 therefore supports $\eta=1/2$ as a robust heuristic, not as the exact finite-grid optimizer for every fixed cycle count.
+With one block-Jacobi sweep per cycle, panel (a) is heat and panel (b) is ADE at $\nu=0.01$; each reports errors after 5, 10, and 15 cycles. More cycles sharpen the low-error valley. The heat valley is broad, while the 15-cycle ADE curve has a flat basin running from roughly $0.3$ to $0.5$. Figure 4.19 therefore supports $\eta=1/2$ as a robust heuristic, not as the exact finite-grid optimizer for every fixed cycle count.
 
 ![Original Figure 4.20: one versus three block-Jacobi smoothing sweeps](assets/papers/time-parallelization/source-figures/figure-4-20.svg)
 
@@ -208,11 +213,11 @@ Panels (a) and (b) use one and three block-Jacobi sweeps, respectively; each com
 
 ![Original Figure 4.21: STMG with the trapezoidal rule across damping values and sweep counts](assets/papers/time-parallelization/source-figures/figure-4-21.svg)
 
-With trapezoidal time integration, the heat row, group (a), uses 3, 5, and 10 sweeps. Every damping scan either remains at large error or becomes unstable; more smoothing does not recover the backward-Euler behavior. The ADE row, group (b), uses 2, 3, and 4 sweeps at $\nu=0.01$. Its error valley deepens with additional smoothing and the useful damping range centers near $\eta=0.8$. The backward-Euler value $1/2$ depends on L-stable high-frequency damping and does not transfer directly.
+With trapezoidal time integration, the heat row, group (a), uses 3, 5, and 10 sweeps. Every damping scan either remains at large error or becomes unstable; more smoothing does not recover the backward-Euler behavior. The ADE row, group (b), uses 2, 3, and 4 sweeps at $\nu=0.01$. Its error valley deepens with additional smoothing. The paper reports $\eta\approx0.8$ as the useful value for that row; read off the plots, the per-panel optimum drifts from about $0.79$ to about $0.92$ as the sweep count rises. The backward-Euler value $1/2$ depends on L-stable high-frequency damping and does not transfer directly.
 
 ![Original Table 4.1: weak and strong scaling of STMG on a three-dimensional heat equation](assets/papers/time-parallelization/source-figures/table-4-1.svg)
 
-Weak scaling grows from 1 core, 2 time steps, and 59,768 degrees of freedom to 262,144 cores, 524,288 steps, and 15,667,822,592 degrees of freedom. The iteration count remains seven and wall time stays near 28.8–30.0 seconds. Estimated sequential time stepping with space-only parallelism grows from 19.0 to 4,988,060 seconds. Strong scaling drops from about 7,635.2 to 30.0 seconds at fixed problem size. The result combines space–time concurrency with a grid-independent cycle count.
+The table is taken from Gander and Neumüller (2016). Weak scaling grows from 1 core, 2 time steps, and 59,768 degrees of freedom to 262,144 cores, 524,288 steps, and 15,667,822,592 degrees of freedom. The iteration count remains seven and wall time stays near 28.8–30.0 seconds. The reference column, classical time stepping with the best possible parallelization in space only, grows from 19.0 to 4,988,060 seconds. There are two strong-scaling blocks: 512 time steps with 15,300,608 degrees of freedom drops from 7,635.2 to 30.0 seconds, and 524,288 time steps with 15,667,822,592 degrees of freedom drops from 15,205.9 to 30.0 seconds. The result combines space–time concurrency with a grid-independent cycle count.
 
 ### Nonlinear system and FAS
 
@@ -285,11 +290,13 @@ K_c(\boldsymbol U_c^{k+2/3})
 \right. \tag{4.44}
 $$
 
-FAS solves for a full coarse approximation and uses $\boldsymbol r_c+K_c(\boldsymbol U_c)$ to maintain nonlinear consistency, unlike a linear coarse error equation.
+FAS (Brandt 1977) solves for a full coarse approximation and uses $\boldsymbol r_c+K_c(\boldsymbol U_c)$ to maintain nonlinear consistency, unlike a linear coarse error equation.
 
 ![Original Figure 4.22: Burgers STMG with two block-Jacobi sweeps](assets/papers/time-parallelization/source-figures/figure-4-22.svg)
 
-The experiment uses two sweeps and the empirically best $\eta=1/4$. The $\nu=1$ curve crosses the plotted discretization-error line after roughly four cycles and continues toward $10^{-4}$; the $\nu=0.1$ curve remains above that line after 16 cycles. Nonlinear STMG therefore retains the viscosity sensitivity seen in linear Figures 4.20–4.21. STMG is the paper's strongest PinT solver for parabolic problems, while being more intrusive than Parareal and more sensitive to the integrator and PDE class.
+The experiment uses two sweeps and the empirically best $\eta=1/4$. The $\nu=1$ curve crosses the plotted discretization-error line after roughly four cycles and continues toward $10^{-4}$; the $\nu=0.1$ curve remains above that line after 16 cycles. Nonlinear STMG therefore retains the viscosity sensitivity seen in the linear case (the $\nu$ sweep of Figure 4.20).
+
+STMG is the paper's strongest PinT solver for parabolic problems, while being more intrusive than Parareal. The paper closes with two explicit research statements: for hyperbolic problems (Figures 4.20 and 4.22) STMG **appears to be less efficient, indicating that additional efforts are required in this domain**, and the dependence on the time integrator (Figure 4.21) **merits further investigation**.
 
 ## Equation, theorem, and figure audit
 

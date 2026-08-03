@@ -10,14 +10,14 @@ tags:
 ---
 
 > [!note] Reading scope
-> This page follows Section 4.5 (pp. 460–472). It covers equations (4.14)–(4.29), Theorems 4.7–4.8, Remark 4.2, and Figures 4.12–4.17. Both variants use diagonalization, but at different locations: the first parallelizes the global coarse-grid correction; the second defines a special coarse propagator inside each coarse interval.
+> This page follows Section 4.5 (pp. 460–471). It covers equations (4.14)–(4.29), Theorems 4.7–4.8, Remark 4.2, and Figures 4.12–4.17. Both variants use diagonalization, but at different locations: the first parallelizes the global coarse-grid correction; the second defines a special coarse propagator inside each coarse interval.
 
 ## 4.5 Diagonalization-based Parareal
 
 ### Distinguishing the two constructions
 
-- **Diagonalized CGC (Section 4.5.1):** modifies the serial correction across the $N_t$ coarse points. Its concurrency lies across coarse points, and its convergence mechanism remains close to standard Parareal, so its main range is parabolic.
-- **Diagonalized coarse propagator (Section 4.5.2):** retains the outer Parareal form and uses ParaDiag on the $J$ fine points inside every $[T_n,T_{n+1}]$. Coarse and fine propagation use the same integrator and step size. This construction transports long-lived modes and can also handle hyperbolic problems.
+- **Diagonalized CGC (Section 4.5.1; Wu 2018, Wu and Zhou 2019):** modifies the serial correction across the $N_t$ coarse points. Its concurrency lies across coarse points, and its convergence mechanism remains close to standard Parareal, so its main range is parabolic.
+- **Diagonalized coarse propagator (Section 4.5.2; Gander and Wu 2020):** retains the outer Parareal form and uses ParaDiag on the $J$ fine points inside every $[T_n,T_{n+1}]$. Coarse and fine propagation use the same integrator and step size. The paper notes that this coarse propagator transports **all frequency components** over a very long time, so it can also handle hyperbolic problems.
 
 ## 4.5.1 Diagonalization-based CGC
 
@@ -111,23 +111,30 @@ $$
 \right. \tag{4.17}
 $$
 
-An alpha-circulant implementation also applies the corresponding diagonal scalings. As in Section 3.5.2, the essential stages are an FFT-like transform, independent shifted spatial solves, and the inverse transform.
+Here $\{\lambda_n\}$ are the eigenvalues of $C_\alpha$ and $F$ is the discrete Fourier matrix, as in (3.51) and (3.50).
+
+> [!note] Site supplement: the diagonal scaling for $\alpha\ne1$
+> As printed, (4.17) uses only $F$ and $F^*$, which diagonalize $C_\alpha$ only for $\alpha=1$. By (3.59) of the paper's Section 3.5.2, the general case is $C_\alpha=V_\alpha D_\alpha V_\alpha^{-1}$ with $V_\alpha=\Lambda_\alpha F^*$ and $\Lambda_\alpha=\operatorname{diag}(1,\alpha^{-1/N_t},\ldots,\alpha^{-(N_t-1)/N_t})$, so an implementation needs the corresponding diagonal scaling.
+
+As in Section 3.5.2, the essential stages are an FFT-like transform, independent shifted spatial solves, and the inverse transform.
 
 ### Theorem 4.7: threshold for matching standard Parareal
 
-As $\alpha\to0$, equation (4.15) approaches standard CGC, while alpha-circulant roundoff increases. Let $\rho$ be the standard Parareal factor and $\rho_{\mathrm{new}}$ the new factor. For stable coarse propagation and a linear system with negative real eigenvalues,
+As $\alpha\to0$, equation (4.15) approaches standard CGC, while alpha-circulant roundoff increases, particularly in single or half precision. Theorem 4.7 is due to Wu (2018): let $\rho$ be the convergence factor of standard Parareal (4.14) and $\rho_{\mathrm{new}}$ that of the new variant (4.15), with $\mathcal G$ a stable integrator. Then
 
 $$
 \rho_{\mathrm{new}}=\rho,
-\qquad
-\alpha\le\frac{\rho}{1+\rho}. \tag{Theorem 4.7}
+\qquad\text{if}\qquad
+\alpha\le\frac{\rho}{1+\rho}.
 $$
 
-The practical choice is the threshold itself: reducing alpha further does not improve the asymptotic rate and increases roundoff exposure. Typically both $\rho$ and alpha are $O(10^{-1})$.
+The paper notes that this was proved for linear problems $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$ where $A$ has negative real eigenvalues; for other cases, such as complex eigenvalues, numerical results suggest it holds as well but there is no proof.
+
+The practical choice is the threshold itself: reducing alpha further does not improve the asymptotic rate and increases roundoff exposure. Typically both $\rho$ and alpha are $O(10^{-1})$, a regime in which the roundoff incurred by the diagonalization is negligible.
 
 ![Original Figure 4.12: standard and diagonalized CGC for heat and ADE](assets/papers/time-parallelization/source-figures/figure-4-12.svg)
 
-The test uses periodic data, $u_0(x)=\sin(2\pi x)$, backward Euler coarse and SDIRK22 fine propagation, $T=4$, $J=10$, $\Delta T=0.1$, and $\Delta x=1/128$. Panel (a) is heat, with $\rho\approx0.22$ and threshold $0.18$: $\alpha=0.25,0.4$ are slower than standard CGC, while $\alpha=0.1$ tracks it. Panel (b) is ADE at $\nu=0.1$, with $\rho\approx0.39$ and threshold $0.28$: $\alpha=0.1,0.25$ track standard CGC and $\alpha=0.4$ is clearly slower. The two panels locate the same threshold mechanism under two spectral geometries.
+The test uses periodic data, $u_0(x)=\sin(2\pi x)$, backward Euler coarse and SDIRK22 fine propagation, $T=4$, $J=10$, $\Delta T=0.1$, and $\Delta x=1/128$. Panel (a) is heat, with $\rho\approx0.22$ and threshold $0.18$: $\alpha=0.25,0.4$ are slower than standard CGC, while $\alpha=0.1$ tracks it. Panel (b) is ADE at $\nu=0.1$, with $\rho\approx0.39$ and threshold $0.28$: $\alpha=0.1,0.25$ track standard CGC and $\alpha=0.4$ is clearly slower. Note that the ADE semi-discretization has complex eigenvalues, exactly the case Theorem 4.7 does not cover and for which only numerical evidence is available.
 
 ### Nonlinear all-at-once quasi-Newton solve
 
@@ -168,7 +175,7 @@ where $A^{k+1,l}$ averages the temporal Jacobian blocks. The matrix has the stru
 
 ![Original Figure 4.13: the two CGCs for Burgers' equation at two viscosities](assets/papers/time-parallelization/source-figures/figure-4-13.svg)
 
-The left and right panels of Figure 4.13 use Burgers' equation at $\nu=1$ and $0.01$, respectively. Each compares $\alpha=0.4,0.25,0.1$ with standard CGC. Alpha $0.4$ is slowest in both viscosity regimes, while $0.1$ is closest to the standard curve and is slightly faster in the weak-diffusion panel. The nonlinear experiment therefore retains the threshold structure seen in Figure 4.12.
+The left and right panels of Figure 4.13 use Burgers' equation at $\nu=1$ and $0.01$, respectively, with the same problem set-up and discretization parameters as the heat and ADE runs. Each compares $\alpha=0.4,0.25,0.1$ with standard CGC. Alpha $0.4$ is slowest in both viscosity regimes; at $\nu=1$ the $\alpha=0.1$ curve is closest to the standard one, while at $\nu=0.01$ it is $\alpha=0.25$ that essentially coincides with the standard curve and $\alpha=0.1$ that runs slightly below it. The conclusion the paper draws is that the influence of $\alpha$ on the convergence rate remains as in the linear case, and Wu (2018, Section 4) shows the rate mirrors Parareal with standard CGC when $\alpha$ is chosen appropriately small. The paper states no nonlinear analogue of the $\rho/(1+\rho)$ threshold.
 
 ### Remark 4.2: MGRiT needs a consistent head–tail condition
 
@@ -194,7 +201,17 @@ $$
 \right. \tag{4.20}
 $$
 
-Here $\widetilde{\boldsymbol b}_{n+1}^k=\mathcal F(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)-\mathcal G(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)$ and $\widetilde{\boldsymbol s}_n^k=\mathcal F(T_{n-1},T_n,\widetilde{\boldsymbol u}_{n-1}^k)$. For small alpha this variant matches original MGRiT, with the same threshold mechanism as Theorem 4.7.
+Here $\widetilde{\boldsymbol b}_{n+1}^k=\mathcal F(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)-\mathcal G(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)$ and $\widetilde{\boldsymbol s}_n^k=\mathcal F(T_{n-1},T_n,\widetilde{\boldsymbol u}_{n-1}^k)$. Note that $\widetilde{\boldsymbol u}_n^k$ differs from the Section 4.5.1 definition: for the MGRiT variant the paper redefines it as
+
+$$
+\widetilde{\boldsymbol u}_n^k=
+\begin{cases}
+\boldsymbol u_n,&n=0,1,\\
+\boldsymbol u_n^k,&n\ge2,
+\end{cases}
+$$
+
+so at $n=1$ it uses the converged value $\boldsymbol u_1$ rather than the current iterate $\boldsymbol u_1^k$, consistent with the $\boldsymbol u_1$ appearing in the head–tail condition above. For small alpha this variant matches original MGRiT, with the same threshold mechanism as Theorem 4.7.
 
 ## 4.5.2 Diagonalization-based coarse solver
 
@@ -230,10 +247,10 @@ $$
 
 $$
 \boldsymbol b(\boldsymbol u_n)
-=((1-\alpha)\boldsymbol u_n^\top,0,\ldots,0)^\top. \tag{4.24}
+=((1-\alpha)\boldsymbol u_n^\top,0,\ldots,0)^\top.
 $$
 
-The first block of $F$ contains $\theta f(\boldsymbol v_1)$ and $(1-\theta)f(\alpha\boldsymbol v_J+(1-\alpha)\boldsymbol u_n)$; later blocks are $\theta f(\boldsymbol v_j)+(1-\theta)f(\boldsymbol v_{j-1})$. The quasi-Newton update is
+The paper defines $\boldsymbol V$ and $\boldsymbol b(\boldsymbol u_n)$ in an unnumbered inline display; the tag (4.24) belongs to the following group, which defines $C_\alpha$ and $F(\boldsymbol V)$. The first block of $F$ contains $\theta f(\boldsymbol v_1)$ and $(1-\theta)f(\alpha\boldsymbol v_J+(1-\alpha)\boldsymbol u_n)$; later blocks are $\theta f(\boldsymbol v_j)+(1-\theta)f(\boldsymbol v_{j-1})$. The quasi-Newton update is
 
 $$
 P_\alpha(\boldsymbol V^l)\Delta\boldsymbol V^l
@@ -298,11 +315,13 @@ At $\alpha=0$, coarse propagation equals sequential fine propagation and outer P
 
 ### Theorem 4.8: parabolic and hyperbolic spectra
 
-For a stable one-step Runge–Kutta method, let
+Theorem 4.8 is due to Gander and Wu (2020). For linear initial value problems $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$ with $A\in\mathbb C^{N_x\times N_x}$, where both $\mathcal F$ and $\mathcal F_\alpha^*$ use a stable one-step Runge–Kutta method, let
 
 $$
-e^k=\max_{1\le n\le N_t}\|\boldsymbol u_n-\boldsymbol u_n^k\|_\infty.
+e^k=\max_{1\le n\le N_t}\|\boldsymbol u_n-\boldsymbol u_n^k\|_\infty,
 $$
+
+where $\{\boldsymbol u_n\}$ is the converged solution rather than the exact PDE solution.
 
 Then
 
@@ -320,11 +339,11 @@ The heat-equation factor is independent of the number of coarse intervals. The i
 
 ![Original Figure 4.14: sharp rho=alpha prediction for the heat equation](assets/papers/time-parallelization/source-figures/figure-4-14.svg)
 
-The heat test uses homogeneous Dirichlet data, $u_0=\sin^2(2\pi x)$, trapezoidal integration, $\Delta T=1/2$, $J=10$, and $\Delta x=1/100$. The left and right panels use $N_t=36$ and $72$; each compares $\alpha=10^{-1},10^{-2},10^{-3}$. The measured dashed curves are almost parallel to the theoretical dotted curves, and doubling $N_t$ does not change the slope set by $\rho=\alpha$.
+The heat test uses homogeneous Dirichlet data, $u_0=\sin^2(2\pi x)$, trapezoidal integration, $\Delta T=1/12$, $J=10$, and $\Delta x=1/100$. The left and right panels use $N_t=36$ and $72$; each compares $\alpha=10^{-1},10^{-2},10^{-3}$. The measured dashed curves are almost parallel to the theoretical dotted curves, and doubling $N_t$ does not change the slope set by $\rho=\alpha$.
 
 ![Original Figure 4.15: joint influence of alpha and the coarse-interval count on the wave equation](assets/papers/time-parallelization/source-figures/figure-4-15.svg)
 
-The wave test uses periodic data, $u_0=\sin^2(2\pi x)$, and $u_t(0)=0$. Panel (a) fixes $\alpha=0.01$ and compares $N_t=24,48,96$, so increasing the interval count visibly slows convergence. Panel (b) fixes $\alpha=10^{-4}$ and compares $N_t=24,48,96,960$; increasing the count from 24 to 960 costs only about two extra iterations to reach $\max\{\Delta t^2,\Delta x^2\}$. The panels isolate the joint effect of $\alpha N_t$.
+The wave equation is first reduced to the first-order system $\boldsymbol w'=\boldsymbol{Aw}$ with $\boldsymbol w=(\boldsymbol u^\top,(\boldsymbol u')^\top)^\top$ and $\boldsymbol A=\begin{bmatrix}0&I_x\\A&0\end{bmatrix}$, which gives $\sigma(\boldsymbol A)\subset i\mathbb R$, the second branch of Theorem 4.8. The test uses periodic data and $\boldsymbol w(0)=(\sin^2(2\pi\boldsymbol x_h)^\top,\boldsymbol 0^\top)^\top$. Panel (a) fixes $\alpha=0.01$ and compares $N_t=24,48,96$, so increasing the interval count visibly slows convergence. Panel (b) fixes $\alpha=10^{-4}$ and compares $N_t=24,48,96,960$; increasing the count from 24 to 960 costs only about two extra iterations to reach $\max\{\Delta t^2,\Delta x^2\}$. The panels isolate the joint effect of $\alpha N_t$.
 
 ![Original Figure 4.16: the linear bound is sharp for small alpha Nt and conservative when the product is large](assets/papers/time-parallelization/source-figures/figure-4-16.svg)
 
@@ -358,4 +377,4 @@ The Burgers test uses periodic data, $u_0=\sin^2(2\pi x)$, $\Delta T=0.1$, $J=10
 
 ## Source
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 4.5, pp. 460–472.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 4.5, pp. 460–471.

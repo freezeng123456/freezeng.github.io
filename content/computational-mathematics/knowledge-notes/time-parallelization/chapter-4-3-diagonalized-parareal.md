@@ -10,14 +10,14 @@ tags:
 ---
 
 > [!note] 阅读范围
-> 本页对应论文 Section 4.5（pp. 460–472），覆盖公式 (4.14)–(4.29)、Theorems 4.7–4.8、Remark 4.2 和 Figures 4.12–4.17。两种方法都使用对角化，作用位置和适用范围不同：第一种并行化跨粗点的 CGC，第二种在每个粗区间内构造可并行的特殊粗传播子。
+> 本页对应论文 Section 4.5（pp. 460–471），覆盖公式 (4.14)–(4.29)、Theorems 4.7–4.8、Remark 4.2 和 Figures 4.12–4.17。两种方法都使用对角化，作用位置和适用范围不同：第一种并行化跨粗点的 CGC，第二种在每个粗区间内构造可并行的特殊粗传播子。
 
 ## 4.5 基于对角化的 Parareal
 
 ### 两条路线先分清
 
-- **对角化 CGC（Section 4.5.1）**：修改 Parareal 跨 $N_t$ 个粗点的顺序粗校正。并行宽度来自粗时间点；收敛机制仍接近标准 Parareal，主要适合抛物问题。
-- **对角化粗传播子（Section 4.5.2）**：保留标准 Parareal 粗校正的外形，在每个 $[T_n,T_{n+1}]$ 内，用 ParaDiag 同时处理 $J$ 个细步。粗、细传播使用同一个积分器和步长；该构造能传递长寿命频率，因此也能处理双曲问题。
+- **对角化 CGC（Section 4.5.1，Wu 2018；Wu 与 Zhou 2019）**：修改 Parareal 跨 $N_t$ 个粗点的顺序粗校正。并行宽度来自粗时间点；收敛机制仍接近标准 Parareal，主要适合抛物问题。
+- **对角化粗传播子（Section 4.5.2，Gander 与 Wu 2020）**：保留标准 Parareal 粗校正的外形，在每个 $[T_n,T_{n+1}]$ 内，用 ParaDiag 同时处理 $J$ 个细步。粗、细传播使用同一个积分器和步长；论文指出这种粗传播子能把**全部频率分量**长时间输运，因此也能处理双曲问题。
 
 ## 4.5.1 基于对角化的 CGC
 
@@ -115,23 +115,30 @@ $$
 \right. \tag{4.17}
 $$
 
-实际 $\alpha$-循环实现还包含相应对角缩放；与 Section 3.5.2 相同，核心是 FFT 变换、独立移位空间求解和逆变换。CGC 因而能在全部粗点上同时完成。
+这里 $\{\lambda_n\}$ 是 $C_\alpha$ 的特征值，$F$ 是离散 Fourier 矩阵，分别对应 (3.51) 和 (3.50)。
+
+> [!note] 本站补充：$\alpha\ne1$ 时的对角缩放
+> (4.17) 按原文排印只写了 $F$ 与 $F^*$，而这只在 $\alpha=1$ 时对角化 $C_\alpha$。按论文 Section 3.5.2 的 (3.59)，一般情形是 $C_\alpha=V_\alpha D_\alpha V_\alpha^{-1}$，其中 $V_\alpha=\Lambda_\alpha F^*$、$\Lambda_\alpha=\operatorname{diag}(1,\alpha^{-1/N_t},\ldots,\alpha^{-(N_t-1)/N_t})$，即实现中还需要相应的对角缩放。
+
+与 Section 3.5.2 相同，核心是 FFT 变换、独立移位空间求解和逆变换。CGC 因而能在全部粗点上同时完成。
 
 ### Theorem 4.7：保持标准 Parareal 速度的阈值
 
-当 $\alpha\to0$，(4.15) 回到标准 CGC；过小 $\alpha$ 又会放大 $\alpha$-循环对角化的舍入误差。若标准 Parareal 因子为 $\rho$，新方法因子为 $\rho_{\mathrm{new}}$，粗传播稳定，且线性系统的特征值位于负实轴，则
+当 $\alpha\to0$，(4.15) 回到标准 CGC；过小 $\alpha$ 又会放大 $\alpha$-循环对角化的舍入误差，在单精度或半精度下尤其明显。Theorem 4.7 引自 Wu（2018）：设标准 Parareal (4.14) 的收敛因子为 $\rho$，新变体 (4.15) 的收敛因子为 $\rho_{\mathrm{new}}$，粗求解器 $\mathcal G$ 为稳定积分器，则
 
 $$
 \rho_{\mathrm{new}}=\rho,
-\qquad
-\alpha\le\frac{\rho}{1+\rho}. \tag{Theorem 4.7}
+\qquad\text{只要}\qquad
+\alpha\le\frac{\rho}{1+\rho}.
 $$
 
-因此实用选择为阈值本身 $\alpha=\rho/(1+\rho)$：再减小不会改善渐近速度，只会增加舍入风险。通常 $\rho=O(10^{-1})$，所以 $\alpha$ 也在 $10^{-1}$ 量级。
+论文说明该结论是对 $A$ 具有负实特征值的线性问题 $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$ 证明的；对复特征值等其他情形，数值结果显示它同样成立，但没有证明。
+
+因此实用选择为阈值本身 $\alpha=\rho/(1+\rho)$：再减小不会改善渐近速度，只会增加舍入风险。通常 $\rho=O(10^{-1})$，所以 $\alpha$ 也在 $10^{-1}$ 量级，此时对角化引入的舍入误差可以忽略。
 
 ![原论文 Figure 4.12：标准与对角化 CGC 在热方程和 ADE 上的误差](assets/papers/time-parallelization/source-figures/figure-4-12.svg)
 
-实验使用周期边界、$u_0(x)=\sin(2\pi x)$、后向 Euler 粗层、SDIRK22 细层、$T=4$、$J=10$、$\Delta T=0.1$、$\Delta x=1/128$。(a) 是热方程，测得 $\rho\approx0.22$，阈值约 $0.18$；因此 $\alpha=0.25,0.4$ 慢于标准 CGC，$\alpha=0.1$ 与其重合。(b) 是 $\nu=0.1$ 的 ADE，$\rho\approx0.39$、阈值约 $0.28$；这里 $\alpha=0.1,0.25$ 都能跟上标准 CGC，$\alpha=0.4$ 明显变慢。两个面板分别验证同一个阈值在两种谱结构下的位置。
+实验使用周期边界、$u_0(x)=\sin(2\pi x)$、后向 Euler 粗层、SDIRK22 细层、$T=4$、$J=10$、$\Delta T=0.1$、$\Delta x=1/128$。(a) 是热方程，测得 $\rho\approx0.22$，阈值约 $0.18$；因此 $\alpha=0.25,0.4$ 慢于标准 CGC，$\alpha=0.1$ 与其重合。(b) 是 $\nu=0.1$ 的 ADE，$\rho\approx0.39$、阈值约 $0.28$；这里 $\alpha=0.1,0.25$ 都能跟上标准 CGC，$\alpha=0.4$ 明显变慢。注意 ADE 的半离散矩阵具有复特征值，正是 Theorem 4.7 未覆盖、只有数值证据支持的情形。
 
 ### 非线性全时间准 Newton
 
@@ -172,7 +179,7 @@ $$
 
 ![原论文 Figure 4.13：两种黏性 Burgers 方程上的两类 CGC](assets/papers/time-parallelization/source-figures/figure-4-13.svg)
 
-Figure 4.13 左、右面板分别取 Burgers 方程 $\nu=1$ 与 $0.01$，每幅都比较 $\alpha=0.4,0.25,0.1$ 和标准 CGC。两种黏性下，$\alpha=0.4$ 都最慢；$\alpha=0.1$ 最接近标准曲线，弱扩散面板中还略快于标准 CGC。非线性情形因此保留了与 Figure 4.12 相同的阈值结构。
+Figure 4.13 左、右面板分别取 Burgers 方程 $\nu=1$ 与 $0.01$，实验设置和离散参数与前面的热方程/ADE 算例相同，每幅都比较 $\alpha=0.4,0.25,0.1$ 和标准 CGC。两种黏性下 $\alpha=0.4$ 都最慢；$\nu=1$ 面板中 $\alpha=0.1$ 与标准曲线最接近，$\nu=0.01$ 面板中 $\alpha=0.25$ 几乎与标准曲线重合而 $\alpha=0.1$ 略低。论文由此得出的结论是：$\alpha$ 对收敛速度的影响与线性情形一致，Wu（2018, Section 4）证明了 $\alpha$ 取得足够小时收敛速度与标准 CGC 的 Parareal 相当。原文没有给出 $\rho/(1+\rho)$ 阈值的非线性版本。
 
 ### Remark 4.2：MGRiT 需要一致的首尾条件
 
@@ -198,7 +205,17 @@ $$
 \right. \tag{4.20}
 $$
 
-这里 $\widetilde{\boldsymbol b}_{n+1}^k=\mathcal F(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)-\mathcal G(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)$，$\widetilde{\boldsymbol s}_n^k=\mathcal F(T_{n-1},T_n,\widetilde{\boldsymbol u}_{n-1}^k)$。小 $\alpha$ 时，该变体与原 MGRiT 同速，Theorem 4.7 的阈值机制仍适用。Parareal 本身也可使用同样一致的差分首尾条件。
+这里 $\widetilde{\boldsymbol b}_{n+1}^k=\mathcal F(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)-\mathcal G(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)$，$\widetilde{\boldsymbol s}_n^k=\mathcal F(T_{n-1},T_n,\widetilde{\boldsymbol u}_{n-1}^k)$。注意这里的 $\widetilde{\boldsymbol u}_n^k$ 与 Section 4.5.1 的定义不同，论文为 MGRiT 变体重新定义为
+
+$$
+\widetilde{\boldsymbol u}_n^k=
+\begin{cases}
+\boldsymbol u_n,&n=0,1,\\
+\boldsymbol u_n^k,&n\ge2,
+\end{cases}
+$$
+
+即 $n=1$ 处取的是收敛值 $\boldsymbol u_1$ 而非当前迭代 $\boldsymbol u_1^k$，这与上面首尾条件里出现的 $\boldsymbol u_1$ 一致。小 $\alpha$ 时，该变体与原 MGRiT 同速，Theorem 4.7 的阈值机制仍适用。Parareal 本身也可使用同样一致的差分首尾条件。
 
 ## 4.5.2 基于对角化的粗传播子
 
@@ -234,10 +251,10 @@ $$
 
 $$
 \boldsymbol b(\boldsymbol u_n)
-=((1-\alpha)\boldsymbol u_n^\top,0,\ldots,0)^\top. \tag{4.24}
+=((1-\alpha)\boldsymbol u_n^\top,0,\ldots,0)^\top.
 $$
 
-$F$ 的首块同时含 $\theta f(\boldsymbol v_1)$ 和 $(1-\theta)f(\alpha\boldsymbol v_J+(1-\alpha)\boldsymbol u_n)$；其余块为 $\theta f(\boldsymbol v_j)+(1-\theta)f(\boldsymbol v_{j-1})$。
+原文把 $\boldsymbol V$ 与 $\boldsymbol b(\boldsymbol u_n)$ 放在一段未编号的行内公式中，编号 (4.24) 属于随后定义 $C_\alpha$ 与 $F(\boldsymbol V)$ 的那组公式。$F$ 的首块同时含 $\theta f(\boldsymbol v_1)$ 和 $(1-\theta)f(\alpha\boldsymbol v_J+(1-\alpha)\boldsymbol u_n)$；其余块为 $\theta f(\boldsymbol v_j)+(1-\theta)f(\boldsymbol v_{j-1})$。
 
 准 Newton 更新为
 
@@ -308,11 +325,13 @@ $\alpha=0$ 时粗传播等于顺序细传播，外层一轮收敛，同时完全
 
 ### Theorem 4.8：抛物谱与双曲谱
 
-线性问题中，若细、粗都使用稳定单步 Runge–Kutta 方法，令
+Theorem 4.8 引自 Gander 与 Wu（2020）。对线性初值问题 $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$，$A\in\mathbb C^{N_x\times N_x}$，若 $\mathcal F$ 与 $\mathcal F_\alpha^*$ 都使用稳定单步 Runge–Kutta 方法，令
 
 $$
 e^k=\max_{1\le n\le N_t}\|\boldsymbol u_n-\boldsymbol u_n^k\|_\infty,
 $$
+
+其中 $\{\boldsymbol u_n\}$ 是收敛解（不是 PDE 精确解），
 
 则
 
@@ -330,11 +349,11 @@ $$
 
 ![原论文 Figure 4.14：热方程上 rho=alpha 的锐利预测](assets/papers/time-parallelization/source-figures/figure-4-14.svg)
 
-热方程采用齐次 Dirichlet 边界、$u_0=\sin^2(2\pi x)$、梯形规则、$\Delta T=1/2$、$J=10$、$\Delta x=1/100$。左、右面板分别取 $N_t=36$ 与 $72$，每幅都比较 $\alpha=10^{-1},10^{-2},10^{-3}$。实测虚线与理论点线几乎平行，$N_t$ 加倍没有改变由 $\rho=\alpha$ 决定的斜率。
+热方程采用齐次 Dirichlet 边界、$u_0=\sin^2(2\pi x)$、梯形规则、$\Delta T=1/12$、$J=10$、$\Delta x=1/100$。左、右面板分别取 $N_t=36$ 与 $72$，每幅都比较 $\alpha=10^{-1},10^{-2},10^{-3}$。实测虚线与理论点线几乎平行，$N_t$ 加倍没有改变由 $\rho=\alpha$ 决定的斜率。
 
 ![原论文 Figure 4.15：波动方程上 alpha 与粗区间数的共同影响](assets/papers/time-parallelization/source-figures/figure-4-15.svg)
 
-波动方程取周期边界、$u_0=\sin^2(2\pi x)$、$u_t(0)=0$。(a) 固定 $\alpha=0.01$，比较 $N_t=24,48,96$，区间数增加会明显减慢；(b) 固定 $\alpha=10^{-4}$，比较 $N_t=24,48,96,960$，从 24 增到 960 只多约两轮达到 $\max\{\Delta t^2,\Delta x^2\}$。两个面板把 $\alpha N_t$ 的联合作用直接分离出来。
+波动方程先化为一阶系统 $\boldsymbol w'=\boldsymbol{Aw}$，其中 $\boldsymbol w=(\boldsymbol u^\top,(\boldsymbol u')^\top)^\top$、$\boldsymbol A=\begin{bmatrix}0&I_x\\A&0\end{bmatrix}$，由此得到 $\sigma(\boldsymbol A)\subset i\mathbb R$，正是 Theorem 4.8 的第二个分支。实验取周期边界、$\boldsymbol w(0)=(\sin^2(2\pi\boldsymbol x_h)^\top,\boldsymbol 0^\top)^\top$。(a) 固定 $\alpha=0.01$，比较 $N_t=24,48,96$，区间数增加会明显减慢；(b) 固定 $\alpha=10^{-4}$，比较 $N_t=24,48,96,960$，从 24 增到 960 只多约两轮达到 $\max\{\Delta t^2,\Delta x^2\}$。两个面板把 $\alpha N_t$ 的联合作用直接分离出来。
 
 ![原论文 Figure 4.16：小 alpha Nt 时理论因子较锐利，大乘积时出现超线性](assets/papers/time-parallelization/source-figures/figure-4-16.svg)
 
@@ -368,4 +387,4 @@ Burgers 实验取周期边界、$u_0=\sin^2(2\pi x)$、$\Delta T=0.1$、$J=10$�
 
 ## 本页原文
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 4.5, pp. 460–472.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 4.5, pp. 460–471.

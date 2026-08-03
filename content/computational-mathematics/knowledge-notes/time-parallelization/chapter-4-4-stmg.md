@@ -14,9 +14,11 @@ tags:
 
 ## 4.6 时空多重网格（STMG）
 
+时空多重网格的历史可上溯到 Hackbusch（1984）的抛物多重网格和 Horton 与 Vandewalle（1995）的改进。本节的 STMG 来自 Gander 与 Neumüller（2016），其核心发现是：只要把时间方向的平滑换成块 Jacobi，就能只用标准多重网格分量达到 Poisson 问题上的效率。相关工作还有 Janssen 与 Vandewalle（1996）、Van Lent 与 Vandewalle（2002）以及 Chaudet-Dumas、Gander 与 Pogozelskyte（2024）。
+
 ### 全时间系统 (4.30)–(4.31)
 
-空间离散热方程或对流扩散方程后得到
+与 Section 3.5 的 ParaDiag 一样，先把所有时间点的未知量收进一个系统。空间离散热方程或对流扩散方程后得到
 
 $$
 \boldsymbol u'=A\boldsymbol u+\boldsymbol f.
@@ -117,7 +119,7 @@ $$
 =S_{GS}(\boldsymbol b,\boldsymbol U^{\mathrm{ini}},s), \tag{4.35}
 $$
 
-每个时间步内求 $(D+L)\Delta\boldsymbol u_{n+1}^j$，并立即更新 $\boldsymbol u_{n+1}^{j+1}$。下一个时间点依赖当前点平滑完成后的值，故时间方向严格顺序。它在只粗化空间的热方程上很快，同时粗化时空时会变慢。STMG 的关键变化是 (4.32) 的时间块 Jacobi，使全体时间点并行，并让高频误差在粗化前得到一致压制。
+其中每个时间步内求解 $(D+L)\Delta\boldsymbol u_{n+1}^j=\widetilde{\boldsymbol f}_n+r_2\boldsymbol u_n^s-r_1\boldsymbol u_{n+1}^j$，并立即更新 $\boldsymbol u_{n+1}^{j+1}$；这里 $D$ 与 $L$ 是 $r_1$ 的对角部分和**上**三角部分。下一个时间点依赖当前点平滑完成后的值，故时间方向严格顺序。它在只粗化空间的热方程上很快，同时粗化时空时会变慢。Horton 与 Vandewalle（1995）曾用一组专门的多重网格分量改善这种慢收敛，其思路是把时间方向解释为强对流项。STMG 的关键变化则是 (4.32) 的时间块 Jacobi（Gander 与 Neumüller 2016），使全体时间点并行，并让高频误差在粗化前得到一致压制，从而只用标准多重网格分量就达到 Poisson 问题的效果。
 
 ### 局部 Fourier 分析的起点
 
@@ -166,7 +168,7 @@ $$
 
 ### Theorem 4.9：后向 Euler 下的最优阻尼
 
-对一维热方程的中心差分–后向 Euler 离散，始终允许时间粗化的最优阻尼为
+Theorem 4.9 的证明见 Gander 与 Lunet（2024）。这里的“最优”指先对 $\xi,\omega$ 取 $\rho$ 的最大值（频率范围 $\omega\Delta t\in(-\pi,\pi)$、$\xi\Delta x\in(-\pi,\pi)$），再对该最大值取最小。对一维热方程的中心差分–后向 Euler 离散，始终允许时间粗化的最优阻尼为
 
 $$
 \eta_{\mathrm{opt}}=\frac12.
@@ -198,15 +200,18 @@ $$
 \right). \tag{4.40}
 $$
 
+> [!warning] 原文公式核对：ADE 矩阵与 (4.40) 的符号
+> 上面的 $A$ 与 (4.40) 不能同时正确。按论文自己的约定，$\operatorname{Tri}(-1,0,1)/(2\Delta x)$ 作用在 Fourier 模态上给出 $+i\sin(\xi\Delta x)/\Delta x$，于是 $r_1=I_x-\Delta tA$ 的符号与 (4.40) 分母中的 $+i\frac{\Delta t}{\Delta x}\sin(\xi\Delta x)$ 相反。模型问题 (2.5) 是 $\partial_tu+\partial_xu-\nu\partial_{xx}u=g$，所以 $A$ 离散的是 $-\partial_x+\nu\partial_{xx}$，正确写法应为 $A=\frac{\nu}{\Delta x^2}\operatorname{Tri}(1,-2,1)-\frac1{2\Delta x}\operatorname{Tri}(-1,0,1)$，此时 (4.40) 如印刷所示成立。上式保留原文排印。由于 $\rho_{\max}$ 是对 $\xi\Delta x\in(-\pi,\pi)$ 取最大而 $\sin$ 是奇函数，这个符号不影响本页引用的任何数值。
+
 ![原论文 Figure 4.18：三种黏性 ADE 的高频最大平滑因子](assets/papers/time-parallelization/source-figures/figure-4-18.svg)
 
-Figure 4.18 从左到右取 $\nu=0.1,0.01,0.001$，每幅都比较 $\Delta x=\Delta t=1/64,1/128,1/256$。三种网格上的谷底都位于 $\eta\approx1/2$ 附近，说明这项选择对网格较稳健；黏性降低时，谷底从约 $0.71$ 抬升到约 $0.79$，可获得的高频收缩随之减弱。
+Figure 4.18 从左到右取 $\nu=0.1,0.01,0.001$，每幅都比较 $\Delta x=\Delta t=1/64,1/128,1/256$。纵轴 $\rho_{\max}$ 定义为 $\max_{(\Delta x\xi,\Delta t\omega)\in(-\pi,\pi)\times(\pi/2,\pi)}\rho$，即对全部空间频率、但只对时间高频取最大。同一面板内三种网格的谷底位置基本重合，说明这项选择对网格较稳健；随 $\nu$ 减小，谷底位置从约 $0.5$ 缓慢右移，谷底值从约 $0.71$ 抬升到约 $0.79$，可获得的高频收缩随之减弱。论文对此只主张 $\eta=\tfrac12$ 仍然可用，并未声称它在每种 $\nu$ 下都取到最小值。
 
 ### 阻尼、平滑次数和积分器依赖
 
 ![原论文 Figure 4.19：五、十、十五轮后误差随阻尼参数变化](assets/papers/time-parallelization/source-figures/figure-4-19.svg)
 
-两层 STMG 每轮只做一次块 Jacobi。(a) 是热方程，(b) 是 $\nu=0.01$ 的 ADE；每幅分别报告 5、10、15 轮后的误差。迭代越多，$\eta$ 附近的低误差谷越清楚。热方程的谷底较宽，ADE 的 15 轮曲线最低点略偏向 $0.4$，因此 Figure 4.19 支持的是“$\eta=1/2$ 为稳健经验值”，并没有声称它在每个有限网格和固定轮数下都是精确最优值。
+两层 STMG 每轮只做一次块 Jacobi。(a) 是热方程，(b) 是 $\nu=0.01$ 的 ADE；每幅分别报告 5、10、15 轮后的误差。迭代越多，$\eta$ 附近的低误差谷越清楚。热方程的谷底较宽，ADE 的 15 轮曲线谷底在约 $0.3$ 到 $0.5$ 之间相当平坦，因此 Figure 4.19 支持的是“$\eta=1/2$ 为稳健经验值”，并没有声称它在每个有限网格和固定轮数下都是精确最优值。
 
 ![原论文 Figure 4.20：一次与三次块 Jacobi 平滑的误差](assets/papers/time-parallelization/source-figures/figure-4-20.svg)
 
@@ -214,11 +219,11 @@ Figure 4.18 从左到右取 $\nu=0.1,0.01,0.001$，每幅都比较 $\Delta x=\De
 
 ![原论文 Figure 4.21：梯形规则下不同平滑次数和阻尼的 STMG](assets/papers/time-parallelization/source-figures/figure-4-21.svg)
 
-换成梯形规则后，上排 (a) 的热方程依次使用 3、5、10 次平滑，所有阻尼扫描都停在较大误差或发生发散；增加平滑次数没有恢复后向 Euler 的效果。下排 (b) 是 $\nu=0.01$ 的 ADE，依次使用 2、3、4 次平滑，误差谷随平滑次数增加而加深，较优阻尼落在约 $0.8$ 附近。后向 Euler 的 $\eta=1/2$ 结论依赖其高频耗散，不能直接移植。
+换成梯形规则后，上排 (a) 的热方程依次使用 3、5、10 次平滑，所有阻尼扫描都停在较大误差或发生发散；增加平滑次数没有恢复后向 Euler 的效果。下排 (b) 是 $\nu=0.01$ 的 ADE，依次使用 2、3、4 次平滑，误差谷随平滑次数增加而加深。论文对下排给出的经验值是 $\eta\approx0.8$；实际读图时，三个面板的最优点随平滑次数从约 $0.79$ 移到约 $0.92$。后向 Euler 的 $\eta=1/2$ 结论依赖其高频耗散，不能直接移植。
 
 ![原论文 Table 4.1：三维热方程 STMG 的弱扩展和强扩展](assets/papers/time-parallelization/source-figures/table-4-1.svg)
 
-弱扩展从 1 核、2 个时间步、59,768 个自由度增长到 262,144 核、524,288 个时间步、15,667,822,592 个自由度；迭代数始终为 7，墙钟时间从 28.8 秒维持到约 30.0 秒。只做空间并行的顺序时间推进估计从 19.0 秒增至 4,988,060 秒。强扩展在固定问题规模下也从约 7,635.2 秒降到 30.0 秒。这张表说明 STMG 的价值来自时空并行与网格无关迭代数的同时实现。
+该表取自 Gander 与 Neumüller（2016）。弱扩展从 1 核、2 个时间步、59,768 个自由度增长到 262,144 核、524,288 个时间步、15,667,822,592 个自由度；迭代数始终为 7，墙钟时间从 28.8 秒维持到约 30.0 秒。作为参照的“仅空间并行的经典时间推进”从 19.0 秒增至 4,988,060 秒。强扩展有两组：512 个时间步、15,300,608 个自由度的一组从 7,635.2 秒降到 30.0 秒；524,288 个时间步、15,667,822,592 个自由度的一组从 15,205.9 秒降到 30.0 秒。这张表说明 STMG 的价值来自时空并行与网格无关迭代数的同时实现。
 
 ### 非线性系统与 FAS
 
@@ -296,11 +301,13 @@ K_c(\boldsymbol U_c^{k+2/3})
 \right. \tag{4.44}
 $$
 
-FAS 在粗网格上求完整近似，并通过 $\boldsymbol r_c+K_c(\boldsymbol U_c)$ 保持非线性一致性；这与线性情形只解粗误差方程不同。
+FAS（Brandt 1977）在粗网格上求完整近似，并通过 $\boldsymbol r_c+K_c(\boldsymbol U_c)$ 保持非线性一致性；这与线性情形只解粗误差方程不同。
 
 ![原论文 Figure 4.22：两次块 Jacobi 平滑的 Burgers STMG](assets/papers/time-parallelization/source-figures/figure-4-22.svg)
 
-实验用两次平滑和经验最优 $\eta=1/4$。$\nu=1$ 的曲线在约 4 轮后越过图中的离散误差线，并继续降到 $10^{-4}$ 附近；$\nu=0.1$ 到第 16 轮仍高于该线。非线性 STMG 对黏性的依赖因此与线性 Figures 4.20–4.21 保持一致。STMG 是论文所述抛物问题中最强的时间并行求解器，同时侵入性高于 Parareal，对积分器与方程类型也更敏感。
+实验用两次平滑和经验最优 $\eta=1/4$。$\nu=1$ 的曲线在约 4 轮后越过图中的离散误差线，并继续降到 $10^{-4}$ 附近；$\nu=0.1$ 到第 16 轮仍高于该线。非线性 STMG 对黏性的依赖因此与线性情形（Figure 4.20 的 $\nu$ 扫描）一致。
+
+STMG 是论文所述抛物问题中最强的时间并行求解器，同时侵入性高于 Parareal。论文最后给出两条明确的研究展望：对双曲问题（Figures 4.20 和 4.22）STMG **似乎效率较低，这一方向仍需进一步工作**；对时间积分器的依赖（Figure 4.21）也**值得进一步研究**。
 
 ## 公式、定理与图表覆盖核对
 
