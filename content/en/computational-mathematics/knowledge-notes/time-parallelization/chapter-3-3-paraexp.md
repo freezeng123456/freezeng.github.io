@@ -12,7 +12,9 @@ tags:
 > [!note] Reading scope
 > This page covers Section 3.4 of the paper (pp. 412–415), including equations (3.13)–(3.21), Theorem 3.4, and Figures 3.7–3.8. The induction proof of the linear reconstruction and the finite-step property of the nonlinear method are both expanded.
 
-## 3.4.1 Two families of parallel subproblems
+## 3.4 ParaExp
+
+### Two families of parallel subproblems
 
 ParaExp solves
 
@@ -53,7 +55,7 @@ $$
 
 ![ParaExp separates local forced responses from global homogeneous propagation](assets/diagrams/pint/en/paraexp-decomposition.svg)
 
-## 3.4.2 Induction proof of (3.15)
+### Induction proof of (3.15)
 
 On the first interval, add (3.13) and (3.14):
 
@@ -86,7 +88,7 @@ $$
 
 Let $\boldsymbol w=\sum_{j=1}^{n+1}\boldsymbol w_j$. On $(T_n,T_{n+1}]$, it satisfies $\boldsymbol w'=A\boldsymbol w$ with initial value $\boldsymbol u(T_n)$. Adding the zero-initial forced solution $\boldsymbol v_{n+1}$ gives the unique solution of the original initial-value problem on the next interval. The induction is complete.
 
-## 3.4.3 Why the long blue tails can remain inexpensive
+### Why the long blue tails can remain inexpensive
 
 The homogeneous solution is
 
@@ -101,7 +103,7 @@ An algorithm for $e^{\tau A}\boldsymbol b$ can jump directly to the requested ti
 
 The wave-equation experiment of Gander and Güttel (2013) reported time-parallel efficiency up to about 80%. This number belongs to that implementation and depends on the exponential algorithm, matrix structure, partition, and hardware.
 
-## 3.4.4 Nonlinear splitting
+### Nonlinear splitting
 
 Assume the nonlinear dynamics can be written as
 
@@ -141,7 +143,7 @@ $$
 
 The global iterate equals $\boldsymbol u_n^k(t)$ on interval $n$.
 
-## 3.4.5 Theorem 3.4: finite-step convergence and Parareal equivalence
+### Theorem 3.4: finite-step convergence and Parareal equivalence
 
 **Finite-step result.** After iteration $k$, $\boldsymbol u^k(t)$ agrees with the exact solution on $[0,T_k]$. A time-interval induction explains the result. The first interval always starts from the true initial value. If the first $k-1$ intervals are exact, (3.18) constructs the exact initial value at the next interface, and (3.19) advances exactness by one more interval.
 
@@ -174,7 +176,7 @@ $$
 
 Standard Parareal normally lets its coarse propagator approximate the complete nonlinear problem as well. Here $\mathcal G$ retains only $A$, so this is a simplified Parareal. Nonlinear ParaExp succeeds when that split captures the dominant dynamics.
 
-## 3.4.6 Figure 3.8: splitting failure on Burgers' equation
+### Figure 3.8: splitting failure on Burgers' equation
 
 The experiment uses
 
@@ -188,19 +190,19 @@ obtained from centered differences for periodic Burgers' equation. The mesh is $
 
 ![Source Figure 3.8: errors of nonlinear ParaExp and standard Parareal at three viscosities](assets/papers/time-parallelization/source-figures/figure-3-8.svg)
 
-The horizontal line is the truncation level $\max\{\Delta t,\Delta x^2\}$, beyond which further iteration is unnecessary in practice. With strong diffusion, $A$ captures the dominant dynamics and ParaExp converges rapidly, ahead of standard Parareal. As viscosity falls, $B(\boldsymbol u)$ controls more of the transport and standard Parareal becomes faster. At $\nu=0.02$, ParaExp diverges. Standard Parareal eventually fails as viscosity is reduced further.
+The panels from left to right use $\nu=1,0.1,0.02$. Their horizontal lines mark the truncation level $\max\{\Delta t,\Delta x^2\}$, beyond which further iteration is unnecessary in practice. At $\nu=1$, $A$ captures the dominant dynamics and ParaExp is substantially faster than standard Parareal. At $\nu=0.1$, standard Parareal becomes faster while ParaExp still decays slowly. At $\nu=0.02$, the ParaExp error grows at every displayed step, whereas standard Parareal still crosses the truncation line. Standard Parareal eventually fails as viscosity is reduced further. The three panels show a transfer of dominant dynamics between the two parts of the split, not merely a uniform slowdown under weaker diffusion.
 
 > [!important] Applicability boundary
 > Linear ParaExp equation (3.15) is an exact algebraic decomposition, subject only to errors in the exponential action and local forced solves. Nonlinear ParaExp is iterative and depends on the $A+B$ split. An exact exponential cannot repair a linear part that misses the dominant propagation mechanism.
 
 ## Equation and figure coverage
 
-| Source item                  | Location here | Coverage                                                                                                        |
+| Source item                  | Paper section | Coverage                                                                                                        |
 | ---------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------- |
-| (3.13)–(3.16), Figure 3.7    | 3.4.1–3.4.3   | both subproblem families, exact reconstruction, induction proof, exponential action, and complete source figure |
-| (3.17)–(3.19)                | 3.4.4         | nonlinear split, source of redundant work, and reformulated iteration                                           |
-| (3.20a)–(3.20c), Theorem 3.4 | 3.4.5         | finite-step result, induction argument, and Parareal propagators                                                |
-| (3.21), Figure 3.8           | 3.4.6         | Burgers discretization, all temporal parameters, truncation line, and three-regime interpretation               |
+| (3.13)–(3.16), Figure 3.7    | 3.4           | both subproblem families, exact reconstruction, induction proof, exponential action, and complete source figure |
+| (3.17)–(3.19)                | 3.4           | nonlinear split, source of redundant work, and reformulated iteration                                           |
+| (3.20a)–(3.20c), Theorem 3.4 | 3.4           | finite-step result, induction argument, and Parareal propagators                                                |
+| (3.21), Figure 3.8           | 3.4           | Burgers discretization, all temporal parameters, truncation line, and three-regime interpretation               |
 
 ## Source
 

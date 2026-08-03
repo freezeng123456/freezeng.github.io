@@ -12,7 +12,9 @@ tags:
 > [!note] Reading scope
 > This page follows Section 4.6 (pp. 472–481). It covers equations (4.30)–(4.44), Theorem 4.9, Figures 4.18–4.22, and Table 4.1. The linear two-level cycle, smoothing symbol, damping choice, time-integrator dependence, and nonlinear FAS are all retained.
 
-## 4.6.1 All-at-once system (4.30)–(4.31)
+## 4.6 Space–time multigrid (STMG)
+
+### All-at-once system (4.30)–(4.31)
 
 Spatial discretization of heat or advection–diffusion gives
 
@@ -46,7 +48,7 @@ $$
 
 STMG builds coarse grids in both space and time to solve this coupled system.
 
-## 4.6.2 Time-parallel block-Jacobi smoother
+### Time-parallel block-Jacobi smoother
 
 The damped block-Jacobi smoother is
 
@@ -80,7 +82,7 @@ $$
 
 The time operators $P_t,R_t$ are analogous.
 
-## 4.6.3 Two-level cycle (4.34)
+### Two-level cycle (4.34)
 
 Let `Mat` reshape an all-at-once vector into a space-by-time matrix and `Vec` reverse it. One two-level iteration is
 
@@ -100,7 +102,7 @@ $$
 
 $K_c$ is rediscretized with $\Delta T=2\Delta t$ and $\Delta X=2\Delta x$ and has the same block structure as $K$. For $N_x=2^{l_x}-1,N_t=2^{l_t}-1$, the next sizes are $2^{l_x-1}-1$ and $2^{l_t-1}-1$. Recursion gives the multilevel method.
 
-## 4.6.4 Difference from early parabolic multigrid
+### Difference from early parabolic multigrid
 
 Hackbusch-style parabolic multigrid uses a pointwise, time-sequential Gauss–Seidel smoother,
 
@@ -111,7 +113,7 @@ $$
 
 solving $(D+L)\Delta\boldsymbol u_{n+1}^j$ and updating immediately. The next time point depends on the completed smoothed value at the current point. This works rapidly for heat when only space is coarsened but becomes slow under simultaneous space–time coarsening. STMG's decisive change is temporal block Jacobi, which parallelizes the full time direction and suppresses high-frequency error before coarse correction.
 
-## 4.6.5 Starting point of local Fourier analysis
+### Starting point of local Fourier analysis
 
 Ignoring initial and boundary conditions, consider the error mode
 
@@ -156,7 +158,7 @@ $$
 
 This symbol quantifies how one sweep damps each temporal and spatial frequency.
 
-## 4.6.6 Theorem 4.9: optimal damping for backward Euler
+### Theorem 4.9: optimal damping for backward Euler
 
 For centered differences in space and backward Euler in time, the optimal damping that always permits time coarsening is
 
@@ -192,27 +194,27 @@ $$
 
 ![Original Figure 4.18: maximum high-frequency smoothing factors for ADE at three viscosities](assets/papers/time-parallelization/source-figures/figure-4-18.svg)
 
-The scan confirms that $\eta=1/2$ remains a useful heuristic for time coarsening under advection, while decreasing viscosity raises the worst factor.
+The panels from left to right use $\nu=0.1,0.01,0.001$; each compares $\Delta x=\Delta t=1/64,1/128,1/256$. The minima on all three grids remain near $\eta=1/2$, making the choice reasonably grid-robust. As viscosity falls, the minimum worst factor rises from roughly $0.71$ to $0.79$, so the achievable high-frequency contraction weakens.
 
-## 4.6.7 Damping, sweep count, and time-integrator dependence
+### Damping, sweep count, and time-integrator dependence
 
 ![Original Figure 4.19: error after five, ten, and fifteen cycles versus damping](assets/papers/time-parallelization/source-figures/figure-4-19.svg)
 
-With one block-Jacobi sweep per cycle, both heat and ADE at $\nu=0.01$ favor damping near $1/2$.
+With one block-Jacobi sweep per cycle, panel (a) is heat and panel (b) is ADE at $\nu=0.01$; each reports errors after 5, 10, and 15 cycles. More cycles sharpen the low-error valley. The heat valley is broad, while the 15-cycle ADE minimum lies somewhat below $1/2$, near $0.4$. Figure 4.19 therefore supports $\eta=1/2$ as a robust heuristic, not as the exact finite-grid optimizer for every fixed cycle count.
 
 ![Original Figure 4.20: one versus three block-Jacobi smoothing sweeps](assets/papers/time-parallelization/source-figures/figure-4-20.svg)
 
-Three sweeps cost more per cycle and sharply reduce the cycle count. ADE remains slower than heat, but additional smoothing reduces viscosity sensitivity and produces a superlinear stage.
+Panels (a) and (b) use one and three block-Jacobi sweeps, respectively; each compares heat with ADE at $\nu=0.1,0.01,0.001$. Three sweeps cost more per cycle and sharply reduce the cycle count. Several ADE curves in the right panel steepen at later cycles, revealing a superlinear stage. ADE remains slower than heat, but the additional smoothing substantially reduces its viscosity sensitivity.
 
 ![Original Figure 4.21: STMG with the trapezoidal rule across damping values and sweep counts](assets/papers/time-parallelization/source-figures/figure-4-21.svg)
 
-With trapezoidal time integration, heat has convergence problems even at ten sweeps. ADE converges and benefits from additional smoothing, with an empirical optimum near $\eta=0.8$. The backward-Euler value $1/2$ depends on L-stable high-frequency damping and does not transfer directly.
+With trapezoidal time integration, the heat row, group (a), uses 3, 5, and 10 sweeps. Every damping scan either remains at large error or becomes unstable; more smoothing does not recover the backward-Euler behavior. The ADE row, group (b), uses 2, 3, and 4 sweeps at $\nu=0.01$. Its error valley deepens with additional smoothing and the useful damping range centers near $\eta=0.8$. The backward-Euler value $1/2$ depends on L-stable high-frequency damping and does not transfer directly.
 
 ![Original Table 4.1: weak and strong scaling of STMG on a three-dimensional heat equation](assets/papers/time-parallelization/source-figures/table-4-1.svg)
 
 Weak scaling grows from 1 core, 2 time steps, and 59,768 degrees of freedom to 262,144 cores, 524,288 steps, and 15,667,822,592 degrees of freedom. The iteration count remains seven and wall time stays near 28.8–30.0 seconds. Estimated sequential time stepping with space-only parallelism grows from 19.0 to 4,988,060 seconds. Strong scaling drops from about 7,635.2 to 30.0 seconds at fixed problem size. The result combines space–time concurrency with a grid-independent cycle count.
 
-## 4.6.8 Nonlinear system and FAS
+### Nonlinear system and FAS
 
 Consider
 
@@ -287,18 +289,18 @@ FAS solves for a full coarse approximation and uses $\boldsymbol r_c+K_c(\boldsy
 
 ![Original Figure 4.22: Burgers STMG with two block-Jacobi sweeps](assets/papers/time-parallelization/source-figures/figure-4-22.svg)
 
-The experiment uses two sweeps and the empirically best $\eta=1/4$. Convergence is fast with sufficient diffusion and deteriorates strongly as viscosity falls. STMG is the paper's strongest PinT solver for parabolic problems, while being more intrusive than Parareal and more sensitive to the integrator and PDE class.
+The experiment uses two sweeps and the empirically best $\eta=1/4$. The $\nu=1$ curve crosses the plotted discretization-error line after roughly four cycles and continues toward $10^{-4}$; the $\nu=0.1$ curve remains above that line after 16 cycles. Nonlinear STMG therefore retains the viscosity sensitivity seen in linear Figures 4.20–4.21. STMG is the paper's strongest PinT solver for parabolic problems, while being more intrusive than Parareal and more sensitive to the integrator and PDE class.
 
 ## Equation, theorem, and figure audit
 
-| Source item                             | Location here | Coverage                                                             |
+| Source item                             | Paper section | Coverage                                                             |
 | --------------------------------------- | ------------- | -------------------------------------------------------------------- |
-| (4.30)–(4.31)                           | §4.6.1        | generic one-step formula and all-at-once matrix                      |
-| (4.32)–(4.34)                           | §§4.6.2–3     | parallel block Jacobi, space–time transfer, full two-level cycle     |
-| (4.35)                                  | §4.6.4        | early sequential Gauss–Seidel smoother and contrast                  |
-| (4.36)–(4.40), Theorem 4.9, Figure 4.18 | §§4.6.5–6     | full LFA, heat/ADE symbols, optimal damping, coarsening condition    |
-| Figures 4.19–4.21, Table 4.1            | §4.6.7        | damping, sweep count, integrator dependence, strong/weak scaling     |
-| (4.41)–(4.44), Figure 4.22              | §4.6.8        | nonlinear all-at-once system, concurrent smoother, FAS, Burgers test |
+| (4.30)–(4.31)                           | 4.6           | generic one-step formula and all-at-once matrix                      |
+| (4.32)–(4.34)                           | 4.6           | parallel block Jacobi, space–time transfer, full two-level cycle     |
+| (4.35)                                  | 4.6           | early sequential Gauss–Seidel smoother and contrast                  |
+| (4.36)–(4.40), Theorem 4.9, Figure 4.18 | 4.6           | full LFA, heat/ADE symbols, optimal damping, coarsening condition    |
+| Figures 4.19–4.21, Table 4.1            | 4.6           | damping, sweep count, integrator dependence, strong/weak scaling     |
+| (4.41)–(4.44), Figure 4.22              | 4.6           | nonlinear all-at-once system, concurrent smoother, FAS, Burgers test |
 
 ## Source
 

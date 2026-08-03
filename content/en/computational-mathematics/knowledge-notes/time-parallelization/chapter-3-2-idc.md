@@ -10,9 +10,11 @@ tags:
 ---
 
 > [!note] Reading scope
-> This page covers Section 3.3 of the paper (pp. 405–411), including equations (3.5)–(3.12), Theorem 3.3, and Figures 3.4–3.6. Every algebraic step in the correction formula is retained, and the PIDC and RIDC schedules are explained separately.
+> This page covers Section 3.3 of the paper (pp. 405–412), including equations (3.5)–(3.12), Theorem 3.3, and Figures 3.4–3.6. Every algebraic step in the correction formula is retained, and the PIDC and RIDC schedules are explained separately.
 
-## 3.3.1 Starting point of IDC
+## 3.3 Time-parallel IDC
+
+### Starting point of IDC
 
 Write the nonlinear initial-value problem in integral form:
 
@@ -62,7 +64,7 @@ $$
 
 The task of improving the solution has become an error solve. The residual integral carries high-order information, while the differential error equation may still use a simple stepper.
 
-## 3.3.2 Discrete correction formula
+### Discrete correction formula
 
 Choose nodes
 
@@ -132,7 +134,7 @@ Every correction level $k$ sweeps from left to right through $m=0,1,\ldots,M-1$.
 > [!tip] Roles of the terms in (3.11)
 > The first line advances the new trajectory with a simple integrator. The middle terms correct the difference between the new and old dynamics at the local endpoints. The final quadrature term injects high-order integral information from the complete old node set. The last term is what lets the correction exceed the order of the base stepper.
 
-## 3.3.3 Theorem 3.3: order gained per correction
+### Theorem 3.3: order gained per correction
 
 If the base integrator has order $p$ and $M$ equally spaced nodes are used, the approximation after correction $k$ has order
 
@@ -151,17 +153,19 @@ $$
 
 Standard IDC completes every correction on $I_n$ before passing its endpoint to $I_{n+1}$. Windows are sequential, and the node updates within a window are also sequential in $m$.
 
-## 3.3.4 PIDC: a pipeline across windows
+## 3.3.1 Pipeline IDC (PIDC)
+
+### A pipeline across windows
 
 PIDC applies the pipeline idea of Womble (1990). After the first sweep on $I_n$, the rough endpoint $\boldsymbol u_{n,M}^{1}$ is available. Window $I_{n+1}$ immediately starts its first sweep from this value while $I_n$ performs its second. In general, when $I_n$ executes sweep $k$, $I_{n+1}$ can execute sweep $k-1$, $I_{n+2}$ sweep $k-2$, and so on through the first sweep on $I_{n+k-1}$.
 
 ![Source Figure 3.4: PIDC pipeline startup and steady state on four time windows](assets/papers/time-parallelization/source-figures/figure-3-4.svg)
 
-Figure 3.4 uses $M=6$ and $k_{\max}=4$. The first four stages fill the pipeline. Four sweeps on four windows then run concurrently. Black dashed lines record completed sweep histories, red lines with circles mark the sweeps currently running, and the solid black lines are the exact solution.
+Figure 3.4 uses $M=6$ and $k_{\max}=4$. Panels (a)–(d) launch the first four windows and increase the pipeline width from one active sweep to four. Panels (e) and (f) show two successive states after the pipeline is full, when four different correction levels run concurrently on $I_n$ through $I_{n+3}$. Black dashed lines record completed sweeps, red lines with circles mark current parallel work, and solid black lines show the exact solution. The six panels therefore include both startup cost and steady-state concurrency; panels (e) and (f) are not generic time-stepping sketches.
 
 Every PIDC window receives a rough initial value that changes as the upstream window is corrected. Additional corrections therefore need not reduce the error monotonically. The regularity experiments below quantify the issue.
 
-## 3.3.5 Periodic advection–diffusion experiment and matrix (3.12)
+### Periodic advection–diffusion experiment and matrix (3.12)
 
 The paper uses periodic boundaries and $\Delta x=1/64$. The semidiscrete matrix is
 
@@ -213,7 +217,9 @@ The four panels in Figure 3.5 form two controlled comparisons.
 
 With low regularity, the second sweep does not reduce the error further. With a smooth source and large viscosity, both IDC and PIDC improve again on the second sweep and remain comparable. Small viscosity weakens the order increase; in panel (d), the second PIDC sweep is clearly worse than sequential IDC. The paper concludes that PIDC is poorly suited to low-regularity hyperbolic solutions because it relies on high-order correction.
 
-## 3.3.6 RIDC: a sliding quadrature window
+## 3.3.2 Revisionist IDC (RIDC)
+
+### A sliding quadrature window
 
 RIDC moves the concurrency from time windows to correction levels. The first processor advances continuously with a low-order integrator. Once it has produced the first $M$ values, a second processor starts the first IDC correction. After reaching step $M$, the second processor keeps advancing and slides its quadrature nodes from $1,\ldots,M$ to $2,\ldots,M+1$, then to $3,\ldots,M+2$. A third processor starts when sufficient first-correction data is available and follows the same sliding rule.
 
@@ -221,19 +227,19 @@ In steady state, each processor owns one correction level and all levels advance
 
 ![Source Figure 3.6: windowwise errors of IDC and RIDC on the same advection–diffusion tests](assets/papers/time-parallelization/source-figures/figure-3-6.svg)
 
-Figure 3.6 reuses the PDE, grid, source, and viscosity settings of Figure 3.5, replacing PIDC by RIDC. The conclusion is unchanged. A smooth solution permits order growth across correction levels. A sharp source and small viscosity remove much of the expected benefit of high-order interpolation and quadrature. RIDC changes scheduling and memory organization; it retains IDC's regularity requirement.
+Figure 3.6 reuses the PDE, grid, source, and viscosity settings of Figure 3.5, replacing PIDC by RIDC. Its panel map is unchanged: the top row uses $\sigma=1000$, the bottom row $\sigma=5$; the left column uses $\nu=1$, the right column $\nu=10^{-3}$. Panels (a)–(d) therefore represent low-regularity/strong-diffusion, low-regularity/weak-diffusion, high-regularity/strong-diffusion, and high-regularity/weak-diffusion cases. Corrections continue to reduce error in the bottom row, while the top row and right column expose the effects of insufficient regularity and weak diffusion. RIDC changes scheduling and memory organization; it retains IDC's regularity requirement.
 
 ## Equation and figure coverage
 
-| Source item        | Location here | Coverage                                                                              |
-| ------------------ | ------------- | ------------------------------------------------------------------------------------- |
-| (3.5)–(3.8)        | 3.3.1         | integral equation, residual, integral error equation, and differential error equation |
-| (3.9)–(3.11)       | 3.3.2         | $\theta$ discretization, quadrature weights, and final IDC update                     |
-| Theorem 3.3        | 3.3.3         | base order, correction count, and quadrature ceiling                                  |
-| Figure 3.4         | 3.3.4         | complete PIDC startup and steady-state schedule                                       |
-| (3.12), Figure 3.5 | 3.3.5         | periodic matrices, all parameters, error definition, and four-panel interpretation    |
-| Figure 3.6         | 3.3.6         | RIDC sliding window and regularity experiment                                         |
+| Source item        | Paper section    | Coverage                                                                              |
+| ------------------ | ---------------- | ------------------------------------------------------------------------------------- |
+| (3.5)–(3.8)        | 3.3 introduction | integral equation, residual, integral error equation, and differential error equation |
+| (3.9)–(3.11)       | 3.3 introduction | $\theta$ discretization, quadrature weights, and final IDC update                     |
+| Theorem 3.3        | 3.3 introduction | base order, correction count, and quadrature ceiling                                  |
+| Figure 3.4         | 3.3.1            | complete PIDC startup and steady-state schedule                                       |
+| (3.12), Figure 3.5 | 3.3.1            | periodic matrices, all parameters, error definition, and four-panel interpretation    |
+| Figure 3.6         | 3.3.2            | RIDC sliding window and regularity experiment                                         |
 
 ## Source
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.3, pp. 405–411.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.3, pp. 405–412.

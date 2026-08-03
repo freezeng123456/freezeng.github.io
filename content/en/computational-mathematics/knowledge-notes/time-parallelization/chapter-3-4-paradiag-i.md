@@ -10,15 +10,17 @@ tags:
 ---
 
 > [!note] Reading scope
-> This page follows Section 3.5.1 (pp. 416–430) of the paper. It covers equations (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, and Tables 3.1–3.2. The truncation-error, roundoff-error, boundary-value-method, and nonlinear quasi-Newton branches are all retained.
+> This page follows Sections 3.5–3.5.1 (pp. 415–431) of the paper. It covers the ParaDiag classification, equations (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, and Tables 3.1–3.2. The truncation-error, roundoff-error, boundary-value-method, and nonlinear quasi-Newton branches are all retained.
 
-## 3.5.1.1 The boundary between ParaDiag-I and ParaDiag-II
+## 3.5.1 Direct ParaDiag methods (ParaDiag-I)
+
+### The boundary between ParaDiag-I and ParaDiag-II
 
 ParaDiag-I diagonalizes the time-stepping matrix directly. Distinct eigenvalues are obtained either by using unequal time steps or by changing the formula at the last time step. No outer iteration is required, but roundoff limits the number of time steps that can be processed in one window. With a geometric grid in double precision, the practical limit is usually about twenty steps.
 
 ParaDiag-II replaces the time matrix by a diagonalizable approximation and uses that approximation in a stationary iteration or as a Krylov preconditioner. It gives up a direct solve in exchange for higher-order integrators, longer windows, and better-conditioned transforms. The next close-reading page treats ParaDiag-II.
 
-## 3.5.1.2 Backward Euler as an all-at-once system
+### Backward Euler as an all-at-once system
 
 Apply variable-step backward Euler to $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$:
 
@@ -93,7 +95,7 @@ The $N_t$ shifted spatial systems in the middle stage are independent. The first
 
 ![The time transform, independent spatial solves, and inverse transform in ParaDiag](assets/diagrams/pint/en/paradiag-three-stage.svg)
 
-## 3.5.1.3 Geometric grids and the two competing errors
+### Geometric grids and the two competing errors
 
 Maday and Rønquist (2008) set $\Delta t_n=\mu^{n-1}\Delta t_1$ with $\mu>1$. Since the steps sum to $T$,
 
@@ -177,7 +179,7 @@ $$
 
 These closed forms support the condition-number analysis. In computation, a numerical eigensolver is preferable because it rescales eigenvectors. Single- and double-precision machine epsilons are approximately $1.19\times10^{-7}$ and $2.22\times10^{-16}$.
 
-## 3.5.1.4 Figures 3.9–3.10: a finite parallel width remains
+### Figures 3.9–3.10: a finite parallel width remains
 
 ![Original Figure 3.9: error versus the geometric-grid parameter for the heat and advection–diffusion equations](assets/papers/time-parallelization/source-figures/figure-3-9.svg)
 
@@ -187,7 +189,7 @@ Figure 3.9 uses homogeneous Dirichlet data, $u_0(x)=\sin(2\pi x)$, $\Delta x=1/5
 
 Figure 3.10 sets $T=0.5$ and $N_t=2^4,2^5,\ldots,2^{10}$. Uniform-step backward Euler continues to improve. ParaDiag-I with the numerically optimal $\varrho_{\mathrm{num}}$ improves only up to fewer than one hundred steps, after which roundoff overwhelms discretization error.
 
-## 3.5.1.5 Wave equations and the trapezoidal rule
+### Wave equations and the trapezoidal rule
 
 For
 
@@ -300,7 +302,7 @@ Figure 3.11 uses homogeneous Dirichlet data, $\Delta x=1/20$, and $T=0.2$. Panel
 
 For $N_t=5,10,20,30,60,100$, Table 3.1 shows that $\operatorname{Cond}(V)$ grows from $1.7\times10^3$ to $4.8\times10^6$ for backward Euler and from $4.7\times10^3$ to $4.1\times10^9$ for the trapezoidal rule. This explains the roundoff plateau and subsequent degradation in Figures 3.10–3.11.
 
-## 3.5.1.6 BVM: fixed steps and a different terminal formula
+### BVM: fixed steps and a different terminal formula
 
 Liu et al. (2022) use a uniform $\Delta t$, the centered formula for the first $N_t-1$ equations, and backward Euler at the last step:
 
@@ -380,7 +382,7 @@ $$
 
 Figure 3.12 uses $T=0.5$, $\Delta x=1/40$, and homogeneous Dirichlet data. Geometric-grid trapezoidal ParaDiag-I becomes roundoff-limited near $N_t=32$. The BVM retains $O(\Delta t^2)$ accuracy and tracks serial trapezoidal integration; its eigenvector condition number is far smaller.
 
-## 3.5.1.7 Nonlinear all-at-once equations and quasi-Newton iteration
+### Nonlinear all-at-once equations and quasi-Newton iteration
 
 For $\boldsymbol u'=\boldsymbol f(\boldsymbol u,t)$, define
 
@@ -455,7 +457,7 @@ Figure 3.13 uses periodic Burgers, $\Delta x=0.01$, and $N_t=T/\Delta t=200$. Th
 
 With $N_t$ processors, all Jacobian systems in one ParaDiag-I iteration run concurrently, so the parallel count equals the outer iteration count. For $\nu=0.1$, Table 3.2 reports 401–443 serial solves and only 5–7 ParaDiag-I iterations. For $\nu=0.002$, the parallel count grows from 7 to 22 and the longer windows fail.
 
-## 3.5.1.8 Nearest Kronecker approximation
+### Nearest Kronecker approximation
 
 A single $I_t\otimes A_k$ also misses time-dependent amplitude changes. Use $\Phi_k\otimes A_k$, where $\Phi_k=\operatorname{diag}(\phi_1,\ldots,\phi_{N_t})$, and solve
 
@@ -492,16 +494,16 @@ The two panels use different viscosities and compare $T=0.7$ with $T=1.3$. The n
 
 ## Equation-and-figure audit
 
-| Source item                                        | Location here | Coverage                                                                             |
+| Source item                                        | Paper section | Coverage                                                                             |
 | -------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------ |
-| (3.22)–(3.25)                                      | §3.5.1.2      | variable-step backward Euler, all-at-once matrix, diagonalization, three-stage solve |
-| (3.26)–(3.29), Theorem 3.5                         | §3.5.1.3      | geometric grid, error balance, optimal parameter, Toeplitz eigenvectors, proof route |
-| Figures 3.9–3.10                                   | §3.5.1.4      | original figures, full settings, finite parallel width                               |
-| (3.30)–(3.37), Theorem 3.6, Figure 3.11, Table 3.1 | §3.5.1.5      | first-order reformulation, trapezoidal all-at-once system, bounds, conditioning      |
-| (3.38)–(3.41), Theorem 3.7, Figure 3.12            | §3.5.1.6      | BVM, second-order accuracy, polynomial conditioning, velocity elimination            |
-| (3.42)–(3.46), Figure 3.13, Table 3.2              | §3.5.1.7      | nonlinear Newton system, average Jacobian, concurrent solves, cost comparison        |
-| (3.47)–(3.48), Figure 3.14                         | §3.5.1.8      | nearest Kronecker approximation, coarse-model scaling, convergence gain              |
+| (3.22)–(3.25)                                      | 3.5.1         | variable-step backward Euler, all-at-once matrix, diagonalization, three-stage solve |
+| (3.26)–(3.29), Theorem 3.5                         | 3.5.1         | geometric grid, error balance, optimal parameter, Toeplitz eigenvectors, proof route |
+| Figures 3.9–3.10                                   | 3.5.1         | original figures, full settings, finite parallel width                               |
+| (3.30)–(3.37), Theorem 3.6, Figure 3.11, Table 3.1 | 3.5.1         | first-order reformulation, trapezoidal all-at-once system, bounds, conditioning      |
+| (3.38)–(3.41), Theorem 3.7, Figure 3.12            | 3.5.1         | BVM, second-order accuracy, polynomial conditioning, velocity elimination            |
+| (3.42)–(3.46), Figure 3.13, Table 3.2              | 3.5.1         | nonlinear Newton system, average Jacobian, concurrent solves, cost comparison        |
+| (3.47)–(3.48), Figure 3.14                         | 3.5.1         | nearest Kronecker approximation, coarse-model scaling, convergence gain              |
 
 ## Source
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.5.1, pp. 416–430.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Sections 3.5–3.5.1, pp. 415–431.

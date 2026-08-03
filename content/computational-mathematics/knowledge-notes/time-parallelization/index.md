@@ -17,9 +17,9 @@ tags:
 
 1. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-1-why-parallelize-in-time|第一章：为什么要做时间并行？]]逐段梳理论文摘要与引言，介绍硬件背景、因果链、四条方法谱系、双重分类和全时间系统。
 2. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-2-model-problems|第二章：连接抛物与双曲世界的模型问题]]严格依照论文 Section 2.1–2.4，逐面板比较热方程、对流扩散方程、Burgers 方程和波动方程的边界条件与时间记忆，并另列本站数值补充。
-3. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|第三章：对双曲问题仍然有效的方法]]完整推导 SWR、PIDC/RIDC、ParaExp 和 ParaDiag，并收录 Heat、ADE 与 Wave 三类 ParaDiag-II 实验。
-4. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|第四章：主要为抛物问题设计的方法]]分析 Parareal、PFASST、MGRiT、两种对角化 Parareal 和 STMG，并给出重新计算的收敛实验。
-5. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|第五章：结论、统一视角与复现边界]]区分论文结论与本站综合，记录方法选择、完整实验清单、GPU 性能和报告规范。
+3. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods|第三章：对双曲问题有效的 PinT 方法]]完整推导 SWR、PIDC/RIDC、ParaExp 和 ParaDiag，并收录 Heat、ADE 与 Wave 三类 ParaDiag-II 实验。
+4. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods|第四章：为抛物问题设计的 PinT 方法]]分析 Parareal、PFASST、MGRiT、两种对角化 Parareal 和 STMG，并给出重新计算的收敛实验。
+5. [[computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view|第五章：结论]]逐段解释论文结论，并把方法选择、实验清单、GPU 性能和报告规范明确标为本站补充。
 
 ## 论文内容覆盖进度
 

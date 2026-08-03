@@ -1,5 +1,5 @@
 ---
-title: "Chapter 5: Conclusions, a Unified View, and Reproduction Boundaries"
+title: "Chapter 5: Conclusions"
 description: Paper conclusions, method selection, full experiment inventory, GPU optimization, and reporting standards
 lang: en
 translation: computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view
@@ -9,9 +9,9 @@ tags:
 ---
 
 > [!note] Content boundary
-> Section 5.1 corresponds to Section 5 of the paper (p. 481). Everything after Section 5.1 is this site's synthesis of Chapters 2–4 and its reproduction record, including an algebraic comparison, Python experiments, T4 GPU performance, and reporting standards that the source conclusion does not develop.
+> Section 5 of the paper (p. 481) contains no numbered subsections or numbered equations. This page first explains the source conclusion paragraph by paragraph. The subsequent algebraic synthesis, method selection, Python experiments, T4 GPU performance, and reporting standards are marked as site supplements and do not use 5.x numbering.
 
-## 5.1 The paper's final conclusion
+## Section 5: Conclusions
 
 The paper explains the hyperbolic–parabolic distinction through temporal memory. A parabolic equation forgets a large amount of fine information during evolution and therefore has a temporally local solution. Many PinT methods can exploit this property, including Parareal, STMG, ParaExp, ParaDiag, and domain-decomposition waveform relaxation.
 
@@ -21,7 +21,7 @@ For further study, the authors recommend the monograph by Gander and Lunet (2024
 
 This conclusion suggests a useful first filter: determine how quickly the problem forgets high-frequency information, then select the parallel structure. An algorithm's name or historical category cannot replace this dynamical assessment.
 
-## 5.2 Site synthesis: solving one all-at-once system
+## Site synthesis: solving one all-at-once system
 
 For a linear all-at-once discretization
 
@@ -34,7 +34,7 @@ many PinT iterations can be written as
 $$
 \boldsymbol U^{k+1}
 =\boldsymbol U^k+M^{-1}
-(\boldsymbol b-A\boldsymbol U^k). \tag{5.1}
+(\boldsymbol b-A\boldsymbol U^k).
 $$
 
 $M^{-1}$ is a parallel approximation to $A^{-1}$. Each method chooses a different locality, hierarchy, or transform:
@@ -50,9 +50,9 @@ $M^{-1}$ is a parallel approximation to $A^{-1}$. Each method chooses a differen
 | MGRiT     | temporal multilevel cycle                         | F relaxation and coarse levels               | C points and overlapping relaxation          |
 | STMG      | full space–time multilevel cycle                  | time-block Jacobi                            | coarse space–time grids                      |
 
-Equation (5.1) poses three common questions. Which error modes does $M^{-1}$ reduce? Does it preserve phase, mean value, and shock position? During one application of $M^{-1}$, which operations are genuinely concurrent and which remain sequential?
+This common form poses three questions. Which error modes does $M^{-1}$ reduce? Does it preserve phase, mean value, and shock position? During one application of $M^{-1}$, which operations are genuinely concurrent and which remain sequential?
 
-## 5.3 Method-selection map
+## Site synthesis: method-selection map
 
 ![Map for selecting parallel-in-time methods](assets/diagrams/pint/en/method-selection.svg)
 
@@ -81,7 +81,7 @@ Prioritize structures that represent characteristics and phase, including SWR/OS
 5. Is the goal lower iteration count, higher single-node throughput, or multi-node strong/weak scaling?
 6. How much intrusive modification, global transformation, and all-time storage is acceptable?
 
-## 5.4 Parameter reference
+## Site synthesis: parameter reference
 
 | Parameter                            | Location                       | Direct role                              | Quantities to monitor together                            |
 | ------------------------------------ | ------------------------------ | ---------------------------------------- | --------------------------------------------------------- |
@@ -94,7 +94,7 @@ Prioritize structures that represent characteristics and phase, including SWR/OS
 
 Each parameter interacts with the physical spectrum, discrete stability function, and machine cost. Minimizing iteration count in isolation can move the work into a much more expensive iteration.
 
-## 5.5 Complete experiment inventory
+## Site reproduction: experiment inventory
 
 The Python reproduction project provides eight baseline experiments and one combined paper-validation entry point. The combined entry point generates six paper-matched plots. Chapters 2–4 reference fourteen SVG/PNG result groups with corresponding JSON records.
 
@@ -119,7 +119,7 @@ The cross-experiment summary is [[assets/pint/data/paper_validation_summary.json
 
 The upstream MATLAB repository also contains direct ParaDiag, diagonalized Parareal, ParaExp, SWR, IDC/PIDC, and wave-domain-decomposition scripts. They are registered in the Python migration inventory but do not yet all have formal Python results. “Complete” here means that every Python artifact cited by the site has a matched parameter record, plot, and JSON file. It does not claim that every upstream MATLAB script has been ported.
 
-## 5.6 Formal reproduction workflow
+## Site reproduction: formal run workflow
 
 ```bash
 python3.11 -m pip install -e ".[test]"
@@ -137,7 +137,7 @@ Each experiment writes:
 3. deterministic seeds where an all-at-once random initial vector is needed;
 4. a separate validation summary for paper-matched experiments.
 
-## 5.7 GPU acceleration and profiling
+## Site reproduction: GPU acceleration and profiling
 
 Function-level profiling attributes 43.06 of 62.95 seconds in the quick paper suite to Figure 4.5, including 38.11 seconds in Burgers fine propagation. All FFTs take only 0.007 seconds and all GMRES calls total 0.251 seconds. The first CUDA backend therefore batches the 40 independent Burgers fine propagations in each Parareal iteration.
 
@@ -166,18 +166,19 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 
 The machine-readable record is [[assets/pint/data/gpu_benchmark_t4.json|gpu_benchmark_t4.json]]. Current data demonstrate single-GPU kernel and end-to-end acceleration and do not establish multi-GPU scaling.
 
-## 5.8 Interpretation boundaries
+## Site reproduction: interpretation boundaries
 
 - Current experiments measure numerical convergence and single-node CPU/GPU performance, without time-dimensional MPI strong or weak scaling.
 - Site figures do not report MPI rank count, network volume, initialization cost, or cross-node wall-clock speedup.
 - MATLAB and NumPy random generators do not produce identical initial arrays; convergence factors, phases, and final states are better comparison targets.
 - Sparse factorization, FFT ordering, and GMRES reductions can differ normally near $10^{-14}$ to $10^{-16}$.
 - The invalid expression `nu=0.002max;` in `MGRiT_Heat_ADE.m` is interpreted as $\nu=0.002$ from its branch context and the paper.
+- Source Figure 4.9 annotates the maximum Parareal factor at $\nu=0.01$ as $0.9986$, while equation (4.5b) and the upstream-script stability function give $1.0501$ in Python. The site retains both and records this as a reproduction discrepancy.
 - STMG validation retains the upstream backward-Euler residual convention and stores a consistent postsmoothing residual separately in JSON.
 - Convergence to the sequential fine solution establishes algorithmic consistency and gives no wall-clock speedup guarantee.
 - The large-scale STMG data in Table 4.1 belong to the cited three-dimensional parallel implementation and are not measurements from the present Python project.
 
-## 5.9 Minimum reporting standard for future experiments
+## Site standard: minimum reporting requirements for future experiments
 
 An algorithmic-convergence experiment should state:
 
@@ -197,17 +198,17 @@ A parallel-performance experiment should additionally state:
 
 Error decay by iteration supports a numerical-convergence claim but cannot support a parallel-efficiency claim on its own. Method comparisons must also normalize fine-propagation count or total work so curves with different per-iteration costs are not ranked directly.
 
-## 5.10 Coverage table for Sections 2–5
+## Site-wide coverage table
 
-| Source range                  | Site chapter      | Completeness statement                                                                            |
-| ----------------------------- | ----------------- | ------------------------------------------------------------------------------------------------- |
-| Section 2, pp. 388–396        | Chapter 2         | four models, all boundary settings, every Figure 2.1–2.4 observation group, and PinT implications |
-| Sections 3.1–3.2, pp. 396–405 | Chapter 3.1–3.2   | history, WR/SWR, Theorems 3.1–3.2, OSWR, MTP/UTP                                                  |
-| Sections 3.3–3.4, pp. 405–415 | Chapter 3.3–3.4   | IDC/PIDC/RIDC derivation and regularity tests, linear and nonlinear ParaExp                       |
-| Section 3.5, pp. 415–443      | Chapter 3.5–3.8   | ParaDiag-I/II, Theorems 3.5–3.9, BVM, NKA, circulant and $\alpha$-circulant experiments           |
-| Sections 4.1–4.4, pp. 443–460 | Chapter 4.1–4.4   | Parareal, PFASST, MGRiT, Theorems 4.1–4.6, Figures 4.1–4.11                                       |
-| Sections 4.5–4.6, pp. 460–481 | Chapter 4.5–4.7   | both diagonalized Parareal variants, STMG, Theorems 4.7–4.9, Figures 4.12–4.22, Table 4.1         |
-| Section 5, p. 481             | this chapter, 5.1 | hyperbolic/parabolic conclusion, recommended methods, monograph, and public code                  |
+| Source range                  | Site chapter    | Completeness statement                                                                            |
+| ----------------------------- | --------------- | ------------------------------------------------------------------------------------------------- |
+| Section 2, pp. 388–396        | Chapter 2       | four models, all boundary settings, every Figure 2.1–2.4 observation group, and PinT implications |
+| Sections 3.1–3.2, pp. 396–405 | Chapter 3.1–3.2 | history, WR/SWR, Theorems 3.1–3.2, OSWR, MTP/UTP                                                  |
+| Sections 3.3–3.4, pp. 405–415 | Chapter 3.3–3.4 | IDC/PIDC/RIDC derivation and regularity tests, linear and nonlinear ParaExp                       |
+| Section 3.5, pp. 415–443      | Chapter 3.5     | ParaDiag-I/II, Theorems 3.5–3.9, BVM, NKA, circulant and $\alpha$-circulant experiments           |
+| Sections 4.1–4.4, pp. 443–460 | Chapter 4.1–4.4 | Parareal, PFASST, MGRiT, Theorems 4.1–4.6, Figures 4.1–4.11                                       |
+| Sections 4.5–4.6, pp. 460–481 | Chapter 4.5–4.6 | both diagonalized Parareal variants, STMG, Theorems 4.7–4.9, Figures 4.12–4.22, Table 4.1         |
+| Section 5, p. 481             | Chapter 5       | hyperbolic/parabolic conclusion, recommended methods, monograph, and public code                  |
 
 Each chapter ends with a more granular source-page audit. Site supplements occupy explicitly labeled sections and are not blended into claims attributed to the paper.
 

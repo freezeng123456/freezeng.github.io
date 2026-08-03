@@ -1,5 +1,5 @@
 ---
-title: "Chapter 4: Methods Designed Primarily for Parabolic Problems"
+title: "Chapter 4: PinT Methods Designed for Parabolic Problems"
 description: Complete analysis of Parareal, PFASST, MGRiT, diagonalized Parareal, and space–time multigrid
 lang: en
 translation: computational-mathematics/knowledge-notes/time-parallelization/chapter-4-parabolic-methods
@@ -9,20 +9,22 @@ tags:
 ---
 
 > [!note] Reading scope
-> This chapter covers Section 4 of the paper (pp. 443–481). Sections 4.1–4.6 follow the source history, algorithms, theorems, and Figures 4.1–4.22. Section 4.7 collects the Python results produced for this site. Theoretical contraction factors, measured iteration curves, and wall-clock performance carry distinct labels.
+> This chapter covers Section 4 of the paper (pp. 443–481) and retains its exact hierarchy: the Section 4 introduction, 4.1 historical development, 4.2 Parareal, 4.3 PFASST, 4.4 MGRiT, the two diagonalization-based Parareal variants in 4.5, and 4.6 STMG. Python reproductions, parameter comparisons, and coverage audits are marked as site supplements and do not take paper section numbers. Theoretical contraction factors, measured iteration curves, and wall-clock performance carry distinct labels.
 
-## Close-reading guide
+## Source-to-page map
 
 This page retains the chapter-level synthesis and site reproductions. The equation-by-equation, theorem-by-theorem, and figure-by-figure arguments are split into the following pages:
 
-| Paper section | Close-reading page                                                                                                                      | Coverage                                                 |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| 4, 4.1–4.2    | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-1-parareal\|Historical context and Parareal]]             | (4.1)–(4.9), Theorems 4.1–4.4, Figures 4.1–4.5           |
-| 4.3–4.4       | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-2-pfasst-mgrit\|PFASST and MGRIT]]                        | (4.10)–(4.13), Theorems 4.5–4.6, Figures 4.6–4.11        |
-| 4.5           | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-3-diagonalized-parareal\|Diagonalization-based Parareal]] | (4.14)–(4.29), Theorems 4.7–4.8, Figures 4.12–4.17       |
-| 4.6           | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-4-stmg\|Space–time multigrid]]                            | (4.30)–(4.44), Theorem 4.9, Figures 4.18–4.22, Table 4.1 |
+| Paper section      | Source pages | Close-reading page                                                                                                                      | Coverage                                                 |
+| ------------------ | ------------ | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| Section 4, 4.1–4.2 | pp. 443–452  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-1-parareal\|Historical development and Parareal]]         | (4.1)–(4.9), Theorems 4.1–4.4, Figures 4.1–4.5           |
+| 4.3–4.4            | pp. 452–460  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-2-pfasst-mgrit\|PFASST and MGRiT]]                        | (4.10)–(4.13), Theorems 4.5–4.6, Figures 4.6–4.11        |
+| 4.5                | pp. 460–472  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-3-diagonalized-parareal\|Diagonalization-based Parareal]] | (4.14)–(4.29), Theorems 4.7–4.8, Figures 4.12–4.17       |
+| 4.6                | pp. 472–481  | [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-4-4-stmg\|Space–time multigrid]]                            | (4.30)–(4.44), Theorem 4.9, Figures 4.18–4.22, Table 4.1 |
 
-## 4.1 What parabolic methods exploit
+## Section 4 introduction and 4.1 Historical development
+
+### What parabolic methods exploit
 
 The methods in Chapter 3 can address long-range propagation directly, but each has a constraint: SWR needs transmission operators, ParaExp is principally linear, and nonlinear ParaDiag solves Newton systems over long windows. Parabolic equations offer another route. Diffusion rapidly suppresses high-frequency error, so a late state becomes weakly dependent on fine details from the distant past. A coarse temporal model may still retain the dynamically important slow modes.
 
@@ -34,7 +36,7 @@ Parareal has roots in multiple shooting, Nievergelt-style precomputation, and Sa
 
 ## 4.2 Parareal
 
-### 4.2.1 Algorithm and concurrency
+### Algorithm and concurrency
 
 Partition $[0,T]$ into $N$ large intervals. Let $\mathcal F$ be an accurate, expensive fine propagator and $\mathcal G$ a cheap coarse propagator. Parareal updates
 
@@ -48,7 +50,7 @@ All $\mathcal F(U_n^k)$ evaluations are concurrent within iteration $k$. The new
 
 Parareal can be read as an approximate Newton method for multiple shooting or as coarse-propagator preconditioning of the lower-triangular all-at-once system. It is nonintrusive: existing fine and coarse integrators can participate if they expose an interface that advances one large interval from a supplied initial state.
 
-### 4.2.2 Linear modal analysis
+### Linear modal analysis
 
 For spatial mode $\lambda_\ell$, let one fine step have stability function $R_f(\lambda_\ell\Delta t)$, with $J$ fine steps per large interval, and let the coarse stability function be $R_g(\lambda_\ell\Delta T)$. Theorem 4.1 writes the error iteration as a strictly lower-triangular Toeplitz matrix. Strict triangularity gives finite-step exactness: exact arithmetic reaches the sequential fine solution in at most $N$ iterations, and the first $k$ large intervals are exact after iteration $k$.
 
@@ -63,15 +65,15 @@ $$
 
 The numerator measures fine/coarse mismatch; the denominator measures the coarse propagator's damping margin. Figure 4.2 shows that a short-horizon superlinear phase and a long-horizon nearly linear phase can coexist.
 
-### 4.2.3 Nonlinear finite-step behavior
+### Nonlinear finite-step behavior
 
 Under Lipschitz stability of the coarse propagator and a local error of order $p$, Theorem 4.3 establishes finite-step and superlinear bounds for nonlinear Parareal. The mechanism remains the interval-by-interval growth of the exact region. Nonlinearity makes the constants depend on solution regularity and propagator Lipschitz factors, so the observed iteration count can be highly sensitive to the window and physical parameters.
 
-### 4.2.4 The time integrator sets the limiting factor
+### The time integrator sets the limiting factor
 
 Theorem 4.4 analyzes parabolic modes on the negative real axis. With an L-stable fine method, backward Euler coarse propagation, and enough fine steps per interval, the worst long-time factor is about $0.3$. If the fine method is only A-stable, high-frequency modes are insufficiently damped and the required $J$ grows with the most dangerous frequency. Figure 4.3 compares backward Euler, trapezoidal, and Radau IIA combinations. It demonstrates that the fine method and fine/coarse step ratio materially change the convergence region even after the coarse method has been fixed. A suitable Radau IIA combination can reduce the theoretical worst factor to roughly $0.068$.
 
-### 4.2.5 From the heat equation toward the hyperbolic limit
+### From the heat equation toward the hyperbolic limit
 
 Figures 4.4–4.5 use periodic ADE and Burgers problems with $T=4$, $\Delta T=0.1$, $\Delta x=1/128$, $J=32$, backward Euler coarse propagation, and a second-order L-stable SDIRK fine method. As viscosity falls, ADE develops increasing fine/coarse phase mismatch. Burgers' equation also changes local transport speed and shock position. Both slow markedly, and Burgers exhibits approximate divergence around $\nu\le10^{-3}$.
 
@@ -79,7 +81,7 @@ The wave equation is more severe. Parareal struggles to control phase unless coa
 
 ## 4.3 PFASST
 
-### 4.3.1 From SDC to a temporal hierarchy
+### From SDC to a temporal hierarchy
 
 PFASST combines Parareal-style concurrency across large intervals with high-order SDC collocation. On each time step, choose $M_f$ fine collocation nodes and write
 
@@ -93,7 +95,7 @@ Direct solution of the dense collocation system is expensive. SDC preconditions 
 
 Lagrange interpolation defines restriction and prolongation between fine and coarse nodes. The coarse level uses the full approximation scheme (FAS), which transfers the fine residual as a $\tau$ correction into the coarse collocation equation. A PFASST iteration contains concurrent fine sweeps, fine-to-coarse transfer, a sequential or pipelined coarse sweep, and coarse-to-fine correction. It can be understood through either Parareal or multigrid on collocation equations.
 
-### 4.3.2 Numerical observation and limitations
+### Numerical observation and limitations
 
 Figure 4.6 uses periodic heat and ADE problems with $T=3$, $\Delta x=1/128$, $\Delta t=1/64$, source parameter $\sigma=1000$, three Radau IIA nodes on the fine level, and two on the coarse level. The heat equation converges rapidly. As ADE viscosity decreases, high-frequency propagation across time steps is represented less faithfully on the coarse collocation level, and convergence slows.
 
@@ -101,13 +103,13 @@ PFASST is attractive when high temporal order is needed and each collocation sol
 
 ## 4.4 MGRiT
 
-### 4.4.1 F points, C points, and FCF relaxation
+### F points, C points, and FCF relaxation
 
 MGRiT marks every $J$th point of the time grid as a C point and labels the intervening points F. F relaxation performs fine propagation concurrently between neighboring C points. C relaxation updates coarse points, and coarse-grid correction carries information over long distances. A two-level FCF iteration performs F relaxation followed by C and another F relaxation, yielding an overlapping update related to Parareal.
 
 One FCF iteration uses roughly two sets of fine propagation and therefore costs more than one Parareal iteration. The extra CF segment supplies overlap, so each iteration may make two large intervals exact; at most about $\lceil N/2\rceil$ iterations reach the sequential fine solution. General $F(CF)^\nu$ trades additional fine work for stronger contraction.
 
-### 4.4.2 Convergence factors and cost-fair comparison
+### Convergence factors and cost-fair comparison
 
 Theorem 4.5 gives the long-time modal factor for two-level FCF:
 
@@ -121,7 +123,7 @@ It contains one extra $|R_f^J|$ relative to Parareal, so dissipative modes contr
 
 A fair comparison places one FCF iteration beside two Parareal iterations with comparable fine work. Theorem 4.6 gives representative worst factors for L-stable fine methods. With backward Euler coarse propagation, Parareal and one FCF have factors about $0.2984$ and $0.1115$. A second-order Lobatto IIIC combination gives about $0.0817$ and $0.0197$. One FCF has the better per-iteration factor, yet it can be slightly worse than the square of the Parareal factor at equal fine-solve cost. Figure 4.8 maps this comparison in the complex plane.
 
-### 4.4.3 ADE and Burgers experiments
+### ADE and Burgers experiments
 
 Figures 4.9–4.10 use $T=5$, $J=20$, $\Delta T=1/8$, $\Delta x=1/160$, backward Euler coarse propagation, and SDIRK22 fine propagation. Every heat mode lies well inside the convergent region. As ADE viscosity decreases from $0.1$ to $0.01$ and $0.002$, dangerous modes approach the high-phase, low-damping region. At $\nu=0.002$, Parareal and FCF have measured linear-stage factors around $1.4211$ and $1.2812$, so both exhibit transient growth.
 
@@ -133,7 +135,7 @@ Figure 4.11 shows the same pattern for nonlinear Burgers. With adequate diffusio
 
 The paper diagonalizes two different parts of Parareal. The first replaces sequential coarse-grid correction across the $N$ large intervals by an FFT-diagonalizable head–tail system. The second constructs a cheap coarse propagator from an $\alpha$-circulant system over the $J$ fine points inside each large interval.
 
-### 4.5.1 Parallelizing coarse-grid correction
+### 4.5.1 Diagonalization-based CGC
 
 Standard Parareal applies its coarse correction sequentially in time. The diagonalized variant introduces
 
@@ -155,7 +157,7 @@ The nonlinear version applies quasi-Newton to the all-at-once coarse equation an
 
 Direct insertion of the head–tail condition into MGRiT changes its fixed point and can diverge. The paper supplies a consistent condition in which head–tail coupling uses the difference between the latest two iterates. At small $\alpha$, it retains the original MGRiT convergence rate and can also be used in Parareal.
 
-### 4.5.2 Defining the coarse propagator by diagonalization
+### 4.5.2 Diagonalization-based coarse solver
 
 The second construction uses the same integrator and small step for fine and coarse propagation. Fine propagation performs $J$ sequential steps. Coarse propagation puts the $J$ unknown time points into one $\alpha$-circulant all-at-once system and solves them concurrently. At $\alpha=0$, coarse and fine propagators coincide, so Parareal converges in one iteration but offers no cost advantage. At $\alpha>0$, the diagonalizable approximation can be roughly $J$ times cheaper in parallel.
 
@@ -177,7 +179,7 @@ Figures 4.16–4.17 apply the method to Burgers. The factor is approximately lin
 
 ## 4.6 Space–time multigrid
 
-### 4.6.1 All-at-once system and block Jacobi smoothing
+### All-at-once system and block Jacobi smoothing
 
 For $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$, the $\theta$ method gives
 
@@ -203,7 +205,7 @@ A two-level cycle performs $s_1$ presmoothing steps, restricts the residual in s
 
 Earlier parabolic multigrid often used point Gauss–Seidel in the time direction. That smoother is sequential forward substitution: it coarsens space effectively but does not scale in time. Time-parallel block Jacobi is a defining ingredient of modern STMG.
 
-### 4.6.2 Local Fourier analysis
+### Local Fourier analysis
 
 For the one-dimensional heat equation, centered spatial differences, and backward Euler, local Fourier analysis decomposes error into space–time frequencies. Theorem 4.9 gives the optimal damping
 
@@ -213,19 +215,19 @@ $$
 
 High temporal frequencies are damped by at most $1/\sqrt2$, permitting temporal coarsening. For the normalized heat equation in the paper, $\Delta t/\Delta x^2\ge1/\sqrt2$ places high spatial frequencies under the same bound and permits spatial coarsening as well. Restoring a diffusion coefficient gives the nondimensional ratio $\nu\Delta t/\Delta x^2$. The ADE symbol contains an imaginary part; the paper still identifies $\eta=1/2$ as a sound starting point for backward Euler.
 
-### 4.6.3 Damping, smoothing count, and the time integrator
+### Damping, smoothing count, and the time integrator
 
 Figure 4.19 scans $\eta$ for two-level backward-Euler STMG. Both the heat equation and ADE with $\nu=0.01$ perform well near $1/2$. Figure 4.20 fixes $\eta=1/2$ and compares one versus three block Jacobi smoothing steps. Additional smoothing raises the cost of a cycle and materially reduces the cycle count. ADE remains slower than heat, although its viscosity sensitivity weakens with more smoothing and a superlinear phase appears.
 
 Figure 4.21 changes the time integrator to the trapezoidal rule. The heat equation has convergence difficulty across the damping scan even with ten smoothing steps. ADE converges and improves with more smoothing; the better sampled damping is around $0.8$. STMG therefore depends on the stability function of the time integrator. The backward-Euler damping result cannot simply be transferred to the trapezoidal rule.
 
-### 4.6.4 Large-scale scaling results
+### Large-scale scaling results
 
 Table 4.1 reports modern STMG on a three-dimensional heat equation. In weak scaling, cores increase from 1 to 262,144, time steps from 2 to 524,288, and degrees of freedom from 59,768 to 15,667,822,592. The iteration count remains seven and total time changes only from about 28.8 to 30.0 seconds. The reference forward solve, parallel only in space, grows to roughly 4,988,060 seconds.
 
 For strong scaling, a problem with 512 time steps and 15,300,608 unknowns falls from 7,635.2 seconds on one core to 30.0 seconds on 256 cores. A larger case with 524,288 time steps falls from 15,205.9 seconds on 512 cores to 30.0 seconds on 262,144 cores. These data come from the three-dimensional implementation cited by the paper and demonstrate the weak- and strong-scaling potential of STMG for parabolic systems.
 
-### 4.6.5 Nonlinear FAS-STMG
+### Nonlinear FAS-STMG
 
 For $\boldsymbol u'=\boldsymbol f(\boldsymbol u)$, the $\theta$ method gives
 
@@ -242,9 +244,9 @@ Figure 4.22 uses two block Jacobi smoothing steps for Burgers' equation. Nonline
 
 Overall, STMG is among the most effective PinT solvers currently available for parabolic problems and has demonstrated large-scale scalability. It is more intrusive than Parareal because it needs access to the all-at-once discretization, smoother, and grid transfers. Robustness for hyperbolic problems and across time integrators remains an active issue.
 
-## 4.7 Site supplement: Python reproduction results
+## Site numerical supplement: Python reproduction results
 
-### 4.7.1 Parareal baselines and Figure 4.5
+### Parareal baselines and Figure 4.5
 
 | Problem             | Formal parameters                     | Iterations |   Final maximum error |
 | ------------------- | ------------------------------------- | ---------: | --------------------: |
@@ -266,7 +268,7 @@ With $T=4$, $\Delta T=0.1$, $\Delta x=1/128$, and $J=32$, the iteration counts r
 
 These counts measure convergence toward the sequential fine solution. GPU performance appears in [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-5-unified-view#gpu-acceleration-and-profiling|Chapter 5]].
 
-### 4.7.2 MGRiT baseline and Figures 4.9–4.10
+### MGRiT baseline and Figures 4.9–4.10
 
 The near-hyperbolic baseline uses $N_x=160$, $N=40$, $J=20$, $T=5$, and $\nu=0.002$. At the end of the reported window, Parareal has maximum error $2.895\times10^2$, while two-level MGRiT eventually reaches $5.551\times10^{-16}$ through finite-step exactness.
 
@@ -285,7 +287,10 @@ For cost comparison between one FCF and two Parareal iterations, the modal long-
 
 ![Equal-fine-solve-cost convergence of Parareal and FCF-MGRiT](assets/pint/mgrit-figure-4-10.svg)
 
-### 4.7.3 STMG damping and smoothing validation
+> [!note] One numerical difference from Figure 4.9
+> The source figure annotates the maximum Parareal factor at $\nu=0.01$ as $0.9986$. Direct evaluation in the Python conversion, using equation (4.5b), the printed parameters, and the stability function in upstream `MGRiT_Heat_ADE.m`, gives $1.0501$. The MGRiT value $0.9021$ for the same case and the other two pairs agree closely with the source figure. This page retains the computed reproduction value and records the discrepancy explicitly instead of overwriting it with the source annotation. Both values lie near one and support the same qualitative conclusion: long-time convergence is already close to its critical regime at this viscosity.
+
+### STMG damping and smoothing validation
 
 The trapezoidal-rule baseline uses $N_x=N_t=255$, $\nu=10^{-3}$, and three pre- and postsmoothing steps. In the sampled scan, the lowest error after 15 cycles occurs near $\eta=0.98$.
 
@@ -314,7 +319,7 @@ $$
 +\text{communication and memory cost}.
 $$
 
-## 4.8 Parameters and failure modes
+## Site method comparison: parameters and failure modes
 
 | Method                | Key parameter                                   | Tradeoff controlled                            | Typical failure mode                                                      |
 | --------------------- | ----------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------- |
@@ -324,16 +329,16 @@ $$
 | diagonalized Parareal | $\alpha$, location of diagonalization           | sequential coarse fraction versus roundoff     | small $\alpha$ is ill-conditioned; large $\alpha$ weakens convergence     |
 | STMG                  | $\eta$, smoothing count, coarsening, integrator | high-frequency smoothing versus cycle cost     | integrator mismatch; degradation for low viscosity or hyperbolic dynamics |
 
-## 4.9 Source coverage audit
+## Source coverage audit
 
-| Source location                 | This page  | Material covered                                                                                                |
-| ------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
-| Sections 4 and 4.1, pp. 443–444 | 4.1        | parabolic temporal locality, method scope, history, and the distinction of STMG                                 |
-| Section 4.2, pp. 444–452        | 4.2, 4.7.1 | Parareal update, Theorems 4.1–4.4, Figures 4.1–4.5, nonlinear behavior and hyperbolic degradation               |
-| Section 4.3, pp. 452–455        | 4.3        | collocation equations, SDC, FAS transfer, PFASST iteration, Figure 4.6                                          |
-| Section 4.4, pp. 455–460        | 4.4, 4.7.2 | FCF structure, Theorems 4.5–4.6, Figures 4.7–4.11, cost-fair comparison, Burgers                                |
-| Section 4.5, pp. 460–472        | 4.5        | two diagonalization locations, Theorems 4.7–4.8, Figures 4.12–4.17, nonlinearity and consistent MGRiT condition |
-| Section 4.6, pp. 472–481        | 4.6, 4.7.3 | all-at-once STMG, block Jacobi, Theorem 4.9, Figures 4.18–4.22, Table 4.1, nonlinear FAS                        |
+| Source location                 | This page | Material covered                                                                                                |
+| ------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------- |
+| Sections 4 and 4.1, pp. 443–444 | 4.1       | parabolic temporal locality, method scope, history, and the distinction of STMG                                 |
+| Section 4.2, pp. 444–452        | 4.2       | Parareal update, Theorems 4.1–4.4, Figures 4.1–4.5, nonlinear behavior and hyperbolic degradation               |
+| Section 4.3, pp. 452–455        | 4.3       | collocation equations, SDC, FAS transfer, PFASST iteration, Figure 4.6                                          |
+| Section 4.4, pp. 455–460        | 4.4       | FCF structure, Theorems 4.5–4.6, Figures 4.7–4.11, cost-fair comparison, Burgers                                |
+| Section 4.5, pp. 460–472        | 4.5       | two diagonalization locations, Theorems 4.7–4.8, Figures 4.12–4.17, nonlinearity and consistent MGRiT condition |
+| Section 4.6, pp. 472–481        | 4.6       | all-at-once STMG, block Jacobi, Theorem 4.9, Figures 4.18–4.22, Table 4.1, nonlinear FAS                        |
 
 ## Summary
 

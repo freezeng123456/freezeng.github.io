@@ -15,7 +15,9 @@ tags:
 > [!info] Figure license
 > The paper is distributed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). This page reproduces the complete graphics in Figures 3.1–3.3 and supplies an independent explanation next to each one.
 
-## 3.1 How the four lines of work developed
+## 3.1 Historical development
+
+### How the four lines of work developed
 
 The paper groups four PinT families that remain effective for hyperbolic problems and tests their main theoretical properties on the four PDEs from Chapter 2.
 
@@ -26,9 +28,11 @@ The paper groups four PinT families that remain effective for hyperbolic problem
 
 The history identifies the source of concurrency in each family. SWR exchanges complete interface waveforms. IDC pipelines correction levels. ParaExp uses linear superposition. ParaDiag exposes the spectral structure of the all-at-once time matrix.
 
-## 3.2 From WR to SWR
+## 3.2 Schwarz waveform relaxation (SWR)
 
-### 3.2.1 Limitation of classical spatial domain decomposition
+### From WR to SWR
+
+### Limitation of classical spatial domain decomposition
 
 A traditional algorithm first fixes a common time discretization and then applies domain decomposition to the elliptic problem at every time step. All subdomains wait for the DD iteration at the current step to converge before advancing. Sharing one time grid also restricts local adaptivity and the use of different integrators in different subdomains.
 
@@ -53,7 +57,9 @@ SWR partitions the continuous spatial domain before discretization. Each subdoma
 
 ![Schwarz waveform relaxation exchanges interface waveforms over a complete time window](assets/diagrams/pint/en/schwarz-waveform-relaxation.svg)
 
-## 3.2.2 First-order parabolic problem: the full OSWR iteration
+## 3.2.1 First-order parabolic problems
+
+### The full OSWR iteration
 
 For advection–diffusion on $(0,L)$, define
 
@@ -89,7 +95,7 @@ $$
 
 Every iteration restores the physical initial condition, $u_i^k(x,0)=u_0(x)$. The two interface waveforms at $k=0$ may be chosen arbitrarily. The parameter $p>0$ controls Robin transmission. As $p\to\infty$, the derivative terms vanish and the method reduces to classical Dirichlet exchange. A multi-subdomain version repeats the same construction at every artificial boundary. A nonlinear version keeps the iteration pattern and replaces $\mathcal L$ by the corresponding nonlinear operator.
 
-### 3.2.3 Theorem 3.1: the minimax Robin parameter
+### Theorem 3.1: the minimax Robin parameter
 
 Theorem 3.1 analyzes (3.1) on an unbounded spatial domain, with two subdomains and continuous space and time. Let
 
@@ -159,7 +165,7 @@ $$
 > [!tip] Derivation intuition: why the theorem uses an equal-peak condition
 > A temporal Fourier transform turns every frequency $\omega$ into an independent spatial interface-error problem. Crossing the overlap contributes $e^{-y}$, while Robin transmission contributes the rational reflection factor in front of it. Optimizing $p$ minimizes the largest peak over the frequency interval. Once the two candidate peaks have equal height, lowering either one raises the other; equation (3.2a) states this minimax balance. The value $y_0=y_c$ marks a change in the interior-peak structure.
 
-### 3.2.4 Figure 3.1: continuous theory versus a discrete experiment
+### Figure 3.1: continuous theory versus a discrete experiment
 
 ![Source Figure 3.1: theoretical OSWR factors and four-subdomain iteration counts](assets/papers/time-parallelization/source-figures/figure-3-1.svg)
 
@@ -173,7 +179,7 @@ Figure 3.1(a) plots the theoretical factors for Dirichlet and optimized Robin tr
 
 At $\nu=0.1$, the measured Dirichlet and optimized Robin counts are 92 and 28. The continuous two-subdomain theory predicts 32 and 4. Three differences explain the gap: the theory uses an unbounded domain, the experiment uses a bounded one; the theory has two subdomains, the experiment has four; and the experiment discretizes both space and time. Figure 3.1(a) therefore predicts a trend and an idealized factor, not an exact count for the discrete multi-subdomain implementation. A complete convergence analysis for multi-subdomain Robin SWR remains open.
 
-### 3.2.5 More accurate transmission conditions
+### More accurate transmission conditions
 
 Ventcel conditions use a higher-order local operator to approximate optimal nonlocal transmission. The Fourier-space optimal operator quoted in the paper has the form
 
@@ -184,7 +190,9 @@ $$
 
 where $i^2=-1$. If $l=C_1\Delta x$ and $\Delta t=C_1\Delta x^\beta$, the asymptotic factor has the form $\rho=1-O(\Delta x^\gamma)$, with $\gamma$ determined by $\beta$. The convolution condition of Wu and Xu (2017) gives a mesh-independent factor $\rho=1-C$, $C\in(0,1)$, and applies naturally to evolution equations with Volterra-type nonlocal terms. Its interface operator must retain temporal history.
 
-## 3.2.6 Second-order hyperbolic problem: finite-step convergence with Dirichlet data
+## 3.2.2 Second-order hyperbolic problems
+
+### Finite-step convergence with Dirichlet data
 
 For the wave equation, two-subdomain SWR is
 
@@ -230,7 +238,7 @@ $$
 
 Finite propagation speed drives the result. One exchange moves correct interface data only a finite distance along characteristics. Every iteration adds another exact space–time cone. Once their cumulative height exceeds $T$, the complete interface waveform is exact. Corresponding results exist for many subdomains, higher-dimensional decompositions, and one-dimensional nonlinear conservation laws.
 
-## 3.2.7 Figure 3.2: red–black SWR advances exact regions
+### Figure 3.2: red–black SWR advances exact regions
 
 ![Source Figure 3.2: four geometric stages of red–black SWR with generous overlap](assets/papers/time-parallelization/source-figures/figure-3-2.svg)
 
@@ -243,7 +251,7 @@ Figure 3.2 uses five interleaved subdomains.
 
 Each solve also computes a region above the exact tent whose data is not yet reliable. This redundant work buys concurrency and realizes Nievergelt's idea through characteristic geometry.
 
-## 3.2.8 MTP, UTP, and Figure 3.3
+### MTP, UTP, and Figure 3.3
 
 Mapped tent pitching (MTP) maps an inclined tent to a space–time cylinder, applies a classical time stepper, and maps the solution back. It avoids the redundant regions of red–black SWR but adds the mapping cost. The mapping can reduce the observed order, which motivates specialized integrators.
 
@@ -257,16 +265,16 @@ MTP requires finite propagation speed and does not extend directly to a paraboli
 
 ## Equation and figure coverage
 
-| Source item                         | Location here | Coverage                                                                                                  |
-| ----------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------- |
-| historical development, pp. 396–398 | 3.1           | origins and principal branches of all four families                                                       |
-| WR splitting and SWR motivation     | 3.2           | continuous decomposition, splitting difficulty, and OSWR objective                                        |
-| (3.1)                               | 3.2.2         | PDEs, physical boundaries, Robin exchange, and initial conditions for both subdomains                     |
-| (3.2a)–(3.2c), (3.3), Theorem 3.1   | 3.2.3         | parameter scaling, single-mode factor, both parameter regimes, worst-frequency bound, and Dirichlet limit |
-| Figure 3.1                          | 3.2.4         | complete source figure, parameters, stopping test, and theory–experiment discrepancy                      |
-| Ventcel and convolution conditions  | 3.2.5         | optimal operator, asymptotic factor, and nonlocal cost                                                    |
-| (3.4), Theorem 3.2                  | 3.2.6         | two-subdomain iteration, finite-step condition, and interface-error conclusion                            |
-| Figures 3.2–3.3                     | 3.2.7–3.2.8   | complete source figures, red–black progression, MTP/UTP, and residual adaptivity                          |
+| Source item                         | Paper section    | Coverage                                                                                                  |
+| ----------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------- |
+| historical development, pp. 396–398 | 3.1              | origins and principal branches of all four families                                                       |
+| WR splitting and SWR motivation     | 3.2 introduction | continuous decomposition, splitting difficulty, and OSWR objective                                        |
+| (3.1)                               | 3.2.1            | PDEs, physical boundaries, Robin exchange, and initial conditions for both subdomains                     |
+| (3.2a)–(3.2c), (3.3), Theorem 3.1   | 3.2.1            | parameter scaling, single-mode factor, both parameter regimes, worst-frequency bound, and Dirichlet limit |
+| Figure 3.1                          | 3.2.1            | complete source figure, parameters, stopping test, and theory–experiment discrepancy                      |
+| Ventcel and convolution conditions  | 3.2.1            | optimal operator, asymptotic factor, and nonlocal cost                                                    |
+| (3.4), Theorem 3.2                  | 3.2.2            | two-subdomain iteration, finite-step condition, and interface-error conclusion                            |
+| Figures 3.2–3.3                     | 3.2.2            | complete source figures, red–black progression, MTP/UTP, and residual adaptivity                          |
 
 ## Source
 

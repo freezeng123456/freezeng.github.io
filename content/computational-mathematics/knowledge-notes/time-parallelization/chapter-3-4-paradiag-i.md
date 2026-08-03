@@ -10,15 +10,17 @@ tags:
 ---
 
 > [!note] 阅读范围
-> 本页对应论文 Section 3.5.1（pp. 416–430），覆盖公式 (3.22)–(3.48)、Theorems 3.5–3.7、Figures 3.9–3.14 和 Tables 3.1–3.2。直接法的截断误差、舍入误差、BVM 以及非线性准 Newton 分支均保留。
+> 本页对应论文 Sections 3.5–3.5.1（pp. 415–431），覆盖 ParaDiag 总体分类、公式 (3.22)–(3.48)、Theorems 3.5–3.7、Figures 3.9–3.14 和 Tables 3.1–3.2。直接法的截断误差、舍入误差、BVM 以及非线性准 Newton 分支均保留。
 
-## 3.5.1.1 ParaDiag-I 与 ParaDiag-II 的分界
+## 3.5.1 直接 ParaDiag 方法（ParaDiag-I）
+
+### ParaDiag-I 与 ParaDiag-II 的分界
 
 ParaDiag-I 直接对角化时间步进矩阵。为了让该矩阵具有互异特征值，需要使用非均匀时间步，或在最后一步换用另一种时间积分公式。它无需外层迭代，但舍入误差限制了单个时间窗内可并行的步数。双精度下，几何时间网格通常只能稳定处理约二十步。
 
 ParaDiag-II 近似时间矩阵，并把对角化放入定常迭代或 Krylov 预条件。它牺牲直接性，换取更一般的积分器、更大的时间窗和条件良好的变换。下一页再完整讨论 ParaDiag-II。
 
-## 3.5.1.2 后向 Euler 的全时间系统
+### 后向 Euler 的全时间系统
 
 对 $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$ 使用变步长后向 Euler：
 
@@ -94,7 +96,7 @@ $$
 
 ![ParaDiag 的时间变换、独立空间求解与逆变换](assets/diagrams/pint/zh/paradiag-three-stage.svg)
 
-## 3.5.1.3 几何网格与两类误差
+### 几何网格与两类误差
 
 Maday and Rønquist (2008) 采用 $\Delta t_n=\mu^{n-1}\Delta t_1$，$\mu>1$。由 $\sum_n\Delta t_n=T$，
 
@@ -178,7 +180,7 @@ $$
 
 封闭形式用于分析 $\operatorname{Cond}(V)$；实际实现用数值 `eig`，因为它会缩放特征向量来改善条件数。单精度与双精度机器精度分别约为 $1.19\times10^{-7}$ 和 $2.22\times10^{-16}$。
 
-## 3.5.1.4 Figures 3.9–3.10：最优参数仍有并行宽度上限
+### Figures 3.9–3.10：最优参数仍有并行宽度上限
 
 ![原论文 Figure 3.9：热方程与对流扩散方程上误差随几何参数变化](assets/papers/time-parallelization/source-figures/figure-3-9.svg)
 
@@ -188,7 +190,7 @@ Figure 3.9 使用齐次 Dirichlet 边界、$u_0(x)=\sin(2\pi x)$、$\Delta x=1/5
 
 Figure 3.10 改取 $T=0.5$ 和 $N_t=2^4,2^5,\ldots,2^{10}$。均匀后向 Euler 的误差继续随 $N_t$ 下降；ParaDiag-I 使用数值最优 $\varrho_{\mathrm{num}}$ 后，误差先降，在不足 100 步处越过阈值并迅速上升。舍入误差最终压过时间离散误差。
 
-## 3.5.1.5 波动方程与梯形规则
+### 波动方程与梯形规则
 
 二阶系统
 
@@ -308,7 +310,7 @@ Figure 3.11 使用齐次 Dirichlet 边界、$\Delta x=1/20$、$T=0.2$。(a) 中�
 
 Table 3.1 表明，在 $N_t=5,10,20,30,60,100$ 时，后向 Euler 的 $\operatorname{Cond}(V)$ 从 $1.7\times10^3$ 增至 $4.8\times10^6$；梯形规则从 $4.7\times10^3$ 增至 $4.1\times10^9$。数值最优参数使后段出现平台，但整体增长仍解释了 Figures 3.10–3.11 的舍入恶化。
 
-## 3.5.1.6 BVM：固定步长并改变末步公式
+### BVM：固定步长并改变末步公式
 
 为了扩大并行宽度，Liu et al. (2022) 使用统一 $\Delta t$，前 $N_t-1$ 步采用中心公式，最后一步采用后向 Euler：
 
@@ -396,7 +398,7 @@ $$
 
 Figure 3.12 使用 $T=0.5$、$\Delta x=1/40$ 和齐次 Dirichlet 边界。几何梯形 ParaDiag-I 在 $N_t\approx32$ 开始受舍入影响；BVM 保持 $O(\Delta t^2)$，与串行梯形规则一致。右图显示 BVM 的特征向量条件数低得多。
 
-## 3.5.1.7 非线性全时间方程与准 Newton
+### 非线性全时间方程与准 Newton
 
 对 $\boldsymbol u'=\boldsymbol f(\boldsymbol u,t)$，定义
 
@@ -473,7 +475,7 @@ Figure 3.13 使用周期 Burgers 方程、$\Delta x=0.01$，并保持 $N_t=T/\De
 
 若有 $N_t$ 个处理器，ParaDiag-I 每轮的 $N_t$ 个 Jacobian 系统同时求解，因此并行 Jacobian 求解次数等于外层轮数。Table 3.2 中，$\nu=0.1$ 时串行梯形需要 401–443 次，ParaDiag-I 只需 5–7 轮；$\nu=0.002$ 时 ParaDiag-I 从 7 增至 22 轮，并在更长窗口失效。
 
-## 3.5.1.8 最近 Kronecker 近似
+### 最近 Kronecker 近似
 
 单一 $I_t\otimes A_k$ 忽略了 Jacobian 随时间的幅值变化。改用 $\Phi_k\otimes A_k$，其中 $\Phi_k=\operatorname{diag}(\phi_1,\ldots,\phi_{N_t})$，解
 
@@ -510,16 +512,16 @@ $\phi_n$ 的矩阵乘法代价较高，论文建议用粗空间模型离线计�
 
 ## 公式与图表覆盖核对
 
-| 原文项目                                           | 本页位置 | 覆盖状态                                                  |
+| 原文项目                                           | 论文小节 | 覆盖状态                                                  |
 | -------------------------------------------------- | -------- | --------------------------------------------------------- |
-| (3.22)–(3.25)                                      | 3.5.1.2  | 变步长后向 Euler、全时间矩阵、对角化和三步求解            |
-| (3.26)–(3.29), Theorem 3.5                         | 3.5.1.3  | 几何网格、两类误差、平衡参数、Toeplitz 特征向量与证明路线 |
-| Figures 3.9–3.10                                   | 3.5.1.4  | 全部原图、参数扫描和并行宽度阈值                          |
-| (3.30)–(3.37), Theorem 3.6, Figure 3.11, Table 3.1 | 3.5.1.5  | 二阶转写、梯形全时间系统、误差平衡、证明界和条件数        |
-| (3.38)–(3.41), Theorem 3.7, Figure 3.12            | 3.5.1.6  | BVM、统一二阶精度、条件数和消元推导                       |
-| (3.42)–(3.46), Figure 3.13, Table 3.2              | 3.5.1.7  | 非线性 Newton、平均 Jacobian、并行求解与成本对比          |
-| (3.47)–(3.48), Figure 3.14                         | 3.5.1.8  | NKA、缩放矩阵、离线粗模型和收敛改善                       |
+| (3.22)–(3.25)                                      | 3.5.1    | 变步长后向 Euler、全时间矩阵、对角化和三步求解            |
+| (3.26)–(3.29), Theorem 3.5                         | 3.5.1    | 几何网格、两类误差、平衡参数、Toeplitz 特征向量与证明路线 |
+| Figures 3.9–3.10                                   | 3.5.1    | 全部原图、参数扫描和并行宽度阈值                          |
+| (3.30)–(3.37), Theorem 3.6, Figure 3.11, Table 3.1 | 3.5.1    | 二阶转写、梯形全时间系统、误差平衡、证明界和条件数        |
+| (3.38)–(3.41), Theorem 3.7, Figure 3.12            | 3.5.1    | BVM、统一二阶精度、条件数和消元推导                       |
+| (3.42)–(3.46), Figure 3.13, Table 3.2              | 3.5.1    | 非线性 Newton、平均 Jacobian、并行求解与成本对比          |
+| (3.47)–(3.48), Figure 3.14                         | 3.5.1    | NKA、缩放矩阵、离线粗模型和收敛改善                       |
 
 ## 本页原文
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 3.5.1, pp. 416–430.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Sections 3.5–3.5.1, pp. 415–431.

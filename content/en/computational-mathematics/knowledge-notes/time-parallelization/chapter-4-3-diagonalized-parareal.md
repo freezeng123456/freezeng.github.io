@@ -10,14 +10,18 @@ tags:
 ---
 
 > [!note] Reading scope
-> This page follows Section 4.5 (pp. 461–472). It covers equations (4.14)–(4.29), Theorems 4.7–4.8, Remark 4.2, and Figures 4.12–4.17. Both variants use diagonalization, but at different locations: the first parallelizes the global coarse-grid correction; the second defines a special coarse propagator inside each coarse interval.
+> This page follows Section 4.5 (pp. 460–472). It covers equations (4.14)–(4.29), Theorems 4.7–4.8, Remark 4.2, and Figures 4.12–4.17. Both variants use diagonalization, but at different locations: the first parallelizes the global coarse-grid correction; the second defines a special coarse propagator inside each coarse interval.
 
-## 4.5.1 Distinguishing the two constructions
+## 4.5 Diagonalization-based Parareal
+
+### Distinguishing the two constructions
 
 - **Diagonalized CGC (Section 4.5.1):** modifies the serial correction across the $N_t$ coarse points. Its concurrency lies across coarse points, and its convergence mechanism remains close to standard Parareal, so its main range is parabolic.
 - **Diagonalized coarse propagator (Section 4.5.2):** retains the outer Parareal form and uses ParaDiag on the $J$ fine points inside every $[T_n,T_{n+1}]$. Coarse and fine propagation use the same integrator and step size. This construction transports long-lived modes and can also handle hyperbolic problems.
 
-## 4.5.1.1 From serial CGC to head–tail coupling
+## 4.5.1 Diagonalization-based CGC
+
+### From serial CGC to head–tail coupling
 
 Standard coarse-grid correction is
 
@@ -66,7 +70,7 @@ $$
 
 This predates the more natural ParaDiag-II condition (3.55); the modified value $\widetilde{\boldsymbol u}_0^k$ maintains consistency at convergence.
 
-## 4.5.1.2 Linear all-at-once system and three-stage solve
+### Linear all-at-once system and three-stage solve
 
 For $\boldsymbol u'=A\boldsymbol u$ and backward Euler coarse propagation, substitution of the head–tail condition yields
 
@@ -109,7 +113,7 @@ $$
 
 An alpha-circulant implementation also applies the corresponding diagonal scalings. As in Section 3.5.2, the essential stages are an FFT-like transform, independent shifted spatial solves, and the inverse transform.
 
-## 4.5.1.3 Theorem 4.7: threshold for matching standard Parareal
+### Theorem 4.7: threshold for matching standard Parareal
 
 As $\alpha\to0$, equation (4.15) approaches standard CGC, while alpha-circulant roundoff increases. Let $\rho$ be the standard Parareal factor and $\rho_{\mathrm{new}}$ the new factor. For stable coarse propagation and a linear system with negative real eigenvalues,
 
@@ -123,9 +127,9 @@ The practical choice is the threshold itself: reducing alpha further does not im
 
 ![Original Figure 4.12: standard and diagonalized CGC for heat and ADE](assets/papers/time-parallelization/source-figures/figure-4-12.svg)
 
-The test uses periodic data, $u_0(x)=\sin(2\pi x)$, backward Euler coarse and SDIRK22 fine propagation, $T=4$, $J=10$, $\Delta T=0.1$, and $\Delta x=1/128$. Heat gives $\rho\approx0.22$ and threshold $0.18$; ADE at $\nu=0.1$ gives $\rho\approx0.39$ and threshold $0.28$. Alpha above the threshold slows diagonalized CGC.
+The test uses periodic data, $u_0(x)=\sin(2\pi x)$, backward Euler coarse and SDIRK22 fine propagation, $T=4$, $J=10$, $\Delta T=0.1$, and $\Delta x=1/128$. Panel (a) is heat, with $\rho\approx0.22$ and threshold $0.18$: $\alpha=0.25,0.4$ are slower than standard CGC, while $\alpha=0.1$ tracks it. Panel (b) is ADE at $\nu=0.1$, with $\rho\approx0.39$ and threshold $0.28$: $\alpha=0.1,0.25$ track standard CGC and $\alpha=0.4$ is clearly slower. The two panels locate the same threshold mechanism under two spectral geometries.
 
-## 4.5.1.4 Nonlinear all-at-once quasi-Newton solve
+### Nonlinear all-at-once quasi-Newton solve
 
 With backward Euler coarse propagation, define
 
@@ -164,11 +168,11 @@ where $A^{k+1,l}$ averages the temporal Jacobian blocks. The matrix has the stru
 
 ![Original Figure 4.13: the two CGCs for Burgers' equation at two viscosities](assets/papers/time-parallelization/source-figures/figure-4-13.svg)
 
-The nonlinear experiment displays the same alpha threshold: a suitably small alpha makes diagonalized CGC track standard CGC.
+The left and right panels of Figure 4.13 use Burgers' equation at $\nu=1$ and $0.01$, respectively. Each compares $\alpha=0.4,0.25,0.1$ with standard CGC. Alpha $0.4$ is slowest in both viscosity regimes, while $0.1$ is closest to the standard curve and is slightly faster in the weak-diffusion panel. The nonlinear experiment therefore retains the threshold structure seen in Figure 4.12.
 
-### Remark 4.2: MGRIT needs a consistent head–tail condition
+### Remark 4.2: MGRiT needs a consistent head–tail condition
 
-Directly transplanting (4.15) into MGRIT diverges for every alpha. The consistent condition is
+Directly transplanting (4.15) into MGRiT diverges for every alpha. The consistent condition is
 
 $$
 \boldsymbol u_1^{k+1}
@@ -190,9 +194,11 @@ $$
 \right. \tag{4.20}
 $$
 
-Here $\widetilde{\boldsymbol b}_{n+1}^k=\mathcal F(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)-\mathcal G(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)$ and $\widetilde{\boldsymbol s}_n^k=\mathcal F(T_{n-1},T_n,\widetilde{\boldsymbol u}_{n-1}^k)$. For small alpha this variant matches original MGRIT, with the same threshold mechanism as Theorem 4.7.
+Here $\widetilde{\boldsymbol b}_{n+1}^k=\mathcal F(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)-\mathcal G(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)$ and $\widetilde{\boldsymbol s}_n^k=\mathcal F(T_{n-1},T_n,\widetilde{\boldsymbol u}_{n-1}^k)$. For small alpha this variant matches original MGRiT, with the same threshold mechanism as Theorem 4.7.
 
-## 4.5.2.1 Fine propagation and a head–tail coarse propagator
+## 4.5.2 Diagonalization-based coarse solver
+
+### Fine propagation and a head–tail coarse propagator
 
 Inside each coarse interval, both propagators use the same linear-theta method and $\Delta t=\Delta T/J$. Fine propagation advances sequentially:
 
@@ -212,7 +218,7 @@ $$
 
 The $J$ fine steps are now a head–tail system solvable in parallel by ParaDiag.
 
-## 4.5.2.2 Nonlinear all-at-once system and quasi-Newton iteration
+### Nonlinear all-at-once system and quasi-Newton iteration
 
 With $\boldsymbol V=(\boldsymbol v_1^\top,\ldots,\boldsymbol v_J^\top)^\top$,
 
@@ -261,7 +267,7 @@ $$
 -\mathcal F_\alpha^*(T_n,T_{n+1},\boldsymbol u_n^k). \tag{4.26}
 $$
 
-## 4.5.2.3 Linear system, concurrency, and limiting cases
+### Linear system, concurrency, and limiting cases
 
 For $f(\boldsymbol u)=A\boldsymbol u$,
 
@@ -290,7 +296,7 @@ $$
 
 At $\alpha=0$, coarse propagation equals sequential fine propagation and outer Parareal converges in one iteration with no speedup. For $0<\alpha<1$, all $J$ points are solved at once; with enough spatial-solve resources, wall time is approximately $1/J$ of sequential fine propagation.
 
-## 4.5.2.4 Theorem 4.8: parabolic and hyperbolic spectra
+### Theorem 4.8: parabolic and hyperbolic spectra
 
 For a stable one-step Runge–Kutta method, let
 
@@ -314,19 +320,19 @@ The heat-equation factor is independent of the number of coarse intervals. The i
 
 ![Original Figure 4.14: sharp rho=alpha prediction for the heat equation](assets/papers/time-parallelization/source-figures/figure-4-14.svg)
 
-The heat test uses homogeneous Dirichlet data, $u_0=\sin^2(2\pi x)$, trapezoidal integration, $\Delta T=1/2$, $J=10$, and $\Delta x=1/100$. Both choices of $N_t$ follow the alpha slope.
+The heat test uses homogeneous Dirichlet data, $u_0=\sin^2(2\pi x)$, trapezoidal integration, $\Delta T=1/2$, $J=10$, and $\Delta x=1/100$. The left and right panels use $N_t=36$ and $72$; each compares $\alpha=10^{-1},10^{-2},10^{-3}$. The measured dashed curves are almost parallel to the theoretical dotted curves, and doubling $N_t$ does not change the slope set by $\rho=\alpha$.
 
 ![Original Figure 4.15: joint influence of alpha and the coarse-interval count on the wave equation](assets/papers/time-parallelization/source-figures/figure-4-15.svg)
 
-The wave test uses periodic data, $u_0=\sin^2(2\pi x)$, and $u_t(0)=0$. At $\alpha=0.01$, increasing $N_t$ slows convergence. At smaller alpha, increasing $N_t$ from 24 to 960 costs only about two extra iterations to reach $\max\{\Delta t^2,\Delta x^2\}$.
+The wave test uses periodic data, $u_0=\sin^2(2\pi x)$, and $u_t(0)=0$. Panel (a) fixes $\alpha=0.01$ and compares $N_t=24,48,96$, so increasing the interval count visibly slows convergence. Panel (b) fixes $\alpha=10^{-4}$ and compares $N_t=24,48,96,960$; increasing the count from 24 to 960 costs only about two extra iterations to reach $\max\{\Delta t^2,\Delta x^2\}$. The panels isolate the joint effect of $\alpha N_t$.
 
 ![Original Figure 4.16: the linear bound is sharp for small alpha Nt and conservative when the product is large](assets/papers/time-parallelization/source-figures/figure-4-16.svg)
 
-At $\alpha=10^{-4},N_t=24$, (4.29) is accurate. Larger-product cases display superlinear decay.
+Figure 4.16(a) fixes $N_t=24$ and compares $\alpha=10^{-2}$ with $10^{-4}$; panel (b) fixes $\alpha=10^{-4}$ and compares $N_t=24$ with $960$. Only the small-product case $\alpha=10^{-4},N_t=24$ closely follows the dotted bound from (4.29). The other two measured curves exhibit superlinear decay, making the linear bound visibly conservative.
 
 ![Original Figure 4.17: iterations needed to reach 1e-8 on Burgers' equation](assets/papers/time-parallelization/source-figures/figure-4-17.svg)
 
-The Burgers test uses periodic data, $u_0=\sin^2(2\pi x)$, $\Delta T=0.1$, $J=10$, and $\Delta x=1/100$. At $N_t=40$, small alpha accelerates convergence and reduces viscosity sensitivity. At $\alpha=10^{-3}$, iteration counts remain robust from $N_t=10$ to $160$. Nonlinear theory gives $\rho=O(\alpha)$ under exact solution of (4.23) and suitable Lipschitz assumptions.
+The Burgers test uses periodic data, $u_0=\sin^2(2\pi x)$, $\Delta T=0.1$, $J=10$, and $\Delta x=1/100$; the three curves use $\nu=1,0.01,10^{-4}$. Panel (a) fixes $N_t=40$, showing that small alpha accelerates convergence and reduces viscosity sensitivity. Panel (b) fixes $\alpha=10^{-3}$; from $N_t=10$ to $160$, the count stays between two and five iterations. Nonlinear theory gives $\rho=O(\alpha)$ under exact solution of (4.23) and suitable Lipschitz assumptions.
 
 ## Final comparison
 
@@ -340,16 +346,16 @@ The Burgers test uses periodic data, $u_0=\sin^2(2\pi x)$, $\Delta T=0.1$, $J=10
 
 ## Equation, theorem, and figure audit
 
-| Source item                            | Location here | Coverage                                                                 |
+| Source item                            | Paper section | Coverage                                                                 |
 | -------------------------------------- | ------------- | ------------------------------------------------------------------------ |
-| (4.14)–(4.17)                          | §§4.5.1.1–2   | standard/head–tail CGC, linear all-at-once matrix, three stages          |
-| Theorem 4.7, Figure 4.12               | §4.5.1.3      | alpha threshold, roundoff tradeoff, heat and ADE                         |
-| (4.18)–(4.19), Figure 4.13             | §4.5.1.4      | nonlinear system, average-Jacobian quasi-Newton, Burgers                 |
-| Remark 4.2, (4.20)                     | §4.5.1.4      | consistent MGRIT head–tail condition and convergent variant              |
-| (4.21)–(4.26)                          | §§4.5.2.1–2   | equal-integrator fine/coarse propagation, nonlinear system, outer update |
-| (4.27)–(4.28)                          | §4.5.2.3      | linear form, terminal extraction, alpha-zero limit, J-way concurrency    |
-| Theorem 4.8, (4.29), Figures 4.14–4.17 | §4.5.2.4      | negative-real/imaginary bounds and all heat, wave, Burgers figures       |
+| (4.14)–(4.17)                          | 4.5.1         | standard/head–tail CGC, linear all-at-once matrix, three stages          |
+| Theorem 4.7, Figure 4.12               | 4.5.1         | alpha threshold, roundoff tradeoff, heat and ADE                         |
+| (4.18)–(4.19), Figure 4.13             | 4.5.1         | nonlinear system, average-Jacobian quasi-Newton, Burgers                 |
+| Remark 4.2, (4.20)                     | 4.5.1         | consistent MGRiT head–tail condition and convergent variant              |
+| (4.21)–(4.26)                          | 4.5.2         | equal-integrator fine/coarse propagation, nonlinear system, outer update |
+| (4.27)–(4.28)                          | 4.5.2         | linear form, terminal extraction, alpha-zero limit, J-way concurrency    |
+| Theorem 4.8, (4.29), Figures 4.14–4.17 | 4.5.2         | negative-real/imaginary bounds and all heat, wave, Burgers figures       |
 
 ## Source
 
-- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 4.5, pp. 461–472.
+- M. J. Gander, S.-L. Wu, and T. Zhou, [_Time Parallelization for Hyperbolic and Parabolic Problems_](https://doi.org/10.1017/S0962492924000072), _Acta Numerica_ 34 (2025), Section 4.5, pp. 460–472.

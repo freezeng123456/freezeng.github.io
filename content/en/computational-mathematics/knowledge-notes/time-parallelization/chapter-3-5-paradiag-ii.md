@@ -12,7 +12,9 @@ tags:
 > [!note] Reading scope
 > This page follows Section 3.5.2 (pp. 431–443). It covers equations (3.49)–(3.68), Theorems 3.8–3.9, and Figures 3.15–3.18. The discrete circulant-preconditioner route and the continuous head–tail waveform-relaxation route are derived separately and then shown to give the same ParaDiag-II iteration.
 
-## 3.5.2.1 From a multistep formula to a circulant preconditioner
+## 3.5.2 Iterative ParaDiag methods (ParaDiag-II)
+
+### From a multistep formula to a circulant preconditioner
 
 Direct ParaDiag is difficult to extend to high-order schemes such as multistage Runge–Kutta methods. ParaDiag-II instead approximates the time-stepping matrices and uses the approximation in a stationary or Krylov iteration. McDonald et al. (2018) began from the discrete all-at-once system; Gander and Wu (2019) began from continuous waveform relaxation. Their discrete algorithms coincide.
 
@@ -50,7 +52,7 @@ $$
 
 Its asymptotic rate is governed by $\rho(P^{-1}K)$. A clustered spectrum can still make preconditioned GMRES effective even when stationary iteration is slow or divergent.
 
-## 3.5.2.2 Fourier diagonalization and the three-stage solve
+### Fourier diagonalization and the three-stage solve
 
 Circulant matrices commute and share the discrete Fourier eigenvectors:
 
@@ -105,7 +107,7 @@ The outer stages cost $O(N_xN_t\log N_t)$ through FFTs. The $N_t$ shifted spatia
 
 If $A\in\mathbb R^{N_x\times N_x}$ is symmetric negative definite, at most $mN_x$ eigenvalues of $P^{-1}K$ differ from $1$. In exact arithmetic, preconditioned GMRES therefore terminates in at most $mN_x+1$ steps. This bound need not be small for large $N_x$, and nonsymmetry in $A$ weakens the clustering.
 
-## 3.5.2.3 Figure 3.15: spectra and GMRES on three PDE classes
+### Figure 3.15: spectra and GMRES on three PDE classes
 
 The experiments use the heat equation, advection–diffusion at two viscosities, and the wave equation, all with homogeneous Dirichlet data and $u(x,0)=\sin(2\pi x)$. For the wave equation $u_t(x,0)=0$ and
 
@@ -136,9 +138,9 @@ At $\gamma=0$ this is the classical fourth-order, conditionally stable Numerov m
 
 ![Original Figure 3.15: spectra and GMRES residuals after circulant preconditioning for three PDE classes](assets/papers/time-parallelization/source-figures/figure-3-15.svg)
 
-Figure 3.15 sets $T=2$, $\Delta t=1/50$, $\Delta x=1/100$, and $\gamma=1/100$. Heat-equation eigenvalues are almost all at $1$. Clustering weakens and GMRES takes more steps as advection grows. The method still works at $\nu=10^{-3}$, then deteriorates as viscosity decreases further, and is much less effective on the wave equation.
+Figure 3.15 sets $T=2$, $\Delta t=1/50$, $\Delta x=1/100$, and $\gamma=1/100$. The left column, panels (a), (c), and (e), plots the spectrum of $P^{-1}K$; the right column, panels (b), (d), and (f), plots the corresponding GMRES residuals. The rows are heat, advection–diffusion, and wave equations. In (a) and (b), nearly every heat eigenvalue lies at $1$ and the residual reaches machine precision in roughly three steps. Panels (c) and (d) compare $\nu=10^{-3}$ with $10^{-6}$: the former remains tightly clustered, while the latter develops dispersed non-unit eigenvalues and needs more iterations. The wave spectrum in (e) extends far in the imaginary direction and its residual in (f) has a long tail. Together the six panels show a continuous loss of effectiveness as dissipation weakens.
 
-## 3.5.2.4 Continuous head–tail coupling and an alpha-circulant matrix
+### Continuous head–tail coupling and an alpha-circulant matrix
 
 Gander and Wu (2019) introduced
 
@@ -248,9 +250,9 @@ For $\alpha=1$, $V_\alpha=F^*$ and this is exactly (3.52). For $\alpha\ne1$, the
 
 ![Original Figure 3.16: error decay of head–tail waveform relaxation at two values of alpha](assets/papers/time-parallelization/source-figures/figure-3-16.svg)
 
-Figure 3.16 retains the PDE settings of Figure 3.15 and changes to periodic boundary conditions. Here $P$ is singular at $\alpha=1$, so $\alpha<1$ is required. A small alpha gives rapid convergence on strongly advective and wave problems without Krylov acceleration.
+Figure 3.16 retains the PDE settings of Figure 3.15 and changes to periodic boundary conditions. The left and right panels use $\alpha=0.1$ and $10^{-3}$, respectively; each compares ADE at $\nu=10^{-2}$ and $10^{-6}$ with the wave equation. Here $P$ is singular at $\alpha=1$, so $\alpha<1$ is required. With $\alpha=0.1$, all three curves decay linearly and the wave case is slowest. At $\alpha=10^{-3}$, every case reaches the neighborhood of $10^{-12}$ in fewer iterations. The figure directly exposes alpha's control of the convergence slope and shows that neither strongly advective nor wave cases require Krylov acceleration in this formulation.
 
-## 3.5.2.5 Discrete equivalence of the two routes
+### Discrete equivalence of the two routes
 
 The discrete head–tail method is
 
@@ -283,7 +285,7 @@ $$
 
 generates $K\boldsymbol U=\boldsymbol b$, and $P_\alpha$ is its generalized block alpha-circulant preconditioner.
 
-## 3.5.2.6 Direct discretization of a second-order system
+### Direct discretization of a second-order system
 
 A first-order reformulation doubles the per-time-point storage. The paper therefore considers
 
@@ -329,7 +331,7 @@ $$
 
 $C_\alpha$ and $\widetilde C_\alpha$ are simultaneously diagonalizable, so the three-stage solve (3.60) also applies.
 
-## 3.5.2.7 Theorem 3.9: stability, spectral bounds, and rate
+### Theorem 3.9: stability, spectral bounds, and rate
 
 For a first-order problem, suppose (3.63) is stable:
 
@@ -364,7 +366,7 @@ and the paper obtains $\rho(\mathcal M)\le\alpha/(1-\alpha)$. A smaller alpha th
 
 Figure 3.17 sets $\Delta t=1/16$, $\Delta x=1/128$, $\alpha=0.02$, and $T=0.5,10,20$. The top row uses the unconditional-stability threshold $\gamma=1/120$, and every eigenvalue stays inside the dashed circle of radius $\alpha/(1-\alpha)$. The bottom row uses $\gamma=1/120.01$; the loss of unconditional stability breaks the bound on long windows.
 
-## 3.5.2.8 Roundoff at small alpha and the implementation choice
+### Roundoff at small alpha and the implementation choice
 
 Alpha cannot be arbitrarily small. Since $V_\alpha=\Lambda_\alpha F^*$ and $\operatorname{Cond}_2(F^*)=1$,
 
@@ -380,11 +382,11 @@ This factorization error need not pass unchanged into the final iterate. Solving
 
 ![Original Figure 3.18: roundoff under two implementations and three values of alpha](assets/papers/time-parallelization/source-figures/figure-3-18.svg)
 
-In Figure 3.18, direct iteration stalls earlier as alpha decreases, whereas correction form reaches nearly double-precision accuracy. The paper points to Wu, Yang and Zhou (2025) for a fuller roundoff analysis.
+Figure 3.18 compares $\alpha=10^{-3},10^{-6},10^{-11}$. In the left panel, direct solution for $\boldsymbol U^k$ stalls near $10^{-12}$, $10^{-9}$, and $10^{-4}$, respectively, so the $\epsilon/\alpha$ amplification appears earlier as alpha decreases. In the right panel, the correction update drives all three cases to approximately $10^{-13}$. The panels separate spectral convergence from implementation-level roundoff stability: a smaller alpha improves realized accuracy only when paired with the correction form. The paper points to Wu, Yang and Zhou (2025) for a fuller roundoff analysis.
 
 General multistep formulas need not satisfy (3.66). Dense lower triangular Toeplitz time matrices arise for Volterra partial integro-differential equations; positive, monotone quadrature weights can instead yield $|\lambda(P_\alpha^{-1}K)|=1+O(\alpha)$.
 
-## 3.5.2.9 Nonlinear Newton–Krylov
+### Nonlinear Newton–Krylov
 
 For backward Euler applied to $\boldsymbol u'=f(t,\boldsymbol u)$, Newton's method on the nonlinear all-at-once equation is
 
@@ -422,15 +424,15 @@ where $A_l$ averages the Jacobian blocks. Generally $\rho(P_\alpha^{-1}J)>1$, so
 
 ## Equation-and-figure audit
 
-| Source item                                                                     | Location here | Coverage                                                                |
+| Source item                                                                     | Paper section | Coverage                                                                |
 | ------------------------------------------------------------------------------- | ------------- | ----------------------------------------------------------------------- |
-| multistep all-at-once system, circulant replacement, (3.49)–(3.52), Theorem 3.8 | §§3.5.2.1–2   | discrete route, FFT diagonalization, three stages, clustering           |
-| (3.53)–(3.54), Figure 3.15                                                      | §3.5.2.3      | three PDEs, Numerov threshold, spectra and GMRES                        |
-| (3.55)–(3.60), Figure 3.16                                                      | §3.5.2.4      | head–tail condition, alpha-circulant system, FFT implementation         |
-| (3.61)–(3.65)                                                                   | §§3.5.2.5–6   | route equivalence, first- and direct second-order systems               |
-| Theorem 3.9, (3.66)–(3.67), Figure 3.17                                         | §3.5.2.7      | stability, printed inconsistency, spectral radius, threshold experiment |
-| Figure 3.18                                                                     | §3.5.2.8      | $O(\epsilon/\alpha)$, direct versus correction update                   |
-| (3.68)                                                                          | §3.5.2.9      | nonlinear Newton, alpha-circulant GMRES, window-length effect           |
+| multistep all-at-once system, circulant replacement, (3.49)–(3.52), Theorem 3.8 | 3.5.2         | discrete route, FFT diagonalization, three stages, clustering           |
+| (3.53)–(3.54), Figure 3.15                                                      | 3.5.2         | three PDEs, Numerov threshold, spectra and GMRES                        |
+| (3.55)–(3.60), Figure 3.16                                                      | 3.5.2         | head–tail condition, alpha-circulant system, FFT implementation         |
+| (3.61)–(3.65)                                                                   | 3.5.2         | route equivalence, first- and direct second-order systems               |
+| Theorem 3.9, (3.66)–(3.67), Figure 3.17                                         | 3.5.2         | stability, printed inconsistency, spectral radius, threshold experiment |
+| Figure 3.18                                                                     | 3.5.2         | $O(\epsilon/\alpha)$, direct versus correction update                   |
+| (3.68)                                                                          | 3.5.2         | nonlinear Newton, alpha-circulant GMRES, window-length effect           |
 
 ## Source
 

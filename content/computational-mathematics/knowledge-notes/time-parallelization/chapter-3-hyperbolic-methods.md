@@ -1,5 +1,5 @@
 ---
-title: 第三章：对双曲问题仍然有效的方法
+title: 第三章：对双曲问题有效的 PinT 方法
 description: Schwarz 波形松弛、并行延迟校正、ParaExp 与 ParaDiag 的完整推导和数值解释
 lang: zh
 translation: en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-hyperbolic-methods
@@ -9,21 +9,23 @@ tags:
 ---
 
 > [!note] 阅读范围
-> 本章对应论文 Section 3（pp. 396–443）。正文依次覆盖历史脉络、SWR、IDC/PIDC/RIDC、ParaExp、ParaDiag-I 和 ParaDiag-II。公式、定理和论文实验按论证顺序解释；本章末尾的 Python 结果另标为本站复现。
+> 本章对应论文 Section 3（pp. 396–443）。正文严格保留原论文层级：Section 3 导论、3.1 历史发展、3.2 SWR、3.3 IDC、3.4 ParaExp，以及 3.5.1/3.5.2 两类 ParaDiag。公式、定理和论文实验按论证顺序解释；Python 结果、参数比较与覆盖审计另标为本站补充，不占用论文编号。
 
-## 逐节精读导航
+## 论文与精读页的对应关系
 
 本页保留章节全景与本站复现实验。逐公式、逐定理和逐图表的完整推导拆在以下页面，便于按论文顺序阅读：
 
-| 论文小节 | 精读页                                                                                                                      | 覆盖范围                                                          |
-| -------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| 3.1–3.2  | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-1-history-and-swr\|历史脉络与 Schwarz 波形松弛]] | (3.1)–(3.4), Theorems 3.1–3.2, Figures 3.1–3.3                    |
-| 3.3      | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-2-idc\|并行积分延迟校正]]                        | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
-| 3.4      | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-3-paraexp\|ParaExp]]                             | (3.13)–(3.21), Theorem 3.4, Figures 3.7–3.8                       |
-| 3.5.1    | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i\|直接 ParaDiag]]                    | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
-| 3.5.2    | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-5-paradiag-ii\|迭代 ParaDiag]]                   | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
+| 论文小节           | 原文页码    | 精读页                                                                                                                      | 覆盖范围                                                          |
+| ------------------ | ----------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| Section 3、3.1–3.2 | pp. 396–405 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-1-history-and-swr\|历史发展与 Schwarz 波形松弛]] | (3.1)–(3.4), Theorems 3.1–3.2, Figures 3.1–3.3                    |
+| 3.3                | pp. 405–412 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-2-idc\|并行积分延迟校正]]                        | (3.5)–(3.12), Theorem 3.3, Figures 3.4–3.6                        |
+| 3.4                | pp. 412–415 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-3-paraexp\|ParaExp]]                             | (3.13)–(3.21), Theorem 3.4, Figures 3.7–3.8                       |
+| 3.5、3.5.1         | pp. 415–431 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i\|直接 ParaDiag]]                    | (3.22)–(3.48), Theorems 3.5–3.7, Figures 3.9–3.14, Tables 3.1–3.2 |
+| 3.5.2              | pp. 431–443 | [[computational-mathematics/knowledge-notes/time-parallelization/chapter-3-5-paradiag-ii\|迭代 ParaDiag]]                   | (3.49)–(3.68), Theorems 3.8–3.9, Figures 3.15–3.18                |
 
-## 3.1 这一组方法为何能处理长程传播
+## Section 3 导论与 3.1 历史发展
+
+### 这一组方法为何能处理长程传播
 
 双曲方程把精细结构沿特征线带到很远的时间。有效的时间并行算法需要保留传播路径与相位，或直接求解跨越整个时间区间的耦合。论文把四类方法放在这一组：Schwarz 波形松弛（SWR）、并行积分延迟校正（IDC）、ParaExp 和 ParaDiag。
 
@@ -33,7 +35,7 @@ tags:
 
 ## 3.2 Schwarz 波形松弛
 
-### 3.2.1 从经典波形松弛到时空区域分解
+### 从经典波形松弛到时空区域分解
 
 对线性系统 $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$，经典波形松弛先作矩阵分裂 $A=M+N$，再迭代求解
 
@@ -50,7 +52,7 @@ SWR 先在连续空间区域上分解，再让每个子域一次求解完整时�
 
 这种方法的迭代对象是界面函数。Dirichlet 条件只交换解值；Robin、Ventcel 或卷积条件还近似法向通量和更完整的 Dirichlet-to-Neumann 映射。带优化传输条件的版本通常称为 OSWR。
 
-### 3.2.2 一阶抛物方程：重叠宽度与 Robin 参数
+### 3.2.1 一阶抛物问题：重叠宽度与 Robin 参数
 
 论文用一维对流扩散方程说明机制。区域被分成两个有重叠的子域，重叠宽度记为 $l$。每次迭代在两个子域上并行求解完整时间窗，并在人工边界施加 Robin 条件
 
@@ -73,7 +75,7 @@ Figure 3.1 取 $L=8.2$、$T=5$、$\Delta t=0.01$、$\Delta x=0.02$、$l=2\Delta 
 
 更高阶的 Ventcel 条件可以进一步改善渐近收敛。若使用时间卷积近似精确透明边界，理论上可以获得与网格无关的收敛因子；代价是界面算子更复杂，并带有时间非局部性。
 
-### 3.2.3 二阶双曲方程：有限步传播
+### 3.2.2 二阶双曲问题：有限步传播
 
 对波动方程，SWR 的性质更加直接。每轮迭代都会把正确的界面信息向相邻子域推进一个有限传播距离。Theorem 3.2 表明，在两个重叠子域上使用 Dirichlet 传输时，只要
 
@@ -85,15 +87,15 @@ $$
 
 Figure 3.2 用特征锥展示这一过程。每个子域中已有一部分解与精确解一致，下一轮通过界面数据把这片正确区域继续扩大。这个几何解释也引出红黑 SWR：相邻时空块按颜色并行计算，允许一定冗余工作，以换取更大的并发度。
 
-### 3.2.4 Tent pitching、MTP 与 UTP
+### Tent pitching、MTP 与 UTP
 
 Tent pitching 按有限传播速度构造倾斜的时空单元。每个 tent 的底边已有数据后，内部计算可以独立进行。Mapped tent pitching（MTP）把倾斜 tent 映射到规则柱体，便于使用标准求解器；映射会增加实现成本，也可能造成阶数下降。
 
 Unmapped tent pitching（UTP）保留原始时空几何，可以理解为红黑 SWR 或全时间系统上的限制加性 Schwarz。残差决定某个 tent 还能向上推进多远，省去显式映射与相关阶数损失。抛物方程具有无限传播速度，无法形成严格独立的 tent；当扩散很小，SWR/UTP 仍可通过少量迭代校正跨 tent 影响。
 
-## 3.3 并行积分延迟校正
+## 3.3 时间并行 IDC
 
-### 3.3.1 IDC 的残差误差方程
+### IDC 的残差误差方程
 
 考虑初值问题
 
@@ -126,11 +128,11 @@ $$
 
 校正阶数最终受节点数限制。使用 Gauss–Lobatto 节点的谱延迟校正（SDC）在 $J$ 个节点上可达到 $2J-1$ 阶，第四章的 PFASST 会把 SDC 放入多层时间并行结构。
 
-### 3.3.2 为什么普通 IDC 仍然串行
+### 为什么普通 IDC 仍然串行
 
 长时间区间通常被切成多个 window。一个 window 内完成预测和若干校正后，末值成为下一个 window 的初值。普通 IDC 仍需顺序处理 window，校正层内部也有节点递推，因而高阶精度本身没有自动带来时间并行。
 
-### 3.3.3 PIDC：跨窗口的粗粒度流水线
+### 3.3.1 流水线 IDC（PIDC）
 
 PIDC 让不同 window 同时执行不同编号的校正 sweep。流水线填满后，预测层处理较晚 window，第一校正层处理前一个 window，更高校正层继续落后。并发度大致由校正层数决定，启动和排空阶段会降低短作业的效率。
 
@@ -138,7 +140,7 @@ PIDC 让不同 window 同时执行不同编号的校正 sweep。流水线填满�
 
 Figure 3.5 使用周期对流扩散方程，$\Delta x=1/64$、$T=3$、window 长度 $\Delta T=0.1$、每窗 $M=5$ 个节点和后向 Euler 基础积分器。$\sigma=1000$ 的窄源产生低正则性，$\sigma=5$ 给出较平滑输入。结果可分成三层：低正则性时多次 IDC/PIDC 校正无法稳定实现高阶；平滑且扩散较强时校正明显有效；平滑但扩散很小时，长寿命高频仍会破坏理想升阶。
 
-### 3.3.4 RIDC：按校正层滑动的细粒度流水线
+### 3.3.2 修正型 IDC（RIDC）
 
 RIDC 为每个校正层保留一个滑动的 $M$ 节点窗口。各层在连续时间步上像装配线一样推进，不必等待完整 window 结束。它减少全局同步，适合在多个核上持续运行不同校正层。
 
@@ -146,7 +148,7 @@ RIDC 改善调度，没有取消正则性条件。Figure 3.6 再次表明，低�
 
 ## 3.4 ParaExp
 
-### 3.4.1 线性问题的精确分解
+### 线性问题的精确分解
 
 ParaExp 针对
 
@@ -186,7 +188,7 @@ $$
 
 矩阵指数作用可以直接跳到任意后续时刻，计算依赖矩阵与目标精度，通常不随中间时间步数线性增长。大型稀疏系统常用有理 Krylov 或多项式/Chebyshev 近似，小型稠密矩阵可以使用 scaling-and-squaring 与 Padé。论文引用的波动方程实验曾达到约 80% 并行效率；这个数字依赖具体指数算法、分区和硬件。
 
-### 3.4.2 非线性扩展及其边界
+### 非线性扩展及其边界
 
 对
 
@@ -200,7 +202,7 @@ Figure 3.8 比较 Burgers 方程上的 ParaExp 与标准 Parareal，空间步长
 
 ## 3.5 ParaDiag：沿时间对角化
 
-### 3.5.1 两条 ParaDiag 路线
+### 两条 ParaDiag 路线
 
 ParaDiag 的目标是把全时间耦合系统变成多个独立的空间系统。论文区分两类：
 
@@ -211,9 +213,9 @@ ParaDiag 的目标是把全时间耦合系统变成多个独立的空间系统�
 
 ![ParaDiag 的时间变换、独立空间求解与逆变换](assets/diagrams/pint/zh/paradiag-three-stage.svg)
 
-## 3.6 ParaDiag-I：可直接对角化的时间离散
+### 3.5.1 直接 ParaDiag 方法（ParaDiag-I）
 
-### 3.6.1 几何变步长的后向 Euler
+#### 几何变步长的后向 Euler
 
 对线性系统 (2.1)，变步长后向 Euler 的全时间矩阵具有
 
@@ -234,11 +236,11 @@ $$
 
 参数 $\mu=1+\rho$ 暴露出直接法的核心矛盾。较大的 $\rho$ 让时间步变化明显，截断误差约为 $\mathcal O(\rho^2)$；$\rho$ 太小时，$B$ 接近不可对角化的 Jordan 结构，舍入误差按 $\epsilon\rho^{-(N_t-1)}$ 放大。Theorem 3.5 给出两者的平衡以及最优 $\rho$ 的尺度。Figures 3.9–3.10 验证了 U 形误差曲线，也显示双精度下可用时间步数十分有限。直接增加 $N_t$ 会让条件数和舍入误差迅速占据主导。
 
-### 3.6.2 波动方程与梯形规则
+#### 波动方程与梯形规则
 
 波动方程先转成一阶系统，再用变步长梯形规则保持能量性质。对应全时间系统同样可对角化。Theorem 3.6 仍得到截断误差与 $\epsilon\rho^{-(N_t-1)}$ 舍入放大的竞争。Figure 3.11 和 Table 3.1 表明，随着 $N_t$ 增大，特征向量条件数迅速增长，误差在大约 $N_t>32$ 后开始上升。
 
-### 3.6.3 边值方法缓解病态性
+#### 边值方法缓解病态性
 
 边值方法（BVM）在前 $N_t-1$ 个节点使用中心差分，最后一个节点用后向 Euler 封闭全时间系统：
 
@@ -249,7 +251,7 @@ $$
 
 配合终端离散形成可对角化矩阵。尽管末端公式为一阶，整体仍可达到二阶。Theorem 3.7 给出 $\operatorname{Cond}(V)=\mathcal O(N_t^2)$，比几何变步长方案稳定得多。Figure 3.12 展示了随均匀时间步缩小的二阶误差，未出现前述快速恶化。对二阶波动方程还可直接构造含 $B^2\otimes I_x-I_t\otimes A$ 的系统，避免一阶化造成存储量翻倍。
 
-### 3.6.4 非线性 ParaDiag-I
+#### 非线性 ParaDiag-I
 
 非线性全时间系统先做 Newton 线性化。真实 Jacobian 在各时间点不同，失去单一 Kronecker 结构。论文以平均 Jacobian 近似所有时间块，得到准 Newton 系统；时间变换后，各移位 Jacobian 问题仍可并行。若解在长时间区间内变化过大，平均 Jacobian 会变差，可以改用多个顺序 window。
 
@@ -263,9 +265,9 @@ $$
 
 NKA 在粗模型上离线选择时间缩放矩阵 $\Phi_q$，保留更多 Jacobian 随时间变化的信息。Figure 3.14 显示它在 $T=1.3$ 等较长窗口上明显改善准 Newton 收敛。
 
-## 3.7 ParaDiag-II：循环近似与预条件
+### 3.5.2 迭代 ParaDiag 方法（ParaDiag-II）
 
-### 3.7.1 Strang 循环预条件器
+#### Strang 循环预条件器
 
 线性多步法的全时间系统写成
 
@@ -285,7 +287,7 @@ Theorem 3.8 对对称负定 $A$ 给出一个结构性结果：预条件矩阵只
 
 Figure 3.15 采用 $T=2$、$\Delta t=1/50$、$\Delta x=1/100$。循环预条件器对热方程和 $\nu=10^{-3}$ 的对流扩散方程非常有效；$\nu$ 继续下降时谱聚集变差；波动方程的非单位特征值沿复平面展开，外层迭代明显增加。这组实验直接连接第二章的结论：耗散让循环闭合造成的首尾差异局部化，持续传播则把这项差异带遍整个时间域。
 
-### 3.7.2 $\alpha$-循环与波形松弛解释
+#### $\alpha$-循环与波形松弛解释
 
 论文还从连续时间的 head-tail 波形松弛推导 $\alpha$-循环矩阵。新时间窗的初值与末值通过参数 $\alpha$ 弱耦合，离散后特征向量矩阵具有 $\Lambda_\alpha F^*$ 形式，仍可使用 FFT。
 
@@ -306,11 +308,11 @@ $$
 
 减小 $\alpha$ 会改善迭代因子，同时把时间变换的舍入误差放大到约 $\epsilon/\alpha$。Figure 3.18 展示了这条折中。采用误差方程更新可以避免反复把大解向量带入病态变换，从而降低舍入污染。更一般的多步 Volterra 分析也给出特征值偏离 1 为 $\mathcal O(\alpha)$ 的结论。
 
-### 3.7.3 非线性 ParaDiag-II
+#### 非线性 ParaDiag-II
 
 非线性问题使用 Newton–Krylov。每次 Newton 线性化产生全时间 Jacobian，GMRES 再用平均 Jacobian 构造的 $P_\alpha$ 预处理。定常迭代在非线性长窗中经常失效，Krylov 方法仍能利用特征值聚集。缩短时间窗会让 Jacobian 更接近，NKA 也能保留更多时间变化，两者都能改善预条件质量。
 
-## 3.8 本站补充：Figure 3.15 的 Python 验证
+## 本站数值补充：Figure 3.15 的 Python 验证
 
 ### 基线实验
 
@@ -331,7 +333,7 @@ $$
 
 ADE 的 3 次和 13 次与 Figure 3.15(c,d) 一致。波动实验使用论文的 $\gamma=1/100$、$\alpha=1$；单线程 SciPy 在第 89 次达到预条件残差 $10^{-11}$，与论文曲线约 88 次的终点接近。若按 SciPy 的真实相对残差 $10^{-12}$ 停止，则需 103 次。MATLAB 与 SciPy 的残差归一化、restart 和停止规则不同，因此应比较谱形态和收敛阶段，不宜只比较一个迭代计数。
 
-## 3.9 参数、适用性与实现代价
+## 本站方法比较：参数、适用性与实现代价
 
 | 方法        | 关键参数或选择                      | 决定的性质           | 主要风险                            |
 | ----------- | ----------------------------------- | -------------------- | ----------------------------------- |
@@ -343,16 +345,16 @@ ADE 的 3 次和 13 次与 Figure 3.15(c,d) 一致。波动实验使用论文的
 
 公开的 [ActaPinT-Python](https://github.com/freezeng123456/ActaPinT-Python) 已覆盖 Figure 3.15(a–f) 的 Heat、ADE 和 Wave 实验，并保存 SVG、PNG 与 JSON。上游 MATLAB 仓库还包含 SWR、PIDC/RIDC、ParaExp、直接 ParaDiag 与波动区域分解脚本；当前 Python 正式结果尚未覆盖这些脚本，因此本页不为它们补造数值曲线。
 
-## 3.10 原文覆盖核对
+## 原文覆盖核对
 
-| 原文位置                      | 本页对应 | 已覆盖内容                                                                                                        |
-| ----------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
-| Section 3 与 3.1，pp. 396–398 | 3.1      | 双曲有效方法的范围、历史来源及 tent pitching 线索                                                                 |
-| Section 3.2，pp. 398–405      | 3.2      | WR 与 SWR 差异、Robin/Dirichlet/Ventcel/卷积条件、Theorems 3.1–3.2、Figures 3.2–3.4、MTP/UTP                      |
-| Section 3.3，pp. 405–412      | 3.3      | IDC 积分残差与递推、Theorem 3.3、SDC、PIDC/RIDC 调度、Figures 3.5–3.6、正则性限制                                 |
-| Section 3.4，pp. 412–415      | 3.4      | ParaExp 线性分解与指数作用、非线性迭代、Theorem 3.4、Figures 3.7–3.8                                              |
-| Section 3.5.1，pp. 415–431    | 3.5–3.6  | ParaDiag-I 三步法、几何步长、Theorems 3.5–3.7、波动/BVM、非线性准 Newton 与 NKA、Figures 3.9–3.14、Tables 3.1–3.2 |
-| Section 3.5.2，pp. 431–443    | 3.7–3.8  | Strang 与 $\alpha$-循环预条件、Theorems 3.8–3.9、Figures 3.15–3.18、稳定性/舍入折中、非线性 Newton–Krylov         |
+| 原文位置                        | 本页对应 | 已覆盖内容                                                                                                        |
+| ------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
+| Section 3 与 3.1，pp. 396–398   | 3.1      | 双曲有效方法的范围、历史来源及 tent pitching 线索                                                                 |
+| Section 3.2，pp. 398–405        | 3.2      | WR 与 SWR 差异、Robin/Dirichlet/Ventcel/卷积条件、Theorems 3.1–3.2、Figures 3.1–3.3、MTP/UTP                      |
+| Section 3.3，pp. 405–412        | 3.3      | IDC 积分残差与递推、Theorem 3.3、SDC、PIDC/RIDC 调度、Figures 3.4–3.6、正则性限制                                 |
+| Section 3.4，pp. 412–415        | 3.4      | ParaExp 线性分解与指数作用、非线性迭代、Theorem 3.4、Figures 3.7–3.8                                              |
+| Sections 3.5–3.5.1，pp. 415–431 | 3.5.1    | ParaDiag-I 三步法、几何步长、Theorems 3.5–3.7、波动/BVM、非线性准 Newton 与 NKA、Figures 3.9–3.14、Tables 3.1–3.2 |
+| Section 3.5.2，pp. 431–443      | 3.5.2    | Strang 与 $\alpha$-循环预条件、Theorems 3.8–3.9、Figures 3.15–3.18、稳定性/舍入折中、非线性 Newton–Krylov         |
 
 ## 小结
 
