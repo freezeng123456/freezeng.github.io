@@ -16,7 +16,12 @@ tags:
 
 ### 来源与两层节点
 
-PFASST 由 Emmett 与 Minion（2012）提出。早期思路来自 Minion（2010）：用一次 SDC 迭代（Dutt et al. 2000）替代 Parareal 中昂贵的完整细传播。Minion 等（2015）给出代数表述，Bolten、Moser 与 Speck（2017）把 PFASST 读作时间多重网格并在 (2018) 给出收敛分析，即以配置方程为细层、以低阶 SDC 为平滑器。应用见 Speck 等（2012, 2014）。论文同时提醒，PFASST 的清晰描述和理论分析都相当困难。
+PFASST 由 Emmett 与 Minion（2012）提出。早期思路来自 Minion
+（2010）：用一次 SDC 迭代（Dutt et al. 2000）替代 Parareal 中
+昂贵的完整细传播。Minion 等（2015）给出代数表述，Bolten、Moser 与
+Speck（2017, 2018）进一步把它解释为时间多重网格：配置方程是细层，
+低阶 SDC 是平滑器。由于配置节点、SDC 平滑和跨时间步层间传递同时
+出现，下面先固定记号，再拆解一次完整迭代。
 
 把 $(0,T)$ 分成 $N_t$ 个区间 $[T_n,T_{n+1}]$。本节重新用
 $\Delta t=T_{n+1}-T_n$ 表示一个 PFASST 区间的长度；它不是前页
@@ -148,7 +153,7 @@ $$
 
 ### SDC 近似 (4.11) 与 Figure 4.6
 
-论文用细节点间的隐式 Euler 构造 $\widetilde\Phi_f$：
+用相邻细节点之间的隐式 Euler 构造 $\widetilde\Phi_f$：
 
 $$
 \frac{\boldsymbol u_{n,m+1}-\boldsymbol u_{n,m}}
@@ -334,7 +339,12 @@ $$
 
 ![原论文 Figure 4.9：热方程与两种黏性 ADE 上的模态因子分布](assets/papers/time-parallelization/source-figures/figure-4-9.svg)
 
-Figure 4.9 上排 (a) 是 MGRiT，下排 (b) 是 Parareal；三列依次对应热方程、$\nu=0.1$ 的 ADE 和 $\nu=0.01$ 的 ADE。图中标注的最大因子分别为 MGRiT 的 $0.08375,0.2718,0.9021$，以及 Parareal 的 $0.2822,0.4453,0.9986$。前两列中，MGRiT 因子大致对应 Parareal 因子的平方；第三列两者都接近 $1$。论文给出的原因是：对流占主导时粗传播子对小 $\nu$ 已经不够好。
+Figure 4.9 先比较逐模态因子：上排是 MGRiT，下排是 Parareal，
+三列依次对应热方程、$\nu=0.1$ 和 $0.01$ 的 ADE。最大因子分别为
+MGRiT 的 $0.08375,0.2718,0.9021$，以及 Parareal 的
+$0.2822,0.4453,0.9986$。前两列大致满足“一轮 FCF 对应两轮
+Parareal”；第三列都接近 $1$，表明小黏性下粗传播已不足以代表主导
+对流。
 
 ![原论文 Figure 4.10：按两次细求解配平后的 Parareal 与 MGRiT 实测误差](assets/papers/time-parallelization/source-figures/figure-4-10.svg)
 

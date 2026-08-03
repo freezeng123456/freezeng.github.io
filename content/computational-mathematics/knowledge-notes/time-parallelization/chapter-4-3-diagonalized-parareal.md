@@ -17,7 +17,7 @@ tags:
 ### 两条路线先分清
 
 - **对角化 CGC（Section 4.5.1，Wu 2018；Wu 与 Zhou 2019）**：修改 Parareal 跨 $N_t$ 个粗点的顺序粗校正。并行宽度来自粗时间点；收敛机制仍接近标准 Parareal，主要适合抛物问题。
-- **对角化粗传播子（Section 4.5.2，Gander 与 Wu 2020）**：保留标准 Parareal 粗校正的外形，在每个 $[T_n,T_{n+1}]$ 内，用 ParaDiag 同时处理 $J$ 个细步。粗、细传播使用同一个积分器和步长；论文指出这种粗传播子能把**全部频率分量**长时间输运，因此也能处理双曲问题。
+- **对角化粗传播子（Section 4.5.2，Gander 与 Wu 2020）**：保留标准 Parareal 粗校正的外形，在每个 $[T_n,T_{n+1}]$ 内，用 ParaDiag 同时处理 $J$ 个细步。粗、细传播使用同一个积分器和步长；这种粗传播能长时间输运**全部频率分量**，因此也能处理双曲问题。
 
 ## 4.5.1 基于对角化的 CGC
 
@@ -101,7 +101,7 @@ $$
 \end{bmatrix}.
 $$
 
-对角化时间矩阵后按论文写成
+对角化时间矩阵后得到
 
 $$
 \left\{
@@ -132,7 +132,9 @@ $$
 \alpha\le\frac{\rho}{1+\rho}.
 $$
 
-论文说明该结论是对 $A$ 具有负实特征值的线性问题 $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$ 证明的；对复特征值等其他情形，数值结果显示它同样成立，但没有证明。
+Theorem 4.7 只对 $A$ 具有负实特征值的线性问题
+$\boldsymbol u'=A\boldsymbol u+\boldsymbol g$ 得到证明；复谱目前只有
+数值证据。
 
 因此实用选择为阈值本身 $\alpha=\rho/(1+\rho)$：再减小不会改善渐近速度，只会增加舍入风险。通常 $\rho=O(10^{-1})$，所以 $\alpha$ 也在 $10^{-1}$ 量级，此时对角化引入的舍入误差可以忽略。
 
@@ -202,7 +204,13 @@ $$
 
 ![原论文 Figure 4.13：两种黏性 Burgers 方程上的两类 CGC](assets/papers/time-parallelization/source-figures/figure-4-13.svg)
 
-Figure 4.13 左、右面板分别取 Burgers 方程 $\nu=1$ 与 $0.01$，实验设置和离散参数与前面的热方程/ADE 算例相同，每幅都比较 $\alpha=0.4,0.25,0.1$ 和标准 CGC。两种黏性下 $\alpha=0.4$ 都最慢；$\nu=1$ 面板中 $\alpha=0.1$ 与标准曲线最接近，$\nu=0.01$ 面板中 $\alpha=0.25$ 几乎与标准曲线重合而 $\alpha=0.1$ 略低。论文由此得出的结论是：$\alpha$ 对收敛速度的影响与线性情形一致，Wu（2018, Section 4）证明了 $\alpha$ 取得足够小时收敛速度与标准 CGC 的 Parareal 相当。原文没有给出 $\rho/(1+\rho)$ 阈值的非线性版本。
+Figure 4.13 把同一问题推进到非线性 Burgers：左右面板取
+$\nu=1$ 与 $0.01$，并比较 $\alpha=0.4,0.25,0.1$ 和标准 CGC。
+两种黏性下 $\alpha=0.4$ 都最慢；$\nu=1$ 时 $\alpha=0.1$
+最接近标准曲线，$\nu=0.01$ 时则是 $\alpha=0.25$ 几乎重合。
+这说明 $\alpha$ 的影响延续到非线性问题；Wu（2018, Section 4）
+证明了“足够小的 $\alpha$ 可保持标准 CGC 的速度”，但没有给出
+$\rho/(1+\rho)$ 的非线性阈值。
 
 ### Remark 4.2：MGRiT 需要一致的首尾条件
 
@@ -228,7 +236,7 @@ $$
 \right. \tag{4.20}
 $$
 
-这里 $\widetilde{\boldsymbol b}_{n+1}^k=\mathcal F(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)-\mathcal G(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)$，$\widetilde{\boldsymbol s}_n^k=\mathcal F(T_{n-1},T_n,\widetilde{\boldsymbol u}_{n-1}^k)$。注意这里的 $\widetilde{\boldsymbol u}_n^k$ 与 Section 4.5.1 的定义不同，论文为 MGRiT 变体重新定义为
+这里 $\widetilde{\boldsymbol b}_{n+1}^k=\mathcal F(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)-\mathcal G(T_n,T_{n+1},\widetilde{\boldsymbol s}_n^k)$，$\widetilde{\boldsymbol s}_n^k=\mathcal F(T_{n-1},T_n,\widetilde{\boldsymbol u}_{n-1}^k)$。注意这里的 $\widetilde{\boldsymbol u}_n^k$ 与 Section 4.5.1 不同；MGRiT 变体重新定义为
 
 $$
 \widetilde{\boldsymbol u}_n^k=

@@ -14,7 +14,12 @@ tags:
 
 ## Section 3.5 导论：ParaDiag-I 与 ParaDiag-II 的分界
 
-ParaDiag-I 直接对角化时间步进矩阵。论文指出，这只有在使用变时间步长、或在最后一步换用另一种时间积分公式时才可能做到。它无需外层迭代，但有两条限制：一是舍入误差限制了单个时间窗内可并行的步数，双精度下几何时间网格通常只能稳定处理约二十步；二是**只对少数低阶积分器成立**，实际探索过的只有后向 Euler 和梯形规则，不易推广到 Runge–Kutta 等高阶方法。改用 BVM 离散可以显著扩大时间窗（Liu、Wang、Wu 与 Zhou 2022），但同样只适用于后向 Euler 和梯形规则。
+ParaDiag-I 以特殊、可对角化的时间离散换取无外层迭代的直接并行解。
+为此必须使用变时间步长，或在末步换用另一种积分公式。代价有两项：
+舍入误差限制单窗内的并行步数，双精度几何网格通常只能稳定处理约
+二十步；现有构造也只覆盖后向 Euler 和梯形规则等少数低阶方法，
+不易推广到多级 Runge–Kutta。BVM 离散可显著扩大时间窗
+（Liu、Wang、Wu 与 Zhou 2022），但积分器范围仍然受限。
 
 ParaDiag-II 近似时间矩阵，并把对角化放入定常迭代或 Krylov 预条件。它牺牲直接性，换取更一般的积分器、更大的时间窗和条件良好的变换。下一页再完整讨论 ParaDiag-II。
 
@@ -422,7 +427,12 @@ $$
 **Theorem 3.7.** $B=VDV^{-1}$，且 $\operatorname{Cond}(V)=O(N_t^2)$。$V$、$V^{-1}$ 和 $D$ 的闭式表达见 Liu 等（2022, Section 3）。
 
 > [!note] 本站补充：与几何网格的对比
-> 论文没有把 Theorem 3.7 与 Theorem 3.5/3.6 的界并排比较。从两组结果看，几何网格的舍入放大因子含 $\varrho^{-(N_t-1)}$ 和 $2^{2N_t-1/2}/(N_t-1)!$，随 $N_t$ 增长很快，而 BVM 构造给出 $O(N_t^2)$ 的多项式增长。但 Table 3.1 中按 $\varrho_{\mathrm{num}}$ 实测的条件数在 $N_t$ 增大后趋于平台，论文明确说明这一现象尚待进一步研究，所以不宜把理论界直接当作实测行为。
+> 原文没有把 Theorem 3.7 与 Theorem 3.5/3.6 的界并排比较。
+> 从两组结果看，几何网格的舍入放大因子含
+> $\varrho^{-(N_t-1)}$ 和 $2^{2N_t-1/2}/(N_t-1)!$，随
+> $N_t$ 增长很快，而 BVM 构造给出 $O(N_t^2)$ 的多项式增长。
+> 但 Table 3.1 中按 $\varrho_{\mathrm{num}}$ 实测的条件数最终趋于
+> 平台，这一现象仍待研究，所以不能把理论界直接当作实测行为。
 
 二阶系统可先写成一阶系统，并对 $\boldsymbol w$ 使用同一 BVM：
 
@@ -504,7 +514,8 @@ $$
 \right). \tag{3.43b}
 $$
 
-时间变化的 Jacobian 块破坏 Kronecker 可分离性。论文借鉴 Gander 与 Halpern（2017）的思路，用单一平均矩阵近似：
+时间变化的 Jacobian 块会破坏 Kronecker 可分离性。借鉴 Gander 与
+Halpern（2017）的思路，可用单一平均矩阵恢复近似结构：
 
 $$
 A_k=\frac1{N_t}\sum_{n=1}^{N_t}\nabla f(\boldsymbol u_n^k,t_n),
@@ -543,7 +554,13 @@ Figure 3.13 使用周期 Burgers 方程、$\Delta x=0.01$，并保持 $N_t=T/\De
 
 ![原论文 Table 3.2：串行梯形规则与并行 BVM ParaDiag-I 的 Jacobian 求解次数](assets/papers/time-parallelization/source-figures/table-3-2.svg)
 
-若有 $N_t$ 个处理器，ParaDiag-I 每轮的 $N_t$ 个 Jacobian 系统同时求解，因此并行 Jacobian 求解次数等于外层轮数；串行梯形规则的对应计数是 $\sum_{n=1}^{N_t}\mathrm{It}_n$，即逐步 Newton 迭代数之和。Table 3.2 中，$\nu=0.1$ 时串行梯形需要 401–443 次，ParaDiag-I 只需 5–7 轮；$\nu=0.002$ 时串行计数为 400/446/476/460/526，ParaDiag-I 从 7 增至 12 再到 22 轮，并在 $T=0.8,1.6$ 失效。论文对 $\nu=0.1$ 下并行轮数几乎不随窗口变化给出的解释是：此时 $\nabla f$ 沿轨道变化很小，单个 $A_k$ 足以代表全部块。
+若有 $N_t$ 个处理器，每轮的 $N_t$ 个 Jacobian 系统同时求解，
+并行 Jacobian 求解次数就等于外层轮数；串行梯形规则的计数则是
+$\sum_{n=1}^{N_t}\mathrm{It}_n$。Table 3.2 中，$\nu=0.1$ 时
+串行梯形需要 401–443 次，ParaDiag-I 只需 5–7 轮，说明 Jacobian
+沿轨道变化较小，单个 $A_k$ 足以代表全部块。$\nu=0.002$ 时，
+串行计数为 400/446/476/460/526，ParaDiag-I 从 7 增至 12、22 轮，
+并在 $T=0.8,1.6$ 失效；长窗下的平均 Jacobian 已失去代表性。
 
 ### 最近 Kronecker 近似
 
@@ -574,7 +591,9 @@ $$
 
 左乘 $B^{-1}\otimes I_x$ 后，只需对角化 $B^{-1}\Phi_k$；第二步变成 $(I_x-\lambda_nA_k)\boldsymbol u_n^b=\boldsymbol u_n^a$。尚无一般对角化理论，但实验中该矩阵通常可对角化且特征向量条件良好。
 
-$\phi_n$ 的矩阵乘法代价较高，论文建议用粗空间模型离线计算一次。Figure 3.14 的精细网格为 $\Delta x=1/200$，缩放因子由 $\Delta X=1/20$ 的粗模型得到。
+$\phi_n$ 的矩阵乘法代价较高，实用上可在粗空间模型上离线计算一次。
+Figure 3.14 的精细网格为 $\Delta x=1/200$，缩放因子由
+$\Delta X=1/20$ 的粗模型得到。
 
 ![原论文 Figure 3.14：平均 Jacobian 与 NKA 准 Newton 的 Burgers 收敛比较](assets/papers/time-parallelization/source-figures/figure-3-14.svg)
 

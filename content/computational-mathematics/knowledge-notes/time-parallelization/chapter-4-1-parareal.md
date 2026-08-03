@@ -22,7 +22,8 @@ tags:
 
 Parareal 的思想可追溯到 Nievergelt（1964）的非迭代先驱工作和多重打靶（Bellen 与 Zennaro 1989；Chartier 与 Philippe 1993）。Saha、Stadel 与 Tremaine（1997）已经用粗模型给出过这一算法，并提到它与波形松弛的联系。Lions、Maday 与 Turinici（2001）在虚拟控制的背景下独立提出现代算法，并强调它是非侵入式的。收敛理论见 Gander 与 Vandewalle（2007）、Gander 与 Hairer（2008, 2014）以及 Gander 与 Lunet（2024）。随后出现 PITA（Farhat 与 Chandesris 2003；Farhat et al. 2006；Cortial 与 Farhat 2009）、PFASST（Minion 2011；Emmett 与 Minion 2012；Minion et al. 2015）、MGRiT（Falgout et al. 2014；Dobrev et al. 2017；Hessenthaler et al. 2020）以及 Parareal 与 ParaDiag 的组合（Wu 2018；Gander 与 Wu 2020）。另一条路线是时空多重网格，从 Hackbusch（1984）的抛物多重网格和 Lubich 与 Ostermann（1987）的多重网格波形松弛开始；早期方法难以有效粗化时间，Gander 与 Neumüller（2016）通过时间块 Jacobi 平滑重新建立了可扩展的 STMG。
 
-论文另给出两句定位：Parareal 可以看作发展更高效 PinT 方法的模板；基于 Parareal 的方法在时间上使用两层（或更多）网格，在空间上只用一层网格。
+在这一谱系中，Parareal 既是两层时间网格方法，也是许多后续 PinT
+算法的模板：时间方向使用两层或更多网格，空间方向则仍只保留一层。
 
 ## 4.2 Parareal
 
@@ -41,7 +42,9 @@ $$
 
 ![原论文 Figure 4.1：每个粗时间步包含 J 个细时间步](assets/papers/time-parallelization/source-figures/figure-4-1.svg)
 
-论文主要讨论均匀网格，令 $\Delta T/\Delta t=J\ge2$；非均匀网格也可使用。目标解是 $\mathcal F$ 顺序运行得到的离散解，Parareal 并不在固定 $\mathcal F$ 之外额外改变离散目标。
+以下以均匀网格 $\Delta T/\Delta t=J\ge2$ 为主，非均匀网格同样
+可用。目标解始终是 $\mathcal F$ 顺序运行得到的离散解；Parareal
+只改变求解过程，不改变固定 $\mathcal F$ 后的离散目标。
 
 ### Theorem 4.1：把误差化成逐模态 Toeplitz 迭代
 
@@ -290,7 +293,7 @@ $$
 
 细层需要更多小步，才能让其高频行为与物理耗散相符。这与 $\mathcal F$ 取精确传播子 $\exp(\Delta TA)$ 的情形差别很大：后者只要 $J\ge2$ 就有约 $0.3$ 的收敛速率。(4.8) 由 Wu 与 Zhou（2015）对梯形规则和一个四阶 Gauss Runge–Kutta 方法证明。
 
-论文还给出两个 SDIRK 方法：
+两个 SDIRK 细传播子把稳定性条件具体化：
 
 $$
 \begin{array}{c|cc}
@@ -323,7 +326,9 @@ Figure 4.3 取周期热方程、$\Delta x=1/256$、$\Delta T=0.1$、$T=4$、扩�
 
 ### 扩散减弱后的退化
 
-论文随后固定 $T=4$、$\Delta T=0.1$、$\Delta x=1/128$、$J=32$，粗层用后向 Euler，细层用 SDIRK22，考察周期对流扩散和 Burgers 方程。
+负实轴上的结论不会自动延伸到双曲极限。为检验边界，下面固定
+$T=4$、$\Delta T=0.1$、$\Delta x=1/128$、$J=32$，粗层用
+后向 Euler，细层用 SDIRK22，并逐步降低周期 ADE 与 Burgers 的黏性。
 
 ![原论文 Figure 4.4：三种黏性下每个对流扩散特征值对应的长时间因子](assets/papers/time-parallelization/source-figures/figure-4-4.svg)
 
@@ -333,9 +338,17 @@ Figure 4.3 取周期热方程、$\Delta x=1/256$、$\Delta T=0.1$、$T=4$、扩�
 
 Figure 4.5 使用与 Figure 4.4 相同的三个黏性值，其中 (a) 与谱因子预测一致。Burgers 方程缺少同样精确的模态分析，但 Figure 4.5(b) 呈现相同趋势；约在 $\nu\le10^{-3}$ 时常规迭代会发散。严格下三角结构保证的有限步性质仍在，只是需要的轮数失去实用价值。
 
-论文对双曲情形给出的机制是：任意小的高频分量都会在时空中传播任意远，因此很难让 $\mathcal G$ 与 $\mathcal F$ 足够接近；而一旦把 $\mathcal G$ 做得足够准确，粗网格校正本身就变得昂贵，加速也随之消失。相关分析见 Gander 与 Vandewalle（2007）、Gander 与 Lunet（2020a,b）、Gander、Lunet 与 Pogoželskytė（2023a）以及 Gander、Lunet、Ruprecht 与 Speck（2023b）。这正是第四章方法适用范围的边界。
+双曲困难的机制在于：任意小的高频分量都能传播任意远，很难让
+$\mathcal G$ 与 $\mathcal F$ 同时便宜又足够接近；一旦把粗传播做得
+足够准确，粗校正本身又会吞掉加速收益。相关分析见 Gander 与
+Vandewalle（2007）、Gander 与 Lunet（2020a,b）、Gander、Lunet 与
+Pogoželskytė（2023a）以及 Gander、Lunet、Ruprecht 与 Speck
+（2023b）。
 
-论文 Section 4.2 最后指出，MGRiT 是 Parareal 的多层推广，并且为让它适用于输运问题已有不少工作（Howse et al. 2019；De Sterck et al. 2021, 2023a, 2023b），其中一条路线是使用半 Lagrange 优化粗求解器，但在非线性情形仍然困难；另一条路线是 Gander 与 Wu（2020）的对角化粗求解器，见本章第 4.5 节。
+MGRiT 把 Parareal 推广到多层。为使它适用于输运问题，一条路线使用
+半 Lagrange 优化粗求解器（Howse et al. 2019；De Sterck et al.
+2021, 2023a, 2023b），但非线性情形仍然困难；另一条路线对角化粗
+求解器（Gander 与 Wu 2020），见第 4.5 节。
 
 ## 公式、定理与图表覆盖核对
 

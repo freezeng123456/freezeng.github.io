@@ -118,7 +118,9 @@ $$
 
 ### Figure 3.15：三类 PDE 上的谱与 GMRES
 
-论文比较热方程、两种黏性的对流扩散方程，以及波动方程。全部使用齐次 Dirichlet 边界和 $u(x,0)=\sin(2\pi x)$；波动方程另取 $u_t(x,0)=0$。空间中心差分后，波动方程为
+Figure 3.15 用热方程、两种黏性的对流扩散方程和波动方程检验循环
+预条件器。三类问题都取齐次 Dirichlet 边界和
+$u(x,0)=\sin(2\pi x)$；波动方程另取 $u_t(x,0)=0$。空间中心差分后，
 
 $$
 \boldsymbol u''(t)=A\boldsymbol u(t),
@@ -165,7 +167,11 @@ $$
 
 其中 $\alpha\in\mathbb C$。收敛后括号内的差消失，初值回到 $\boldsymbol u_0$。
 
-Gander 与 Wu（2019）同时给出了这条路线的收敛理论。在连续层面，一阶和二阶问题的误差 $\boldsymbol u^k(t)-\boldsymbol u(t)$ 都以由 $\alpha$ 决定的速率快速衰减。离散层面的结论更受限：下面的算法 (3.56) 只在后向 Euler 和梯形规则两种积分器下保持连续层面的速率。论文说明其证明依赖 $r_1^{-1}(\Delta tA)r_2(\Delta tA)$ 的一种特殊表示，而这种表示似乎只对这两种方法成立。
+Gander 与 Wu（2019）给出了这条路线的收敛理论。连续层面的一阶、
+二阶误差都以 $\alpha$ 决定的速率快速衰减；离散后，只有后向 Euler
+和梯形规则被证明保留同样速率，因为分析依赖
+$r_1^{-1}(\Delta tA)r_2(\Delta tA)$ 的特殊表示，目前只对这两种
+积分器成立。
 
 用一类单步公式离散：
 
@@ -319,7 +325,7 @@ $$
 
 ### 直接离散二阶系统
 
-把二阶系统改写为一阶会让每个时间点的存储翻倍。论文因此考虑对称两步格式
+把二阶系统改写为一阶会让每个时间点的存储翻倍，因此改用对称两步格式
 
 $$
 r_1(\Delta t^2A)\boldsymbol u_{n+1}
@@ -365,7 +371,11 @@ $$
 
 ### 循环预条件的既有背景与本问题的特殊性
 
-用循环矩阵替换 Toeplitz 矩阵的想法来自 Strang（1986）。此后三十年里，$\sigma(C^{-1}B)$ 的性质在标量 Toeplitz 和 BTTB 情形都有系统结果（Chan 与 Ng 1996；Ng 2004；Bini、Latouche 与 Meini 2005）。论文强调 ParaDiag-II 与这些经典情形有一个关键差别：这里的块 $r_1,r_2$ 本身并不是 Toeplitz 矩阵，因此关于 $\mathcal P_\alpha^{-1}\mathcal K$ 特征值的系统性结果仍然缺乏。
+用循环矩阵替换 Toeplitz 矩阵的想法来自 Strang（1986）。此后三十年里，
+$\sigma(C^{-1}B)$ 在标量 Toeplitz 和 BTTB 情形已有系统结果
+（Chan 与 Ng 1996；Ng 2004；Bini、Latouche 与 Meini 2005）。
+ParaDiag-II 的关键差别是块 $r_1,r_2$ 本身并非 Toeplitz，因此
+$\mathcal P_\alpha^{-1}\mathcal K$ 的谱仍缺少统一理论。
 
 现有谱分析多依赖积分器的特殊性质，如稀疏性、Toeplitz 结构和对角占优。抛物情形见 Gu 与 Wu（2020）、Lin 与 Ng（2021）、Wu 与 Zhou（2021a,b）、Danieli、Southworth 与 Wathen（2022）、Bouillon、Samaey 与 Meerbergen（2024）以及 Heinzelreiter 与 Pearson（2024）；双曲情形见 Danieli 与 Wathen（2021）和 Liu 与 Wu（2020）。
 
@@ -378,7 +388,7 @@ $$
 \qquad z\in\sigma(\Delta tA)\subset\mathbb C_-,
 $$
 
-论文印刷版给出
+期刊版把谱界印成
 
 $$
 \frac1{1-\alpha}
@@ -431,7 +441,12 @@ $$
 
 ![原论文 Figure 3.18：三种 alpha 下两种实现方式的舍入误差](assets/papers/time-parallelization/source-figures/figure-3-18.svg)
 
-Figure 3.18 同时比较 $\alpha=10^{-3},10^{-6},10^{-11}$。左图直接求 $\boldsymbol U^k$：三条曲线分别停在约 $10^{-12}$、$10^{-9}$ 和 $10^{-4}$，$\alpha$ 越小，$\epsilon/\alpha$ 放大越早显现。右图先求 $\Delta\boldsymbol U^{k-1}$ 再更新，三个参数最终都降到约 $10^{-13}$。这组面板把“算法的谱收敛”和“实现的舍入稳定性”分开了；减小 $\alpha$ 只有配合增量形式才会转化为实际精度。论文把更系统的舍入分析指向 Wu, Yang and Zhou (2025)。
+Figure 3.18 比较 $\alpha=10^{-3},10^{-6},10^{-11}$。左图直接求
+$\boldsymbol U^k$，三条曲线分别停在约 $10^{-12}$、$10^{-9}$ 和
+$10^{-4}$；右图先求 $\Delta\boldsymbol U^{k-1}$ 再更新，最终都降到
+约 $10^{-13}$。这组面板把谱收敛与实现层舍入稳定性分开：减小
+$\alpha$ 只有配合增量形式才会转化为实际精度。更系统的分析见
+Wu、Yang 与 Zhou（2025）。
 
 对于一般多步法，(3.66) 未必成立。Volterra 偏积分微分方程会产生
 
