@@ -2134,6 +2134,255 @@ function longSequenceDecisionFramework(lang) {
   })
 }
 
+function gflowgrFramework(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "GFLOWGR",
+          title: "三组件把 set-wise 训练接到 token 级监督",
+          subtitle: "轨迹采样构造候选集合，奖励模型量化效用，GFlowNet 损失对齐生成概率",
+          input: "用户提示 U + 正样本 v",
+          sampler: "轨迹采样器",
+          samplerBody: ["交互日志 / 随机负样本", "CM 课程采样", "LLM on-policy 采样"],
+          reward: "行为感知奖励",
+          rewardBody: ["交互信号 r_a", "协同/LLM 分数 r_ŷ", "token 相似 r_sim"],
+          gfn: "GFlowNet 目标",
+          gfnBody: ["DB 逐步流平衡", "TB 轨迹平衡", "L = L_GR + λ Σ L_GFN"],
+          output: "仅改 LLM 微调；推理链路不变",
+          note: "P_F = P_GR，P_B = 1；终点奖励 R(s_L) 决定整条轨迹流量",
+        }
+      : {
+          kicker: "GFLOWGR",
+          title: "Three Modules Connect Set-Wise Training to Token Supervision",
+          subtitle:
+            "A trajectory sampler builds candidate sets, a reward model scores utility, and a GFlowNet loss aligns generation probabilities",
+          input: "User prompt U + positive item v",
+          sampler: "Trajectory Sampler",
+          samplerBody: [
+            "Interaction logs / random negatives",
+            "CM curriculum sampling",
+            "LLM on-policy sampling",
+          ],
+          reward: "Behavior-Aware Reward",
+          rewardBody: ["Interaction signal r_a", "CM / LLM score r_ŷ", "Token similarity r_sim"],
+          gfn: "GFlowNet Objective",
+          gfnBody: ["DB step-wise balance", "TB trajectory balance", "L = L_GR + λ Σ L_GFN"],
+          output: "Fine-tunes the LLM only; inference stays unchanged",
+          note: "P_F = P_GR and P_B = 1; terminal reward R(s_L) sets the trajectory flow",
+        }
+  const body = `
+    ${card(70, 210, 300, 90, { title: t.input, accent: C.blue, fill: C.blueSoft, align: "center", titleSize: 18 })}
+    ${card(70, 360, 300, 180, { title: t.sampler, body: t.samplerBody, accent: C.teal, fill: C.white, step: "1" })}
+    ${card(470, 360, 300, 180, { title: t.reward, body: t.rewardBody, accent: C.amber, fill: C.white, step: "2" })}
+    ${card(870, 360, 340, 180, { title: t.gfn, body: t.gfnBody, accent: C.indigo, fill: C.white, step: "3" })}
+    ${card(470, 210, 340, 90, { title: t.output, accent: C.green, fill: C.greenSoft, align: "center", titleSize: 16 })}
+    ${lineArrow(370, 255, 460, 255, { color: C.blue, marker: "arrowBlue" })}
+    ${lineArrow(220, 300, 220, 348, { color: C.teal, marker: "arrowTeal" })}
+    ${lineArrow(370, 450, 460, 450, { color: C.amber, marker: "arrowAmber" })}
+    ${lineArrow(770, 450, 860, 450, { color: C.indigo, marker: "arrowIndigo" })}
+    ${card(70, 580, 1140, 72, { title: t.note, accent: C.rose, fill: C.roseSoft, align: "center", titleSize: 15 })}
+  `
+  return frame({
+    width: 1400,
+    height: 700,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function gflowgrTrajectoryFlow(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "轨迹流",
+          title: "Item identifier 生成就是一条 GFlowNet 轨迹",
+          subtitle: "从空前缀到 L 个 token，逐步拼出可解码的商品标识",
+          states: ["s₀ = ∅", "s₁ = ⟨a₂⟩", "s₂ = ⟨a₂ a₄⟩", "s₃ = ⟨a₂ a₄ a₁₀⟩"],
+          probs: ["P=0.90", "P=0.80", "P=0.83"],
+          positive: "正样本：蓝色 Polo",
+          negative: "增强样本：未曝光商品",
+          reward: "R(s_L) ∝ 交互价值",
+          decode: "解码为推荐 item",
+          property: "目标：P(τ) ∝ R(s_L)，高价值轨迹获得更高生成概率",
+        }
+      : {
+          kicker: "TRAJECTORY FLOW",
+          title: "Item-Identifier Generation Is One GFlowNet Trajectory",
+          subtitle:
+            "From an empty prefix to L tokens, the model builds a decodable item identifier",
+          states: ["s₀ = ∅", "s₁ = ⟨a₂⟩", "s₂ = ⟨a₂ a₄⟩", "s₃ = ⟨a₂ a₄ a₁₀⟩"],
+          probs: ["P=0.90", "P=0.80", "P=0.83"],
+          positive: "Positive: blue polo",
+          negative: "Augmented: unexposed item",
+          reward: "R(s_L) ∝ interaction value",
+          decode: "Decode to recommended item",
+          property: "Objective: P(τ) ∝ R(s_L), so higher-value trajectories get higher probability",
+        }
+  const xs = [90, 380, 670, 960]
+  const stateCards = t.states
+    .map(
+      (label, i) =>
+        `${card(xs[i], 250, 230, 110, { title: label, accent: i === 3 ? C.green : C.blue, fill: i === 3 ? C.greenSoft : C.blueSoft, align: "center", titleSize: 18 })}`,
+    )
+    .join("")
+  const arrows = [0, 1, 2]
+    .map(
+      (i) =>
+        `${lineArrow(xs[i] + 230, 305, xs[i + 1], 305, { color: C.teal, marker: "arrowTeal" })}
+         ${pill(xs[i] + 250, 250, 96, t.probs[i], C.teal, C.tealSoft, { h: 28, size: 12 })}`,
+    )
+    .join("")
+  const body = `
+    ${stateCards}
+    ${arrows}
+    ${card(90, 420, 360, 90, { title: t.positive, accent: C.indigo, fill: C.indigoSoft, align: "center", titleSize: 17 })}
+    ${card(500, 420, 360, 90, { title: t.negative, accent: C.amber, fill: C.amberSoft, align: "center", titleSize: 17 })}
+    ${card(890, 420, 300, 90, { title: t.reward, accent: C.rose, fill: C.roseSoft, align: "center", titleSize: 16 })}
+    ${card(90, 545, 1100, 78, { title: `${t.decode} · ${t.property}`, accent: C.green, fill: C.greenSoft, align: "center", titleSize: 16 })}
+  `
+  return frame({
+    width: 1400,
+    height: 680,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function gflowgrRewardModel(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "奖励模型",
+          title: "三类信号共同定义 item 效用",
+          subtitle: "默认相加；也可学习加权。缺少任一信号都会削弱 set-wise 价值对齐",
+          signals: [
+            ["交互信号 r_a", "点赞 / 点击 / 曝光 / 未曝光", "显式行为层级"],
+            ["估计分数 r_ŷ", "协同模型或 LLM 概率", "潜在相关性"],
+            ["格式相似 r_sim", "与正样本共享 token 数", "部分正确性"],
+          ],
+          fuse: "融合方式",
+          modes: ["Sum（默认）", "Weighted Sum", "Deep MLP"],
+          tip: "论文默认：R = r_a + r_ŷ + r_sim；Weighted Sum 在 top-5 更稳",
+        }
+      : {
+          kicker: "REWARD MODEL",
+          title: "Three Signals Jointly Define Item Utility",
+          subtitle:
+            "Default fusion is summation; learnable weights are optional. Dropping any signal weakens value alignment",
+          signals: [
+            ["Interaction r_a", "like / click / impression / unexposed", "explicit behavior level"],
+            ["Estimated score r_ŷ", "collaborative model or LLM probability", "latent relevance"],
+            ["Format similarity r_sim", "shared tokens with the positive", "partial correctness"],
+          ],
+          fuse: "Fusion Modes",
+          modes: ["Sum (default)", "Weighted Sum", "Deep MLP"],
+          tip: "Paper default: R = r_a + r_ŷ + r_sim; Weighted Sum is stronger at top-5",
+        }
+  const colors = [C.teal, C.blue, C.amber]
+  const fills = [C.tealSoft, C.blueSoft, C.amberSoft]
+  const signalCards = t.signals
+    .map(
+      (entry, i) =>
+        `${card(70 + i * 390, 230, 350, 170, { title: entry[0], body: [entry[1], entry[2]], accent: colors[i], fill: fills[i], step: String(i + 1) })}`,
+    )
+    .join("")
+  const modePills = t.modes
+    .map(
+      (mode, i) =>
+        `${pill(120 + i * 320, 500, 250, mode, [C.green, C.indigo, C.rose][i], [C.greenSoft, C.indigoSoft, C.roseSoft][i], { h: 40, size: 15 })}`,
+    )
+    .join("")
+  const body = `
+    ${signalCards}
+    ${textBlock(70, 450, [t.fuse.toUpperCase()], { size: 13, weight: 800, fill: C.muted, anchor: "start" })}
+    ${modePills}
+    ${card(70, 575, 1140, 70, { title: t.tip, accent: C.indigo, fill: C.indigoSoft, align: "center", titleSize: 16 })}
+  `
+  return frame({
+    width: 1400,
+    height: 700,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function gflowgrReproductionPipeline(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "复现流水线",
+          title: "从数据到评测的六步复现路径",
+          subtitle: "官方代码仍在准备中；按论文设定可独立复现公开实验",
+          steps: [
+            ["数据", "Yelp / Beauty / Instruments", "LETTER 预处理 + leave-one-out"],
+            ["Tokenizer", "RQ-VAE / LETTER", "L=3 标识 token"],
+            ["Backbone", "TIGER / LETTER", "先完成 SFT 基线"],
+            ["GFlowGR", "采样 + 奖励 + DB/TB", "L_GR + λ L_GFN"],
+            ["调参", "N∈{0,1,3,5}", "λ∈{0.01…100}"],
+            ["评测", "R@5/10 · N@5/10", "seed {42,43,44}"],
+          ],
+          gate: "验收门槛",
+          checks: [
+            ["相对 SFT 全面提升", "TB ≥ DB"],
+            ["N=3、λ=1 附近最优", "反向 V 曲线"],
+            ["去掉任一奖励信号下降", "随机采样弱于 CM"],
+            ["推理不改服务链路", "只换微调目标"],
+          ],
+        }
+      : {
+          kicker: "REPRODUCTION PIPELINE",
+          title: "A Six-Step Path from Data to Evaluation",
+          subtitle:
+            "Official code is still being prepared; the public experiments can be rebuilt from the paper setup",
+          steps: [
+            ["Data", "Yelp / Beauty / Instruments", "LETTER prep + leave-one-out"],
+            ["Tokenizer", "RQ-VAE / LETTER", "L=3 identifier tokens"],
+            ["Backbone", "TIGER / LETTER", "establish the SFT baseline first"],
+            ["GFlowGR", "sampling + reward + DB/TB", "L_GR + λ L_GFN"],
+            ["Tuning", "N∈{0,1,3,5}", "λ∈{0.01…100}"],
+            ["Eval", "R@5/10 · N@5/10", "seeds {42,43,44}"],
+          ],
+          gate: "Acceptance Gates",
+          checks: [
+            ["Beat SFT on all metrics", "TB ≥ DB"],
+            ["Best near N=3, λ=1", "reverse-V curve"],
+            ["Any dropped reward hurts", "random < CM sampling"],
+            ["Inference path unchanged", "swap the fine-tuning objective only"],
+          ],
+        }
+  const stepCards = t.steps
+    .map(
+      (entry, i) =>
+        `${card(55 + i * 220, 220, 200, 170, { title: entry[0], body: [entry[1], entry[2]], accent: [C.blue, C.teal, C.indigo, C.amber, C.rose, C.green][i], fill: C.white, step: String(i + 1), titleSize: 17, bodySize: 13 })}`,
+    )
+    .join("")
+  const checkCards = t.checks
+    .map(
+      (entry, i) =>
+        `${card(55 + i * 330, 470, 300, 110, { title: entry[0], body: [entry[1]], accent: [C.teal, C.blue, C.amber, C.green][i], fill: C.white, titleSize: 15, bodySize: 13 })}`,
+    )
+    .join("")
+  const body = `
+    ${stepCards}
+    ${textBlock(55, 430, [t.gate.toUpperCase()], { size: 13, weight: 800, fill: C.muted, anchor: "start" })}
+    ${checkCards}
+  `
+  return frame({
+    width: 1400,
+    height: 640,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
 const diagrams = [
   ["ml-inference", "serving-loop", servingLoop],
   ["ml-inference", "paged-kv-cache", pagedKv],
@@ -2160,6 +2409,10 @@ const diagrams = [
   ["long-sequence-recommendation", "design-space", longSequenceDesignSpace],
   ["long-sequence-recommendation", "hybrid-memory", longSequenceHybridMemory],
   ["long-sequence-recommendation", "decision-framework", longSequenceDecisionFramework],
+  ["gflowgr", "framework", gflowgrFramework],
+  ["gflowgr", "trajectory-flow", gflowgrTrajectoryFlow],
+  ["gflowgr", "reward-model", gflowgrRewardModel],
+  ["gflowgr", "reproduction-pipeline", gflowgrReproductionPipeline],
 ]
 
 let generated = 0

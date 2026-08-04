@@ -1,6 +1,6 @@
 ---
 title: Recommender Systems
-description: From long-sequence modeling to the OneRec production pipeline
+description: From long-sequence modeling and GFlowGR fine-tuning to the OneRec production pipeline
 lang: en
 translation: 推荐系统理论
 tags:
@@ -12,6 +12,7 @@ This section has two layers. Knowledge notes establish design frameworks for rec
 ## Knowledge Notes
 
 - [[en/recommender-systems/long-sequence-modeling\|Long-Sequence Modeling for Recommender Systems: Methods and Design Choices]] explains how retrieval, compression, hierarchy, sparse interaction, and linear models trade information fidelity against latency and memory. It also provides a parameter reference, an experimental plan, and an engineering review checklist.
+- [[en/recommender-systems/gflowgr/index\|Reproducing GFlowGR]] treats generative-recommendation fine-tuning as GFlowNet trajectory learning, covering the method, a public reproduction protocol, and result interpretation.
 
 ## Production Study
 
