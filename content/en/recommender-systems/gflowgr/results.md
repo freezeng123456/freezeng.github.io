@@ -20,10 +20,10 @@ On Beauty, Instruments, and Yelp, the paper attaches GFlowGR-DB / TB to TIGER an
 
 Example numbers from LETTER + Beauty:
 
-| Method | R@5 | R@10 | N@5 | N@10 |
-| ------ | --: | ---: | --: | ---: |
-| SFT | 0.0344 | 0.0540 | 0.0227 | 0.0290 |
-| S-DPO | 0.0390 | 0.0607 | 0.0259 | 0.0336 |
+| Method     |    R@5 |   R@10 |    N@5 |   N@10 |
+| ---------- | -----: | -----: | -----: | -----: |
+| SFT        | 0.0344 | 0.0540 | 0.0227 | 0.0290 |
+| S-DPO      | 0.0390 | 0.0607 | 0.0259 | 0.0336 |
 | GFlowGR-DB | 0.0407 | 0.0630 | 0.0266 | 0.0337 |
 | GFlowGR-TB | 0.0433 | 0.0672 | 0.0286 | 0.0363 |
 
@@ -51,11 +51,11 @@ Ablations on LETTER + Beauty give four signals:
 
 Reward fusion comparison:
 
-| Strategy | Takeaway |
-| -------- | -------- |
-| Sum | strong default and simplest to ship |
-| Weighted Sum | further top-5 gains; good second default |
-| Deep Integration | over-parameterized with no clear upside |
+| Strategy         | Takeaway                                 |
+| ---------------- | ---------------------------------------- |
+| Sum              | strong default and simplest to ship      |
+| Weighted Sum     | further top-5 gains; good second default |
+| Deep Integration | over-parameterized with no clear upside  |
 
 ## 4. LLM Enhancements and Diversity
 

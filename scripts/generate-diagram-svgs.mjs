@@ -2158,7 +2158,11 @@ function gflowgrFramework(lang) {
             "A trajectory sampler builds candidate sets, a reward model scores utility, and a GFlowNet loss aligns generation probabilities",
           input: "User prompt U + positive item v",
           sampler: "Trajectory Sampler",
-          samplerBody: ["Interaction logs / random negatives", "CM curriculum sampling", "LLM on-policy sampling"],
+          samplerBody: [
+            "Interaction logs / random negatives",
+            "CM curriculum sampling",
+            "LLM on-policy sampling",
+          ],
           reward: "Behavior-Aware Reward",
           rewardBody: ["Interaction signal r_a", "CM / LLM score r_ŷ", "Token similarity r_sim"],
           gfn: "GFlowNet Objective",
@@ -2206,7 +2210,8 @@ function gflowgrTrajectoryFlow(lang) {
       : {
           kicker: "TRAJECTORY FLOW",
           title: "Item-Identifier Generation Is One GFlowNet Trajectory",
-          subtitle: "From an empty prefix to L tokens, the model builds a decodable item identifier",
+          subtitle:
+            "From an empty prefix to L tokens, the model builds a decodable item identifier",
           states: ["s₀ = ∅", "s₁ = ⟨a₂⟩", "s₂ = ⟨a₂ a₄⟩", "s₃ = ⟨a₂ a₄ a₁₀⟩"],
           probs: ["P=0.90", "P=0.80", "P=0.83"],
           positive: "Positive: blue polo",

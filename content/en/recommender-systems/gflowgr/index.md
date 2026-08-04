@@ -39,12 +39,12 @@ Higher-value candidates therefore receive higher generation probability, while e
 
 ## Reproduction Boundary
 
-| Item | Status | Implication |
-| ---- | ------ | ----------- |
-| Method and formulas | Public | The training objective and algorithm can be rebuilt |
-| Public experiment setup | Public | Beauty / Instruments / Yelp with TIGER / LETTER |
-| Official code | README says still being prepared | Implement from the paper on top of existing GR scaffolds |
-| Taobao production data and configs | Not public | Cite relative online metrics only; do not claim production replay |
+| Item                               | Status                           | Implication                                                       |
+| ---------------------------------- | -------------------------------- | ----------------------------------------------------------------- |
+| Method and formulas                | Public                           | The training objective and algorithm can be rebuilt               |
+| Public experiment setup            | Public                           | Beauty / Instruments / Yelp with TIGER / LETTER                   |
+| Official code                      | README says still being prepared | Implement from the paper on top of existing GR scaffolds          |
+| Taobao production data and configs | Not public                       | Cite relative online metrics only; do not claim production replay |
 
 ## Relation to Nearby Notes
 

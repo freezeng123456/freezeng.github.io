@@ -22,11 +22,11 @@ The official repository currently ships only a README; code is still being prepa
 
 ## 1. Data and Splits
 
-| Dataset | Users | Items | Sparsity | Avg.length |
-| ------- | ----: | ----: | -------: | ---------: |
-| Yelp | 30,431 | 20,032 | 99.85% | 9.39 |
-| Beauty | 22,362 | 12,101 | 99.92% | 7.87 |
-| Instruments | 24,772 | 9,922 | 99.99% | 7.32 |
+| Dataset     |  Users |  Items | Sparsity | Avg.length |
+| ----------- | -----: | -----: | -------: | ---------: |
+| Yelp        | 30,431 | 20,032 |   99.85% |       9.39 |
+| Beauty      | 22,362 | 12,101 |   99.92% |       7.87 |
+| Instruments | 24,772 |  9,922 |   99.99% |       7.32 |
 
 Preprocess as in LETTER:
 
@@ -49,10 +49,10 @@ Install GFlowGR on two GR backbones:
 
 Compare three fine-tuning families:
 
-| Family | Methods | Reproduction notes |
-| ------ | ------- | ------------------ |
-| SFT | next-token prediction | Must land first; every gain is measured against it |
-| On-policy RLFT | GRPO | Relative advantages inside a group; weak coverage outside the set |
+| Family          | Methods                   | Reproduction notes                                                                 |
+| --------------- | ------------------------- | ---------------------------------------------------------------------------------- |
+| SFT             | next-token prediction     | Must land first; every gain is measured against it                                 |
+| On-policy RLFT  | GRPO                      | Relative advantages inside a group; weak coverage outside the set                  |
 | Off-policy RLFT | DPO / S-DPO / SPRec / IPA | S-DPO consumes multiple negatives; IPA should reuse GFlowGR’s collaborative reward |
 
 Metrics: R@5, R@10, N@5, N@10. Repeat each run with seeds `{42,43,44}` and report the mean.
@@ -68,10 +68,10 @@ Default ensemble from the paper:
 
 Sensitivity grids:
 
-| Hyperparameter | Grid | Empirical sweet spot |
-| -------------- | ---- | -------------------- |
-| Augmented trajectories $N$ | $\{0,1,3,5\}$ | around $3$ |
-| Loss weight $\lambda$ | $\{0.01,0.1,1,10,100\}$ | around $1$ |
+| Hyperparameter             | Grid                    | Empirical sweet spot |
+| -------------------------- | ----------------------- | -------------------- |
+| Augmented trajectories $N$ | $\{0,1,3,5\}$           | around $3$           |
+| Loss weight $\lambda$      | $\{0.01,0.1,1,10,100\}$ | around $1$           |
 
 $N=0$ almost collapses to a single positive; $N=5$ injects noise; $\lambda\ge 10$ overpowers SFT and hurts basic recommendation.
 
@@ -136,13 +136,13 @@ Treat the public mainline as reproduced when:
 
 ## 7. Common Failure Modes
 
-| Symptom | Likely cause | Fix |
-| ------- | ------------ | --- |
-| No gain over SFT | $\lambda$ too large or unnormalized rewards | lock $\lambda=1$ and standardize $r_{\hat{y}}$ |
-| Late collapse | negatives too easy or too hard | enable CM curriculum and bound the candidate pool |
-| TB worse than SFT | $Z$ not learned, or positives ignored | keep positive SFT and verify $R>0$ |
-| High variance | inconsistent seeds / early stop / beam width | fix three seeds and one generation config |
-| Gains look like CM only | need the w/o CM variant | confirm robustness without collaborative signals |
+| Symptom                 | Likely cause                                 | Fix                                               |
+| ----------------------- | -------------------------------------------- | ------------------------------------------------- |
+| No gain over SFT        | $\lambda$ too large or unnormalized rewards  | lock $\lambda=1$ and standardize $r_{\hat{y}}$    |
+| Late collapse           | negatives too easy or too hard               | enable CM curriculum and bound the candidate pool |
+| TB worse than SFT       | $Z$ not learned, or positives ignored        | keep positive SFT and verify $R>0$                |
+| High variance           | inconsistent seeds / early stop / beam width | fix three seeds and one generation config         |
+| Gains look like CM only | need the w/o CM variant                      | confirm robustness without collaborative signals  |
 
 ## 8. Non-Reproducible Pieces
 

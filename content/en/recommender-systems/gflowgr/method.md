@@ -58,12 +58,12 @@ GFlowGR changes **only the fine-tuning objective**. Inference keeps the original
 
 The sampler builds the $N$ trajectories needed for set-wise learning. $\tau_1$ is the positive item $v$; the rest are augmentations.
 
-| Strategy | Procedure | Best when | Risk |
-| -------- | --------- | --------- | ---- |
-| Interaction logs | Take $N-1$ other items from the same session | Industrial logs are rich | Exposure bias enters training directly |
-| Random negatives | Draw $N-1$ unobserved items uniformly | Starting on academic data | Negatives become too easy later |
-| CM curriculum | Start from easy low-score negatives, then harden | A reliable CM exists | CM noise can distort the curriculum |
-| LLM on-policy | Use current LLM beam search for top-$(N-1)$ | You want model-error-aware negatives | Costly; early distributions are unstable |
+| Strategy         | Procedure                                        | Best when                            | Risk                                     |
+| ---------------- | ------------------------------------------------ | ------------------------------------ | ---------------------------------------- |
+| Interaction logs | Take $N-1$ other items from the same session     | Industrial logs are rich             | Exposure bias enters training directly   |
+| Random negatives | Draw $N-1$ unobserved items uniformly            | Starting on academic data            | Negatives become too easy later          |
+| CM curriculum    | Start from easy low-score negatives, then harden | A reliable CM exists                 | CM noise can distort the curriculum      |
+| LLM on-policy    | Use current LLM beam search for top-$(N-1)$      | You want model-error-aware negatives | Costly; early distributions are unstable |
 
 The default public setup uses **CM-based curriculum sampling**: early epochs prefer easy low-score negatives; later epochs introduce harder items closer to user preference.
 
