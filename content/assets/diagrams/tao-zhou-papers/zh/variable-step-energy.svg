@@ -75,7 +75,7 @@
     <path d="M 917 284 L 932 284" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
   </g>
     <text x="360" y="402" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="800" fill="#14213d" opacity="1"><tspan x="360" dy="0">由此得到的两条结论</tspan></text>
-    <text x="1053" y="402" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="800" fill="#14213d" opacity="1"><tspan x="1053" dy="0">文献中的三条步长比门槛</tspan></text>
+    <text x="1053" y="402" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="800" fill="#14213d" opacity="1"><tspan x="1053" dy="0">这条文献中的三个步长比门槛</tspan></text>
     <g filter="url(#shadow)">
     <rect x="40" y="424" width="330" height="176" rx="22" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28" stroke-width="1.5" />
     <rect x="40" y="424" width="8" height="176" rx="4" fill="#16865b"/>
@@ -91,26 +91,26 @@
     <text x="555" y="490.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="555" dy="0">非线性项的单调性加正定性</tspan><tspan x="555" dy="17">给出逐层的界</tspan></text>
   </g>
     <g>
-    <rect x="740" y="432" width="250" height="48" rx="24" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
-    <text x="865" y="460.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#2563eb" opacity="1"><tspan x="865" dy="0">零稳定性</tspan></text>
+    <rect x="740" y="432" width="268" height="48" rx="24" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="874" y="460.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#2563eb" opacity="1"><tspan x="874" dy="0">r &lt; 1 + √2 ≈ 2.4142</tspan></text>
   </g>
       <g>
-    <rect x="1006" y="432" width="360" height="48" rx="24" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
-    <text x="1186" y="460.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2563eb" opacity="1"><tspan x="1186" dy="0">经典变步长 BDF2 的必要条件</tspan></text>
+    <rect x="1022" y="432" width="344" height="48" rx="24" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="1194" y="459.74" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="11" font-weight="700" fill="#2563eb" opacity="1"><tspan x="1194" dy="0">零稳定性；最大值原理与最大范数收敛</tspan></text>
   </g><g>
-    <rect x="740" y="494" width="250" height="48" rx="24" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
-    <text x="865" y="522.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#d97706" opacity="1"><tspan x="865" dy="0">能量稳定性</tspan></text>
+    <rect x="740" y="494" width="268" height="48" rx="24" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="874" y="522.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#d97706" opacity="1"><tspan x="874" dy="0">r &lt; (3 + √17)/2 ≈ 3.5616</tspan></text>
   </g>
       <g>
-    <rect x="1006" y="494" width="360" height="48" rx="24" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
-    <text x="1186" y="522.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#d97706" opacity="1"><tspan x="1186" dy="0">离散能量论证给出的更强限制</tspan></text>
+    <rect x="1022" y="494" width="344" height="48" rx="24" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="1194" y="521.74" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="11" font-weight="700" fill="#d97706" opacity="1"><tspan x="1194" dy="0">变步长 BDF2 的离散能量稳定性</tspan></text>
   </g><g>
-    <rect x="740" y="556" width="250" height="48" rx="24" fill="#ffffff" stroke="#16865b" stroke-opacity=".28"/>
-    <text x="865" y="584.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#16865b" opacity="1"><tspan x="865" dy="0">L² 稳定性</tspan></text>
+    <rect x="740" y="556" width="268" height="48" rx="24" fill="#ffffff" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="874" y="584.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#16865b" opacity="1"><tspan x="874" dy="0">r &lt; 1.4877</tspan></text>
   </g>
       <g>
-    <rect x="1006" y="556" width="360" height="48" rx="24" fill="#ffffff" stroke="#16865b" stroke-opacity=".28"/>
-    <text x="1186" y="584.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#16865b" opacity="1"><tspan x="1186" dy="0">二次型分析给出的最宽门槛</tspan></text>
+    <rect x="1022" y="556" width="344" height="48" rx="24" fill="#ffffff" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="1194" y="583.74" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="11" font-weight="700" fill="#16865b" opacity="1"><tspan x="1194" dy="0">变步长 BDF3 的能量耗散律</tspan></text>
   </g>
     <g>
     <rect x="300" y="638" width="800" height="40" rx="20" fill="#ffffff" stroke="#5e6b7f" stroke-opacity=".28"/>

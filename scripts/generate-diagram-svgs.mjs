@@ -3530,11 +3530,11 @@ function variableStepEnergy(lang) {
           energyBody: ["能量单调不增，无需步长上界", "或仅需与界面宽度无关的上界"],
           mbpTitle: "最大值原理",
           mbpBody: ["非线性项的单调性加正定性", "给出逐层的界"],
-          ladder: "文献中的三条步长比门槛",
+          ladder: "这条文献中的三个步长比门槛",
           ladderRows: [
-            ["零稳定性", "经典变步长 BDF2 的必要条件", C.blue],
-            ["能量稳定性", "离散能量论证给出的更强限制", C.amber],
-            ["L² 稳定性", "二次型分析给出的最宽门槛", C.green],
+            ["r < 1 + √2 ≈ 2.4142", "零稳定性；最大值原理与最大范数收敛", C.blue],
+            ["r < (3 + √17)/2 ≈ 3.5616", "变步长 BDF2 的离散能量稳定性", C.amber],
+            ["r < 1.4877", "变步长 BDF3 的能量耗散律", C.green],
           ],
           note: "同一套工具也用于三阶 BDF、时间滤波 Euler、分数阶 L1 逼近与 IMEX Runge-Kutta",
         }
@@ -3567,17 +3567,25 @@ function variableStepEnergy(lang) {
           mbpBody: ["monotone nonlinearity plus definiteness", "gives a bound at every level"],
           ladder: "Three step-ratio thresholds in this literature",
           ladderRows: [
-            ["Zero stability", "the classical requirement for variable-step BDF2", C.blue],
-            ["Energy stability", "the stronger limit from a discrete energy argument", C.amber],
-            ["L² stability", "the widest threshold from the quadratic form", C.green],
+            [
+              "r < 1 + √2 ≈ 2.4142",
+              "zero stability; maximum bound and max-norm convergence",
+              C.blue,
+            ],
+            [
+              "r < (3 + √17)/2 ≈ 3.5616",
+              "discrete energy stability for variable-step BDF2",
+              C.amber,
+            ],
+            ["r < 1.4877", "energy dissipation law for variable-step BDF3", C.green],
           ],
           note: "The same toolkit serves third-order BDF, time-filtered Euler, fractional L1 rules and IMEX Runge-Kutta",
         }
 
   const rows = t.ladderRows
     .map(
-      (row, i) => `${pill(740, 432 + i * 62, 250, row[0], row[2], C.white, { h: 48, size: 14 })}
-      ${pill(1006, 432 + i * 62, 360, row[1], row[2], C.white, { h: 48, size: 12 })}`,
+      (row, i) => `${pill(740, 432 + i * 62, 268, row[0], row[2], C.white, { h: 48, size: 14 })}
+      ${pill(1022, 432 + i * 62, 344, row[1], row[2], C.white, { h: 48, size: 11 })}`,
     )
     .join("")
 
