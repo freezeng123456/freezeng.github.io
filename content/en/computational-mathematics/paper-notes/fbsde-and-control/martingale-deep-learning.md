@@ -9,11 +9,6 @@ tags:
   - deep-learning
 ---
 
-> [!note] Coverage of this page
-> Papers **86** (_SIAM J. Sci. Comput._ 47(4), 2025), **93** (_J. Comput. Phys._ 555, 2026), **96** (submitted to _SIAM Rev._, [arXiv:2408.14395](https://arxiv.org/abs/2408.14395)), **97** (submitted to SIAM/ASA JUQ, [arXiv:2408.16403](https://arxiv.org/abs/2408.16403)), **100** (submitted to _Numer. Math._, [arXiv:2510.02635](https://arxiv.org/abs/2510.02635)) and **108** (preprint arXiv:2604.26782).
->
-> **All six were checked equation by equation against their full texts**: paper 86 against both the published SIAM version and the arXiv preprint; papers 93, 97, 100 and 108 against their arXiv full texts including appendices; paper 96 across its three retitled versions. This page therefore carries complete derivations, theorems and **experiment tables**. Theorem and experiment numbering follows each paper's own.
-
 ![Rewrite the equation residual as a martingale property](assets/diagrams/tao-zhou-papers/en/martingale-training.svg)
 
 All six share one substitution. In high dimension there is no grid, so "check the PDE residual at every point" is unavailable; but "check whether a process is a martingale" needs only expectations along simulated paths, so dimension no longer enters the cost directly. Paper 86 is the first to carry the substitution out completely, and the other five push it along five separate axes: **remove the derivatives** (96), **supply the missing rate** (93), **remove the neural network** (100), **move to forward mean-field equations** (97), and **move to mean-field games** (108).
@@ -142,7 +137,7 @@ $$
 
 "chosen to be vector-valued to enhance the stability of adversarial training", in the paper's words.
 
-**Both hard constraints match the disposition of this site's [[en/computational-mathematics/paper-notes/scientific-machine-learning/index|scientific machine learning topic]]**: a constraint the architecture can guarantee should not be put into a penalty. The only thing left in a penalty here is the martingale condition, and it comes with a $\lambda\to\infty$ limit.
+**Both hard constraints match the disposition of the [[en/computational-mathematics/paper-notes/scientific-machine-learning/index|scientific machine learning topic]]**: a constraint the architecture can guarantee should not be put into a penalty. The only thing left in a penalty here is the martingale condition, and it comes with a $\lambda\to\infty$ limit.
 
 **Step five: discretisation and training.** On $\pi_N=\{0=t_0<\cdots<t_N=T\}$ the uncontrolled diffusion is advanced by Euler and the cost-process increment by the **trapezoid rule**:
 
@@ -445,7 +440,7 @@ Errors are reported as relative $L^1$ and $L^\infty$ errors $\mathrm{RE}_1(t_n)$
 | **Weak-form DRDM**          | RT (min)      | 1.22     | 1.26     | 1.43          | 1.59     | 13.26    |
 | **Weak-form DRDM**          | Memory (MB)   | 57       | 185      | 859           | 1698     | 16829    |
 
-**The authors' own reading is unusually candid: DRDM is generally _less_ accurate than PINNs and RS-PINNs**, which they attribute to the $O(h)$ truncation error of the RDO that the AD-based methods do not incur. The gain is entirely in runtime and memory, and it grows with $d$: at $d=10^5$ the weak-form DRDM needs 13.26 minutes and 16.8 GB, RS-PINNs need 720 minutes and 45.6 GB, and PINNs cannot run at all. Weak and strong forms have comparable accuracy, but per gradient step with minibatch $n_b$ the strong form evaluates $v_\theta$ $n_b+n_b\ell$ times ($\ell=128$ draws of $\xi$ per point in their runs) whereas the weak form evaluates it $2n_b$ times, so the weak form wins as $d$ grows.
+**The authors' own reading is unusually candid: DRDM is generally _less_ accurate than PINNs and RS-PINNs**, which they attribute to the $O(h)$ truncation error of the RDO that the AD-based methods do not incur. That self-assessment does not quite match Table 4 itself: in the $d=10^5$ Allen-Cahn column the weak-form DRDM's 7.381E-4 beats RS-PINNs' 2.192E-3. The gain is entirely in runtime and memory, and it grows with $d$: at $d=10^5$ the weak-form DRDM needs 13.26 minutes and 16.8 GB, RS-PINNs need 720 minutes and 45.6 GB, and PINNs cannot run at all. Weak and strong forms have comparable accuracy, but per gradient step with minibatch $n_b$ the strong form evaluates $v_\theta$ $n_b+n_b\ell$ times ($\ell=128$ draws of $\xi$ per point in their runs) whereas the weak form evaluates it $2n_b$ times, so the weak form wins as $d$ grows.
 
 ### Relation to the others
 
@@ -692,7 +687,7 @@ The analysis is deliberately set in a **simplified surrogate**: the density is r
     $$
     H_\alpha(\mu_\cdot,\mu^*_\cdot)\ \le\ \Bigl(1-\sqrt{\tfrac{C_0}{\alpha-C_0}}\Bigr)^{-1}H_\alpha\bigl(\mu_\cdot,\Phi(\mu_\cdot)\bigr).
     $$
-  Computationally: feed the learned density into the now-Markovian SDE, simulate, and compare the resulting law with what you fed in; the discrepancy is a **computable upper bound** on the true error. **This is the only computable error bound among the six papers on this page** — paper 93 gives an a priori rate instead. The mechanism, freeze the nonlinearity and measure the mismatch, is a fixed-point argument rather than a truncation-error argument.
+  Computationally: feed the learned density into the now-Markovian SDE, simulate, and compare the resulting law with what you fed in; the discrepancy is a **computable upper bound** on the true error. **This is the only computable error bound in the whole family** — paper 93 gives an a priori rate instead. The mechanism, freeze the nonlinearity and measure the mismatch, is a fixed-point argument rather than a truncation-error argument.
 - Absent: no analysis for the actual neural-network parameterisation, for the Lévy-driven or singular-kernel cases, or for the KL and path losses; the authors explicitly note that several of their test equations "go beyond the scope of the SPoC theory or even PoC theory".
 
 ### Numerical experiments
@@ -720,7 +715,7 @@ Networks: fully connected with 6 hidden layers of 512 neurons and ReLU; temporal
 
 ### Relation to the others
 
-**It is the methodological odd one out on this page**, and the only paper in the list about **forward** (Fokker-Planck / McKean-Vlasov) problems rather than backward (FBSDE / HJB) ones. Where papers 8, 47, 63, 86, 93 and 96 propagate information _backward_ from a terminal condition using conditional expectations, deepSPoC propagates a _law_ forward and fits it with a network.
+**It is the methodological odd one out of the group**, and the only paper in the list about **forward** (Fokker-Planck / McKean-Vlasov) problems rather than backward (FBSDE / HJB) ones. Where papers 8, 47, 63, 86, 93 and 96 propagate information _backward_ from a terminal condition using conditional expectations, deepSPoC propagates a _law_ forward and fits it with a network.
 
 The engineering DNA is nevertheless shared: the network replaces stored trajectories; training is driven by freshly simulated Euler-Maruyama paths; adaptive, dynamics-based spatial sampling is essential in high $d$. In particular the "sample where the process actually goes" principle that paper 93 derives from the Fokker-Planck adjoint equation is here literally the object being learned.
 
@@ -1002,39 +997,9 @@ The other five each remove one component of that machinery, and the genealogy of
 
 **One limitation runs across the whole table and deserves to be remembered separately**: the criterion of this family only forces the PDE residual to vanish **in the region the pilot process or the sampled ensemble explores**. Remark 1 of paper 96 states it, Theorem 4 of paper 93 encodes it in the weighted norm $M^2_n[\cdot]$, and paper 108 displays it in its $d=1$ visualisation. **"Solved accurately" is always a statement with a domain attached here.**
 
-A second judgement concerns the scale of accuracy. The classical multistep and $\theta$-schemes reach sixth order at $d\lesssim10$, while the papers on this page reach first order and relative errors of $10^{-2}$ to $10^{-3}$ at $d=10^4$. **These are not the same task done well or badly; they are two different tasks.** Paper 93's Table 4 is especially honest about it: its method is less accurate than PINNs, all the gain is in time and memory, and the gain grows with $d$ — a case of trading accuracy for feasibility with the price written on the label.
+A second judgement concerns the scale of accuracy. The classical multistep and $\theta$-schemes reach sixth order at $d\lesssim10$, while this family reaches first order and relative errors of $10^{-2}$ to $10^{-3}$ at $d=10^4$. **These are not the same task done well or badly; they are two different tasks.** Paper 93's Table 4 is especially honest about it: its method is less accurate than PINNs, all the gain is in time and memory, and the gain grows with $d$ — a case of trading accuracy for feasibility with the price written on the label.
 
-## Coverage checklist
-
-| Item                                                                   | Paper | Coverage status                                |
-| ---------------------------------------------------------------------- | ----- | ---------------------------------------------- |
-| HJB equation, Hamiltonian, and the four covered situations             | 86    | verified from the full text                    |
-| Integral minimum principle (Lemma 3.2) with its one-line proof         | 86    | verified from the full text                    |
-| Martingale characterisation (Lemma 3.4), both directions               | 86    | verified from the full text                    |
-| Theorem 3.5, the geometric assumption, weak versus strong order        | 86    | verified; noted as not a convergence theorem   |
-| Adversarial weak form, augmented Lagrangian, three networks            | 86    | verified from the full text                    |
-| Experiments: runtimes, first-order rate, Tables 1 and 2                | 86    | verified, tabulated here                       |
-| Random-difference expansion, RDO, Fokker-Planck sampling               | 93    | verified from the full text                    |
-| The two equivalences (martingale methods, implicit Euler)              | 93    | verified from the full text                    |
-| Assumptions 1-3, Theorem 1, Corollary 2, Lemma 3, Theorem 4            | 93    | verified, with step restrictions and constants |
-| Remark 9 (proving first order for papers 86 and 96 as well)            | 93    | verified from the full text                    |
-| Experiments: Tables 2, 3, 4 and the authors' self-assessment           | 93    | verified, tabulated here                       |
-| Pilot/system process, localised martingale, Remark 1                   | 96    | verified; the region limitation preserved      |
-| Derivative-free $\mathcal M$, disjoint minibatches, policy improvement | 96    | verified from the full text                    |
-| Only an $O(h^2)$ local estimate, no global theorem                     | 96    | verified from the full text                    |
-| Experiments: Tables 1 and 2, and the width study                       | 96    | verified, tabulated here                       |
-| SPoC, the deepSPoC system, three losses, adaptive sampling             | 97    | verified from the full text                    |
-| Theorem 3.3 and its surrogate-setting caveat                           | 97    | verified from the full text                    |
-| Posterior estimate (Proposition 3.5, Theorem 3.6)                      | 97    | verified from the full text                    |
-| Experiments: five equation families with their parameters              | 97    | verified; no orders reported, noted            |
-| Local linear regression, matrix-free solve, Newton iteration           | 100   | verified from the full text                    |
-| Lemmas 3.1, 3.3, 3.8 and Theorem 3.1                                   | 100   | verified from the full text                    |
-| Experiments: three problems, runtime tables, hardware                  | 100   | verified, tabulated here                       |
-| Regenerative reformulation, one-step random mapping, Remark 3          | 108   | verified from the full text                    |
-| No convergence theorem, only an $O(h^2)$ local estimate                | 108   | verified from the full text                    |
-| Experiments: Table 1, the $d=10^4$ run, four test problems             | 108   | verified, tabulated here                       |
-
-## Sources for this page
+## Sources
 
 - W. Cai, S. Fang, and T. Zhou, [_SOC-MartNet: a martingale neural network for the Hamilton-Jacobi-Bellman equation without explicit inf H in stochastic optimal controls_](https://doi.org/10.1137/24M1681033), SIAM J. Sci. Comput. 47(4) (2025), pp. C795-C819 (preprint [arXiv:2405.03169](https://arxiv.org/abs/2405.03169); code [sx-fang/MartNet](https://github.com/sx-fang/MartNet)).
 - W. Cai, S. Fang, and T. Zhou, [_Deep random difference method for high-dimensional quasilinear parabolic partial differential equations_](https://doi.org/10.1016/j.jcp.2026.114767), J. Comput. Phys. 555 (2026), 114767 (preprint [arXiv:2506.20308](https://arxiv.org/abs/2506.20308); code [sx-fang/DRDM](https://github.com/sx-fang/DRDM)).

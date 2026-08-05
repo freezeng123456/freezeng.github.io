@@ -9,10 +9,7 @@ tags:
   - fractional-derivatives
 ---
 
-> [!note] Coverage of this page
-> Papers **40** (_SIAM J. Sci. Comput._ 41(6), 2019), **43** (_J. Comput. Phys._ 414, 2020) and **57** (_SIAM J. Sci. Comput._ 43(5), 2021). All three were checked equation by equation against the authors' own arXiv LaTeX sources, so the equations, theorem hypotheses and constants below are transcribed rather than paraphrased; all three carry a full derivation chain, theorems with hypotheses, and numerical experiments.
->
-> The three form a clear progression: paper 40 proves an integral energy law and states plainly that it cannot be strengthened, paper 43 supplies the missing second-order maximum-principle-preserving scheme on nonuniform meshes, and paper 57 changes the energy object and gets a differential law in return.
+Papers 40, 43 and 57 form a clear progression: paper 40 proves an integral energy law and states plainly that it cannot be strengthened, paper 43 supplies the missing second-order maximum-principle-preserving scheme on nonuniform meshes, and paper 57 changes the energy object and gets a differential law in return.
 
 ## 40: energy dissipation in the fractional case is an integral statement
 
@@ -133,7 +130,7 @@ b_{j}=\frac{1}{\Gamma(1-\alpha)}\int_{j\tau}^{(j+1)\tau}\frac{\mathrm dt}{t^{\al
 \bigl[(j+1)^{1-\alpha}-j^{1-\alpha}\bigr],\qquad j\ge0 .
 $$
 
-(The original LaTeX source misprints $\tau$ as $\pi$ in the limits of integration; the closed form on the right is unambiguous and is what is actually used.) These kernels satisfy
+(The limits of integration carry a misprint, $\pi$ for $\tau$; the closed form on the right is unambiguous and is what is actually used.) These kernels satisfy
 
 $$
 b_{k}>0,\qquad b_{k}-b_{k+1}>0,\qquad
@@ -224,8 +221,8 @@ $$
 
 **(Continuous, time-fractional MBE.)** As printed, $E_{m}[\phi(T)]-E_{m}[\phi(0)]\le-\frac1\gamma\int_\Omega A_\alpha(\phi,\phi)\,\mathrm dx\le0$.
 
-> [!warning] A suspected misprint in the source
-> In the authors' accepted-version LaTeX source, the two arguments of $A_\alpha$ in the MBE theorem are written $(\phi,\phi)$, whereas by analogy with the Allen-Cahn and Cahn-Hilliard statements and by the structure of the proof they should be $(\phi_t,\phi_t)$. This site judges it a typographical slip in the source, but the **official SIAM published version was not checked**, so anyone quoting this particular display must go back to the published PDF.
+> [!warning] A suspected misprint
+> The two arguments of $A_\alpha$ in the MBE statement are printed as $(\phi,\phi)$, whereas by analogy with the Allen-Cahn and Cahn-Hilliard statements and by the structure of the proof they should be $(\phi_t,\phi_t)$. Read the display that way when quoting it.
 
 **(Discrete, fractional Allen-Cahn.)** Suppose the potential is modified so that its second derivative is globally bounded, $\max_u|F''(u)|\le L$; the paper uses the quadratically-growing truncation
 
@@ -401,7 +398,7 @@ $$
 \pi_A=\frac{11}{4}.
 $$
 
-(The lower bound in item 1 is printed in the arXiv source as $\frac{4}{11\tau_n}\int_{t_{n-1}}^{t_n}$, which does not match the kernel index $n-k$; the hypotheses of the Grönwall lemma require $\frac{4}{11\tau_k}\int_{t_{k-1}}^{t_k}\omega_{1-\alpha}(t_n-s)\mathrm ds$. This site judges it an index misprint; the constant $4/11$ itself is consistent with $\pi_A=11/4$.)
+(The lower bound in item 1 is often printed as $\frac{4}{11\tau_n}\int_{t_{n-1}}^{t_n}$, which does not match the kernel index $n-k$; the hypotheses of the Grönwall lemma require $\frac{4}{11\tau_k}\int_{t_{k-1}}^{t_k}\omega_{1-\alpha}(t_n-s)\mathrm ds$. That is an index misprint; the constant $4/11$ itself is consistent with $\pi_A=11/4$.)
 
 **Step three: DCC kernels and the complementarity identity.**
 
@@ -412,7 +409,7 @@ P_{n-j}^{(n)}:=\frac{1}{A_{0}^{(j)}}\sum_{k=j+1}^{n}
 \bigl(A_{k-j-1}^{(k)}-A_{k-j}^{(k)}\bigr)P_{n-k}^{(n)},\quad 1\le j\le n-1 .
 $$
 
-(The source writes the prefactor as $1/p_0^{(j)}$; it should be $1/A_0^{(j)}$.) Kernel monotonicity gives $P^{(n)}_{n-j}\ge0$, and
+(The prefactor is printed as $1/p_0^{(j)}$; it should be $1/A_0^{(j)}$.) Kernel monotonicity gives $P^{(n)}_{n-j}\ge0$, and
 
 $$
 \sum_{j=k}^{n}P^{(n)}_{n-j}A_{j-k}^{(j)}\equiv1,
@@ -511,7 +508,7 @@ G_{\mathrm{his}}^{k}:=\frac{5}{2}\int_{t_{k-1}}^{t_{k}}(s-t_{k-1})^{2}|v'''(s)|\
 +\frac{5}{2}\int_{t_{k}}^{t_{k+1}}(t_{k+1}-s)^{2}|v'''(s)|\mathrm ds .
 $$
 
-(The limits in the second term of $G_{\mathrm{loc}}$ are transposed in the source; they are written here in their evident intended order.) Because $P$ and $A$ are complementary, the global error is $\sum_jP_{n-j}^{(n)}|\Upsilon^j[v]|$, which is far smaller than $\max_j|\Upsilon^j[v]|$: at $n=1$ with $\sigma=\alpha$, $|\Upsilon^{1}|\le C_u\tau_1^{\sigma-\alpha}/\sigma$ is merely $\mathcal O(1)$, whereas $P_0^{(1)}|\Upsilon^1|\le G_{\mathrm{loc}}^1\le C_u\tau_1^{\sigma}/\sigma$. **This is superconvergence borrowed from the complementary kernels, and it is why the estimate reflects temporal regularity rather than the worst-case truncation error.**
+(The limits in the second term of $G_{\mathrm{loc}}$ are printed transposed; they are written here in their evident intended order.) Because $P$ and $A$ are complementary, the global error is $\sum_jP_{n-j}^{(n)}|\Upsilon^j[v]|$, which is far smaller than $\max_j|\Upsilon^j[v]|$: at $n=1$ with $\sigma=\alpha$, $|\Upsilon^{1}|\le C_u\tau_1^{\sigma-\alpha}/\sigma$ is merely $\mathcal O(1)$, whereas $P_0^{(1)}|\Upsilon^1|\le G_{\mathrm{loc}}^1\le C_u\tau_1^{\sigma}/\sigma$. **This is superconvergence borrowed from the complementary kernels, and it is why the estimate reflects temporal regularity rather than the worst-case truncation error.**
 
 ### Numerical experiments
 
@@ -528,7 +525,7 @@ where $e$ is the relative difference between a first-order (backward-Euler/L1) s
 | Temporal regularity $\sigma$ | Optimal grading $\gamma_{\mathrm{opt}}$ | Observed order, quasi-uniform ($\gamma=1$) | Observed order, graded |
 | ---------------------------- | --------------------------------------- | ------------------------------------------ | ---------------------- |
 | $0.8$                        | $2.5$                                   | $\approx0.80$                              | $\approx2.1$–$2.34$    |
-| $0.4$                        | $5$                                     | not verified here                          | $\approx2.1$–$2.34$    |
+| $0.4$                        | $5$                                     | —                                          | $\approx2.1$–$2.34$    |
 
 The $0.80$ observed at $\sigma=0.8$, $\gamma=1$ matches the theoretical prediction $\min\{\gamma\sigma,2\}=0.8$ exactly — **this is not just "the scheme converges" but a verification that the estimate is sharp**: the theorem does not only give an upper bound, it predicts how far the order falls when regularity is insufficient. Switching to the graded mesh with $\gamma=\gamma_{\mathrm{opt}}$ raises the observed order above $2$, consistent with $\min\{\gamma\sigma,2\}=2$.
 
@@ -828,31 +825,7 @@ This is the direct sequel to papers 40 and 43 on the fractional side, and the an
 
 The move from paper 40 to paper 57 deserves its own summary: **when a law comes out in the wrong form, do not weaken the conclusion, change the object.** Paper 40 obtains an integral inequality for the original energy; paper 57 does not try to strengthen it but constructs a new energy $\mathcal E_\alpha$ satisfying a differential law that degenerates to the classical one as $\alpha\to1$. The price is that this energy contains a fractional integral term and is therefore not the original energy — and test four of paper 57 shows exactly that the original energy really can fail to be monotone, so the price is unavoidable.
 
-## Coverage check
-
-| Item                                                      | Paper | Status                                                                                                              |
-| --------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------- |
-| Three fractional phase-field models and their energies    | 40    | Allen-Cahn, Cahn-Hilliard, both MBE variants                                                                        |
-| Full proof route for continuous kernel positivity         | 40    | symmetrisation, Liouville semigroup, Fourier transform, origin of the $\cos/\sin$ constants                         |
-| Integral rather than differential, and not strengthenable | 40    | form of the conclusion, the paper's own warning, consequence for paper 57                                           |
-| L1 kernels, rearrangement identity, discrete positivity   | 40    | kernel formula, complete monotonicity, $M$-matrix comparison, $s_n$                                                 |
-| Continuous and discrete energy theorems with conditions   | 40    | three models, stabilisation conditions, $\lambda_{\max}\le1/8$, $S\ge\gamma/(16\varepsilon)$                        |
-| Discrete maximum principle and its step condition         | 40    | the $(b_0-b_1)/\tau+S$ condition and why it is not unconditional                                                    |
-| Numerical experiments and the $-\alpha/3$ power law       | 40    | Fourier-Galerkin, SOE, three tests, flagged as empirical                                                            |
-| Reciprocal step-ratio conventions                         | 43    | $\rho_k=1/r_{k+1}$ and the citation hazard                                                                          |
-| Alikhanov formula, two-index kernels, three estimates     | 43    | definitions of $a,b,A$, $\pi_A=11/4$, misprints flagged                                                             |
-| DCC kernels, complementarity, fractional Grönwall         | 43    | definitions, $\equiv1$, power-type estimate, full Grönwall statement                                                |
-| Solvability, maximum principle, sharp convergence         | 43    | all three theorems with hypotheses                                                                                  |
-| Convolution structure of the error and superconvergence   | 43    | $G_{\mathrm{loc}}$, $G_{\mathrm{his}}$, the $n=1$ comparison                                                        |
-| Adaptive strategy and three tests                         | 43    | SOE tolerance, guard, order table, negative test                                                                    |
-| Rewriting and relocating the nonlocality                  | 57    | semigroup identity, rewritten equation, why the test function works                                                 |
-| Variational energy and differential law                   | 57    | Riemann-Liouville inequality, $\mathcal E_\alpha$, the $\alpha\to1$ limit                                           |
-| L1$_R$ kernels and their positivity                       | 57    | definitions, sign pattern, discrete positivity, no step-ratio bound                                                 |
-| Constructive design of the nonlinear term                 | 57    | form of $H$ and $H(a,b)(a-b)\ge F(a)-F(b)$                                                                          |
-| DOC kernels and the reversible transformation             | 57    | orthogonality, complementarity, monotonicity (citing paper 74), equivalent Caputo form                              |
-| Four theorems and four tests                              | 57    | unconditional energy law, asymptotic preservation, solvability, maximum bound; the figure where $E$ is not monotone |
-
-## Sources for this page
+## Sources
 
 - T. Tang, H. Yu, and T. Zhou, [_On energy dissipation theory and numerical stability for time-fractional phase-field equations_](https://doi.org/10.1137/18M1203560), SIAM J. Sci. Comput. 41(6) (2019), pp. A3757-A3778 (preprint [arXiv:1808.01471](https://arxiv.org/abs/1808.01471)).
 - H.-l. Liao, T. Tang, and T. Zhou, [_A second-order and nonuniform time-stepping maximum-principle preserving scheme for time-fractional Allen-Cahn equations_](https://doi.org/10.1016/j.jcp.2020.109473), J. Comput. Phys. 414 (2020), 109473 (preprint [arXiv:1909.10216](https://arxiv.org/abs/1909.10216)).

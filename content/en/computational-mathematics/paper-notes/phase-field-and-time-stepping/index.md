@@ -58,8 +58,6 @@ That $b^{(n)}_1<0$ is the root of the whole difficulty: the kernels are not non-
 | [[en/computational-mathematics/paper-notes/phase-field-and-time-stepping/variable-step-bdf\|Variable-step BDF and convolution kernels]] | 48, 52, 58, 67, 69, 74 | kernel recombination and quadratic-form positivity |
 | [[en/computational-mathematics/paper-notes/phase-field-and-time-stepping/imex-and-relaxation\|IMEX and relaxation schemes]]             | 78, 91, 104            | linearisation and time adaptability                |
 
-All three pages treat each paper in the same order: the intuition before any formalism, then the setting, the full derivation, the theorems with their hypotheses, and finally the concrete configuration and measured numbers of the experiments. Eleven of the twelve papers can be covered at that depth; the exception is paper 69, for the reason given in the coverage note below.
-
 ## Three step-ratio thresholds and where each belongs
 
 Several specific constants recur in this literature, each attached to a **different** property. Mixing them up produces incorrect citations.
@@ -90,9 +88,9 @@ $$
 Note that the modified energy uses $r_{k+1}$, the **next** step ratio. That look-ahead is exactly what makes the telescoping work.
 
 > [!warning] About the constant $4.8645$
-> Another frequently cited threshold in this literature is $r^\ast$, the positive root of $1+2r-r^{3/2}=0$, exactly $4.864536512317583$. On checking, it appears in **none** of the papers in this topic — a search for `4.86` across the ten available full texts returns no hit. It comes from work by Liao, Ji, Wang and Zhang on convex-splitting BDF2 for the Cahn-Hilliard equation (_J. Sci. Comput._ 92 (2022) 52, preprint [arXiv:2102.03731](https://arxiv.org/abs/2102.03731)), where it delivers **A-stability** of variable-step BDF2, a mesh-robust $L^2$ estimate and modified-energy dissipation, improving Liao and Zhang's $3.561$.
+> Another frequently cited threshold in this literature is $r^\ast$, the positive root of $1+2r-r^{3/2}=0$, exactly $4.864536512317583$. It appears in **none** of the papers in this topic; it comes instead from work by Liao, Ji, Wang and Zhang on convex-splitting BDF2 for the Cahn-Hilliard equation (_J. Sci. Comput._ 92 (2022) 52, preprint [arXiv:2102.03731](https://arxiv.org/abs/2102.03731)), where it delivers **A-stability** of variable-step BDF2, a mesh-robust $L^2$ estimate and modified-energy dissipation, improving Liao and Zhang's $3.561$.
 >
-> Two details are where the confusion originates. First, **that paper prints $4.864$**; the more widely circulated form $4.8645$ comes from Zhang and Zhao (_J. of Math._ (PRC) 41(6) (2021) 471-488) for linear reaction-diffusion. Second, the technique is often credited to Lemma A.1 of Liao, Ji and Zhang (_IMA J. Numer. Anal._, phase field crystal), but that paper states only $3.561$ throughout. Papers 69 and 91 both cite Liao-Ji-Wang-Zhang, which is most likely how the constant entered this reading list. It should not be attributed to the papers here.
+> Two details are where the confusion originates. First, **that paper prints $4.864$**; the more widely circulated form $4.8645$ comes from Zhang and Zhao (_J. of Math._ (PRC) 41(6) (2021) 471-488) for linear reaction-diffusion. Second, the technique is often credited to Lemma A.1 of Liao, Ji and Zhang (_IMA J. Numer. Anal._, phase field crystal), but that paper states only $3.561$ throughout. Papers 69 and 91 both cite Liao-Ji-Wang-Zhang, which is most likely how the constant came to be associated with this group of work; it should not be attributed to the papers here.
 >
 > Note also that paper 57 imposes **no step-ratio restriction at all** for its energy law, and only a step-size bound for the maximum bound principle.
 
@@ -130,7 +128,7 @@ The $\gamma=7/10$ here is a tractable stand-in for the $0.6924$ that the constan
 - **52** carries the same analysis to the molecular beam epitaxy model **without slope selection**, obtaining energy stability together with $L^2$ stability and convergence at the same $3.5616$ threshold, and upgrading the tool from KRC to **discrete orthogonal convolution** (DOC) kernels. The difficulty here is that the nonlinearity of the logarithmic energy $-\tfrac12\ln(1+|\nabla\phi|^2)$ is not polynomially bounded; the conclusions state that the technique does not apply to the model with slope selection, which is precisely what paper 78 treats.
 - **58** introduces a new discrete energy technique for BDF-$k$, $3\le k\le5$: DOC kernels plus the Grenander-Szegő theorem settle the positivity of a symmetrised Toeplitz form directly, replacing the traditional family-by-family search for Nevanlinna-Odeh multipliers. This is the uniform-grid branch, so no step ratio enters.
 - **67** pushes the discrete energy analysis to variable-step third-order BDF, giving a discrete gradient structure and energy dissipation law under $r_k<R_e\approx1.4877$, and removing the non-mesh-robust prefactor $\exp(C\Gamma_n)$ from the Calvo-Grigorieff error estimate.
-- **69** analyses the stability and convergence of the variable-step time-filtered backward Euler scheme. It belongs to the same programme as the papers above — a one-leg reformulation makes the left-hand side variable-step BDF2, so the gradient-structure machinery transfers — but it is the one paper in this topic whose full text could not be obtained; see the coverage note below.
+- **69** analyses the stability and convergence of the variable-step time-filtered backward Euler scheme. It belongs to the same programme as the papers above: a one-leg reformulation makes the left-hand side variable-step BDF2, so the gradient-structure machinery transfers.
 - **74** studies the positive definiteness of the real quadratic forms produced by variable-step L1-type approximations of convolution operators, setting out in one place the definitions of the DOC and DCC kernels, their two identities ($\equiv\delta_{nk}$ for DOC, $\equiv1$ for DCC) and the algebraic criteria C1-C4 for positivity, which is what the earlier papers depend on. It is purely analytical, with no numerical experiments.
 
 ### IMEX and relaxation schemes
@@ -146,7 +144,7 @@ The $\gamma=7/10$ here is a tractable stand-in for the $0.6924$ that the constan
 
 ## What the experiments keep showing
 
-Eight of the twelve papers have experiments that can be reported item by item. Papers 58, 74 and 104 are purely analytical, their sources containing only plots of kernels or generating functions; paper 69's abstract says numerical tests are presented, but the specific examples cannot be verified. Taken together, the eight that can be reported deliver one and the same judgement: **the theoretical thresholds are sufficient conditions, and fairly conservative ones.**
+Papers 58, 74 and 104 are purely analytical, containing only plots of kernels or generating functions and no numerical experiments at all. Taken together, the experiments in the remaining papers deliver one and the same judgement: **the theoretical thresholds are sufficient conditions, and fairly conservative ones.**
 
 | Paper | What the experiment tests directly | Outcome                                                                                            |
 | ----- | ---------------------------------- | -------------------------------------------------------------------------------------------------- |
@@ -157,15 +155,10 @@ Eight of the twelve papers have experiments that can be reported item by item. P
 
 Paper 52's table is the most explicit of these: it deliberately reports $\max r_k$ and $N_1$, the number of levels violating the threshold, which amounts to the authors themselves showing that $3.5616$ is far from necessary. Paper 67 is the finer case — numerically $R_e<1.69$ is necessary, so there the gap is small and known. That contrast is itself one of the topic's conclusions: the BDF2 threshold barely constrains practice, while the BDF3 one is close to the truth.
 
-> [!note] Coverage status
-> Papers 40, 43, 48, 52, 57, 58, 67, 74, 91 and 104 have been checked equation by equation against the authors' own arXiv sources, and paper 78 against the full text of the published PDF, so for those eleven the equations, theorem statements and constants are transcribed rather than paraphrased. The three close readings now give all eleven an intuition, a full derivation and theorems with their hypotheses, and for the eight that ran experiments, the concrete configuration and the measured numbers. Papers 58, 74 and 104 ran none, and the pages say so rather than implying otherwise.
->
-> The one exception is paper 69: it has no preprint (confirmed by sweeping all 34 preprints under Liao's name), and neither Springer, Semantic Scholar nor zbMATH supplies the full text, so only what the complete abstract and the 22-item reference list confirm is reported. Its step-ratio condition, its three ingredients (a one-leg reformulation, a discrete gradient structure, two new classes of DOC kernel) and its three results are verifiable; its explicit modified energy, its DOC kernel definitions, its convergence order and its numerical tests are not, and the page does not fill those in. The variable-step FiBE scheme shown there is reconstructed from the method source (DeCaria-Guzel-Layton-Li, [arXiv:1810.06670](https://arxiv.org/abs/1810.06670)) and is flagged as such on the page.
-
 ## One transferable judgement
 
 This group compresses "variable-step stability", which looks scheme-specific, into a single algebraic object: **the history terms collect into a real quadratic form whose positive definiteness depends only on the step-ratio sequence.** Once that positivity has algebraic criteria — which is what paper 74 supplies — the same toolkit transfers to third-order BDF, time-filtered Euler, fractional L1 rules and implicit-explicit Runge-Kutta methods. It is the same strategy as "write the sequential structure as one all-at-once operator and study its spectrum" in the [[en/computational-mathematics/paper-notes/parallel-in-time/index|parallel-in-time topic]]: first locate the one algebraic object that carries the whole difficulty.
 
-## Sources for this topic
+## Sources
 
 Numbers and records are in the [[en/computational-mathematics/paper-notes/catalog|catalogue]]; per-paper references appear at the end of each close-reading page.

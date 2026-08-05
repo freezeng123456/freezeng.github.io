@@ -9,22 +9,13 @@ tags:
   - 隐显格式
 ---
 
-> [!note] 本页覆盖
-> 编号 **78**（_J. Comput. Phys._ 515, 2024）、**91**（_Math. Comput._ 95(359), 2026）、**104**（投稿 _SIAM J. Numer. Anal._，[arXiv:2605.05619](https://arxiv.org/abs/2605.05619)）。
->
-> 三篇都已逐式核对：**91** 与 **104** 依作者自己的 arXiv 源文件核对，**78** 依已出版的 PDF 全文核对，因此下面的公式、定理假设、参数窗口与实验数值是转录而非转述。三篇都给出完整的推导链与带假设的定理。
->
-> 数值实验方面：**78** 与 **91** 的实验设置与实测数据在本页照实报告；**104** 的这一版**没有偏微分方程数值实验**——摘要里那句「给出数值实验以支持理论」在源文件中被注释掉了，结论部分说明将由后续报告给出，本页照实说明，不作补写。
->
-> 两处出版信息本站未能独立核实：编号 91 的卷期页码取自阅读清单，未与 AMS 页面核对；编号 78 的 DOI 字符串未在 PDF 提取文本中出现（卷号、年份与文章号 113225 已核实）。
-
-## 贯穿本页的一个问题
+## 贯穿三篇的一个问题
 
 隐显格式把线性刚性部分隐式处理、非线性部分显式处理，因此每级（或每步）不需要内层非线性迭代，这是它在相场计算里受欢迎的全部理由。代价集中在一处。
 
 **全隐格式的能量论证之所以走得通，是因为非线性项与被检验的差分同号。** 用 $\nabla_\tau u^n$ 去测试 $-F'(u^n)$，得到的是 $F$ 在两层之间的差，凸性或者一条代数恒等式就把它变成一个电报式相消加一个非负余项。一旦把 $F'$ 挪到显式一侧，它求值的位置与被检验的差分错开一层，这个同号性就没有了：显式项只提供一个**符号不定**的贡献，必须靠别处的耗散把它压住。
 
-于是问题变成：**要压住它，需要多少耗散？这个「多少」由什么对象决定？** 本页三篇给出三种回答，而它们回答的其实是同一个结构问题的三种投影。
+于是问题变成：**要压住它，需要多少耗散？这个「多少」由什么对象决定？** 下面三篇给出三种回答，而它们回答的其实是同一个结构问题的三种投影。
 
 - **编号 91** 处理隐显 Runge-Kutta。承载困难的对象是一个**微分矩阵** $D(z)$，索引跑遍级而不是时间层；它就是[[computational-mathematics/paper-notes/phase-field-and-time-stepping/variable-step-bdf|BDF 一族]]里离散正交卷积核的级版本。论文的做法是设计 Butcher 表，使 $D$ 与网格参数**完全无关**。
 - **编号 104** 处理隐显多步法。承载困难的对象是三串卷积核（$\vec a$ 差分、$\vec b$ 隐式、$\vec c$ 显式）的复合。论文把它们各自的**半生成函数**在单位圆上取极值，三个数一算，稳定性判据就出来了。
@@ -103,7 +94,7 @@ $$
 **步长比限制：没有。** 网格任意非均匀，$\tau_n$ 自由，**不施加任何形式的步长比条件**——这正是「稳健时间自适应」的含义。
 
 > [!warning] 本文里出现的 $\frac{1+\sqrt2}{4}$ 不是步长比
-> 全文检索可见数值 $\frac{1+\sqrt2}{4}$，但它是**对照方法** IERK(2,3)（取自 Liao-Wang-Wen）的 Butcher 系数 $a_{33}$，是一个 Runge-Kutta 系数，**不是步长比**。$1+\sqrt2$、$3.561$、$4.8645$ 这三个门槛在本文中**不出现**，本文也不需要它们。把这个 $\frac{1+\sqrt2}{4}$ 与[[computational-mathematics/paper-notes/phase-field-and-time-stepping/variable-step-bdf|编号 48]] 的条件 S0 联系起来是误读。
+> 本文中确实出现数值 $\frac{1+\sqrt2}{4}$，但它是**对照方法** IERK(2,3)（取自 Liao-Wang-Wen）的 Butcher 系数 $a_{33}$，是一个 Runge-Kutta 系数，**不是步长比**。$1+\sqrt2$、$3.561$、$4.8645$ 这三个门槛在本文中**不出现**，本文也不需要它们。把这个 $\frac{1+\sqrt2}{4}$ 与[[computational-mathematics/paper-notes/phase-field-and-time-stepping/variable-step-bdf|编号 48]] 的条件 S0 联系起来是误读。
 
 ### 推导
 
@@ -355,7 +346,7 @@ $$
 | $\tau_{\max}=0.2$   | $6.42$ s    | $5840$            |
 | $\tau_{\max}=0.5$   | $2.62$ s    | $2304$            |
 
-**这张表是本页最直接的一处「理论换来性能」的记录**：约三个数量级的加速，而这只有在能量曲线不随 $\tau_{\max}$ 漂移的前提下才敢用——也就是说，$\mathcal R_{\mathrm R}$ 的网格无关性不是一条美学性质，它换来的是能不能真的把步长放大。
+**这张表是三篇里最直接的一处「理论换来性能」的记录**：约三个数量级的加速，而这只有在能量曲线不随 $\tau_{\max}$ 漂移的前提下才敢用——也就是说，$\mathcal R_{\mathrm R}$ 的网格无关性不是一条美学性质，它换来的是能不能真的把步长放大。
 
 **算例（R-IERK(3,6;$\hat a_{52}$) 的能量）。** 取 $\hat a_{52}=\frac23,\frac7{10},\frac34$，自适应参数 $\eta=500$，$\tau_{\max}\in\{0.2,0.5,0.8\}$；参考方法为 Lobatto 型 IERK(3,5)（$a_{43}=-\frac35$，$\mathcal R^{(3,5)}_{\mathrm L}=\frac54+\frac25\tau\overline\lambda_{\mathrm{ML}}$）。三个 $\tau_{\max}$ 下 R-IERK 的能量曲线**互相无法分辨**，而 IERK(3,5) 的曲线显著变化。注意 $\mathcal R^{(3,5)}_{\mathrm L}$ 显式含 $\tau\overline\lambda_{\mathrm{ML}}$，这就是它漂移的原因，对照非常干净。
 
@@ -603,7 +594,7 @@ SIEMS-2 与 WBDF2／GBDF2 重合。与推广 BDF（只到 $k=5$ 零稳定）不�
 
 ### 数值实验
 
-**这一版没有偏微分方程数值实验。** 摘要里那句「给出数值实验以支持理论」在源文件中被注释掉了，结论部分写明「后续报告将说明隐显可控强度的用法」。
+**这一版没有偏微分方程数值实验**，正文只有三个因子的曲线图；结论部分写明「后续报告将说明隐显可控强度的用法」。
 
 论文实际给出的是**三个因子的计算评估**：图形文件是 $\lambda_{\mathrm I}$、$\sigma_{\mathrm E}$、$\sigma_{\mathrm F}$ 随族参数变化的曲线，覆盖 GBDF4、GBDF5、WBDF5 与 SIEMS4 至 SIEMS8。
 
@@ -769,7 +760,7 @@ $$
 
 同样 $\widehat E\equiv E$ 在连续层面精确成立（注 2.7）。算法二是相应的交错 Crank-Nicolson 格式，二阶（注 2.8）且守质量（注 2.12）。
 
-**第五步：耦合模型。** 论文第 2.4 节把 RRER 推广到**三元相场模型**（2.4.1）与**晶粒生长相场模型**（2.4.2）。**这两个模型的确切能量与格式本站未核实**，因此本页只报告推广的存在，不写出其形式。
+**第五步：耦合模型。** 论文第 2.4 节把 RRER 推广到**三元相场模型**（2.4.1）与**晶粒生长相场模型**（2.4.2）。
 
 ### 定理
 
@@ -872,43 +863,8 @@ ESAV 与 RRER 相当。**三个方法都是二阶**；在相场晶体一组里 R
 
 **读这张表的方式**：三条路线都不试图直接证明「显式项贡献符号确定」，而是各自换一个可控对象——编号 78 换能量，编号 91 换 Butcher 表的结构条件，编号 104 换判据的形式。真正可比的是「衰减的能量」一列：**编号 91 与 104 留在原能量／原范数一侧，编号 78 走到修正能量一侧**，这条分界线也正是本专题内部唯一一处方法论上的真分歧。
 
-## 覆盖核对
+## 原文
 
-| 内容                                 | 论文 | 覆盖状态                                                                                                 |
-| ------------------------------------ | ---- | -------------------------------------------------------------------------------------------------------- |
-| 显式处理为何破坏能量论证             | 全页 | 开篇一节：同号性失效与三种替代对象                                                                       |
-| Cahn-Hilliard 能量与 $H^{-1}$ 梯度流 | 91   | 能量、方程、耗散律、体积守恒                                                                             |
-| 两个缺陷                             | 91   | 全局 Lipschitz 假设失效（且 CH 无最大值原理）；耗散率随步长漂移                                          |
-| 稳定化、节点条件与阶条件             | 91   | $L_\kappa$、$\hat{\mathbf c}=\mathbf c$、三阶以内含耦合条件                                              |
-| 差分形式与微分矩阵                   | 91   | $D(z)=D_{\mathrm E}-zD_{\mathrm{EI}}$ 及其正交性恒等式                                                   |
-| $D$ 与 DOC 核的对应                  | 91   | 索引由时间层换成级                                                                                       |
-| 平均耗散率与精化条件                 | 91   | $\mathcal R$、$D_{\mathrm{EI}}=\mathbf 0$、$A_{\mathrm I}=A_{\mathrm E}P$、$\mathcal R_{\mathrm R}$      |
-| Lobatto 型的必然性                   | 91   | 第一列非零、排除性命题、级阶二且不必代数稳定                                                             |
-| 三族具体方法与参数窗口               | 91   | R-IERK(1,2)/(2,4;$c_2$)/(3,6;$\hat a_{52}$)、两个行列式、$c_2=1$ 被排除                                  |
-| $\frac{1+\sqrt2}{4}$ 不是步长比      | 91   | 它是对照方法 IERK(2,3) 的 Butcher 系数 $a_{33}$                                                          |
-| 替代最大值原理的时空分裂             | 91   | 三步自举、引理 4.3 与 4.4、各级能量不等式                                                                |
-| 四条主要结果                         | 91   | 各级能量律、时间半离散正则性、原始能量耗散、无条件 $L^2$ 收敛                                            |
-| 数值实验与效率                       | 91   | 自适应规则、五组算例、CPU 表（$6724.63$ s 对 $2.62$ s）                                                  |
-| 现有两条路线的具体局限               | 104  | 乘子逐族寻找；分解在 $\beta=1$ 退化、$k$ 受限、精化版仅 $\beta_k=3,6,9$                                  |
-| 抽象设定与局部 Lipschitz 条件        | 104  | Hilbert 三元组、$\mu_0\in(0,\varpi)$、非自伴处理                                                         |
-| 三组核与全局离散能量方法             | 104  | 三元组、DOC 核、复合核、下三角 Toeplitz 可交换                                                           |
-| 半生成函数及其证明观察               | 104  | 三条结论、$\mathrm g(\theta)=\Re[a(\theta)]$、复合规则                                                   |
-| 三个极值常数与归一化                 | 104  | $\sigma_{\mathrm F},\sigma_{\mathrm E},\lambda_{\mathrm I}$、三条不等式、隐显 Euler 取等                 |
-| 主定理与可控强度                     | 104  | $\lambda_{\mathrm I}/\sigma_{\mathrm E}>\mu_0/\varpi$、方法与模型的分离、$\mathfrak I_{\mathrm{IE}}\le1$ |
-| SIEMS 族与八阶                       | 104  | 三个特征多项式、$k=2,\dots,8$ 的 $\gamma$ 门槛表、比较结论                                               |
-| 「本版无数值实验」                   | 104  | 摘要那句被注释掉；仅有三因子曲线                                                                         |
-| IEQ／SAV 的共同做法与 RRER 的分歧    | 78   | 耦合对解耦、对辅助变量求时间导数、注 2.1                                                                 |
-| 正则化辅助变量与等价系统             | 78   | $q$ 的定义、$F$ 的二次化、$\widehat E$ 与其耗散律                                                        |
-| $\widehat E$ 与 $E$ 在两个层面的关系 | 78   | 连续层面精确相等；离散层面退为二阶近似                                                                   |
-| 交错网格与格式的线性性               | 78   | 算法一三式、(c) 为何是关键、启动值、二阶                                                                 |
-| 相场晶体与耦合模型                   | 78   | 算法二与其修正能量；三元／晶粒生长仅报告存在                                                             |
-| 三条定理                             | 78   | 质量守恒、两条无条件能量稳定（等式形式）与证明中的关键恒等式                                             |
-| 六组数值实验                         | 78   | 收敛表、能量与质量、粗化、条纹／三角、曲面、三维与三元                                                   |
-| 与编号 52 的模型差别                 | 78   | 带斜率选择对无斜率选择，及后者更难的原因                                                                 |
-| 本专题的例外与那条张力               | 78   | 无 Liao／无 DOC／无变步长；修正能量对原能量之争                                                          |
-
-## 本页原文
-
-- J. Zhang, X. Guo, M. Jiang, T. Zhou, and J. Zhao, [_Linear relaxation method with regularized energy reformulation for phase field models_](https://doi.org/10.1016/j.jcp.2024.113225), J. Comput. Phys. 515 (2024), 113225。（卷号、年份与文章号已核实；**DOI 字符串未在 PDF 提取文本中出现**，此处链接按通用格式给出。）
-- H.-l. Liao, T. Tang, X. Wang, and T. Zhou, [_A class of refined implicit-explicit Runge-Kutta methods with robust time adaptability and unconditional convergence for the Cahn-Hilliard model_](https://doi.org/10.1090/mcom/4090), Math. Comput. 95(359) (2026), pp. 1293-1325（预印本 [arXiv:2412.07321](https://arxiv.org/abs/2412.07321)）。**卷期页码取自阅读清单，本站未与 AMS 页面核对**；正文内容依 arXiv 源文件核实。
+- J. Zhang, X. Guo, M. Jiang, T. Zhou, and J. Zhao, [_Linear relaxation method with regularized energy reformulation for phase field models_](https://doi.org/10.1016/j.jcp.2024.113225), J. Comput. Phys. 515 (2024), 113225。
+- H.-l. Liao, T. Tang, X. Wang, and T. Zhou, [_A class of refined implicit-explicit Runge-Kutta methods with robust time adaptability and unconditional convergence for the Cahn-Hilliard model_](https://doi.org/10.1090/mcom/4090), Math. Comput. 95(359) (2026), pp. 1293-1325（预印本 [arXiv:2412.07321](https://arxiv.org/abs/2412.07321)）。
 - H.-l. Liao, C. Quan, T. Tang, and T. Zhou, _A semi-generating function approach to the stability of implicit-explicit multistep methods for nonlinear parabolic equations_, [arXiv:2605.05619](https://arxiv.org/abs/2605.05619)，投稿 SIAM J. Numer. Anal.

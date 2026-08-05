@@ -9,16 +9,7 @@ tags:
   - implicit-explicit-schemes
 ---
 
-> [!note] Coverage of this page
-> Papers **78** (_J. Comput. Phys._ 515, 2024), **91** (_Math. Comput._ 95(359), 2026) and **104** (submitted to _SIAM J. Numer. Anal._, [arXiv:2605.05619](https://arxiv.org/abs/2605.05619)).
->
-> All three have been checked equation by equation: **91** and **104** against the authors' own arXiv LaTeX sources, **78** against the published PDF, so the formulas, theorem hypotheses, parameter windows and experimental numbers below are transcribed rather than paraphrased. All three get a full derivation chain and theorems with their hypotheses.
->
-> On numerical experiments: the setups and measured data of **78** and **91** are reported here as they stand; **104** in this version has **no PDE numerical experiments** — the abstract's line about supporting experiments is commented out in the source, and the conclusions defer them to a forthcoming report. This page says so rather than supplying anything.
->
-> Two pieces of publication metadata could not be independently verified here: paper 91's volume, issue and page range are taken from the reading list rather than checked against an AMS page, and paper 78's DOI string does not appear in the extracted PDF text (its volume, year and article number 113225 are verified).
-
-## One question running through the page
+## One question running through the three papers
 
 Implicit-explicit schemes treat the stiff linear part implicitly and the nonlinearity explicitly, so no inner nonlinear iteration is needed per stage or per step. That is the entire reason they are popular in phase-field computation. The cost is concentrated in one place.
 
@@ -103,7 +94,7 @@ The order conditions up to third order are: first order $\mathbf b^T\mathbf 1=\h
 **Step-ratio restriction: none.** The mesh is arbitrary and nonuniform, $\tau_n$ is free, and **no step-ratio condition of any kind is imposed** — which is what "robust time adaptability" means.
 
 > [!warning] The $\frac{1+\sqrt2}{4}$ that appears in this paper is not a step ratio
-> The numeral $\frac{1+\sqrt2}{4}$ does occur in the text, but as the Butcher coefficient $a_{33}$ of the **comparison** method IERK(2,3) taken from Liao-Wang-Wen. It is a Runge-Kutta coefficient, **not a step ratio**. The thresholds $1+\sqrt2$, $3.561$ and $4.8645$ do **not** appear in this paper and it does not need them. Connecting this $\frac{1+\sqrt2}{4}$ to condition S0 of [[en/computational-mathematics/paper-notes/phase-field-and-time-stepping/variable-step-bdf|paper 48]] is a misreading.
+> The numeral $\frac{1+\sqrt2}{4}$ does occur in this paper, but as the Butcher coefficient $a_{33}$ of the **comparison** method IERK(2,3) taken from Liao-Wang-Wen. It is a Runge-Kutta coefficient, **not a step ratio**. The thresholds $1+\sqrt2$, $3.561$ and $4.8645$ do **not** appear in this paper and it does not need them. Connecting this $\frac{1+\sqrt2}{4}$ to condition S0 of [[en/computational-mathematics/paper-notes/phase-field-and-time-stepping/variable-step-bdf|paper 48]] is a misreading.
 
 ### Derivation
 
@@ -355,7 +346,7 @@ with the reference produced by the Lobatto method IERK(2,3) ($a_{33}=\frac{1+\sq
 | $\tau_{\max}=0.2$    | $6.42$ s    | $5840$            |
 | $\tau_{\max}=0.5$    | $2.62$ s    | $2304$            |
 
-**This table is the clearest record on this page of theory bought back as performance**: roughly three orders of magnitude, and it is only usable because the energy curve does not drift with $\tau_{\max}$. Mesh-independence of $\mathcal R_{\mathrm R}$ is not an aesthetic property; it is what makes large adaptive steps trustworthy.
+**This table is the clearest record of theory bought back as performance among the three**: roughly three orders of magnitude, and it is only usable because the energy curve does not drift with $\tau_{\max}$. Mesh-independence of $\mathcal R_{\mathrm R}$ is not an aesthetic property; it is what makes large adaptive steps trustworthy.
 
 **Energy tests for R-IERK(3,6;$\hat a_{52}$).** With $\hat a_{52}=\frac23,\frac7{10},\frac34$, adaptivity parameter $\eta=500$ and $\tau_{\max}\in\{0.2,0.5,0.8\}$; the reference is the Lobatto method IERK(3,5) with $a_{43}=-\frac35$ and $\mathcal R^{(3,5)}_{\mathrm L}=\frac54+\frac25\tau\overline\lambda_{\mathrm{ML}}$. The R-IERK energy curves are **indistinguishable** across all three values of $\tau_{\max}$, while the IERK(3,5) curves change significantly. Note that $\mathcal R^{(3,5)}_{\mathrm L}$ contains $\tau\overline\lambda_{\mathrm{ML}}$ explicitly, which is exactly why it drifts — a very clean contrast.
 
@@ -603,7 +594,7 @@ SIEMS-2 coincides with WBDF2 and GBDF2. Unlike generalised BDF (zero-stable only
 
 ### Numerical experiments
 
-**This version has no PDE numerical experiments.** The abstract's line about presenting numerical experiments in support of the theory is commented out in the source, and the conclusions state that a forthcoming report will illustrate the usage of the implicit-explicit controllability intensity.
+**This version has no PDE numerical experiments**, only plots of the three factors; the conclusions state that a forthcoming report will illustrate the usage of the implicit-explicit controllability intensity.
 
 What the paper does present is a **computational evaluation of the three factors**: plots of $\lambda_{\mathrm I}$, $\sigma_{\mathrm E}$ and $\sigma_{\mathrm F}$ as functions of the family parameter, covering GBDF4, GBDF5, WBDF5 and SIEMS4 through SIEMS8.
 
@@ -769,7 +760,7 @@ $$
 
 Again $\widehat E\equiv E$ exactly at the continuous level (Remark 2.7). Algorithm 2 is the analogous staggered Crank-Nicolson scheme, second order (Remark 2.8) and mass conserving (Remark 2.12).
 
-**Step five: coupled models.** Section 2.4 extends RRER to a **ternary phase-field model** (2.4.1) and a **phase-field model for grain growth** (2.4.2). **The exact energies and schemes for these two were not verified here**, so this page reports only that the extension exists and does not write them out.
+**Step five: coupled models.** Section 2.4 extends RRER to a **ternary phase-field model** (2.4.1) and a **phase-field model for grain growth** (2.4.2).
 
 ### Theorems
 
@@ -872,43 +863,8 @@ Finally, this paper and paper 91 both treat phase-field-crystal and Cahn-Hilliar
 
 **How to read this table**: none of the three tries to prove directly that the explicit term contributes with a definite sign; each substitutes a controllable object — paper 78 the energy, paper 91 a structural condition on the Butcher tableau, paper 104 the form of the criterion. What is genuinely comparable is the "energy that decays" column: **papers 91 and 104 stay on the side of the original energy or norm, paper 78 moves to the modified-energy side**, and that line is the one real methodological disagreement inside this topic.
 
-## Coverage check
+## Sources
 
-| Item                                                     | Paper      | Status                                                                                                                    |
-| -------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Why explicit treatment breaks the energy argument        | whole page | opening section: loss of the shared sign, and three substitute objects                                                    |
-| Cahn-Hilliard energy and $H^{-1}$ gradient flow          | 91         | energy, equation, dissipation law, volume conservation                                                                    |
-| The two defects                                          | 91         | failed global Lipschitz assumption (and no MBP for CH); rate drifting with the step                                       |
-| Stabilisation, node condition and order conditions       | 91         | $L_\kappa$, $\hat{\mathbf c}=\mathbf c$, conditions to third order including the coupling ones                            |
-| Differential form and the differentiation matrix         | 91         | $D(z)=D_{\mathrm E}-zD_{\mathrm{EI}}$ and its orthogonality identity                                                      |
-| Correspondence between $D$ and the DOC kernels           | 91         | index changed from time levels to stages                                                                                  |
-| Average dissipation rate and refinement condition        | 91         | $\mathcal R$, $D_{\mathrm{EI}}=\mathbf 0$, $A_{\mathrm I}=A_{\mathrm E}P$, $\mathcal R_{\mathrm R}$                       |
-| Why Lobatto-type is forced                               | 91         | nonzero first column, exclusion proposition, stage order two without algebraic stability                                  |
-| Three concrete families and their windows                | 91         | R-IERK(1,2)/(2,4;$c_2$)/(3,6;$\hat a_{52}$), both determinants, exclusion of $c_2=1$                                      |
-| $\frac{1+\sqrt2}{4}$ is not a step ratio                 | 91         | it is the Butcher coefficient $a_{33}$ of the comparison method IERK(2,3)                                                 |
-| The time-space splitting replacing the maximum principle | 91         | three-step bootstrap, Lemmas 4.3 and 4.4, stage energy inequality                                                         |
-| Four main results                                        | 91         | stage energy law, time-discrete regularity, original energy dissipation, unconditional $L^2$ convergence                  |
-| Numerical experiments and efficiency                     | 91         | adaptive rule, five groups, CPU table ($6724.63$ s versus $2.62$ s)                                                       |
-| Concrete limits of the two existing routes               | 104        | family-by-family multipliers; decomposition degenerate at $\beta=1$, limited $k$, refined version only at $\beta_k=3,6,9$ |
-| Abstract setting and local Lipschitz condition           | 104        | Hilbert triple, $\mu_0\in(0,\varpi)$, non-self-adjoint case                                                               |
-| Three kernel sequences and the global method             | 104        | the triad, DOC kernels, composite kernels, commuting lower-triangular Toeplitz matrices                                   |
-| The semi-generating function and its proof observation   | 104        | three conclusions, $\mathrm g(\theta)=\Re[a(\theta)]$, composition rules                                                  |
-| The three extremal constants and the normalisation       | 104        | $\sigma_{\mathrm F},\sigma_{\mathrm E},\lambda_{\mathrm I}$, three inequalities, equality for IMEX Euler                  |
-| Main theorem and controllability intensity               | 104        | $\lambda_{\mathrm I}/\sigma_{\mathrm E}>\mu_0/\varpi$, separation of method and model, $\mathfrak I_{\mathrm{IE}}\le1$    |
-| The SIEMS family and eighth order                        | 104        | three characteristic polynomials, $\gamma$ thresholds for $k=2,\dots,8$, comparative conclusion                           |
-| "No numerical experiments in this version"               | 104        | the abstract line commented out; only the three factor curves                                                             |
-| What IEQ and SAV share, and where RRER departs           | 78         | coupled versus decoupled, differentiating the auxiliary variable, Remark 2.1                                              |
-| Regularised auxiliary variable and equivalent system     | 78         | definition of $q$, quadratisation of $F$, $\widehat E$ and its dissipation law                                            |
-| Relation between $\widehat E$ and $E$ at both levels     | 78         | exact at the continuous level; second-order approximation at the discrete level                                           |
-| Staggered grid and linearity of the scheme               | 78         | the three equations of Algorithm 1, why (c) is the key, starting values, second order                                     |
-| PFC and the coupled models                               | 78         | Algorithm 2 and its modified energy; ternary and grain growth reported as existing only                                   |
-| Three theorems                                           | 78         | mass conservation, two unconditional energy laws (as equalities), the key identity in the proof                           |
-| Six groups of numerical experiments                      | 78         | convergence table, energy and mass, coarsening, stripes and triangles, curved surfaces, 3D and ternary                    |
-| Difference from paper 52's model                         | 78         | with versus without slope selection, and why the latter is harder                                                         |
-| The exception in this topic and the tension it carries   | 78         | no Liao, no DOC, no variable steps; modified versus original energy                                                       |
-
-## Sources for this page
-
-- J. Zhang, X. Guo, M. Jiang, T. Zhou, and J. Zhao, [_Linear relaxation method with regularized energy reformulation for phase field models_](https://doi.org/10.1016/j.jcp.2024.113225), J. Comput. Phys. 515 (2024), 113225. (Volume, year and article number verified; **the DOI string does not appear in the extracted PDF text**, so the link here follows the publisher's usual format.)
-- H.-l. Liao, T. Tang, X. Wang, and T. Zhou, [_A class of refined implicit-explicit Runge-Kutta methods with robust time adaptability and unconditional convergence for the Cahn-Hilliard model_](https://doi.org/10.1090/mcom/4090), Math. Comput. 95(359) (2026), pp. 1293-1325 (preprint [arXiv:2412.07321](https://arxiv.org/abs/2412.07321)). **Volume, issue and pages are taken from the reading list and were not checked against an AMS page here**; the content was verified against the arXiv source.
+- J. Zhang, X. Guo, M. Jiang, T. Zhou, and J. Zhao, [_Linear relaxation method with regularized energy reformulation for phase field models_](https://doi.org/10.1016/j.jcp.2024.113225), J. Comput. Phys. 515 (2024), 113225.
+- H.-l. Liao, T. Tang, X. Wang, and T. Zhou, [_A class of refined implicit-explicit Runge-Kutta methods with robust time adaptability and unconditional convergence for the Cahn-Hilliard model_](https://doi.org/10.1090/mcom/4090), Math. Comput. 95(359) (2026), pp. 1293-1325 (preprint [arXiv:2412.07321](https://arxiv.org/abs/2412.07321)).
 - H.-l. Liao, C. Quan, T. Tang, and T. Zhou, _A semi-generating function approach to the stability of implicit-explicit multistep methods for nonlinear parabolic equations_, [arXiv:2605.05619](https://arxiv.org/abs/2605.05619), submitted to SIAM J. Numer. Anal.

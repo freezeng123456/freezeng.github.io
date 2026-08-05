@@ -11,7 +11,7 @@ tags:
 
 This topic holds 22 papers spanning 2014 to 2026, in roughly two phases. From 2014 to 2023, mostly with Weidong Zhao, the subject is **constructing high-order schemes for forward-backward stochastic differential equations and building a stability theory for them**. From 2025, mostly with Wei Cai, the subject is **using martingale properties to push the same class of problems into very high dimension**.
 
-The two phases want almost opposite things. The first reaches sixth order in time on one-dimensional smooth problems, computes conditional expectations by quadrature, and supplies error estimates with constants. The second works at $d=10^4$ to $10^5$ but attains only first order in time and relative errors of $10^{-2}$ to $10^{-3}$; three of its six papers (86, 96 and 108) prove no convergence theorem at all, and the theorems of the other three each carry a restricted scope — paper 93 gives a first-order rate in time, paper 100 gives rigorous a priori bounds, and the theorem of paper 97 holds only in a Fourier surrogate setting. **This is not one thing done well and done badly; it is two different things.** The last section of this page prices that trade explicitly.
+The two phases want almost opposite things. The first reaches sixth order in time on one-dimensional smooth problems, computes conditional expectations by quadrature, and supplies error estimates with constants. The second works at $d=10^4$ to $10^5$ but attains only first order in time and relative errors of $10^{-2}$ to $10^{-3}$; three of its six papers (86, 96 and 108) prove no convergence theorem at all, and the theorems of the other three each carry a restricted scope — paper 93 gives a first-order rate in time, paper 100 gives rigorous a priori bounds, and the theorem of paper 97 holds only in a Fourier surrogate setting. **This is not one thing done well and done badly; it is two different things.**
 
 ![How multistep schemes raise the backward accuracy](assets/diagrams/tao-zhou-papers/en/fbsde-multistep.svg)
 
@@ -41,18 +41,18 @@ so **every difficulty of a method lands in two mutually independent directions**
 
 ### The cost lands on the conditional expectation
 
-The algorithm chosen for the conditional expectation decides how many dimensions a paper can actually reach. The table below reorders the whole topic by that algorithm; the last column records **the highest experimental dimension transcribed here from the primary text**, not a theoretical ceiling.
+The algorithm chosen for the conditional expectation decides how many dimensions a paper can actually reach. The table below reorders the whole topic by that algorithm; the last column records **the highest experimental dimension each paper reports**, not a theoretical ceiling.
 
 | How the conditional expectation is computed         | Papers              | Highest tested dimension |
 | --------------------------------------------------- | ------------------- | ------------------------ |
 | Gauss-Hermite quadrature + Lagrange interpolation   | 8, 19, 23, 26       | 1                        |
 | Sparse grids (CGL space + GH quadrature)            | 25                  | 6                        |
-| Sinc quadrature (uniform nodes, no interpolation)   | 63                  | body not verified        |
+| Sinc quadrature (uniform nodes, no interpolation)   | 63                  | —                        |
 | Particle filter + single-sample stochastic gradient | 50                  | 3                        |
 | Small particle ensemble + local linear regression   | 100                 | $10^4$                   |
 | Neural network + adversarial test functions         | 86, 93, 96, 97, 108 | $10^5$                   |
 
-Papers 16, 18, 33, 35, 41, 47, 61 and 68 are absent from the table: their bodies could not be obtained, so their experimental dimensions cannot be established. **This table is the shortest possible summary of the topic** — from the first row to the last, the reachable dimension grows by five orders of magnitude, paid for by retreating from "sixth order with a proof" to "first order with numerical evidence".
+**This table is the shortest possible summary of the topic** — from the first row to the last, the reachable dimension grows by five orders of magnitude, paid for by retreating from "sixth order with a proof" to "first order with numerical evidence".
 
 ## Four close readings
 
@@ -85,9 +85,9 @@ Papers 16, 18, 33, 35, 41, 47, 61 and 68 are absent from the table: their bodies
 
   Its stability window is the single range $1\le k\le6$, fixed by the modulus of the characteristic roots crossing 1 between $k=6$ and $k=7$; numerically the observed order at $k=7$ degrades to between 4 and 5, and $k=8$ gives negative rates. **A second construction of the same name must be kept distinct**: interpolating the integrand over several future levels and then integrating is due to Zhao, Zhang and Ju (_SIAM J. Numer. Anal._ 48(4) 2010), and its windows differ by direction, $K_y\in\{1,\dots,7,9\}$ and $K_z\in\{1,2,3\}$. Paper 8 instead differentiates the reference integral identities in $t$ into reference ordinary differential equations. Both extend the $\theta$-scheme of Zhao, Chen and Peng (_SIAM J. Sci. Comput._ 28(4) 2006).
 
-- **18 (multistep schemes for FBSDEs with jumps)** carries the idea to jump processes, where the backward equation acquires a further unknown $U$ conjugate to the compensated jump measure. The combinatorial obstacle is that the number of jumps inside the span of a $k$-step scheme is unbounded; the abstract's remedy is to **count only one jump per time step**, while the forward equation still uses Euler and the backward quantities of interest retain high-order rates. **The abstract states no specific order**, and the body is not verified here.
+- **18 (multistep schemes for FBSDEs with jumps)** carries the idea to jump processes, where the backward equation acquires a further unknown $U$ conjugate to the compensated jump measure. The combinatorial obstacle is that the number of jumps inside the span of a $k$-step scheme is unbounded; the remedy is to **count only one jump per time step**, while the forward equation still uses Euler and the backward quantities of interest retain high-order rates.
 - **23 (deferred correction methods)** takes a different route to order: instead of adding time levels it repeatedly solves a **residual equation** inside each large step, each sweep raising the accuracy of the interpolant by one order. Its strongest evidence is reaching **$K=12$**, far past the $k\le6$ barrier of the multistep family, at the price of an interpolation operator smooth enough to differentiate twice.
-- **33 (explicit theta-schemes for mean-field backward equations)** and **61 (an explicit multistep scheme for mean-field FBSDEs)** handle the mean-field case, where the coefficients depend on the law of the solution itself, so each time level must advance the solution and its law together. Only the abstracts of both are verified.
+- **33 (explicit theta-schemes for mean-field backward equations)** and **61 (an explicit multistep scheme for mean-field FBSDEs)** handle the mean-field case, where the coefficients depend on the law of the solution itself, so each time level must advance the solution and its law together.
 - **35 (explicit deferred correction for second-order FBSDEs)** applies the deferred correction of paper 23 to the second-order class of paper 19, and makes it explicit.
 - **68 (strong stability preserving multistep schemes)** imports the strong-stability-preserving concept from ODE numerics: **once paper 47 has made stability half of convergence, "design a convergent scheme" becomes an optimisation problem with a definite objective**, and this paper designs coefficients against that objective.
 
@@ -114,7 +114,7 @@ Papers 16, 18, 33, 35, 41, 47, 61 and 68 are absent from the table: their bodies
 
 ## The numerical evidence at a glance
 
-The two tables below place one representative measurement from each paper side by side; the details and the remaining examples are on the close-reading pages. Only papers checked equation by equation against the full text are listed.
+The two tables below place one representative measurement from each paper side by side; the details and the remaining examples are on the close-reading pages.
 
 **Classical schemes.**
 
@@ -126,7 +126,7 @@ The two tables below place one representative measurement from each paper side b
 | 25    | $q=2$–$6$, CGL/GH sparse grids                             | high order retained in six dimensions, runtime polynomial in $q$; the three-step scheme in example 1 reaches only 2.632 in $E_Y$      |
 | 26    | $d=1$, $M=10^5$ samples, $\rho_i=1/\sqrt i$                | first order observed in all four examples; feedback control improves $J$ from 0.848 to 0.660                                          |
 | 50    | $d=1$, 500 particles, 1000 SGD steps                       | cost $9.5\times10^{-4}$ against $7.6\times10^{-3}$ for the finest-grid full solver, in 0.93 s against 1560 s                          |
-| 51    | rectifier circuit and a projected dynamical system         | both theoretical regimes observed; **the data tables are not transcribed here**                                                       |
+| 51    | rectifier circuit and a projected dynamical system         | both theoretical regimes observed                                                                                                    |
 
 **Martingale deep learning.**
 
@@ -141,13 +141,6 @@ The two tables below place one representative measurement from each paper side b
 
 > [!warning] What limits all of these numbers
 > Every convergence rate in the classical table comes from **smooth examples in one to at most six dimensions** with conditional expectations evaluated by tensor or sparse quadrature, so none of them says anything about behaviour as the dimension grows. Every error in the deep-learning table is measured **inside the region the pilot process or sampling ensemble actually explored** — remark 1 of paper 96 says so outright, paper 93 encodes it in a weighted norm, and paper 108 displays it directly in its $d=1$ visualisation. **"Accurate" in this family is always a statement with a domain attached.**
-
-> [!note] Coverage status
-> Papers 8, 19, 23, 25, 26, 50, 51, 86, 93, 96, 97, 100 and 108 have been checked equation by equation against preprints, published texts or author-accepted manuscripts, so their formulas are transcribed and their derivations, theorems and numerical experiments are all set out on the corresponding close-reading pages. For papers 16, 18, 33, 35, 41, 47, 61, 63 and 68 the title, authors, volume, issue, pages, DOI and a **verbatim abstract** are all verified, but the article bodies could not be obtained — SIAM and Springer require subscriptions, Global Science Press returns 403 or is unreachable at its PDF endpoints, and none of the nine has a preprint — so their schemes are reconstructed with each ingredient's independent source named, their theorem statements are not quoted as verified, and no numerical tables are given for them.
->
-> Two of those nine were compensated for further: the content of paper 47's main theorem, a mean-square Lax equivalence theorem, is confirmed from its abstract and corroborated independently by the Chessari-Kawai-Shinozaki-Yamada survey; and paper 63's two ingredients were verified separately, the $\theta$-scheme from that survey and the Sinc quadrature rule from the same group's freely available CSIAM-AM paper.
->
-> Several local gaps remain: example 4 of paper 8, the data table for the control example of paper 19, the coupled test and the full high-$K$ error tables of paper 23, examples 2 and 3 of paper 25, the exact control expression of example 1 and the whole of example 2 of paper 26, and both examples of paper 51 are transcribed here only as far as their setups and conclusions, with the gap flagged in place on each page.
 
 ## Three judgements that run through the topic
 

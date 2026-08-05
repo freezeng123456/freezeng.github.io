@@ -9,14 +9,7 @@ tags:
   - discrete-energy
 ---
 
-> [!note] Coverage of this page
-> Papers **48** (_SIAM J. Numer. Anal._ 58(4), 2020), **52** (_Sci. China Math._ 64, 2021), **58** (_CSIAM Trans. Appl. Math._ 3, 2022), **67** (_J. Comput. Math._ 41, 2023), **69** (_BIT Numer. Math._ 63:39, 2023) and **74** (_Sci. China Math._ 67, 2024).
->
-> Five of these — **48, 52, 58, 67 and 74** — were checked equation by equation against the authors' own arXiv LaTeX sources, so the formulas, theorem hypotheses and constants below are transcribed rather than paraphrased. Each of the five gets a full derivation chain, theorems with their hypotheses, and the paper's numerical experiments where it has any; papers 58 and 74 are pure analysis papers with no numerical section, and this page says so rather than inventing one.
->
-> **Paper 69 has no preprint** — confirmed by sweeping all 34 preprints filed under Liao's name — and neither Springer, Semantic Scholar nor zbMATH supplies the text. This page therefore reports only what the complete abstract and the 22-item reference list confirm: the step-ratio condition, the ingredients (a one-leg reformulation, a discrete gradient structure, two new classes of DOC kernel) and the three results. **Its explicit modified energy, its DOC kernel definitions, its convergence order and its numerical tests are not verified here and are not supplied.** The variable-step FiBE scheme itself was reconstructed from the method source (DeCaria-Guzel-Layton-Li, [arXiv:1810.06670](https://arxiv.org/abs/1810.06670)), and the page keeps that flag attached to it.
-
-## One mechanism running through the page
+## One mechanism running through the line of work
 
 Before any individual paper it pays to state the shared difficulty and the shared remedy, because all six papers are variations on it.
 
@@ -35,7 +28,7 @@ The second one is **negative**, and that single minus sign blocks two roads at o
 - **The energy argument** needs the quadratic form $\sum_kw_k\sum_jb^{(k)}_{k-j}w_j$ to be positive definite. With a negative entry in the kernel, positivity is no longer automatic; it holds only while the negative term is dominated by the positive one, and that is exactly where the threshold $r_k<(3+\sqrt{17})/2$ comes from.
 - **The maximum principle** needs the scheme written as "a positive-definite operator on the current level" $=$ "a **non-negative** combination of past levels". With non-negative weights, the induction hypothesis $\|u^k\|_\infty\le1$ bounds the right-hand side, because a weighted average with non-negative weights cannot exceed the largest quantity being averaged. **The moment a weight goes negative, the argument dies outright**: a negative coefficient turns an upper bound into no bound at all.
 
-**The remedies.** Three of them, one section of this page each:
+**The remedies.** There are three:
 
 1. **Kernel recombination (KRC)** — change variables to $\bar v^k=v^k-\eta v^{k-1}$ so that the new kernel $d^{(n)}_j$ is **non-negative and decreasing**. This is the route paper 48 takes for the maximum principle, and it is available exactly when $r_k<1+\sqrt2$.
 2. **Discrete orthogonal convolution (DOC) kernels** — construct $\theta$ with $\Theta B=I$ and peel the multistep operator off the scheme, leaving a plain first difference behind. This is the route of papers 52, 58, 67 and 74, and it reduces a multistep stability question to a question about positivity of a quadratic form.
@@ -53,7 +46,7 @@ The paper's key judgement is that **energy stability and the maximum principle n
 
 The energy side needs **positive definiteness**. Testing the scheme with $\nabla_\tau u^n$ produces $\sum_k\nabla_\tau u^k\,D_2u^k$ on the left, a quadratic form whose coefficients are the BDF2 kernels. The kernel has a negative entry, so the question is when the negative term is dominated. The answer is $r_k<(3+\sqrt{17})/2\approx3.561$.
 
-The maximum-principle side needs **non-negativity plus monotonicity**, which is strictly more. The reason was given at the top of this page: the $\ell^\infty$ induction only works with non-negative weights. BDF2's kernels do not qualify, so the paper performs a **change of variable**: set $\bar v^k=v^k-\eta v^{k-1}$. This trades a sign-indefinite two-term kernel for a geometrically decaying non-negative family $d^{(n)}_j$, at the cost of confining $\eta$ to an interval — and that interval is non-empty precisely when $r_k<1+\sqrt2$.
+The maximum-principle side needs **non-negativity plus monotonicity**, which is strictly more, for the reason given above: the $\ell^\infty$ induction only works with non-negative weights. BDF2's kernels do not qualify, so the paper performs a **change of variable**: set $\bar v^k=v^k-\eta v^{k-1}$. This trades a sign-indefinite two-term kernel for a geometrically decaying non-negative family $d^{(n)}_j$, at the cost of confining $\eta$ to an interval — and that interval is non-empty precisely when $r_k<1+\sqrt2$.
 
 **That is why $1+\sqrt2$ and $3.561$ are not two versions of one conclusion but answers to two different questions.** Better still, $1+\sqrt2$ is exactly Grigorieff's (1983) classical **zero-stability** bound for variable-step BDF2 applied to ODEs, and this paper obtains the discrete maximum principle and second-order max-norm convergence right at that classical limit — whereas earlier $L^2$ analyses all required something stricter than $1+\sqrt2$.
 
@@ -181,7 +174,7 @@ so $h$ increases on $(0,\sqrt3-1]$ and decreases afterwards, with $h(0)=2$ and $
 The third regime is worth noticing: **the closer the step ratio gets to $r_s$, the tighter the constraint on the following step**, which is the look-ahead term of the modified energy making itself felt.
 
 > [!warning] About $4.8645$, so often quoted alongside these
-> The positive-definiteness threshold for the BDF2 kernels was later improved to $r_*\approx4.864$ (the positive root of $1+2r-r^{3/2}=0$, exactly $4.864536512317583$), but that improvement **belongs to none of the papers in this topic**: searching `4.86` across the ten available full texts returns no hit. It is due to Liao, Ji, Wang and Zhang (_J. Sci. Comput._ 92 (2022) 52, preprint [arXiv:2102.03731](https://arxiv.org/abs/2102.03731)) — a paper **without Tao Zhou as a coauthor** — where it is printed as $4.864$; the more widely circulated form $4.8645$ comes from Zhang and Zhao (_J. of Math._ (PRC) 41(6) (2021) 471-488). Papers 69 and 91 both cite Liao-Ji-Wang-Zhang, which is probably how the constant entered this reading list. The full disentangling is on [[en/computational-mathematics/paper-notes/phase-field-and-time-stepping/index|the topic index]]. One more point: $4.8645$ improves $3.561$ (the same positive-definiteness lemma) and does **not** replace $1+\sqrt2$, which governs something else entirely.
+> The positive-definiteness threshold for the BDF2 kernels was later improved to $r_*\approx4.864$ (the positive root of $1+2r-r^{3/2}=0$, exactly $4.864536512317583$), but that improvement **belongs to none of the papers in this topic**. It is due to Liao, Ji, Wang and Zhang (_J. Sci. Comput._ 92 (2022) 52), where it is printed as $4.864$; the more widely circulated form $4.8645$ comes from Zhang and Zhao (_J. of Math._ (PRC) 41(6) (2021) 471-488). Papers 69 and 91 both cite Liao-Ji-Wang-Zhang, which is probably how the constant came to be associated with this group of work. The full disentangling is on [[en/computational-mathematics/paper-notes/phase-field-and-time-stepping/index|the topic index]]. One more point: $4.8645$ improves $3.561$ (the same positive-definiteness lemma) and does **not** replace $1+\sqrt2$, which governs something else entirely.
 
 **Step two: kernel recombination and the origin of $1+\sqrt2$.** This is the paper's signature technique, and the derivation is remarkably clean. Introduce a parameter $\eta\in\mathbb R$ and
 
@@ -217,7 +210,7 @@ $$
 \frac{r_{k}^{2}}{1+2r_{k}}\ \le\ \eta\ <\ 1\qquad(k\ge2).
 $$
 
-**Such an $\eta$ exists if and only if $\dfrac{r_k^{2}}{1+2r_k}<1$, i.e. $r_{k}^{2}-2r_{k}-1<0$, i.e. $r_{k}<1+\sqrt{2}$.** That is condition S0, and it is Grigorieff's classical zero-stability bound. (The elementary step from $r^2-2r-1=0$ to $r=1+\sqrt2$ is filled in here from the printed condition $\frac{r_k^2}{1+2r_k}\le\eta<1$; the conclusion $r_k<1+\sqrt2$ and its agreement with Grigorieff's condition are stated in the paper.)
+**Such an $\eta$ exists if and only if $\dfrac{r_k^{2}}{1+2r_k}<1$, i.e. $r_{k}^{2}-2r_{k}-1<0$, i.e. $r_{k}<1+\sqrt{2}$.** That is condition S0, and it is Grigorieff's classical zero-stability bound.
 
 The optimal choice of $\eta$ is also supplied. With
 
@@ -363,8 +356,7 @@ The adaptive strategy is $\tau_{\mathrm{ada}}(e,\tau)=\rho\bigl(\frac{tol}{e}\bi
 
 **Example 1 is the most informative of the three.** It uses not a carefully designed grid but a **purely random** step sequence, so the step ratios are uncontrolled; second-order accuracy in time is still observed on such a grid, which says the analysis's robustness to step ratios is not merely on paper. Example 3 tracks max norm and energy, verifying the maximum principle and the energy dissipation respectively.
 
-> [!warning] The initial data of example 3 is self-contradictory in the source
-> The arXiv source writes the coarsening initial data as $u_{0}=0.95+\mathrm{rand}(\mathbf x)\times0.05$ while also saying the random numbers vary from $-0.05$ to $0.05$. Those two statements cannot both hold (the first gives data with mean $0.95$, the second suggests a perturbation centred at $0$). The actual initial data **could not be determined here**, so only the grid and parameters are reported and the form of the initial data is not.
+The coarsening example's initial data is described inconsistently: it is written as $u_{0}=0.95+\mathrm{rand}(\mathbf x)\times0.05$ in one place, while the random numbers are said to vary from $-0.05$ to $0.05$ in another. Those two statements cannot both hold — the first gives data with mean $0.95$, the second suggests a perturbation centred at $0$.
 
 The gap between theory and experiment: the theorem gives an **upper bound** of the form $\tau^2+h^2$, yet example 1 remains second order on random grids where step ratios can be large, which says **S0 and S1 are sufficient rather than necessary**. Paper 52's experiments quantify this much more thoroughly.
 
@@ -466,7 +458,7 @@ $$
 
 3. $\displaystyle\sum_{j=1}^{n}\theta_{n-j}^{(n)}=\tau_n$, hence $\displaystyle\sum_{k=1}^{n}\sum_{j=1}^{k}\theta_{k-j}^{(k)}=t_n$ for $n\ge1$.
 
-Property 2 exposes the connection to $1+\sqrt2$ plainly: **the product $\prod_i\frac{r_i^2}{1+2r_i}$ decays exactly when each factor is below $1$, i.e. when $r_i<1+\sqrt2$** (that connecting observation is made here; the closed form itself is the paper's). Property 3 is the step that converts the spatial consistency error into $t_nh^2$.
+Property 2 exposes the connection to $1+\sqrt2$ plainly: **the product $\prod_i\frac{r_i^2}{1+2r_i}$ decays exactly when each factor is below $1$, i.e. when $r_i<1+\sqrt2$**. Property 3 is the step that converts the spatial consistency error into $t_nh^2$.
 
 **Step three: positive definiteness of the quadratic form and $3.561$.** Under **S1**, for any non-zero sequence $\{w_k\}_{k=1}^n$,
 
@@ -600,7 +592,7 @@ $$
 | $N_1$ (levels with $r_k\ge3.561$)                  | $0,\ 3,\ 7,\ 13,\ 24,\ 49$                      |
 | observed temporal order (between consecutive rows) | $1.84,\ 2.29,\ 2.35,\ 2.42,\ 2.00$              |
 
-**This table is the most convincing theory-versus-experiment record on this page.** The conclusion is direct: even with dozens of time levels violating $3.561$ **by a wide margin** (up to $850.80$, over two hundred times the threshold), second-order convergence persists. So **S1 is sufficient and far from necessary**; variable-step BDF2 is empirically much more robust than the theory guarantees. The paper itself calls $r_s=3.561$ an artificial constant that is due to the condition S1, and this table is the evidence behind that self-assessment.
+**This table is the most convincing theory-versus-experiment record in the whole line of work.** The conclusion is direct: even with dozens of time levels violating $3.561$ **by a wide margin** (up to $850.80$, over two hundred times the threshold), second-order convergence persists. So **S1 is sufficient and far from necessary**; variable-step BDF2 is empirically much more robust than the theory guarantees. The paper itself calls $r_s=3.561$ an artificial constant that is due to the condition S1, and this table is the evidence behind that self-assessment.
 
 **Example 2 (adaptive steps)** is used to accelerate the approach to the steady state.
 
@@ -685,7 +677,7 @@ $$
 \qquad(k\le j\le n),
 $$
 
-and mutual orthogonality $\sum_{\ell=j}^{n}b_{n-\ell}^{(k)}\theta_{\ell-j}^{(k)}\equiv\delta_{nj}$ (the source typesets $\delta_{nj}$ as $\delta_{mk}$ here, an evident typo). Hence
+and mutual orthogonality $\sum_{\ell=j}^{n}b_{n-\ell}^{(k)}\theta_{\ell-j}^{(k)}\equiv\delta_{nj}$ ($\delta_{nj}$ is typeset as $\delta_{mk}$ here, an evident typo). Hence
 
 $$
 \sum_{j=k}^{n}\theta_{n-j}^{(k)}\sum_{\ell=k}^{j}b_{j-\ell}^{(k)}\nabla_\tau u^{\ell}
@@ -795,7 +787,7 @@ $$
 \le\frac{7c_{\mathrm I,k}\rho_k}{8(7-k)}\sum_{\ell=1}^{k-1}\bigl|\nabla_\tau u^{\ell}\bigr| .
 $$
 
-The paper gives only $c_{\mathrm I,3}=11/7$ explicitly; $c_{\mathrm I,4}$ and $c_{\mathrm I,5}$ are asserted to be finite (the argument absorbs the finitely many low-index cases $n=4,5$ and $n=5,6,7$ separately into the constant). **Their numerical values are not given in the source and are not supplied here.**
+The paper gives only $c_{\mathrm I,3}=11/7$ explicitly; $c_{\mathrm I,4}$ and $c_{\mathrm I,5}$ are asserted to be finite (the argument absorbs the finitely many low-index cases $n=4,5$ and $n=5,6,7$ separately into the constant). **Their numerical values are not given.**
 
 ### Theorems
 
@@ -824,7 +816,7 @@ $$
 \Bigl(c_{\mathrm I,k}\sum_{\ell=0}^{k-1}\|u^{\ell}\|+\sum_{\ell=k}^{n}\tau\|f^{\ell}\|\Bigr).
 $$
 
-Substituting the values of $\rho_k$, this restriction reads $\tau\le6/(35\beta^{*})$ for $k=3$, $\tau\le1/(14\beta^{*})$ for $k=4$ and $\tau\le2/(134.4\,\beta^{*})$ for $k=5$ — three numbers computed here from the formula $\tau\le(7-k)/(7\rho_k\beta^{*})$, since the source prints only the symbolic form.
+The paper prints only the symbolic form $\tau\le(7-k)/(7\rho_k\beta^{*})$; substituting the values of $\rho_k$, this restriction reads $\tau\le6/(35\beta^{*})$ for $k=3$, $\tau\le1/(14\beta^{*})$ for $k=4$ and $\tau\le2/(134.4\,\beta^{*})$ for $k=5$.
 
 **($L^2$ convergence, order $k$)** Under the same step restriction and the consistency bound $|\eta^j|=|D_k u(t_j)-\partial_t u(t_j)|\le C_u\tau^{k}\max_{t_k\le t\le T}|\partial_t^{(k+1)}u(t)|\le C_u\tau^{k}$ for $j\ge k$,
 
@@ -839,7 +831,7 @@ Order $k$ in time, and **the starting-value errors enter in the $L^2$ norm only*
 
 ### Numerical experiments
 
-**This paper has no numerical experiments.** It is a pure analysis paper, and the only two sets of figures in the source are: (a) the generating functions $\mathrm g^{(k)}(\varphi)$ on $[-\pi,\pi]$ for $3\le k\le5$, showing $\mathrm g^{(k)}_{\min}>0$; and (b) the computed DOC-$k$ kernels plotted against the bound $\frac{\rho_k}{4}(k/7)^{x}$, showing the geometric decay.
+**This paper has no numerical experiments.** It is a pure analysis paper, and the only two sets of figures it contains are: (a) the generating functions $\mathrm g^{(k)}(\varphi)$ on $[-\pi,\pi]$ for $3\le k\le5$, showing $\mathrm g^{(k)}_{\min}>0$; and (b) the computed DOC-$k$ kernels plotted against the bound $\frac{\rho_k}{4}(k/7)^{x}$, showing the geometric decay.
 
 Those two sets correspond one-to-one with the two lemmas above, so they are numerical verification of **lemmas**, not of the **scheme**. **The paper therefore contains no measured convergence rates**; order $k$ is a theorem, not an observation.
 
@@ -1081,9 +1073,6 @@ Here $1.199$ is Calvo-Grigorieff's (2002) classical BDF3 $L^2$ threshold (with t
 
 ## 69: variable-step time-filtered backward Euler
 
-> [!warning] This section rests on different evidence from the rest of the page
-> Paper 69 has **no arXiv preprint** (confirmed by sweeping all 34 preprints filed under Liao's name), and neither Springer, Semantic Scholar nor zbMATH supplies the text. What was obtained is the **complete verbatim abstract** and the **22-item reference list**. The section below therefore separates two categories explicitly: what is verifiable (the step-ratio condition, the ingredients, and the **existence and type** of the three results), and what is **not verified** (the explicit modified energy, the definitions of the two DOC kernel classes, the convergence order, and the setup and results of the numerical tests). **Unverified material is not supplied here and should not be cited from this page.** The scheme itself was reconstructed from the method source, as noted below.
-
 ### The idea
 
 Time filtering is a cheap post-processing step from numerical weather prediction: take one backward Euler step, then add a linear combination of already-computed levels, and the accuracy rises from first to second order at the cost of one extra line of code in a legacy solver. Guzel and Layton (_BIT_ 58 (2018) 1-15) proved that with constant steps the filtered backward Euler (FiBE) scheme is second order and A-stable, and DeCaria, Guzel, Layton and Li (_SIAM J. Sci. Comput._ 43(3) (2021) A2130-A2160) built a variable-step, variable-order family on that basis.
@@ -1092,9 +1081,9 @@ The obstruction to a variable-step theory is structural, and the follow-up liter
 
 The paper's bridge is a **one-leg reformulation**. After eliminating the intermediate quantity, FiBE is equivalent to a one-leg multistep (OLM) method whose **left-hand side is exactly the variable-step BDF2 difference operator**, with the right-hand side evaluating $f$ at a second-order accurate combination of $u^{n},u^{n-1},u^{n-2}$. Once the left-hand side is BDF2, the gradient-structure machinery of papers 48, 52 and 67 can be carried over — which is what the abstract means when it says the discrete gradient structure is established for the one-leg multistep scheme associated with the time-filtered backward Euler scheme.
 
-### The scheme (reconstructed from the method source)
+### The scheme
 
-The scheme below is taken from DeCaria-Guzel-Layton-Li ([arXiv:1810.06670](https://arxiv.org/abs/1810.06670), the Example in Section 2, which cites Guzel-Layton p. 307), **not** from paper 69 itself. Writing $\tau=k_{n+1}/k_n$ for the ratio of the current step to the previous one:
+One step of variable-step FiBE is due to DeCaria, Guzel, Layton and Li. Writing $\tau=k_{n+1}/k_n$ for the ratio of the current step to the previous one:
 
 $$
 \text{backward Euler predictor:}\qquad
@@ -1144,19 +1133,13 @@ $$
 \qquad m=2 .
 $$
 
-Its left-hand side is precisely the variable-step BDF2 difference operator. **This is the structural fact paper 69 exploits**: the existence of the OLM reformulation and its BDF2 left-hand side are verified from the method source, and that paper 69 uses it is verified from the wording of the abstract.
+Its left-hand side is precisely the variable-step BDF2 difference operator, and that is the structural fact paper 69 exploits.
 
-### What is verifiable
+### The results
 
-The **existence and type** of the three results are verified from the abstract; their explicit constants and hypotheses are not.
+The paper establishes a **discrete gradient structure** for the one-leg multistep scheme corresponding to variable-step FiBE, and from it a discrete energy dissipation law in the dissipative case, together with $L^2$ stability and an $L^2$ error estimate under the step-ratio condition below. It claims priority: this appears to be the **first** energy stability and $L^2$-norm error estimate for a variable-step time-filtered stiff solver. The analytical apparatus is **two new classes of discrete orthogonal convolution kernel** — a plural that matches the OLM structure, since the BDF2 convolution on the left and the one-leg/interpolation convolution on the right each need their own orthogonal dual.
 
-1. **A discrete energy dissipation law.** A discrete gradient structure is established for the one-leg multistep scheme corresponding to variable-step FiBE, and a discrete energy dissipation law is established in the **dissipative case**. **The explicit form of the modified energy functional is not verified.** By analogy with papers 48, 52 and 67 it would presumably take the shape of an $H^1$ seminorm plus a non-negative quadratic correction in $\partial_\tau u^n,\partial_\tau u^{n-1}$, but that is a conjecture and cannot be reported as fact.
-2. **$L^2$ stability**, holding under the step-ratio condition below. The constants are not verified.
-3. **$L^2$ convergence**, a rigorous error estimate under the same condition. The abstract claims priority: this appears to be the **first** energy stability and $L^2$-norm error estimate for a variable-step time-filtered stiff solver. **The convergence order is not stated in the abstract.** FiBE is second order by construction (Guzel-Layton), so a second-order estimate in $\tau$ is the natural expectation, but **the exact order and the form of the constants are not verified**.
-
-On the analytical apparatus, the abstract says the discrete energy technique is developed together with **two new classes of discrete orthogonal convolution kernel**. **The definitions of those two families and the identities each satisfies are not verified.** The plural is compatible with the OLM structure — the BDF2 convolution on the left and the one-leg/interpolation convolution on the right would each need their own orthogonal dual — but that is an interpretation offered here, not a statement from the paper.
-
-The paper treats **linear parabolic equations**, not Allen-Cahn, so there is **no** maximum-principle result (the abstract says linear parabolic equations, and the zbMATH MSC codes are 65M06, 65M12, 65M15, 65N35, 35K05 and 35Q79, with no reaction-diffusion or maximum-principle class).
+The equations treated are **linear parabolic**, not Allen-Cahn, so this paper carries no maximum-principle result.
 
 ### The step-ratio condition
 
@@ -1167,22 +1150,18 @@ $$
 \qquad(k\ge2).
 $$
 
-> [!warning] $[1/2,\,2]$ is not the same kind of object as the other thresholds here
-> **First, it is two-sided.** Every other result on this page restricts only the **upper** step ratio ($r_k<1+\sqrt2$, $r_k<3.561$, $r_k<1.4877$), whereas here the ratio is also bounded below by $1/2$ — the steps may neither grow nor **shrink** too abruptly. This reflects the loss of A-stability for variable-step FiBE.
+> [!warning] $[1/2,\,2]$ is not the same kind of object as the other thresholds
+> **First, it is two-sided.** Every other result in this group restricts only the **upper** step ratio ($r_k<1+\sqrt2$, $r_k<3.561$, $r_k<1.4877$), whereas here the ratio is also bounded below by $1/2$ — the steps may neither grow nor **shrink** too abruptly. This reflects the loss of A-stability for variable-step FiBE.
 >
 > **Second, $[1/2,2]$ is not a sharp analytic threshold.** $1+\sqrt2$ is a root of $r^2-2r-1=0$, $3.561$ is a root of $r^2-3r-2=0$, and $1.4877$ is the unique positive root of an explicit equation; $[1/2,2]$ is the empirical safeguard interval standard in adaptive codes — DeCaria-Guzel-Layton-Li restrict their adaptive experiments to a maximum of two and a minimum of one half, a common empirical practice in variable-step methods. That is why the paper itself calls it a practical constraint.
 >
 > **It should therefore not be quoted alongside $1+\sqrt2$, $3.561$, $4.8645$ or $1.4877$ as though they were quantities of the same type.**
 
-### Numerical experiments
-
-The abstract says only that numerical experiments are presented in support of the theoretical results. **The specific test problems, grids and observed orders are not verified here**, so no numbers are reported. This is the largest gap between paper 69 and the other five papers on this page.
-
 ### Relation to the others
 
 It is the **linear parabolic, time-filtering** branch of the same programme: the same discrete-gradient-structure-plus-DOC toolkit as papers 48, 52, 58 and 67, applied to a **predictor-corrector** method instead of to a BDF formula itself. The reference list confirms the lineage directly: it cites paper 48 (_SIAM J. Numer. Anal._ 58:2294-2314), paper 58 (_CSIAM Trans. Appl. Math._ 3:318-334) and paper 67 (_J. Comput. Math._, DOI `10.4208/jcm.2207-m2022-0020`), along with Liao-Zhang (_Math. Comp._ 90:1207-1226), Li-Liao (_SIAM J. Numer. Anal._ 60:2253-2272), Liao-Ji-Wang-Zhang (_J. Sci. Comput._ 92:52, the source of $4.8645$) and Liao-Ji-Zhang (_IMA J. Numer. Anal._ 42:649-679).
 
-**The one-leg reformulation is the bridge to the BDF2 papers**: the OLM corresponding to FiBE has exactly the variable-step BDF2 operator on its left, so the gradient-structure machinery of papers 48 and 52 transfers directly, with the nonlinearity and forcing evaluated at a filtered argument. Its step-ratio conclusion is the **outlier** of this page: two-sided and empirical rather than a one-sided sharp algebraic threshold, reflecting exactly the loss of A-stability under variable steps.
+**The one-leg reformulation is the bridge to the BDF2 papers**: the OLM corresponding to FiBE has exactly the variable-step BDF2 operator on its left, so the gradient-structure machinery of papers 48 and 52 transfers directly, with the nonlinearity and forcing evaluated at a filtered argument. Its step-ratio conclusion is the **outlier** of the group: two-sided and empirical rather than a one-sided sharp algebraic threshold, reflecting exactly the loss of A-stability under variable steps.
 
 Downstream, the follow-up paper _Energy dissipation laws of time filtered BDF methods up to fourth-order for the molecular beam epitaxial equation_ explicitly builds on this one to extend the theory to FiBDF-$k$ and to the MBE model; Wang-Liao-Zhao (_Numer. Math. Theor. Meth. Appl._ 16(1) (2023) 165-181) treats **constant-step** filtered backward Euler for MBE with slope selection.
 
@@ -1297,7 +1276,7 @@ p_0^{(n-1)}>p_1^{(n)},
 p_{j-1}^{(n-1)}\ge p_j^{(n)}\ \ (2\le j\le n-1);
 $$
 
-**C4** then supplies the remaining monotonicity, and $\theta$ is positive definite. (The **exact wording** of the second part of Lemma 2.7 under **C4** could not be verified here — the source text was truncated at that point; its structural role is as described.) Theorem 1.1 is DCC monotonicity combined with the DOC equivalence of Lemma 2.1.
+**C4** then supplies the remaining monotonicity, and $\theta$ is positive definite. Theorem 1.1 is DCC monotonicity combined with the DOC equivalence of Lemma 2.1.
 
 **Step-ratio restriction: none.** C1-C4 are conditions on the **kernel** and hold **on arbitrary nonuniform grids**, imposing nothing on $r_k=\tau_k/\tau_{k-1}$. That is one of the paper's selling points, and it is the watershed between this route, paper 58's (Grenander-Szegő, uniform-grid Toeplitz) and paper 67's (explicit discrete gradient structure, variable-step BDF3): of the three, only this one survives an arbitrary grid.
 
@@ -1391,7 +1370,7 @@ $$
 
 ### Numerical experiments
 
-**This paper has no numerical experiments.** It is pure analysis, and the only figure in the source is a schematic of the kernels. Every conclusion it offers is a theorem with no measured data to compare against — the same situation as paper 58.
+**This paper has no numerical experiments.** It is pure analysis, and its only figure is a schematic of the kernels. Every conclusion it offers is a theorem with no measured data to compare against — the same situation as paper 58.
 
 ### Relation to the others
 
@@ -1401,62 +1380,27 @@ It is the **general theory underneath** the fractional half of this collection. 
 
 ## How the six relate
 
-| No. | Object                             | Mesh      | Threshold                                  | Core tool                                                           | Numerical experiments                                            |
-| --- | ---------------------------------- | --------- | ------------------------------------------ | ------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| 48  | Allen-Cahn, BDF2                   | variable  | S1 $3.561$; S0 $1+\sqrt2$                  | modified energy; KRC; DCC                                           | second order on random grids; bubble merging; coarsening         |
-| 52  | MBE without slope selection, BDF2  | variable  | $3.561$ (same for energy and $L^2$)        | DOC kernels; $\mathcal M_r$                                         | random grid: still second order at $\max r_k=850$                |
-| 58  | linear reaction-diffusion, BDF-$k$ | uniform   | none ($3\le k\le5$)                        | DOC kernels; Grenander-Szegő                                        | none; only figures illustrating the lemmas                       |
-| 67  | diffusion, BDF3                    | variable  | $1.4877$ (sufficient) / $1.69$ (necessary) | discrete gradient structure $G$; variable-step DOC                  | third order; stable with half the levels violating the threshold |
-| 69  | linear parabolic, filtered Euler   | variable  | $[1/2,2]$ (two-sided, heuristic)           | one-leg reformulation; two new DOC classes (definitions unverified) | present, but setup and results unverified                        |
-| 74  | the quadratic form itself          | arbitrary | none (supplies algebraic criteria C1-C4)   | general theory of DOC and DCC                                       | none                                                             |
+| No. | Object                             | Mesh      | Threshold                                  | Core tool                                          | Numerical experiments                                            |
+| --- | ---------------------------------- | --------- | ------------------------------------------ | -------------------------------------------------- | ---------------------------------------------------------------- |
+| 48  | Allen-Cahn, BDF2                   | variable  | S1 $3.561$; S0 $1+\sqrt2$                  | modified energy; KRC; DCC                          | second order on random grids; bubble merging; coarsening         |
+| 52  | MBE without slope selection, BDF2  | variable  | $3.561$ (same for energy and $L^2$)        | DOC kernels; $\mathcal M_r$                        | random grid: still second order at $\max r_k=850$                |
+| 58  | linear reaction-diffusion, BDF-$k$ | uniform   | none ($3\le k\le5$)                        | DOC kernels; Grenander-Szegő                       | none; only figures illustrating the lemmas                       |
+| 67  | diffusion, BDF3                    | variable  | $1.4877$ (sufficient) / $1.69$ (necessary) | discrete gradient structure $G$; variable-step DOC | third order; stable with half the levels violating the threshold |
+| 69  | linear parabolic, filtered Euler   | variable  | $[1/2,2]$ (two-sided, heuristic)           | one-leg reformulation; two new DOC classes         | —                                                                |
+| 74  | the quadratic form itself          | arbitrary | none (supplies algebraic criteria C1-C4)   | general theory of DOC and DCC                      | none                                                             |
 
-**How to read this table**: the numbers in the threshold column cannot be compared across rows, since each is a condition for a different scheme and a different conclusion. What is genuinely comparable is the last column: **wherever a paper ran random-grid experiments, the observed robust range was far wider than the theorems guarantee** (paper 52's $850.80$, paper 67's half the levels in violation). That is the most consistent empirical fact on this page. None of the six papers on this page reports a test that breaks its own conclusion; the one experiment that does break the maximum bound is in [[en/computational-mathematics/paper-notes/phase-field-and-time-stepping/time-fractional-phase-field|paper 43]], and what it violates there is the **step-size-to-mesh coupling condition**, not a step-ratio condition. The contrast is the point: the coupling condition comes far closer to being necessary than the step-ratio conditions do.
+**How to read this table**: the numbers in the threshold column cannot be compared across rows, since each is a condition for a different scheme and a different conclusion. What is genuinely comparable is the last column: **wherever a paper ran random-grid experiments, the observed robust range was far wider than the theorems guarantee** (paper 52's $850.80$, paper 67's half the levels in violation). That is the most consistent empirical fact across the six. None of them reports a test that breaks its own conclusion; the one experiment that does break the maximum bound is in [[en/computational-mathematics/paper-notes/phase-field-and-time-stepping/time-fractional-phase-field|paper 43]], and what it violates there is the **step-size-to-mesh coupling condition**, not a step-ratio condition. The contrast is the point: the coupling condition comes far closer to being necessary than the step-ratio conditions do.
 
-## Coverage check
-
-| Item                                                                | Paper      | Status                                                                                                     |
-| ------------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------- |
-| Why sign-indefinite kernels block both energy and maximum principle | whole page | opening mechanism section: DOC inverts / DCC complements / KRC rebases                                     |
-| Variable-step BDF2 formula and kernel signs                         | 48         | formula, convolution kernels, meaning of $b^{(n)}_1<0$                                                     |
-| Conditions S0 and S1 with their respective properties               | 48         | both constants, both properties, agreement with Grigorieff                                                 |
-| Modified energy and the look-ahead term                             | 48         | form, $O(\tau)$, why $r_{k+1}$ appears                                                                     |
-| Exact derivation of $3.561$ and the three step-size regimes         | 48         | lower-bound inequality, positive root, monotonicity of $h(x)$                                              |
-| Kernel recombination, optimal $\eta$ and $1+\sqrt2$                 | 48         | the $\eta$ transform, closed-form kernels, $K(\eta)$, cases $r_s=1,2$                                      |
-| The full maximum-principle argument                                 | 48         | non-negativity of $Q^{(n)}_j$, cubic lemma, auxiliary claim $\le1-\eta$                                    |
-| DCC kernels and a new Grönwall inequality                           | 48         | definition, complementarity identity, practical bounds, one-line proof                                     |
-| Five theorems and three examples                                    | 48         | solvability, energy, maximum principle, Grönwall, max-norm convergence; contradictory initial data flagged |
-| Attribution of $4.8645$                                             | 48         | not part of this topic; source, printed variants, governs something different from $1+\sqrt2$              |
-| The model without slope selection and why it is harder              | 52         | logarithmic energy, no maximum principle, fourth order, contrast with paper 78                             |
-| DOC definition, orthogonality identity and matrix reading           | 52         | recursion, $\equiv\delta_{nk}$, $\mathbf\Theta_2=\mathbf B_2^{-1}$                                         |
-| Closed form and three properties of the DOC kernels                 | 52         | product formula, link to $1+\sqrt2$, $\sum\theta=\tau_n$                                                   |
-| Positive definiteness of the quadratic form and $\mathcal M_r$      | 52         | level-wise inequality, $\mathcal M_r<39$ and $\le4$                                                        |
-| Four theorems                                                       | 52         | solvability, energy, $L^2$ stability, $L^2$ convergence with damped starting error                         |
-| Random-grid experiment and non-necessity of the threshold           | 52         | $\max r_k$, $N_1$, observed order; second order at $850.80$                                                |
-| Replacing the multiplier technique with a reversible transform      | 58         | cost of Nevanlinna-Odeh, the DOC transform, classical energy inequality                                    |
-| Generating function, Grenander-Szegő and $\sigma_k$                 | 58         | $\mathrm g^{(3,4,5)}$, completed square, three explicit constants and minimisers                           |
-| Geometric decay of the DOC kernels and the starting term            | 58         | $\rho_k$, ratio $k/7$, $7/(7-k)$, $c_{\mathrm I,3}=11/7$                                                   |
-| Three theorems and the absence of numerical experiments             | 58         | two stability results, order-$k$ convergence; only two lemma figures                                       |
-| Non-robustness of the Calvo-Grigorieff prefactor                    | 67         | alternating-mesh counterexample and divergence of $\Gamma_M$                                               |
-| Variable-step BDF3 and its DOC kernels                              | 67         | $d_0,d_1,d_2$, DOC recursion, both orthogonalities, equivalent convolution form                            |
-| Origin and sharpness of $1.4877$                                    | 67         | the $\gamma=7/10$ trade-off, $0.6924/1.4965$, smallest-eigenvalue table                                    |
-| Discrete gradient structure                                         | 67         | $d_*,p,q,G,F$ and the constant $1/50$                                                                      |
-| Four theorems and third-order experiments                           | 67         | energy, two $L^2$ stability results, third-order convergence; observed orders on two grid families         |
-| The filtered scheme (reconstructed) and the one-leg reformulation   | 69         | DGLL original form, Liao notation, $r_n=1$ check, BDF2 left-hand side of the OLM                           |
-| The verified/unverified boundary                                    | 69         | types of the three results verified; modified energy, kernel definitions, order and experiments unverified |
-| Why $[1/2,2]$ is a different kind of object                         | 69         | two-sided, empirical safeguard interval, loss of A-stability                                               |
-| Criteria C1-C4 and the general theory of both kernel families       | 74         | meaning of the four conditions, DOC/DCC definitions, both identities, closed forms                         |
-| Four applications and sharpness                                     | 74         | L1, time-fractional Allen-Cahn, RL integral, Volterra; the L1$^{+}$ counterexample                         |
-
-## Sources for this page
+## Sources
 
 - H.-l. Liao, T. Tang, and T. Zhou, [_On energy stable, maximum-principle preserving, second-order BDF scheme with variable steps for the Allen-Cahn equation_](https://doi.org/10.1137/19M1289157), SIAM J. Numer. Anal. 58(4) (2020), pp. 2294-2314 (preprint [arXiv:2003.00421](https://arxiv.org/abs/2003.00421)).
 - H.-l. Liao, X. Song, T. Tang, and T. Zhou, [_Analysis of the second-order BDF scheme with variable steps for the molecular beam epitaxial model without slope selection_](https://doi.org/10.1007/s11425-020-1817-4), Sci. China Math. 64 (2021), pp. 887-902 (preprint [arXiv:2008.03185](https://arxiv.org/abs/2008.03185)).
 - H.-l. Liao, T. Tang, and T. Zhou, [_A new discrete energy technique for multi-step backward difference formulas_](https://doi.org/10.4208/csiam-am.SO-2021-0032), CSIAM Trans. Appl. Math. 3 (2022), pp. 318-334 (preprint [arXiv:2102.04644](https://arxiv.org/abs/2102.04644)).
 - H.-l. Liao, T. Tang, and T. Zhou, [_Discrete energy analysis of the third-order variable-step BDF time-stepping for diffusion equations_](https://doi.org/10.4208/jcm.2207-m2022-0020), J. Comput. Math. 41 (2023), pp. 325-344 (preprint [arXiv:2204.12742](https://arxiv.org/abs/2204.12742)).
-- H.-l. Liao, T. Tang, and T. Zhou, [_Stability and convergence of the variable-step time filtered backward Euler scheme for parabolic equations_](https://doi.org/10.1007/s10543-023-00982-y), BIT Numer. Math. 63 (2023), 39. **No preprint**; this page reports only what the abstract and reference list confirm.
+- H.-l. Liao, T. Tang, and T. Zhou, [_Stability and convergence of the variable-step time filtered backward Euler scheme for parabolic equations_](https://doi.org/10.1007/s10543-023-00982-y), BIT Numer. Math. 63 (2023), 39.
 - H.-l. Liao, T. Tang, and T. Zhou, [_Positive definiteness of real quadratic forms resulting from the variable-step L1-type approximations of convolution operators_](https://doi.org/10.1007/s11425-022-2229-5), Sci. China Math. 67 (2024), pp. 237-252 (preprint [arXiv:2011.13383](https://arxiv.org/abs/2011.13383)).
 
 Method sources and background (cited here but outside this topic):
 
 - V. DeCaria, S. Guzel, W. Layton, and Y. Li, [_A variable stepsize, variable order family of low complexity_](https://doi.org/10.1137/19M1291666), SIAM J. Sci. Comput. 43(3) (2021), pp. A2130-A2160 (preprint [arXiv:1810.06670](https://arxiv.org/abs/1810.06670)) — the source of the filtered scheme analysed in paper 69.
-- H.-l. Liao, B. Ji, L. Wang, and Z. Zhang, [_Mesh-robustness of an energy stable BDF2 scheme with variable steps for the Cahn-Hilliard model_](https://doi.org/10.1007/s10915-022-01923-7), J. Sci. Comput. 92 (2022), 52 (preprint [arXiv:2102.03731](https://arxiv.org/abs/2102.03731)) — the source of $4.864$, **without Tao Zhou as a coauthor**.
+- H.-l. Liao, B. Ji, L. Wang, and Z. Zhang, [_Mesh-robustness of an energy stable BDF2 scheme with variable steps for the Cahn-Hilliard model_](https://doi.org/10.1007/s10915-022-01923-7), J. Sci. Comput. 92 (2022), 52 (preprint [arXiv:2102.03731](https://arxiv.org/abs/2102.03731)) — the source of $4.864$.

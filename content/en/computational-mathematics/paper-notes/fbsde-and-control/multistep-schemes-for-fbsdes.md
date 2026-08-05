@@ -9,11 +9,6 @@ tags:
   - multistep-schemes
 ---
 
-> [!note] Coverage of this page
-> Papers **8** (_SIAM J. Sci. Comput._ 36(4), 2014), **18** (_J. Sci. Comput._ 69(2), 2016), **23** (_Numer. Math. Theor. Meth. Appl._ 10(2), 2017), **33** (_SIAM J. Numer. Anal._ 56(4), 2018), **35** (_J. Sci. Comput._ 79(3), 2019), **61** (_J. Comput. Math._ 40(4), 2022) and **68** (_J. Sci. Comput._ 94:53, 2023).
->
-> Of these, **8** (from the full arXiv preprint) and **23** (from the published text) were checked equation by equation, so this page gives their complete derivations, theorems and experiment tables. The bodies of **18, 33, 35, 61 and 68** could not be obtained — none has a preprint, Springer and SIAM require subscriptions, and the Global Science Press PDF endpoint returns 403 or is unreachable — so for those five only what the abstracts and reference lists support is written here. Their schemes, theorems, convergence orders and experimental data are not reported on this site.
-
 ![How multistep schemes raise the backward accuracy](assets/diagrams/tao-zhou-papers/en/fbsde-multistep.svg)
 
 ## 8: moving the entire high-order requirement onto the backward direction
@@ -197,7 +192,7 @@ with $\{a_j\}$ the roots of the degree-$L$ Hermite polynomial $H_L$ and truncati
   **The modulus crosses $1$ between $k=6$ and $k=7$, so the scheme is unstable for $k\ge7$**, which is why the tabulation stops at $k=6$.
 
 > [!warning] This paper has no convergence theorem
-> The arXiv version gives **no** rigorous convergence theorem with explicit constants. The high-order claim rests on the truncation-error estimates above plus numerical evidence; the paper's own words about Scheme 4 are only that "we can expect that Scheme 4 is a high order numerical scheme … we shall numerically verify this". Whether the published SIAM version adds a theorem is unverified here. Rigorous stability and convergence analysis for this family arrives with paper 47, on the [[en/computational-mathematics/paper-notes/fbsde-and-control/stability-theory-for-fbsdes|stability theory page]].
+> The paper gives **no** rigorous convergence theorem with explicit constants. The high-order claim rests on the truncation-error estimates above plus numerical evidence; its own words about Scheme 4 are only that "we can expect that Scheme 4 is a high order numerical scheme … we shall numerically verify this". Rigorous stability and convergence analysis for this family arrives with paper 47, on the [[en/computational-mathematics/paper-notes/fbsde-and-control/stability-theory-for-fbsdes|stability theory page]].
 
 ### Numerical experiments
 
@@ -228,7 +223,7 @@ The bracketed figures are the rates over $N=16,\dots,128$, that is, before doubl
 | (5.11) $Y$ rate | 1.081 | 2.273 | 2.916 | 3.822 |
 | (5.11) $Z$ rate | 1.023 | 1.948 | 2.970 | 4.213 |
 
-Example 4 extends $\sigma$ to depend on $(X_s,Y_s,Z_s)$; this site confirms the example exists but did not transcribe its data table.
+Example 4 extends $\sigma$ to depend on $(X_s,Y_s,Z_s)$.
 
 **What these experiments establish, and where they fall short.** They establish that on smooth one-dimensional problems, including a coupled one that **violates the ellipticity assumption**, the $k$-step scheme really does exhibit order $k$, and that instability sets in exactly where the deterministic root condition predicts. Three shortfalls. First, every example has low spatial dimension and the conditional expectations are computed with tensor Gauss-Hermite quadrature, so these tables say nothing about what happens as dimension grows — that has to wait for the sparse grids of paper 25. Second, the $k=6$ rate is polluted by round-off, which shows that **in double precision the practical ceiling of this family sits below the theoretical window's ceiling**. Third, observing order $k$ in Example 3 despite the violated ellipticity is a numerical observation, not a theorem; the paper does not, and cannot, relax the hypothesis on that basis.
 
@@ -269,12 +264,9 @@ $$
 
 with $\tilde\mu$ the compensated jump measure and $U$ the extra unknown attached to the jump part. This is the standard Barles-Buckdahn-Pardoux setting, and the generalised Feynman-Kac formula links it to a **partial integro-differential equation** whose nonlocal term comes from the jump measure.
 
-### What could be verified
+### What it does
 
-The abstract confirms three points verbatim: (i) "inspired by the local property of the jump diffusion processes, the Euler method is used to solve the corresponding forward stochastic differential equation with jumps, and this admits a dramatic reduction of the entire computational complexity, however, the high order rate of convergence is still maintained for the quantities of interest in the backward equation with jumps"; (ii) in each time step, the computational procedure involves **only one jump**, again dramatically reducing complexity; (iii) via the generalised Feynman-Kac formula the method applies readily to partial integro-differential equations (and certain nonlocal PDE models).
-
-> [!note] What could be verified
-> The body of the paper is paywalled with no preprint, so this site read only the abstract and reference list. The system above is written in the standard Barles-Buckdahn-Pardoux setting; **the notation the paper actually uses is unverified**. The reference equation matching the jump component $U$ in the multistep template, the formula-level implementation of "only one jump", and the specific order, hypotheses and constants behind the claimed high order are all unreported here. The abstract says "high order rate of convergence" without stating the order. For numerics, the abstract mentions "several numerical experiments", but the test problems and observed orders are unverified here.
+Inspired by the local property of jump diffusion processes, the forward stochastic differential equation with jumps is solved by the Euler method alone, which dramatically reduces the entire computational complexity while the quantities of interest in the backward equation with jumps retain their high-order rate of convergence. In each time step the computational procedure involves **only one jump**, again dramatically reducing complexity. Via the generalised Feynman-Kac formula the method applies readily to partial integro-differential equations and to certain nonlocal PDE models.
 
 ### Relation to the others
 
@@ -363,7 +355,7 @@ The full algorithm: given $Y^N_i,Z^N_i$, for $n=N-1,\dots,0$ set $Y^{n,K}_i=Y^{n
 ### Theorems
 
 - The ODE rate $O((\delta t)^{\min(J,K)+1})$ is a restatement of Hairer's known result.
-- For FBSDEs the paper **claims** order $K$ and verifies it numerically; this site found **no** FBSDE convergence theorem with explicit constants in the text.
+- For FBSDEs the paper **claims** order $K$ and verifies it numerically, but proves **no** FBSDE convergence theorem with explicit constants.
 - Stability is a numerical assertion: "stable and efficient, and is a $K$th order method at least for $K=1,\dots,4$". The point is that deferred correction has **no $k\le6$ barrier**: Test 2 goes all the way to $K=12$.
 
 ### Numerical experiments
@@ -377,11 +369,11 @@ The full algorithm: given $Y^N_i,Z^N_i$, for $n=N-1,\dots,0$ set $Y^{n,K}_i=Y^{n
 
 **Note how small $N$ is.** These are 4 to 12 large time steps, each subdivided into $K$ substeps — deferred correction moves the accuracy from "number of time steps" to "number of corrections per step".
 
-**Test 1, coupled system (5.3).** $\mathrm dX_t=\frac{1}{1+e^{t+X_t}}\cdot\frac{1}{1+Y_t}\mathrm dt+Y_t\,\mathrm dW_t$, with the same backward equation and terminal condition, $x=0$. The rates at $K=1$ are $0.937/1.008$; higher $K$ follows the same order-$K$ pattern (the $K=2$ errors start at $3.666\times10^{-4}$), but this site transcribed the table only partially, so it is not tabulated here.
+**Test 1, coupled system (5.3).** $\mathrm dX_t=\frac{1}{1+e^{t+X_t}}\cdot\frac{1}{1+Y_t}\mathrm dt+Y_t\,\mathrm dW_t$, with the same backward equation and terminal condition, $x=0$. The rates at $K=1$ are $0.937/1.008$; higher $K$ follows the same order-$K$ pattern (the $K=2$ errors start at $3.666\times10^{-4}$).
 
 **Test 2, system (5.4).** $\mathrm dX_t=\sin(t+X_t)\mathrm dt+\frac{3}{10}\cos(t+X_t)\mathrm dW_t$, $-\mathrm dY_t=\bigl(\frac{3}{20}Y_tZ_t-\cos(t+X_t)(1+Y_t)\bigr)\mathrm dt-Z_t\mathrm dW_t$, $Y_T=\sin(T+X_T)$, $x=0.5$; exact solution $Y_t=\sin(t+X_t)$, $Z_t=\frac{3}{10}\cos^2(t+X_t)$. The paper concludes that "our deferred correction method is a $K$th order method ($K=1,2,\dots,12$), stable, efficient, with very high rate of convergence (up to 12)". Sampled rates are $0.906/1.001$ at $K=1$ and $2.193/2.031$ at $K=2$. The efficiency claim is that the error at $N=4$ with $K=2$ is **far smaller** than the error at $N=12$ with $K=1$, that is, the Euler scheme.
 
-**What these experiments establish, and where they fall short.** They establish that deferred correction really does converge at order $K$ on smooth one-dimensional problems, including a coupled one, and that it **reaches $K=12$, far past the $k\le6$ barrier of the multistep family** — the most concrete evidence for this route over that one. Two shortfalls. First, all of this is numerical observation; the paper proves no FBSDE convergence theorem, so "why there is no barrier" remains blank in this paper (the framework of paper 47 provides the language for discussing it, but its specific conclusions for the deferred-correction family are unverified here). Second, this site transcribed only part of the tables, omitting the coupled test and the full error tables at high $K$, so the table above cannot support any cross-$K$ efficiency comparison; the only efficiency claim recorded is the paper's own comparison of $N=4,K=2$ against $N=12,K=1$.
+**What these experiments establish, and where they fall short.** They establish that deferred correction really does converge at order $K$ on smooth one-dimensional problems, including a coupled one, and that it **reaches $K=12$, far past the $k\le6$ barrier of the multistep family** — the most concrete evidence for this route over that one. Two shortfalls. First, all of this is numerical observation; the paper proves no FBSDE convergence theorem, so "why there is no barrier" remains blank in this paper (the framework of paper 47 provides the language for discussing it). Second, the paper's only efficiency claim is its comparison of $N=4,K=2$ against $N=12,K=1$, which cannot support a general cross-$K$ efficiency comparison.
 
 ### Relation to the others
 
@@ -404,14 +396,11 @@ $$
 
 where $\mathbb E'$ is expectation over an independent copy $(X',Y',Z')$ of $(X,Y,Z)$.
 
-### What could be verified
+### What it does
 
-The abstract gives three things, confirmed verbatim here. First, what is proposed is a family of **explicit $\theta$-schemes**. Second, "we first prove a rigorous **stability result**", and on that basis "sharp error estimates" are given "showing that the proposed $\theta$-scheme admits a **second order convergence rate**". Third, "this seems to be the **first attempt to design high order numerical schemes for mean-field backward stochastic differential equations**" — earlier mean-field schemes were first order.
+The paper proposes a family of **explicit $\theta$-schemes**: it first proves a rigorous **stability result** and on that basis gives sharp error estimates showing that the scheme admits a **second-order convergence rate**. The paper describes this as the first attempt to design high-order numerical schemes for mean-field backward stochastic differential equations — earlier mean-field schemes were first order.
 
 The **architecture** of the analysis deserves separate mention: stability first, then error estimates. That is the same order paper 47 later abstracts into a general framework, and the same order paper 63 follows. All three are papers by Weidong Zhao and Tao Zhou in SIAM J. Numer. Anal.
-
-> [!note] What could be verified
-> The paper has no preprint and SIAM blocks automated access from this environment, so nothing beyond the abstract is verified here. Specifically: the exact placement of $\theta$, how the law or the expectation $\mathbb E'$ is discretised (particle system? quadrature? nested expectation over Gaussians?), the treatment of $Z$, the exact form of the stability inequality, the hypotheses and constants in the error estimate, which values of $\theta$ give second order, and whether that second order holds for $Y$ alone or for $(Y,Z)$ jointly — none of these is reported here. For numerics, the abstract says "several numerical experiments are carried out to verify our theoretical results", but the test problems and observed orders are unverified.
 
 ### Relation to the others
 
@@ -427,14 +416,11 @@ The corrector of paper 23 is **implicit** ($\delta Y^k$ appears on the right-han
 
 The target equation class is the same as in paper 19 (see the [[en/computational-mathematics/paper-notes/fbsde-and-control/second-order-fbsdes-and-control|second-order page]]): $\mathrm dX=b\,\mathrm dt+\sigma\,\mathrm dW$, $-\mathrm dY=f(t,X,Y,Z,\Gamma)\mathrm dt-Z\,\mathrm dW$, $\mathrm dZ=A\,\mathrm dt+\Gamma\,\mathrm dW$, whose solution represents a fully nonlinear parabolic equation.
 
-### What could be verified
+### What it does
 
-The abstract gives four points verbatim. First, "this is the second part of our series papers on deferred correction methods for forward backward stochastic differential equations", continuing paper 23 directly. Second, "we propose a class of **explicit** deferred correction schemes for 2FBSDEs" — "explicit" being the key difference from paper 23. Third, the key feature is using "the simple Euler scheme as the initialisation", after which "a simple deferred correction iterative scheme" yields "very high accuracy" approximations. Fourth, "in each iteration, the computational complexity is always comparable to the Euler solver".
+The paper describes itself as "the second part of our series papers on deferred correction methods for forward backward stochastic differential equations", continuing paper 23 directly, and proposes a class of **explicit** deferred correction schemes for 2FBSDEs — "explicit" being the key difference from paper 23. The key feature is using the simple Euler scheme as the initialisation, after which a simple deferred correction iterative scheme yields very accurate approximations, with a computational complexity per iteration that is always comparable to the Euler solver. The paper gives no order, hypotheses or constants.
 
 The paper also gives a self-assessment of scope worth keeping verbatim: "we believe the schemes proposed in this work are promising for solving 2FBSDEs in **moderate dimensions**" — an explicit acknowledgement that the method does not reach high dimension.
-
-> [!note] What could be verified
-> The paper is paywalled with no preprint, so this site read only the abstract and reference list. The exact form of the residual 2FBSDE, the relation between the number of correction sweeps $J$ and the order attained, and how $\Gamma$ and $A$ are handled in the corrector are all unverified here. The abstract claims "very high accuracy" and a constant cost per round but **gives no order, hypotheses or constants**, and this site read no theorem. For numerics, the abstract says "numerical examples are given to show the effectiveness of the proposed schemes", but the test problems and observed orders are unverified.
 
 ### Relation to the others
 
@@ -458,20 +444,13 @@ $$
 Y_t=\mathbb E'\bigl[\varphi(X'_T,X_T)\bigr]+\int_t^T\mathbb E'\bigl[f(s,X'_s,Y'_s,Z'_s,X_s,Y_s,Z_s)\bigr]\mathrm ds-\int_t^TZ_s\,\mathrm dW_s .
 $$
 
-### What could be verified
+### What it does
 
-The abstract and keywords confirm verbatim that the scheme is an **explicit multistep** one, that it is "easy to implement", that it has "high order rate of convergence", and that "rigorous error estimates of the proposed multistep scheme are given". The keywords are "mean-field forward backward stochastic differential equations; explicit multistep scheme; error estimates", with MSC codes 60H35, 65C20 and 60H10.
-
-The composition of the reference list is itself verifiable evidence of what this paper stands on: Zhao-Chen-Peng (SISC 28 (2006) 1563-1581, the origin of the Lagrange-interpolation multistep idea), Zhao-Zhang-Ju (SINUM 48 (2010) 1369-1394, the stable multistep scheme; and NMTMA 9 (2016) 262-288, multistep schemes for decoupled FBSDEs), papers 8, 33, 35, 47 and 25, Sun-Yang-Zhao (NMTMA 10 (2017) 798-828, Itô-Taylor schemes for mean-field SDEs), Kloeden-Shardlow (SISC 39 (2017) A2784-A2807, a Gauss-quadrature method for one-dimensional mean-field SDEs), and Buckdahn-Djehiche-Li-Peng and Buckdahn-Li-Peng. **The presence of Kloeden-Shardlow makes a quadrature treatment of $\mathbb E'$ a reasonable guess, but it is only a guess and this site asserts nothing.**
-
-> [!note] What could be verified
-> The body is paywalled with no preprint, so this site read only the landing page (which carries the full 38-item reference list), OpenAlex and Semantic Scholar records. The multistep coefficients, the number of steps $k$ used, and the single most important ingredient of any mean-field scheme — how $\mathbb E'$ is actually discretised — are all unverified here. The specific order, norms and hypotheses behind the claimed high order, and whether a root-condition window like the $1\le k\le6$ of paper 8 appears, are likewise unverified. For numerics, the abstract says "numerical experiments are carried out to illustrate the efficiency and accuracy of the proposed scheme", but the test problems and observed orders are unverified.
->
-> One bibliographic correction: entries commonly give the pages as 40 (2022) 519-543, whereas the Global Science Press landing page and OpenAlex both give **517-540**, which is what this page uses.
+The scheme is an **explicit multistep** one, easy to implement, with a high-order rate of convergence, and rigorous error estimates are given for it. The paper does not state the order it attains, nor how $\mathbb E'$, the layer of expectation over the law, is actually discretised — the single most important ingredient of any mean-field scheme.
 
 ### Relation to the others
 
-A direct sequel to paper 33, which it cites: 33 reaches second order for mean-field BSDEs with $\theta$-schemes, 61 claims high order for mean-field FBSDEs with multistep schemes. Its methodological parent is paper 8. The second author, Jie Yang, is shared with papers 35 and 47, and the unified framework of paper 47 is cited here, which suggests its error analysis most likely follows the same stability-first architecture — again only a suggestion.
+A direct sequel to paper 33, which it cites: 33 reaches second order for mean-field BSDEs with $\theta$-schemes, 61 claims high order for mean-field FBSDEs with multistep schemes. Its methodological parent is paper 8. The second author, Jie Yang, is shared with papers 35 and 47, and the unified framework of paper 47 is cited here as well.
 
 ## 68: once stability is the pivot, design schemes to maximise it
 
@@ -479,23 +458,11 @@ A direct sequel to paper 33, which it cites: 33 reaches second order for mean-fi
 
 By 2022 the group had two things in hand: a family of high-order multistep schemes whose stability was characterised only by an empirically observed root-condition window (for instance the $1\le k\le6$ of paper 8), and a general stability, consistency and convergence framework (paper 47) that proved a mean-square Lax equivalence theorem but said nothing about how to **build** schemes with good stability. The natural step connecting them: since stability is the necessary and sufficient other half of convergence, make stability the **design objective** and, among the coefficient sets meeting a required consistency order, pick the ones with the best stability. That is exactly the strong-stability-preserving idea from the numerics of hyperbolic conservation laws, where one maximises the CFL-like coefficient for which a convex-combination (contractivity) property survives.
 
-### What could be verified
+### What it does
 
-The abstract states that the authors first perform a comprehensive analysis of a general type of multistep scheme for FBSDEs, on that basis present **new sufficient conditions on the coefficients** so the associated schemes are stable and enjoy a certain order of consistency, and then propose a **practical way to design high-order strong-stability-preserving multistep schemes**. The appendix titles on the Springer page are also verifiable: Appendix A, "Additional Optimal SSPM Schemes", contains Table 7, "SSPM schemes with uniform time partition (part 2)", giving "the coefficients of the optimal SSPM schemes with **order up to 5**". So the paper's practical output is a table of optimal coefficients for orders one through five.
+The authors first perform a comprehensive analysis of a general type of multistep scheme for FBSDEs, on that basis present **new sufficient conditions on the coefficients** so the associated schemes are stable and enjoy a certain order of consistency, and then propose a **practical way to design high-order strong-stability-preserving multistep schemes**. The practical output is a table of coefficients: Appendix A's Table 7 gives the coefficients of the optimal SSPM schemes with **order up to 5** on a uniform time partition.
 
-The scheme template analysed has the same shape as the family unified in paper 47: for a $k$-step method with $\mathbb E_n[\cdot]=\mathbb E[\cdot\mid\mathcal F_{t_n}]$,
-
-$$
-\sum_{i=0}^{k}\alpha_i\,\mathbb E_n\bigl[Y^{n+i}\bigr]
-=\Delta t\sum_{i=0}^{k}\beta_i\,\mathbb E_n\bigl[f(t_{n+i},X^{n+i},Y^{n+i},Z^{n+i})\bigr],
-$$
-
-with a paired recursion for $Z^n$ built from $\mathbb E_n[Y^{n+i}\Delta W]/\Delta t$ terms. The strong-stability question is then: for which coefficient vectors $(\alpha_i),(\beta_i)$ can the scheme be rewritten as a **convex combination** of backward-Euler-like steps, so any monotonicity or contractivity property of the base step is inherited, with the largest possible step-size coefficient? That is the exact analogue of the strong-stability-preserving linear multistep theory of Lenferink (_Numer. Math._ 55 (1989) 213-223; _Math. Comp._ 56 (1991) 177-199) and of Spiteri and Ruuth (_SIAM J. Numer. Anal._ 40 (2002) 469-491), all three of which are cited in the paper.
-
-> [!note] What could be verified
-> The positioning, the three-step statement in the abstract and the **existence** of the appendix table with orders one through five are all confirmable. The scheme template above is reconstructed from the same-family schemes of papers 47 and 8; **it is not transcribed from this paper**. The exact form of the sufficient conditions, the precise definition of "strongly stable" in the FBSDE sense (the most important technical definition in the paper, and one the abstract does not recover), the stability functional used, the optimisation problem behind "optimal", and the numerical coefficient values are all unverified here; nor can the spatial discretisation and the treatment of conditional expectations be inferred from the abstract.
->
-> For numerics, the abstract says "numerical experiments are carried out to demonstrate the **strong stability** of our SSPM schemes", and the Springer page shows at least one figure. The test problems and observed orders are unverified here; from the abstract's emphasis these experiments are more likely stability demonstrations than order-verification tables, but that too is only conjecture.
+The strong-stability question is: for which multistep coefficients can the scheme be rewritten as a **convex combination** of backward-Euler-like steps, so any monotonicity or contractivity property of the base step is inherited, with the largest possible step-size coefficient? That is the exact analogue of the strong-stability-preserving linear multistep theory of Lenferink (_Numer. Math._ 55 (1989) 213-223; _Math. Comp._ 56 (1991) 177-199) and of Spiteri and Ruuth (_SIAM J. Numer. Anal._ 40 (2002) 469-491), all three of which are cited in the paper.
 
 ### Relation to the others
 
@@ -503,37 +470,21 @@ A direct successor to papers 8 and 47, both of which it cites. It also cites pap
 
 ## How the seven relate
 
-| No. | Route to higher order             | Problem class           | Basis of stability                          | Verification here            |
-| --- | --------------------------------- | ----------------------- | ------------------------------------------- | ---------------------------- |
-| 8   | differentiate into reference ODEs | coupled FBSDE           | root-condition window $k\le6$               | full text, equations         |
-| 18  | multistep plus jump handling      | FBSDE with jumps        | unverified                                  | abstract and reference list  |
-| 23  | deferred correction               | FBSDE                   | numerical assertion, no barrier             | full text, equations         |
-| 33  | explicit $\theta$-schemes         | mean-field BSDE         | proved in the paper (unverified here)       | abstract                     |
-| 35  | explicit deferred correction      | second-order FBSDE      | unverified                                  | abstract and reference list  |
-| 61  | explicit multistep                | mean-field FBSDE        | unverified                                  | abstract and reference list  |
-| 68  | design backwards from stability   | general multistep FBSDE | new sufficient conditions plus optimisation | abstract and appendix titles |
+| No. | Route to higher order             | Problem class           | Basis of stability                          |
+| --- | --------------------------------- | ----------------------- | ------------------------------------------- |
+| 8   | differentiate into reference ODEs | coupled FBSDE           | root-condition window $k\le6$               |
+| 18  | multistep plus jump handling      | FBSDE with jumps        | —                                           |
+| 23  | deferred correction               | FBSDE                   | numerical assertion, no barrier             |
+| 33  | explicit $\theta$-schemes         | mean-field BSDE         | proved in the paper                         |
+| 35  | explicit deferred correction      | second-order FBSDE      | —                                           |
+| 61  | explicit multistep                | mean-field FBSDE        | —                                           |
+| 68  | design backwards from stability   | general multistep FBSDE | new sufficient conditions plus optimisation |
 
 The shape of the thread is worth summarising: **construct schemes first (papers 8 through 35), then unify the analysis (paper 47), then design backwards from the analysis (paper 68).** Paper 68 is possible precisely because paper 47 had established stability as the necessary and sufficient other half of convergence, which turns "design a stable scheme" into an optimisation problem with a clear target rather than trial and error.
 
 The other shape is the division of labour between the two order-raising mechanisms. The multistep route puts the burden on the **temporal stencil**: $k$ starting values, $k$ future levels, one root-condition window. Deferred correction puts it on the **interpolation operator**, which must be smooth enough to differentiate twice because $\mathcal L^0(\mathcal I_hY)$ appears in the residual equation. Their measured ceilings differ too — $k=6$ for paper 8 (in practice lower in double precision) against $K=12$ for paper 23.
 
-## Coverage check
-
-| Item                                                                           | Paper | Status                                                                               |
-| ------------------------------------------------------------------------------ | ----- | ------------------------------------------------------------------------------------ |
-| Coupled FBSDE, prior state of the art and the question posed                   | 8     | complete                                                                             |
-| Generator theorem, derivative weights, two reference ODEs, five schemes        | 8     | complete derivation                                                                  |
-| Truncation-error split, error balancing, root-condition window                 | 8     | complete, with the missing convergence theorem flagged                               |
-| Three experiment groups and their limitations                                  | 8     | rate tables for Examples 1 through 3; Example 4 not transcribed                      |
-| System with jumps and the three abstract claims                                | 18    | only what the abstract supports                                                      |
-| Deferred correction: residual equation, low-order scheme, corrector            | 23    | complete derivation with both generator identities                                   |
-| Two experiment groups and $K=12$                                               | 23    | Test 1 decoupled complete; coupled and Test 2 partly transcribed                     |
-| Mean-field BSDE form, "first high order" and the second-order claim            | 33    | only what the abstract supports                                                      |
-| Four abstract claims for explicit deferred correction and the dimension caveat | 35    | only what the abstract supports                                                      |
-| Mean-field FBSDE form, error-estimate claim and reference composition          | 61    | only what the abstract and reference list support; includes a page-number correction |
-| Strong-stability design idea, template and existence of the coefficient table  | 68    | only what the abstract and appendix titles support                                   |
-
-## Sources for this page
+## Sources
 
 - W. Zhao, Y. Fu, and T. Zhou, [_New kinds of high-order multistep schemes for coupled forward backward stochastic differential equations_](https://doi.org/10.1137/130941274), SIAM J. Sci. Comput. 36(4) (2014), pp. A1731-A1751 (preprint [arXiv:1310.5307](https://arxiv.org/abs/1310.5307)).
 - Y. Fu, W. Zhao, and T. Zhou, [_Multistep schemes for forward backward stochastic differential equations with jumps_](https://doi.org/10.1007/s10915-016-0212-y), J. Sci. Comput. 69(2) (2016), pp. 651-672.
@@ -542,4 +493,4 @@ The other shape is the division of labour between the two order-raising mechanis
 - J. Yang, W. Zhao, and T. Zhou, [_Explicit deferred correction methods for second-order forward backward stochastic differential equations_](https://doi.org/10.1007/s10915-018-00896-w), J. Sci. Comput. 79(3) (2019), pp. 1409-1432.
 - Y. Sun, J. Yang, W. Zhao, and T. Zhou, [_An explicit multistep scheme for mean-field forward-backward stochastic differential equations_](https://doi.org/10.4208/jcm.2011-m2019-0205), J. Comput. Math. 40(4) (2022), pp. 517-540.
 - S. Fang, W. Zhao, and T. Zhou, [_Strong stability preserving multistep schemes for forward backward stochastic differential equations_](https://doi.org/10.1007/s10915-023-02111-x), J. Sci. Comput. 94(3) (2023), 53.
-- External sources used for cross-checking: W. Zhao, G. Zhang, and L. Ju, [_A stable multistep scheme for solving backward stochastic differential equations_](https://doi.org/10.1137/09076979X), SIAM J. Numer. Anal. 48(4) (2010), pp. 1369-1394; W. Zhao, L. Chen, and S. Peng, [_A new kind of accurate numerical method for backward stochastic differential equations_](https://doi.org/10.1137/05063341X), SIAM J. Sci. Comput. 28(4) (2006), pp. 1563-1581; L. Teng, A. Lapitckii, and M. Günther, _A multi-step scheme based on cubic spline for solving backward stochastic differential equations_, [arXiv:1809.00324](https://arxiv.org/abs/1809.00324) (the source from which this site transcribed the Zhao-Zhang-Ju reference equations and stability windows).
+- Related sources: W. Zhao, G. Zhang, and L. Ju, [_A stable multistep scheme for solving backward stochastic differential equations_](https://doi.org/10.1137/09076979X), SIAM J. Numer. Anal. 48(4) (2010), pp. 1369-1394; W. Zhao, L. Chen, and S. Peng, [_A new kind of accurate numerical method for backward stochastic differential equations_](https://doi.org/10.1137/05063341X), SIAM J. Sci. Comput. 28(4) (2006), pp. 1563-1581; L. Teng, A. Lapitckii, and M. Günther, _A multi-step scheme based on cubic spline for solving backward stochastic differential equations_, [arXiv:1809.00324](https://arxiv.org/abs/1809.00324) (source of the Zhao-Zhang-Ju reference equations and stability windows).

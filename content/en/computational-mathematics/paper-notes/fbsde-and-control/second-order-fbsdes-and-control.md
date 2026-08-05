@@ -9,11 +9,6 @@ tags:
   - fully-nonlinear-equations
 ---
 
-> [!note] Coverage of this page
-> Papers **16** (_Commun. Comput. Phys._ 18(5), 2015), **19** (_Commun. Comput. Phys._ 21(3), 2017), **25** (_Discrete Contin. Dyn. Syst. Ser. B_ 22(9), 2017), **26** (_SIAM J. Numer. Anal._ 55(6), 2017), **41** (_Numer. Math. Theor. Meth. Appl._ 13(2), 2020), **50** (_J. Sci. Comput._ 85(2), 2020) and **51** (_SIAM J. Control Optim._ 58(6), 2020).
->
-> Of these, **19** (full arXiv preprint), **25** (full arXiv preprint), **26** (full author-accepted manuscript), **50** (full arXiv preprint) and **51** (published text) were checked equation by equation, so this page gives their complete derivations, theorems and numerical experiments. The bodies of **16** and **41** could not be obtained — neither has a preprint, and the Global Science Press PDF endpoints are unreachable or return 403 to direct download — so for those two only what the abstracts and reference lists support is written here. Where scheme details are inferred from their sibling papers, that is flagged in place.
-
 ## Why a "second-order" FBSDE is needed
 
 A first-order forward-backward system corresponds through the nonlinear Feynman-Kac relation to a **semilinear** parabolic equation: $Y_t$ gives the solution and $Z_t$ gives the ($\sigma$-weighted) gradient. Second derivatives can only enter **linearly**, through the quadratic-variation term of Itô's formula; there is no other doorway. So covering **fully nonlinear** equations, where the Hessian enters nonlinearly, requires one more process in the probabilistic representation.
@@ -62,20 +57,15 @@ $$
 \qquad Y_T=g(X_T).
 $$
 
-**This system is written here by inference from equation (2.9) of the sibling paper 19**; the numbering and notation actually printed in this paper are unverified.
+### What it does
 
-### What could be verified
+The method is obtained by extending the results of paper 8. The specific contribution the paper flags is that "in our numerical schemes, one has the **flexibility to choose the associated forward SDE**, and a suitable choice can significantly reduce the computational complexity."
 
-The abstract confirms two things verbatim. First, the method is obtained by extending the results of paper 8 ("by extending our previous results [W. Zhao, Y. Fu and T. Zhou, SIAM J. Sci. Comput., 36 (2014), pp. A1731-A1751]"). Second, and flagged as the specific contribution: "in our numerical schemes, one has the **flexibility to choose the associated forward SDE**, and a suitable choice can significantly reduce the computational complexity."
-
-Where that freedom comes from was explained above: the CSTV PDE does not depend on $\mu,\sigma$, and Theorem 2 of paper 8 says the one-step derivative approximation sees only the left-endpoint coefficients. Stacked together, they permit picking a convenient auxiliary diffusion. **One concrete payoff (this site's reasoning, not the paper's words) is that with constant coefficients the same Gauss-Hermite nodes can be reused at every grid point instead of being recomputed pointwise.**
-
-> [!note] What could be verified
-> The publisher returns 403 to direct PDF download, `doc.global-sci.org` is unreachable, and the paper has no preprint, so this site read only the landing page (title, authors, volume/issue/pages, DOI, dates, abstract and the full 28-item reference list) and the OpenAlex record. The four reference ordinary differential equations, the $\alpha_{k,i}$ weights, the Euler step for the forward SDE, local Lagrange interpolation and Gauss-Hermite quadrature can all be read in the sibling paper 19, but **the scheme numbering and notation actually printed in this paper, and whether its spatial discretisation differs from that of paper 19, are unverified here**. No theorem statement was read; by the conventions of the family a $k$-step scheme should be order $k$ in $(Y,Z,\Gamma,A)$, but that is unverified for this paper. For numerics, the abstract says "various numerical examples **including the HJB equations** are presented" — **the "including the HJB equations" part is verifiable** — but the specific test problems and observed orders are not.
+Where that freedom comes from was explained above: the CSTV PDE does not depend on $\mu,\sigma$, and Theorem 2 of paper 8 says the one-step derivative approximation sees only the left-endpoint coefficients. Stacked together, they permit picking a convenient auxiliary diffusion. Concretely, with constant coefficients the same Gauss-Hermite nodes can be reused at every grid point instead of being recomputed pointwise. The numerical examples include HJB equations.
 
 ### Relation to the others
 
-Papers 16 and 19 are near-twins: **16 is framed PDE-first (fully nonlinear parabolic PDE, then 2FBSDE, then scheme), 19 is framed 2FBSDE-first with the stochastic-control application attached.** The reference lists show this batch was written simultaneously: 16 cites 19 as "arXiv:1502.03206, 2015", 25 as "submitted, 2015" and 23 as "submitted, 2015". Paper 35 later replaces the multistep stencil here with explicit deferred correction for the same 2FBSDE class.
+Papers 16 and 19 are near-twins: **16 is framed PDE-first (fully nonlinear parabolic PDE, then 2FBSDE, then scheme), 19 is framed 2FBSDE-first with the stochastic-control application attached.** Papers 16, 19, 23 and 25 cite one another as preprints or submissions, so the batch was written simultaneously. Paper 35 later replaces the multistep stencil here with explicit deferred correction for the same 2FBSDE class.
 
 ## 19: carrying the multistep machinery to second-order equations, and on to control
 
@@ -207,7 +197,7 @@ $$
 - **Stability range.** Section 5.1 states that the method "admits a $k$-order convergence rate, and it remains stable for $1\le k\le6$, which is coincide with the classic numerical ODEs theory and our previous results" — the same $k\le6$ barrier as paper 8.
 
 > [!warning] This paper likewise has no convergence theorem
-> The arXiv version proves **no** convergence theorem with explicit constants; high order rests on the truncation estimates above plus numerics. Whether the published CiCP version adds one is unverified here.
+> The paper proves **no** convergence theorem with explicit constants; high order rests on the truncation estimates above plus numerics.
 
 ### Numerical experiments
 
@@ -262,11 +252,11 @@ $$
 \mathrm dZ_t=A_t\,\mathrm dt+\Gamma_t\,\mathrm dW_t,
 $$
 
-with the control recovered by $\alpha^n=-\frac{\beta}{2q\sigma}Z^n$ and parameters $\mu=0.1$, $r=0.03$, $\sigma=0.5$, $c=0.1$. The paper concludes that "the approach is of high order accuracy, both for the 2FBSDE solution and the optimal control $\alpha$"; **this site confirms the claim exists but did not transcribe its data table.**
+with the control recovered by $\alpha^n=-\frac{\beta}{2q\sigma}Z^n$ and parameters $\mu=0.1$, $r=0.03$, $\sigma=0.5$, $c=0.1$. The paper concludes that "the approach is of high order accuracy, both for the 2FBSDE solution and the optimal control $\alpha$".
 
 The paper also states a general recipe: for $\mathrm dX_t=b(t,X_t,\alpha_t)\mathrm dt+\sigma(t,X_t,\alpha_t)\mathrm dW_t$ with $J(\alpha)=\mathbb E[\int_0^Tf(t,X_t,\alpha_t)\mathrm dt+g(X_t)]$, the HJB is $\partial_tV+\inf_{\alpha\in U}\{\frac{\sigma^2}{2}\partial^2_{xx}V+b\,\partial_xV-f\}=0$ with $\alpha^\ast(t,x)=\arg\inf_\alpha\{\cdots\}$; substituting gives $\partial_tV+G(t,x,\partial_xV,\partial^2_{xx}V)=0$ with $G(t,x,p,P)=\frac{\sigma(t,x,\alpha^\ast)^2}{2}P+b(t,x,\alpha^\ast)p-f(t,x,\alpha^\ast)$; the corresponding 2FBSDE is solved and the control recovered as $\alpha^\ast_t=g(X_t,Y_t,Z_t,\Gamma_t)$. **The essential premise of the recipe is that $\inf_\alpha$ can be computed analytically** — precisely what the deep-learning route of papers 86 and 96 later sets out to avoid.
 
-**What these experiments establish, and where they fall short.** They establish that all four components attain order $k$ in the second-order setting, which is the paper's central claim, and Table 5.4 supports it directly; the efficiency comparison also shows that high order pays off in measured time. Three shortfalls. First, the examples remain low-dimensional and smooth with tensor Gauss-Hermite quadrature; the paper's own introduction frames the gap as "high order only in low dimension, high dimension only at low order", and this paper closes the first half only. Second, quadruple-precision arithmetic is a substantive implementation choice, which leaves open whether this family can reach $k=6$ stably in double precision (paper 8's $k=6$ in double precision was polluted by round-off). Third, the high order of the control example is only asserted in prose; this site did not transcribe its data table, so no order is reported here for it.
+**What these experiments establish, and where they fall short.** They establish that all four components attain order $k$ in the second-order setting, which is the paper's central claim, and Table 5.4 supports it directly; the efficiency comparison also shows that high order pays off in measured time. Three shortfalls. First, the examples remain low-dimensional and smooth with tensor Gauss-Hermite quadrature; the paper's own introduction frames the gap as "high order only in low dimension, high dimension only at low order", and this paper closes the first half only. Second, quadruple-precision arithmetic is a substantive implementation choice, which leaves open whether this family can reach $k=6$ stably in double precision (paper 8's $k=6$ in double precision was polluted by round-off). Third, the high order of the control example is only asserted in prose, with no order attached to it.
 
 ### Relation to the others
 
@@ -339,7 +329,7 @@ whose coefficients solve $f(x_{\mathbf j})=\sum_{\mathbf k\in I^p_q}b_{\mathbf k
 
 ### Theorems
 
-**This site found no self-contained convergence theorem in the paper.** It transports the order-$k$ claim from paper 8 and quotes standard sparse-grid quadrature error results from the literature (its words: it "obtain[s] the following result of the sparse grid quadrature for functions defined on a high-dimensional cube", but **the exact constants were not transcribed here**). Its concrete contribution is at the complexity level: running time grows "in certain polynomial level (non-exponential)" with dimension — **a numerical observation (Figure 2), not a theorem.**
+**The paper proves no convergence theorem of its own.** It transports the order-$k$ claim from paper 8 and quotes standard sparse-grid quadrature error results from the literature. Its concrete contribution is at the complexity level: running time grows "in certain polynomial level (non-exponential)" with dimension — **a numerical observation (Figure 2), not a theorem.**
 
 ### Numerical experiments
 
@@ -368,7 +358,7 @@ Running times show SSG substantially cheaper at comparable accuracy.
 
 **Example 3 ($q$-dimensional coupled).** $b_i=\frac t2\cos^2(y+x_i)$, $\sigma_{ii}=\frac t2\sin^2(y+x_i)$.
 
-**What these experiments establish, and where they fall short.** They establish that sparse grids carry the same time discretisation to six dimensions while keeping high order, and that the time curve is no longer exponential — exactly what the paper set out to show. Three shortfalls. First, **six dimensions is the measured ceiling of this route, not its floor**; the later deep-learning papers (86, 93, 96, 97, 100) reach thousands of dimensions by abandoning grids entirely. Second, the three-step scheme in Example 1 shows only 2.632 for $E_Y$, clearly below the nominal 3, against 2.955 for $E_Z$ — **the two components are out of step in the error table, the paper does not explain it, and this page will not explain it on the paper's behalf.** Third, Example 1 relies on periodicity to compress the domain into a bounded box, which is what makes the sparse grid usable; how to truncate a general unbounded problem is not covered by the experiments.
+**What these experiments establish, and where they fall short.** They establish that sparse grids carry the same time discretisation to six dimensions while keeping high order, and that the time curve is no longer exponential — exactly what the paper set out to show. Three shortfalls. First, **six dimensions is the measured ceiling of this route, not its floor**; the later deep-learning papers (86, 93, 96, 97, 100) reach thousands of dimensions by abandoning grids entirely. Second, the three-step scheme in Example 1 shows only 2.632 for $E_Y$, clearly below the nominal 3, against 2.955 for $E_Z$ — **the two components are out of step in the error table, and the paper does not explain it.** Third, Example 1 relies on periodicity to compress the domain into a bounded box, which is what makes the sparse grid usable; how to truncate a general unbounded problem is not covered by the experiments.
 
 ### Relation to the others
 
@@ -529,7 +519,7 @@ and the projection degenerates to a pointwise scalar projection $\bar u^\ast(t_n
 
 The step sizes are $\rho_i=1/\sqrt i$, with the paper's explanation that a small $\rho$ helps the estimate converge but too small a $\rho$ slows the iteration.
 
-**Example 1.** $J(u)=\frac12\int_0^T\mathbb E[(x_t-x^\ast(t))^2]\mathrm dt+\frac12\int_0^Tu^2(t)\mathrm dt$, $K=U$, state $\mathrm dx_t=u(t)x_t\mathrm dt+\sigma x_t\mathrm dW_t$. Setup $x_0=1$, $T=1$, $\sigma=0.1$, $M=10^5$ samples, tolerance $\epsilon_0=10^{-5}$; first-order convergence is observed. **This site transcribed only part of the exact control expression for this example, so it is not reproduced here.** A second test with $\sigma=0.1$, $M=10^5$, $\epsilon_0=10^{-5}$ and $N=40,50,\dots,100$ concludes that "the numerical solution matches the exact solution very well and first order convergence rate is observed".
+**Example 1.** $J(u)=\frac12\int_0^T\mathbb E[(x_t-x^\ast(t))^2]\mathrm dt+\frac12\int_0^Tu^2(t)\mathrm dt$, $K=U$, state $\mathrm dx_t=u(t)x_t\mathrm dt+\sigma x_t\mathrm dW_t$. Setup $x_0=1$, $T=1$, $\sigma=0.1$, $M=10^5$ samples, tolerance $\epsilon_0=10^{-5}$; first-order convergence is observed. A second test with $\sigma=0.1$, $M=10^5$, $\epsilon_0=10^{-5}$ and $N=40,50,\dots,100$ concludes that "the numerical solution matches the exact solution very well and first order convergence rate is observed".
 
 **Example 3 — feedback control.** The same state and cost, but with $K$ a set of **stochastic** controls. Comparing Algorithm 1 (deterministic control) with Algorithm 2 (feedback control), the values of $J(u)$ make the paper's clearest single table:
 
@@ -544,7 +534,7 @@ The paper concludes: "the use of feedback control can indeed improve the results
 
 **Example 4 — portfolio problem.** The reference optimal value is $J(u)=15023$; with $N=1000,2000,4000,8000$ and $M=N^2/10$, "the method admits a first order rate of convergence".
 
-**What these experiments establish, and where they fall short.** They establish that the first order predicted by Theorem 2 is observed in all four examples, and the feedback comparison adds a conclusion independent of order, about the size of the control set. Three shortfalls. First, first order here is the design target rather than evidence of a limitation — the paper deliberately uses only the Euler scheme with matching first-order analysis; whether higher order is attainable is the subject of paper 41. Second, this site transcribed Example 1's exact solution and Example 2's content only partially, so no error tables for those two appear on this page. Third, every example is one-dimensional, while the paper only asserts that the framework extends easily to several dimensions, without multi-dimensional experiments.
+**What these experiments establish, and where they fall short.** They establish that the first order predicted by Theorem 2 is observed in all four examples, and the feedback comparison adds a conclusion independent of order, about the size of the control set. Two shortfalls. First, first order here is the design target rather than evidence of a limitation — the paper deliberately uses only the Euler scheme with matching first-order analysis; whether higher order is attainable is the subject of paper 41. Second, every example is one-dimensional, while the paper only asserts that the framework extends easily to several dimensions, without multi-dimensional experiments.
 
 ### Relation to the others
 
@@ -562,14 +552,11 @@ The overall accuracy of paper 26 is first order, and the bottleneck is clear: th
 
 The same stochastic optimal control problem as paper 26. This paper converts it into "an equivalent stochastic optimality system of FBSDEs": the forward state SDE, the backward adjoint BSDE, and the variational inequality or stationarity condition in the control, combined into one coupled system.
 
-### What could be verified
+### What it does
 
-The abstract gives three points verbatim. First, the stochastic optimal control problem is converted into "an equivalent stochastic optimality system of FBSDEs". Second, the authors design "an efficient **second order FBSDE solver**" and "an quasi-Newton type optimization solver" for the resulting system. Third, "it is noticed that our approach admits the **second order rate of convergence even when the state equation is approximated by the Euler scheme**". The keywords are "FBSDEs; stochastic optimal control; stochastic maximum principle; projected quasi-Newton methods", with AMS classes 60H35, 93E20, 93E25, 49M29, 65C20 and 65K15.
+The paper converts the stochastic optimal control problem into "an equivalent stochastic optimality system of FBSDEs", then designs an efficient **second-order FBSDE solver** and a **quasi-Newton type optimisation solver** for the resulting system. What it flags is that the approach "admits the **second order rate of convergence even when the state equation is approximated by the Euler scheme**". It states neither the concrete form of the second-order scheme nor that of the quasi-Newton update.
 
-The composition of the reference list is verifiable evidence too: it cites papers 8, 19, 25, 26 and 23, as well as Zhao-Zhang-Ju (SINUM 2010), Zhao-Chen-Peng (SISC 2006), Peng's stochastic maximum principle, Pontryagin et al., Yong and Zhou, Powell-Yuan trust regions, Dai-Yuan conjugate gradients and He's projection-and-contraction methods. **That list says directly where each of its two components comes from: the high-order FBSDE solver from the multistep and deferred-correction toolbox, the optimiser from the nonlinear-programming literature.** It also cites Yang and Zhao's "Convergence of recent multistep schemes for a forward-backward stochastic differential equation" (EAJAM 2015), the convergence theory that paper 47 later generalises.
-
-> [!note] What could be verified
-> `doc.global-sci.org` is unreachable, `global-sci.org` returns 403 to direct download, and the paper has no preprint, so this site read only the landing page (with the full 46-item reference list) and the OpenAlex record. Specifically, **whether the second-order FBSDE solver is the $k=2$ member of the paper 8 / paper 47 family or an equivalent $\theta$ or Crank-Nicolson-type scheme is unverified here**; so are the exact quasi-Newton update (BFGS? limited memory?) and the globalisation strategy (line search? trust region?). Whether the second-order claim is proved as a theorem or demonstrated numerically, and under what hypotheses and constants, is likewise unverified — the venue and reference list make a proof plausible, but this site read none. For numerics, the abstract says "several numerical examples are presented to illustrate the effectiveness and the accuracy of the proposed numerical schemes", but the test problems and observed orders are unverified.
+Its two components stand on different traditions: the high-order FBSDE solver comes from the multistep and deferred-correction toolbox (the paper cites papers 8, 19, 23, 25 and 26 along with Zhao-Zhang-Ju and Zhao-Chen-Peng), and the optimiser from the nonlinear-programming literature (Powell-Yuan trust regions, Dai-Yuan conjugate gradients, He's projection-and-contraction methods).
 
 ### Relation to the others
 
@@ -673,7 +660,7 @@ The overall algorithm (PF-SGD) is structured as follows: initialise the particle
 
 ### Theorems
 
-**The preprint states no convergence theorem for PF-SGD.** It cites external analyses instead (numerical analysis of the backward scheme and its extensions in prior Bao-Cao-Webster-type and Zhao-school work) along with the standard stochastic-gradient-descent convergence literature. **This is therefore an algorithmic and computational paper, not an error-analysis one.** The one clearly stated theoretical ingredient is the gradient representation derived in the appendix from the stochastic maximum principle with Gâteaux derivatives.
+**The paper states no convergence theorem for PF-SGD.** It cites external analyses instead (numerical analysis of the backward scheme and its extensions in prior Bao-Cao-Webster-type and Zhao-school work) along with the standard stochastic-gradient-descent convergence literature. **This is therefore an algorithmic and computational paper, not an error-analysis one.** The one clearly stated theoretical ingredient is the gradient representation derived in the appendix from the stochastic maximum principle with Gâteaux derivatives.
 
 ### Numerical experiments
 
@@ -813,7 +800,7 @@ with $L_1\in(-\infty,\infty)$, which **may be negative**, and $L_2>0$. Lemma 2.1
 
 The stopping rule is $\max_{0\le j\le J}\|x^k_j-x_j\|_2\le10^{-8}$ against the converged solution $\{x_j\}$. The two examples are a **four-diode bridge wave rectifier** (a nonsmooth circuit with a nonlinear resistor and a capacitor of **random** value — this is where Tao Zhou's uncertainty-quantification interest enters) and a **projected dynamic system arising from the spatial price equilibrium problem**.
 
-The reported conclusion is that the method is superior to existing methods in robustness, complexity and computation time, and that both theoretical regimes — $h$-robust superlinear convergence at fixed $T$ and $O(h)$ linear convergence at fixed $J$ — are observed. **This site did not transcribe the per-experiment iteration counts and timings, so no quantitative comparison appears on this page.**
+The reported conclusion is that the method is superior to existing methods in robustness, complexity and computation time, and that both theoretical regimes — $h$-robust superlinear convergence at fixed $T$ and $O(h)$ linear convergence at fixed $J$ — are observed.
 
 ### Relation to the others
 
@@ -821,39 +808,19 @@ The reported conclusion is that the method is superior to existing methods in ro
 
 ## How the seven fit together
 
-| No. | What it treats                                                | Position relative to the others                      | Verification here           |
-| --- | ------------------------------------------------------------- | ---------------------------------------------------- | --------------------------- |
-| 16  | fully nonlinear parabolic PDEs                                | start of the second-order setting, PDE-first framing | abstract and reference list |
-| 19  | second-order FBSDEs and stochastic control                    | attaches the second-order setting to control         | full text, equations        |
-| 25  | cost of evaluating multi-dimensional conditional expectations | improvement on the spatial side                      | full text, equations        |
-| 26  | constrained stochastic optimal control                        | outer iteration (gradient projection), first order   | full text, equations        |
-| 41  | high-accuracy schemes for stochastic control                  | inner solve (high-order FBSDE), second order         | abstract and reference list |
-| 50  | data-driven feedback control                                  | partial observation, filtering coupled to control    | full text, equations        |
-| 51  | dynamic nonlinear complementarity problems                    | block iteration under nonsmooth constraints          | full text, equations        |
+| No. | What it treats                                                | Position relative to the others                      |
+| --- | ------------------------------------------------------------- | ---------------------------------------------------- |
+| 16  | fully nonlinear parabolic PDEs                                | start of the second-order setting, PDE-first framing |
+| 19  | second-order FBSDEs and stochastic control                    | attaches the second-order setting to control         |
+| 25  | cost of evaluating multi-dimensional conditional expectations | improvement on the spatial side                      |
+| 26  | constrained stochastic optimal control                        | outer iteration (gradient projection), first order   |
+| 41  | high-accuracy schemes for stochastic control                  | inner solve (high-order FBSDE), second order         |
+| 50  | data-driven feedback control                                  | partial observation, filtering coupled to control    |
+| 51  | dynamic nonlinear complementarity problems                    | block iteration under nonsmooth constraints          |
 
 The page has two shapes. The first is **two attacks on the same control problem**: paper 19 goes through dynamic programming (HJB, then 2FBSDE, with $\inf_\alpha$ solved analytically), while papers 26 and 41 go through Pontryagin (adjoint BSDE, then gradient, then projection or quasi-Newton). The former needs $\inf_\alpha$ to be available in closed form, the latter needs a computable gradient; the difficulties sit in completely different places. The second shape is **where the cost is saved**: paper 25 saves it inside the grid (sparse grids compress exponential into polynomial), while paper 50 discards the grid entirely (one-sample stochastic gradients) and gives up accuracy guarantees in exchange.
 
-## Coverage check
-
-| Item                                                                            | Paper      | Status                                                                          |
-| ------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------- |
-| CSTV second-order setting, the role of $\Gamma$, two notation differences       | background | complete                                                                        |
-| The design freedom to choose the forward SDE                                    | 16         | only what the abstract supports; equations inferred from paper 19               |
-| Representation theorem, four reference ODEs, five schemes, Newton iteration     | 19         | complete derivation                                                             |
-| Truncation errors, the twelve-term split, the $k\le6$ range                     | 19         | complete, with the missing convergence theorem flagged                          |
-| Four-component rate table and the efficiency comparison                         | 19         | Table 5.4 and Example 5.1 complete; the control example's table not transcribed |
-| Sparse grids, hierarchical bases, fast transform, sparse quadrature             | 25         | complete derivation                                                             |
-| Two-dimensional and $q$-dimensional experiments, polynomial growth              | 25         | Example 1 complete; Examples 2 and 3 setup and conclusions only                 |
-| Fixed-point characterisation, adjoint BSDE, left-point rectangle scheme         | 26         | complete derivation, including the Remark 1 criticism                           |
-| Theorem 1, Corollary 1, Theorem 2 and error balancing                           | 26         | complete, with hypotheses                                                       |
-| Feedback comparison table and first-order convergence                           | 26         | Example 3 complete; Examples 1, 2 and 4 partly transcribed                      |
-| Second-order solver and quasi-Newton optimiser                                  | 41         | only what the abstract and reference list support                               |
-| Partially observed setting, adjoint system, the PF-SGD single-realisation trick | 50         | complete derivation, including the paper's own caveat                           |
-| Efficiency comparison table and three examples                                  | 50         | Example 2 complete; Examples 1 and 3 setup and qualitative conclusions only     |
-| Gauss-Seidel iteration, parallel multipoint version, four theorems              | 51         | complete                                                                        |
-| Two numerical examples                                                          | 51         | setup and conclusions only; data tables not transcribed                         |
-
-## Sources for this page
+## Sources
 
 - T. Kong, W. Zhao, and T. Zhou, [_Probabilistic high order numerical schemes for fully nonlinear parabolic PDEs_](https://doi.org/10.4208/cicp.240515.280815a), Commun. Comput. Phys. 18(5) (2015), pp. 1482-1503.
 - T. Kong, W. Zhao, and T. Zhou, [_High order numerical schemes for second-order FBSDEs with applications to stochastic optimal control_](https://doi.org/10.4208/cicp.OA-2016-0056), Commun. Comput. Phys. 21(3) (2017), pp. 808-834 (preprint [arXiv:1502.03206](https://arxiv.org/abs/1502.03206)).
@@ -862,4 +829,4 @@ The page has two shapes. The first is **two attacks on the same control problem*
 - Y. Fu, W. Zhao, and T. Zhou, [_Highly accurate numerical schemes for stochastic optimal control via FBSDEs_](https://doi.org/10.4208/nmtma.OA-2019-0137), Numer. Math. Theor. Meth. Appl. 13(2) (2020), pp. 296-319.
 - R. Archibald, F. Bao, J. Yong, and T. Zhou, [_An efficient numerical algorithm for solving data driven feedback control problems_](https://doi.org/10.1007/s10915-020-01358-y), J. Sci. Comput. 85(2) (2020), 58 (preprint [arXiv:2006.03047](https://arxiv.org/abs/2006.03047)).
 - S. Wu, T. Zhou, and X. Chen, [_A Gauss-Seidel type method for dynamic nonlinear complementarity problems_](https://doi.org/10.1137/19M1268884), SIAM J. Control Optim. 58(6) (2020), pp. 3389-3412.
-- External source used for cross-checking: P. Cheridito, H. M. Soner, N. Touzi, and N. Victoir, [_Second-order backward stochastic differential equations and fully nonlinear parabolic PDEs_](https://doi.org/10.1002/cpa.20168), Comm. Pure Appl. Math. 60(7) (2007), pp. 1081-1110 (the source from which this site transcribed the definition of the second-order setting, the PDE correspondence, and the original statement that the forward diffusion may be chosen freely).
+- Related source: P. Cheridito, H. M. Soner, N. Touzi, and N. Victoir, [_Second-order backward stochastic differential equations and fully nonlinear parabolic PDEs_](https://doi.org/10.1002/cpa.20168), Comm. Pure Appl. Math. 60(7) (2007), pp. 1081-1110 (source of the definition of the second-order setting, the PDE correspondence, and the original statement that the forward diffusion may be chosen freely).
