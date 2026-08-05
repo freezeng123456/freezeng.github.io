@@ -107,24 +107,24 @@ $M^{-1}$ 是 $A^{-1}$ 的可并行近似。不同算法选择不同的局部性�
 
 Python 复现项目提供 8 个基线实验和 1 个组合论文验证入口。组合入口生成 6 张论文对应图；第二至第四章共引用 14 组 SVG/PNG 结果及其 JSON 记录。
 
-| Python 输出              | 网页位置         | 机器可读记录                                         |
-| ------------------------ | ---------------- | ---------------------------------------------------- |
-| `solution_heat_ade`      | 第二章，对流扩散 | [[assets/pint/data/solution_heat_ade.json            | JSON]] |
-| `solution_burgers`       | 第二章，Burgers  | [[assets/pint/data/solution_burgers.json             | JSON]] |
-| `solution_wave`          | 第二章，波动     | [[assets/pint/data/solution_wave.json                | JSON]] |
-| `parareal_heat_ade`      | 第四章，Parareal | [[assets/pint/data/parareal_heat_ade.json            | JSON]] |
-| `parareal_burgers`       | 第四章，Parareal | [[assets/pint/data/parareal_burgers.json             | JSON]] |
-| `mgrit_heat_ade`         | 第四章，MGRiT    | [[assets/pint/data/mgrit_heat_ade.json               | JSON]] |
-| `iterative_paradiag_ade` | 第三章，ParaDiag | [[assets/pint/data/iterative_paradiag_ade.json       | JSON]] |
-| `stmg_heat_ade`          | 第四章，STMG     | [[assets/pint/data/stmg_heat_ade.json                | JSON]] |
-| Figure 3.15 验证         | 第三章，ParaDiag | [[assets/pint/data/figure_3_15_validation.json       | JSON]] |
-| Figure 4.5 验证          | 第四章，Parareal | [[assets/pint/data/figure_4_5_validation.json        | JSON]] |
-| Figures 4.9–4.10 验证    | 第四章，MGRiT    | [[assets/pint/data/figure_4_10_validation.json       | JSON]] |
-| Figure 4.19 验证         | 第四章，STMG     | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
-| Figure 4.20 验证         | 第四章，STMG     | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
-| T4 GPU 性能验证          | 本章，GPU 加速   | [[assets/pint/data/gpu_benchmark_t4.json             | JSON]] |
+| Python 输出              | 网页位置         | 机器可读记录                                                 |
+| ------------------------ | ---------------- | ------------------------------------------------------------ |
+| `solution_heat_ade`      | 第二章，对流扩散 | [[assets/pint/data/solution_heat_ade.json\|JSON]]            |
+| `solution_burgers`       | 第二章，Burgers  | [[assets/pint/data/solution_burgers.json\|JSON]]             |
+| `solution_wave`          | 第二章，波动     | [[assets/pint/data/solution_wave.json\|JSON]]                |
+| `parareal_heat_ade`      | 第四章，Parareal | [[assets/pint/data/parareal_heat_ade.json\|JSON]]            |
+| `parareal_burgers`       | 第四章，Parareal | [[assets/pint/data/parareal_burgers.json\|JSON]]             |
+| `mgrit_heat_ade`         | 第四章，MGRiT    | [[assets/pint/data/mgrit_heat_ade.json\|JSON]]               |
+| `iterative_paradiag_ade` | 第三章，ParaDiag | [[assets/pint/data/iterative_paradiag_ade.json\|JSON]]       |
+| `stmg_heat_ade`          | 第四章，STMG     | [[assets/pint/data/stmg_heat_ade.json\|JSON]]                |
+| Figure 3.15 验证         | 第三章，ParaDiag | [[assets/pint/data/figure_3_15_validation.json\|JSON]]       |
+| Figure 4.5 验证          | 第四章，Parareal | [[assets/pint/data/figure_4_5_validation.json\|JSON]]        |
+| Figures 4.9–4.10 验证    | 第四章，MGRiT    | [[assets/pint/data/figure_4_10_validation.json\|JSON]]       |
+| Figure 4.19 验证         | 第四章，STMG     | [[assets/pint/data/figures_4_19_4_20_validation.json\|JSON]] |
+| Figure 4.20 验证         | 第四章，STMG     | [[assets/pint/data/figures_4_19_4_20_validation.json\|JSON]] |
+| T4 GPU 性能验证          | 本章，GPU 加速   | [[assets/pint/data/gpu_benchmark_t4.json\|JSON]]             |
 
-跨实验摘要见 [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]]。
+跨实验摘要见 [[assets/pint/data/paper_validation_summary.json\|paper_validation_summary.json]]。
 
 上游 MATLAB 仓库还包含直接 ParaDiag、对角化 Parareal、ParaExp、SWR、IDC/PIDC 与波动区域分解脚本。它们已经登记在 Python 项目迁移清单中，当前正式结果尚未逐项覆盖。这里的“完整”指网页引用的所有 Python 产物均有参数、图和 JSON 对应关系，不表示每份上游 MATLAB 脚本已经迁移。
 
@@ -173,7 +173,7 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 3. 在更大 ParaDiag 网格上实现批量复移位带状求解。当前 $100\times100$ 网格中的 FFT 与 GMRES 太小，迁移到 GPU 难以形成稳定收益；
 4. 在多 GPU 上分别测量空间并行、时间并行及通信重叠，补充强、弱扩展数据。
 
-机器可读记录见 [[assets/pint/data/gpu_benchmark_t4.json|gpu_benchmark_t4.json]]。现有数据证明单 GPU 的 kernel 与端到端加速，还没有建立多 GPU 扩展结论。
+机器可读记录见 [[assets/pint/data/gpu_benchmark_t4.json\|gpu_benchmark_t4.json]]。现有数据证明单 GPU 的 kernel 与端到端加速，还没有建立多 GPU 扩展结论。
 
 ## 本站复现：结果解释边界
 

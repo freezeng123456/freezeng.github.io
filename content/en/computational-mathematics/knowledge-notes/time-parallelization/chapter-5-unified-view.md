@@ -99,24 +99,24 @@ Each parameter interacts with the physical spectrum, discrete stability function
 
 The Python reproduction project provides eight baseline experiments and one combined paper-validation entry point. The combined entry point generates six paper-matched plots. Chapters 2–4 reference fourteen SVG/PNG result groups with corresponding JSON records.
 
-| Python output               | Page location                  | Machine-readable record                              |
-| --------------------------- | ------------------------------ | ---------------------------------------------------- |
-| `solution_heat_ade`         | Chapter 2, advection–diffusion | [[assets/pint/data/solution_heat_ade.json            | JSON]] |
-| `solution_burgers`          | Chapter 2, Burgers             | [[assets/pint/data/solution_burgers.json             | JSON]] |
-| `solution_wave`             | Chapter 2, wave                | [[assets/pint/data/solution_wave.json                | JSON]] |
-| `parareal_heat_ade`         | Chapter 4, Parareal            | [[assets/pint/data/parareal_heat_ade.json            | JSON]] |
-| `parareal_burgers`          | Chapter 4, Parareal            | [[assets/pint/data/parareal_burgers.json             | JSON]] |
-| `mgrit_heat_ade`            | Chapter 4, MGRiT               | [[assets/pint/data/mgrit_heat_ade.json               | JSON]] |
-| `iterative_paradiag_ade`    | Chapter 3, ParaDiag            | [[assets/pint/data/iterative_paradiag_ade.json       | JSON]] |
-| `stmg_heat_ade`             | Chapter 4, STMG                | [[assets/pint/data/stmg_heat_ade.json                | JSON]] |
-| Figure 3.15 validation      | Chapter 3, ParaDiag            | [[assets/pint/data/figure_3_15_validation.json       | JSON]] |
-| Figure 4.5 validation       | Chapter 4, Parareal            | [[assets/pint/data/figure_4_5_validation.json        | JSON]] |
-| Figures 4.9–4.10 validation | Chapter 4, MGRiT               | [[assets/pint/data/figure_4_10_validation.json       | JSON]] |
-| Figure 4.19 validation      | Chapter 4, STMG                | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
-| Figure 4.20 validation      | Chapter 4, STMG                | [[assets/pint/data/figures_4_19_4_20_validation.json | JSON]] |
-| T4 GPU validation           | this chapter, GPU acceleration | [[assets/pint/data/gpu_benchmark_t4.json             | JSON]] |
+| Python output               | Page location                  | Machine-readable record                                      |
+| --------------------------- | ------------------------------ | ------------------------------------------------------------ |
+| `solution_heat_ade`         | Chapter 2, advection–diffusion | [[assets/pint/data/solution_heat_ade.json\|JSON]]            |
+| `solution_burgers`          | Chapter 2, Burgers             | [[assets/pint/data/solution_burgers.json\|JSON]]             |
+| `solution_wave`             | Chapter 2, wave                | [[assets/pint/data/solution_wave.json\|JSON]]                |
+| `parareal_heat_ade`         | Chapter 4, Parareal            | [[assets/pint/data/parareal_heat_ade.json\|JSON]]            |
+| `parareal_burgers`          | Chapter 4, Parareal            | [[assets/pint/data/parareal_burgers.json\|JSON]]             |
+| `mgrit_heat_ade`            | Chapter 4, MGRiT               | [[assets/pint/data/mgrit_heat_ade.json\|JSON]]               |
+| `iterative_paradiag_ade`    | Chapter 3, ParaDiag            | [[assets/pint/data/iterative_paradiag_ade.json\|JSON]]       |
+| `stmg_heat_ade`             | Chapter 4, STMG                | [[assets/pint/data/stmg_heat_ade.json\|JSON]]                |
+| Figure 3.15 validation      | Chapter 3, ParaDiag            | [[assets/pint/data/figure_3_15_validation.json\|JSON]]       |
+| Figure 4.5 validation       | Chapter 4, Parareal            | [[assets/pint/data/figure_4_5_validation.json\|JSON]]        |
+| Figures 4.9–4.10 validation | Chapter 4, MGRiT               | [[assets/pint/data/figure_4_10_validation.json\|JSON]]       |
+| Figure 4.19 validation      | Chapter 4, STMG                | [[assets/pint/data/figures_4_19_4_20_validation.json\|JSON]] |
+| Figure 4.20 validation      | Chapter 4, STMG                | [[assets/pint/data/figures_4_19_4_20_validation.json\|JSON]] |
+| T4 GPU validation           | this chapter, GPU acceleration | [[assets/pint/data/gpu_benchmark_t4.json\|JSON]]             |
 
-The cross-experiment summary is [[assets/pint/data/paper_validation_summary.json|paper_validation_summary.json]].
+The cross-experiment summary is [[assets/pint/data/paper_validation_summary.json\|paper_validation_summary.json]].
 
 The upstream MATLAB repository also contains direct ParaDiag, diagonalized Parareal, ParaExp, SWR, IDC/PIDC, and wave-domain-decomposition scripts. They are registered in the Python migration inventory but do not yet all have formal Python results. “Complete” here means that every Python artifact cited by the site has a matched parameter record, plot, and JSON file. It does not claim that every upstream MATLAB script has been ported.
 
@@ -165,7 +165,7 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 3. Implement batched complex shifted banded solves on larger ParaDiag grids. FFT and GMRES work on the current $100\times100$ grid is too small for stable GPU benefit.
 4. Separate spatial concurrency, temporal concurrency, and communication overlap in multi-GPU strong- and weak-scaling tests.
 
-The machine-readable record is [[assets/pint/data/gpu_benchmark_t4.json|gpu_benchmark_t4.json]]. Current data demonstrate single-GPU kernel and end-to-end acceleration and do not establish multi-GPU scaling.
+The machine-readable record is [[assets/pint/data/gpu_benchmark_t4.json\|gpu_benchmark_t4.json]]. Current data demonstrate single-GPU kernel and end-to-end acceleration and do not establish multi-GPU scaling.
 
 ## Site reproduction: interpretation boundaries
 
