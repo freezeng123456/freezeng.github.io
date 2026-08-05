@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="848" viewBox="0 0 1400 848" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">Three Stages, One Rewrite</title>
+  <desc id="diagram-desc">Retrieval, ranking, and re-ranking fail for the same reason: the discriminative form itself</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1384" height="832" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1384" height="832" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="223" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="165.5" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="165.5" dy="0">GENERATIVE RECSYS</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">Three Stages, One Rewrite</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">Retrieval, ranking, and re-ranking fail for the same reason: the discriminative form itself</tspan></text>
+
+    <g>
+    <rect x="35" y="180" width="1330" height="170" rx="26" fill="#ffffff" stroke="#0f766e" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="35" y="180" width="1330" height="52" rx="26" fill="#0f766e" fill-opacity=".1"/>
+    <rect x="35" y="206" width="1330" height="26" fill="#0f766e" fill-opacity=".1"/>
+    <text x="59" y="213" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#0f766e" opacity="1"><tspan x="59" dy="0">Retrieval</tspan></text>
+    <text x="1341" y="213" text-anchor="end" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="600" fill="#5e6b7f" opacity="1"><tspan x="1341" dy="0">generates: the item semantic ID</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="70" y="238" width="470" height="100" rx="22" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="70" y="238" width="8" height="100" rx="4" fill="#dc4c64"/>
+
+    <text x="98" y="281" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="98" dy="0">The index caps interaction depth</tspan></text>
+    <text x="98" y="304" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12.5" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="98" dy="0">Crossing must sit on top, as an inner product</tspan><tspan x="98" dy="18">Search is lossy, results converge, objectives diverge</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 556 288 L 626 288" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 556 288 L 626 288" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)" />
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="646" y="238" width="694" height="100" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="646" y="238" width="8" height="100" rx="4" fill="#0f766e"/>
+
+    <text x="674" y="281" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="674" dy="0">Autoregressive or diffusion generation</tspan></text>
+    <text x="674" y="304" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12.5" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="674" dy="0">Decode a token sequence with no nearest-neighbour index</tspan><tspan x="674" dy="18">Full-negative training shares one objective with ranking</tspan></text>
+  </g>
+    <g>
+    <rect x="35" y="365" width="1330" height="170" rx="26" fill="#ffffff" stroke="#4f46e5" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="35" y="365" width="1330" height="52" rx="26" fill="#4f46e5" fill-opacity=".1"/>
+    <rect x="35" y="391" width="1330" height="26" fill="#4f46e5" fill-opacity=".1"/>
+    <text x="59" y="398" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#4f46e5" opacity="1"><tspan x="59" dy="0">Ranking</tspan></text>
+    <text x="1341" y="398" text-anchor="end" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="600" fill="#5e6b7f" opacity="1"><tspan x="1341" dy="0">generates: multi-objective scores</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="70" y="423" width="470" height="100" rx="22" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="70" y="423" width="8" height="100" rx="4" fill="#dc4c64"/>
+
+    <text x="98" y="466" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="98" dy="0">Two-stage sequences, handcrafted crossing</tspan></text>
+    <text x="98" y="489" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12.5" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="98" dy="0">Pruning drops information; only similarity survives</tspan><tspan x="98" dy="18">Heuristic dense crossing stops paying as it grows</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 556 473 L 626 473" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 556 473 L 626 473" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="646" y="423" width="694" height="100" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="646" y="423" width="8" height="100" rx="4" fill="#4f46e5"/>
+
+    <text x="674" y="466" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="674" dy="0">End-to-end sequences, scalable dense layers</tspan></text>
+    <text x="674" y="489" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12.5" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="674" dy="0">Cross-mask attention models the 3D multi-field signal</tspan><tspan x="674" dy="18">Orthogonalised updates unblock further dense scaling</tspan></text>
+  </g>
+    <g>
+    <rect x="35" y="550" width="1330" height="170" rx="26" fill="#ffffff" stroke="#d97706" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="35" y="550" width="1330" height="52" rx="26" fill="#d97706" fill-opacity=".1"/>
+    <rect x="35" y="576" width="1330" height="26" fill="#d97706" fill-opacity=".1"/>
+    <text x="59" y="583" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#d97706" opacity="1"><tspan x="59" dy="0">Re-ranking</tspan></text>
+    <text x="1341" y="583" text-anchor="end" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="600" fill="#5e6b7f" opacity="1"><tspan x="1341" dy="0">generates: the whole exposure list</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="70" y="608" width="470" height="100" rx="22" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="70" y="608" width="8" height="100" rx="4" fill="#dc4c64"/>
+
+    <text x="98" y="651" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="98" dy="0">A rule funnel fed by scattered channels</tspan></text>
+    <text x="98" y="674" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12.5" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="98" dy="0">Dozens of channels compete without coordination</tspan><tspan x="98" dy="18">Dozens of candidates; evaluation is one scalar</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 556 658 L 626 658" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 556 658 L 626 658" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" />
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="646" y="608" width="694" height="100" rx="22" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="646" y="608" width="8" height="100" rx="4" fill="#d97706"/>
+
+    <text x="674" y="651" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="674" dy="0">Unified generation with rich evaluation</tspan></text>
+    <text x="674" y="674" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12.5" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="674" dy="0">One model emits the list; RL optimises its total value</tspan><tspan x="674" dy="18">Candidates cover the full ranking pool; rewards expand</tspan></text>
+  </g>
+    <text x="700" y="752" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="650" fill="#5e6b7f" opacity="1"><tspan x="700" dy="0">None of the three is a tuning problem: retrieve, score, assemble is what loses it</tspan></text>
+    <g>
+    <rect x="45" y="772" width="415" height="46" rx="23" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="252.5" y="799.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="252.5" dy="0">one shared objective</tspan></text>
+  </g>
+    <g>
+    <rect x="492" y="772" width="415" height="46" rx="23" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28"/>
+    <text x="699.5" y="799.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#4f46e5" opacity="1"><tspan x="699.5" dy="0">end-to-end signal path</tspan></text>
+  </g>
+    <g>
+    <rect x="939" y="772" width="415" height="46" rx="23" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="1146.5" y="799.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#d97706" opacity="1"><tspan x="1146.5" dy="0">compute buys capacity</tspan></text>
+  </g>
+
+</svg>

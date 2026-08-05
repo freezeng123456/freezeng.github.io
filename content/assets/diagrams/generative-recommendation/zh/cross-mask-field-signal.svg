@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="830" viewBox="0 0 1400 830" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">推荐的序列信号比文本多一维</title>
+  <desc id="diagram-desc">文本只有「序列 × 表示」，推荐还有「特征域」，cross-mask 正是为这一维设计的</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1384" height="814" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1384" height="814" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="118" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="113" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="113" dy="0">长序列建模</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">推荐的序列信号比文本多一维</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">文本只有「序列 × 表示」，推荐还有「特征域」，cross-mask 正是为这一维设计的</tspan></text>
+
+    <g>
+    <rect x="35" y="180" width="400" height="250" rx="26" fill="#ffffff" stroke="#2563eb" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="35" y="180" width="400" height="52" rx="26" fill="#2563eb" fill-opacity=".1"/>
+    <rect x="35" y="206" width="400" height="26" fill="#2563eb" fill-opacity=".1"/>
+    <text x="59" y="213" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#2563eb" opacity="1"><tspan x="59" dy="0">文本任务：单域序列</tspan></text>
+
+  </g>
+    <rect x="58" y="252" width="42" height="46" rx="12" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".32"/><rect x="110" y="252" width="42" height="46" rx="12" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".32"/><rect x="162" y="252" width="42" height="46" rx="12" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".32"/><rect x="214" y="252" width="42" height="46" rx="12" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".32"/><rect x="266" y="252" width="42" height="46" rx="12" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".32"/><rect x="318" y="252" width="42" height="46" rx="12" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".32"/><rect x="370" y="252" width="42" height="46" rx="12" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".32"/>
+    <text x="235" y="336" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#2563eb" opacity="1"><tspan x="235" dy="0">一个特征域，两个维度</tspan></text>
+    <g>
+    <rect x="58" y="360" width="354" height="44" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="235" y="386.25" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12.5" font-weight="700" fill="#2563eb" opacity="1"><tspan x="235" dy="0">注意力只需刻画 token 与 token 的关联</tspan></text>
+  </g>
+
+    <g>
+    <rect x="465" y="180" width="900" height="250" rx="26" fill="#ffffff" stroke="#d97706" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="465" y="180" width="900" height="52" rx="26" fill="#d97706" fill-opacity=".1"/>
+    <rect x="465" y="206" width="900" height="26" fill="#d97706" fill-opacity=".1"/>
+    <text x="489" y="213" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#d97706" opacity="1"><tspan x="489" dy="0">推荐任务：多域序列</tspan></text>
+
+  </g>
+    <text x="954" y="244" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="650" fill="#5e6b7f" opacity="1"><tspan x="954" dy="0">历史行为</tspan></text>
+    <text x="1319" y="244" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="650" fill="#dc4c64" opacity="1"><tspan x="1319" dy="0">目标</tspan></text>
+    <text x="487" y="269" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="750" fill="#d97706" opacity="1"><tspan x="487" dy="0">内容域</tspan></text>
+      <text x="487" y="287" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="11" font-weight="550" fill="#5e6b7f" opacity="1"><tspan x="487" dy="0">视频 · 作者 · 类目</tspan></text>
+      <rect x="1288" y="254" width="62" height="42" rx="10" fill="#ffffff" stroke="#dc4c64" stroke-opacity=".55" stroke-dasharray="5 5"/><rect x="650" y="254" width="80" height="42" rx="10" fill="#fff2d9" stroke="#d97706" stroke-opacity=".34"/><rect x="738" y="254" width="80" height="42" rx="10" fill="#fff2d9" stroke="#d97706" stroke-opacity=".34"/><rect x="826" y="254" width="80" height="42" rx="10" fill="#fff2d9" stroke="#d97706" stroke-opacity=".34"/><rect x="914" y="254" width="80" height="42" rx="10" fill="#fff2d9" stroke="#d97706" stroke-opacity=".34"/><rect x="1002" y="254" width="80" height="42" rx="10" fill="#fff2d9" stroke="#d97706" stroke-opacity=".34"/><rect x="1090" y="254" width="80" height="42" rx="10" fill="#fff2d9" stroke="#d97706" stroke-opacity=".34"/><rect x="1178" y="254" width="80" height="42" rx="10" fill="#fff2d9" stroke="#d97706" stroke-opacity=".34"/><text x="487" y="319" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="750" fill="#2563eb" opacity="1"><tspan x="487" dy="0">行为域</tspan></text>
+      <text x="487" y="337" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="11" font-weight="550" fill="#5e6b7f" opacity="1"><tspan x="487" dy="0">完播 · 点赞 · 转发</tspan></text>
+      <rect x="1288" y="304" width="62" height="42" rx="10" fill="#ffffff" stroke="#dc4c64" stroke-opacity=".55" stroke-dasharray="5 5"/><rect x="650" y="304" width="80" height="42" rx="10" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".34"/><rect x="738" y="304" width="80" height="42" rx="10" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".34"/><rect x="826" y="304" width="80" height="42" rx="10" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".34"/><rect x="914" y="304" width="80" height="42" rx="10" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".34"/><rect x="1002" y="304" width="80" height="42" rx="10" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".34"/><rect x="1090" y="304" width="80" height="42" rx="10" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".34"/><rect x="1178" y="304" width="80" height="42" rx="10" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".34"/><text x="487" y="369" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="750" fill="#16865b" opacity="1"><tspan x="487" dy="0">上下文域</tspan></text>
+      <text x="487" y="387" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="11" font-weight="550" fill="#5e6b7f" opacity="1"><tspan x="487" dy="0">位置 · 时刻 · 场景</tspan></text>
+      <rect x="1288" y="354" width="62" height="42" rx="10" fill="#ffffff" stroke="#dc4c64" stroke-opacity=".55" stroke-dasharray="5 5"/><rect x="650" y="354" width="80" height="42" rx="10" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".34"/><rect x="738" y="354" width="80" height="42" rx="10" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".34"/><rect x="826" y="354" width="80" height="42" rx="10" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".34"/><rect x="914" y="354" width="80" height="42" rx="10" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".34"/><rect x="1002" y="354" width="80" height="42" rx="10" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".34"/><rect x="1090" y="354" width="80" height="42" rx="10" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".34"/><rect x="1178" y="354" width="80" height="42" rx="10" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".34"/>
+    <text x="915" y="418" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#d97706" opacity="1"><tspan x="915" dy="0">序列 × 特征域 × 表示，三个维度</tspan></text>
+    <g class="flow-connector" opacity="1">
+    <path d="M 915 436 L 915 450" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 915 436 L 915 450" fill="none" stroke="#d97706" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" />
+  </g>
+
+    <g>
+    <rect x="35" y="452" width="1330" height="210" rx="26" fill="#ffffff" stroke="#4f46e5" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="35" y="452" width="1330" height="52" rx="26" fill="#4f46e5" fill-opacity=".1"/>
+    <rect x="35" y="478" width="1330" height="26" fill="#4f46e5" fill-opacity=".1"/>
+    <text x="59" y="485" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#4f46e5" opacity="1"><tspan x="59" dy="0">Cross-mask 注意力</tspan></text>
+    <text x="1341" y="485" text-anchor="end" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="600" fill="#5e6b7f" opacity="1"><tspan x="1341" dy="0">σ(QKᵀ) ⊙ M</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="58" y="518" width="400" height="118" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="58" y="518" width="8" height="118" rx="4" fill="#0f766e"/>
+    <circle cx="430" cy="546" r="17" fill="#0f766e"/>
+           <text x="430" y="551" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="430" dy="0">1</tspan></text>
+    <text x="86" y="561" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="86" dy="0">分域计算注意力</tspan></text>
+    <text x="86" y="584" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12.5" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="86" dy="0">每个特征域单独得到一份 score</tspan><tspan x="86" dy="18">对应不同视角下的行为间关联</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="500" y="518" width="400" height="118" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="500" y="518" width="8" height="118" rx="4" fill="#2563eb"/>
+    <circle cx="872" cy="546" r="17" fill="#2563eb"/>
+           <text x="872" y="551" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="872" dy="0">2</tspan></text>
+    <text x="528" y="561" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="528" dy="0">分数乘以域掩码</tspan></text>
+    <text x="528" y="584" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12.5" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="528" dy="0">某一域的 score 与另一域的掩码相乘</tspan><tspan x="528" dy="18">域间交叉因此成为显式结构</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="942" y="518" width="400" height="118" rx="22" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="942" y="518" width="8" height="118" rx="4" fill="#d97706"/>
+    <circle cx="1314" cy="546" r="17" fill="#d97706"/>
+           <text x="1314" y="551" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="1314" dy="0">3</tspan></text>
+    <text x="970" y="561" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="970" dy="0">跨域聚合取值</tspan></text>
+    <text x="970" y="584" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12.5" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="970" dy="0">用交叉后的分数聚合各域的 value</tspan><tspan x="970" dy="18">得到特征域的二阶交叉表示</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 466 577 L 492 577" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 466 577 L 492 577" fill="none" stroke="#4f46e5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 908 577 L 934 577" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 908 577 L 934 577" fill="none" stroke="#4f46e5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g>
+
+    <text x="54" y="692" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="800" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">成本控制</tspan></text>
+    <path d="M 55 704 L 1345 704" stroke="#b8c4d2" stroke-width="1.5" stroke-dasharray="5 8"/>
+    <g>
+    <rect x="45" y="720" width="400" height="42" rx="21" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="245" y="745.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#0f766e" opacity="1"><tspan x="245" dy="0">计算共享</tspan></text>
+  </g>
+    <g>
+    <rect x="475" y="720" width="420" height="42" rx="21" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28"/>
+    <text x="685" y="745.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#4f46e5" opacity="1"><tspan x="685" dy="0">零训练外推</tspan></text>
+  </g>
+    <g>
+    <rect x="925" y="720" width="430" height="42" rx="21" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="1140" y="745.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#16865b" opacity="1"><tspan x="1140" dy="0">零显存计算</tspan></text>
+  </g>
+    <text x="700" y="792" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#14213d" opacity="1"><tspan x="700" dy="0">自注意力开销下降一半以上</tspan></text>
+
+</svg>
