@@ -11,6 +11,8 @@ tags:
 
 > [!note] Coverage of this page
 > Papers **48** (_SIAM J. Numer. Anal._ 58(4), 2020), **52** (_Sci. China Math._ 64, 2021), **58** (_CSIAM Trans. Appl. Math._ 3, 2022), **67** (_J. Comput. Math._ 41, 2023), **69** (_BIT Numer. Math._ 63:39, 2023) and **74** (_Sci. China Math._ 67, 2024).
+>
+> All but paper 69 have been checked equation by equation against preprint full texts. Paper 69 has no preprint — confirmed by sweeping all 34 preprints under Liao's name — and neither the publisher nor any aggregator supplies the full text, so this page reports only what the complete abstract and reference list confirm: the step-ratio condition, the ingredients (a one-leg reformulation, a discrete gradient structure, and two new classes of DOC kernel) and the three results. Its explicit modified energy, the definitions of those kernels, the convergence order and the numerical tests are not verified here.
 
 ## 48: two step-ratio constants for two different properties
 
@@ -50,7 +52,7 @@ $$
 
 The paper uses two named conditions:
 
-- **S1**: $0<r_{k}<\dfrac{3+\sqrt{17}}{2}\approx3.561$, for **energy stability**.
+- **S1**: $0<r_{k}<\dfrac{3+\sqrt{17}}{2}\approx3.561$, for **energy stability**. The constant does not originate here: it comes from Lemma 2.1 of Liao and Zhang (_Math. Comp._ 90 (2021) 1207-1226) as the condition for positive definiteness of the BDF2 kernels, and both papers 48 and 52 import it as S1. Paper 52's own assessment of it is blunt — it calls it an artificial constant that is due to the condition S1.
 - **S0**: $0<r_{k}<1+\sqrt{2}\approx2.414$, for the **discrete maximum principle** and max-norm convergence; the paper notes explicitly that this coincides with Grigorieff's (1983) zero-stability condition for ODE problems.
 
 ### The modified energy and the exact origin of 3.561
@@ -234,9 +236,35 @@ $$
 
 satisfying the orthogonality identity $\sum_{i=j}^{n}\vartheta_{n-i}^{(n)}d^{(i)}_{i-j}\equiv\delta_{nj}$, in matrix form $\Theta_3D_3=I$, and since $D_3\Theta_3=I$ also mutual orthogonality. The paper establishes a discrete gradient structure, an energy dissipation law, and $L^2$ stability and convergence under the threshold $r_k<1.4877$.
 
+### Where $1.4877$ comes from
+
+The threshold is not a natural constant but the outcome of a **parameter trade-off**, which is worth spelling out. With $\gamma=7/10$, $R_e$ is the **unique positive root** of
+
+$$
+d_1(R_e,0)+\tfrac{7}{10}\sqrt{R_e}\,d_2(R_e,R_e)=0
+\qquad\Longleftrightarrow\qquad
+\frac{10}{7(R_e+1)}-\frac{R_e^2\sqrt{R_e}}{R_e^2+R_e+1}=0,
+$$
+
+numerically $R_e\approx1.4877$.
+
+The value $\gamma=7/10$ arises as follows. The discrete gradient decomposition requires two conditions, $q_{n+1}\ge0$ and $p_{n+1}>0$, in the five variables $r_{n+1},r_n,r_{n-1},\gamma,R_e$, which cannot be solved exactly. The paper works on a constant-ratio grid instead: $q_{n+1}\ge0$ with $r_{n-1}=0$ and $r_{n+1}=r_n=r$ forces $\gamma\le-d_1(r,0)/(\sqrt r\,d_2(r,r))$, and imposing the second condition on a constant-ratio grid gives $\bar R_e\approx1.4965$ with $\bar\gamma\approx0.6924$. The authors then **fix $\gamma=7/10$**, close to that $0.6924$, for tractability, which yields $R_e\approx1.4877$. The justification is that $q_{n+1}\ge0$ is necessary and sharp whereas $p_{n+1}>0$ can be relaxed.
+
+The sharpness of this threshold can therefore be **quantified**: numerically $R_e<1.69$ is necessary, while the theory delivers $R_e<1.4877$ as sufficient, so the gap is small. That contrasts instructively with paper 52's verdict on $3.561$ as an artificial constant — both are chosen for convenience, but here the distance to necessity has been measured.
+
 ## 69 and 74: making the tool itself the object of study
 
-**Paper 69** analyses the stability and convergence of the variable-step time-filtered backward Euler scheme. Time filtering is a post-processing technique that raises the accuracy of a low-order scheme, and under variable steps its stability again reduces to this family of convolution-kernel analyses.
+**Paper 69** analyses the stability and convergence of the variable-step time-filtered backward Euler scheme. Time filtering is a post-processing technique that raises the accuracy of a low-order scheme, and under variable steps its stability again reduces to this family of convolution-kernel analyses. Its energy stability and $L^2$ error estimate hold under the step-ratio condition
+
+$$
+\tfrac12\le r_k\le2,
+$$
+
+which is **not the same kind of object** as the other thresholds on this page, for two separate reasons.
+
+First, it is **two-sided**. Every other result here restricts only the **upper** step ratio ($1+\sqrt2$, $3.561$, $1.4877$), whereas the ratio is bounded below by $1/2$ as well, so the steps may not be **cut** too abruptly either. This reflects the loss of A-stability for the variable-step filtered backward Euler scheme.
+
+Second, $[1/2,2]$ is **not a sharp analytic threshold** but the standard heuristic safeguard used in adaptive codes; the paper itself calls it a practical constraint. It should therefore not be quoted alongside $1+\sqrt2$, $3.561$ or $1.4877$ as though they were quantities of the same type.
 
 **Paper 74** studies **the tool itself**: the positive definiteness of the real quadratic forms produced by variable-step L1-type approximations of convolution operators. It supplies the algebraic criteria that the other papers invoke repeatedly — [[en/computational-mathematics/paper-notes/phase-field-and-time-stepping/time-fractional-phase-field|paper 57]], for example, cites three inequalities on the kernel sequences from it when proving monotonicity of its DOC kernels.
 
@@ -244,14 +272,14 @@ satisfying the orthogonality identity $\sum_{i=j}^{n}\vartheta_{n-i}^{(n)}d^{(i)
 
 ## How the six relate
 
-| No. | Object                             | Mesh     | Threshold                 | Core tool                                   |
-| --- | ---------------------------------- | -------- | ------------------------- | ------------------------------------------- |
-| 48  | Allen-Cahn, BDF2                   | variable | S1 $3.561$; S0 $1+\sqrt2$ | modified energy; kernel recombination       |
-| 52  | molecular beam epitaxy, BDF2       | variable | $3.561$                   | modified energy                             |
-| 58  | linear reaction-diffusion, BDF-$k$ | uniform  | none for $3\le k\le5$     | DOC kernels; generating-function positivity |
-| 67  | diffusion, BDF3                    | variable | $1.4877$                  | variable-step DOC kernels                   |
-| 69  | parabolic, filtered Euler          | variable | see the source            | same kernel analysis                        |
-| 74  | the quadratic form itself          | variable | supplies the criteria     | algebraic criteria                          |
+| No. | Object                             | Mesh     | Threshold                        | Core tool                                   |
+| --- | ---------------------------------- | -------- | -------------------------------- | ------------------------------------------- |
+| 48  | Allen-Cahn, BDF2                   | variable | S1 $3.561$; S0 $1+\sqrt2$        | modified energy; kernel recombination       |
+| 52  | molecular beam epitaxy, BDF2       | variable | $3.561$                          | modified energy                             |
+| 58  | linear reaction-diffusion, BDF-$k$ | uniform  | none for $3\le k\le5$            | DOC kernels; generating-function positivity |
+| 67  | diffusion, BDF3                    | variable | $1.4877$                         | variable-step DOC kernels                   |
+| 69  | parabolic, filtered Euler          | variable | $[1/2,2]$ (two-sided, heuristic) | same kernel analysis                        |
+| 74  | the quadratic form itself          | variable | supplies the criteria            | algebraic criteria                          |
 
 ## Coverage check
 

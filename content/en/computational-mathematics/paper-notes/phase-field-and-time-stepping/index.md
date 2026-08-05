@@ -86,7 +86,9 @@ $$
 Note that the modified energy uses $r_{k+1}$, the **next** step ratio. That look-ahead is exactly what makes the telescoping work.
 
 > [!warning] About the constant $4.8645$
-> Another frequently cited threshold in this literature is $r^\ast\approx4.8645$, the positive root of $1+2r-r^{3/2}=0$. On checking, it appears in **none** of the papers in this topic; it comes from work by Liao, Ji, Wang and Zhang on convex-splitting BDF2 for the Cahn-Hilliard equation (_J. Sci. Comput._ 92 (2022) 52). It should not be attributed to the papers here.
+> Another frequently cited threshold in this literature is $r^\ast$, the positive root of $1+2r-r^{3/2}=0$, exactly $4.864536512317583$. On checking, it appears in **none** of the papers in this topic — a search for `4.86` across the ten available full texts returns no hit. It comes from work by Liao, Ji, Wang and Zhang on convex-splitting BDF2 for the Cahn-Hilliard equation (_J. Sci. Comput._ 92 (2022) 52, preprint [arXiv:2102.03731](https://arxiv.org/abs/2102.03731)), where it delivers **A-stability** of variable-step BDF2, a mesh-robust $L^2$ estimate and modified-energy dissipation, improving Liao and Zhang's $3.561$.
+>
+> Two details are where the confusion originates. First, **that paper prints $4.864$**; the more widely circulated form $4.8645$ comes from Zhang and Zhao (_J. of Math._ (PRC) 41(6) (2021) 471-488) for linear reaction-diffusion. Second, the technique is often credited to Lemma A.1 of Liao, Ji and Zhang (_IMA J. Numer. Anal._, phase field crystal), but that paper states only $3.561$ throughout. Papers 69 and 91 both cite Liao-Ji-Wang-Zhang, which is most likely how the constant entered this reading list. It should not be attributed to the papers here.
 >
 > Note also that paper 57 imposes **no step-ratio restriction at all** for its energy law, and only a step-size bound for the maximum bound principle.
 
@@ -123,7 +125,7 @@ Note that the modified energy uses $r_{k+1}$, the **next** step ratio. That look
 - **104** analyses the stability of implicit-explicit multistep methods for nonlinear parabolic equations by a semi-generating function approach.
 
 > [!note] Coverage status
-> Papers 40, 43, 48, 52 and 57 have close-reading content checked equation by equation, including the exact step-ratio derivation and the modified energy. The close readings for 58, 67, 69, 74, 78, 91 and 104 are still being filled in.
+> Papers 40, 43, 48, 52, 57, 58, 67, 74, 91 and 104 have been checked equation by equation against the authors' own arXiv sources, and paper 78 against the full text of the published PDF, so for those eleven the equations, theorem statements and constants are transcribed rather than paraphrased. The one exception is paper 69: it has no preprint and neither the publisher nor any aggregator supplies the full text, so only what the complete abstract and reference list confirm is reported, leaving its explicit modified energy, kernel definitions, convergence order and numerical tests unverified.
 
 ## One transferable judgement
 
