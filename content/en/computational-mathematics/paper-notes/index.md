@@ -52,6 +52,30 @@ The timeline shows three shifts of emphasis. From 2010 to 2015 the work concentr
 - To follow one technical line: use the "lineage" table on a topic index, which lists the internal dependencies in chronological order.
 - To find one specific paper: search the [[en/computational-mathematics/paper-notes/catalog|catalogue]] by its homepage number.
 
+## Three things only visible once all 108 are read together
+
+None of the following is obvious paper by paper. Read across the whole corpus they recur, and each bears directly on whether a stated result can be used as it stands. This site flags them on every page they apply to rather than leaving them to be rediscovered.
+
+### One: "proved" and "demonstrated" are frequently not the same claim
+
+Several papers' own experiments fall **outside** the regime their theorems cover. Paper 9's theorem carries a prefactor of $256$ at $d=2$ and $2304$ at $d=3$, so its examples almost certainly lie outside what it proves; paper 14 tests at $M=2.5N$, below the quadratic requirement of its own theorems; and paper 22 concedes outright that one term of its error bound does not vanish as the sample count grows, so its theory is on its face weaker than standard Monte Carlo theory and it argues from magnitude and experiment instead.
+
+**This is not sloppiness — it is evidence that these sufficient conditions are not sharp.** Anyone sizing a sample count or a step ratio from these bounds should know they are usually conservative. Paper 67 is the one place the gap is quantified: numerically $R_e<1.69$ is necessary while the theory delivers $1.4877$ as sufficient.
+
+### Two: some papers contain no theorem, and some contain no experiment
+
+Both exist here, and both are worth knowing before citing:
+
+- **No theorem.** Paper 54 contains no theorem, lemma, proposition or proof anywhere in its text, so "optimal design" in its title and "quasi-optimal" in its body carry no quantitative content — there is no comparison between the greedy point set and the true maximiser, and no bound on the condition number or the Lebesgue constant. Paper 27 likewise proves no convergence theorem.
+- **No experiment.** Papers 58, 74 and 104 are purely analytical, their sources containing only plots of kernels or generating functions; papers 1 and 47 also report none. **The consequence is worth carrying: paper 58's claim of $k$-th order convergence has no measured data behind it.**
+
+### Three: a paper's stated conclusion sometimes disagrees with its own tables
+
+Where that happens this site records the table and flags the disagreement rather than reconciling it on the paper's behalf. Paper 8 gives two mutually inconsistent rates for $k=6$ ($5.116$ and $6.273$, depending on the mesh range); paper 25's first example reports $2.632$ in the $Y$ component against its third-order claim; paper 93 concedes it trails PINN and RS-PINN yet beats RS-PINN on Allen-Cahn at $d=10^5$ in its own table; and paper 105 claims smoothing uniformly improves on filtering while its Table 9 shows the reverse at $K=50$.
+
+> [!note] On the availability of numerical results
+> How detailed a "numerical experiments" section is varies considerably between pages, and the reason is the source rather than the writing. A substantial number of these papers report results only as figures — papers 15, 27, 42, 54, 75, 81, 101 and 107, along with most of the Bayesian topic — and for those this site gives the full experimental configuration and the qualitative conclusion while stating plainly that the values could not be transcribed. Only papers that tabulate their results have result tables here. **Wherever a number is absent, the reason is given.**
+
 ## Data and reproducibility
 
 - Bibliographic data: `scripts/data/tao-zhou-publications.json`, holding number, authors, title, venue, year, status, topic and DOI.

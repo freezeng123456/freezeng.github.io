@@ -54,12 +54,12 @@ so $K$ is the **sum of squared orthonormal basis functions** and the (normalised
 
 The sources do not agree on notation, and this is the commonest source of confusion when reading the family:
 
-| Paper | Symbol            | Meaning                                                                                                                              |
-| ----- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| 22    | $K$, $K_k$        | $\sum_\alpha\varphi_\alpha^2$, the reciprocal of the Christoffel function; $N/K_k$ is called "the (normalised) Christoffel function" |
-| 24    | $\lambda_\Lambda$ | $1/\sum_{i\in\Lambda}\varphi_i^2$, the Christoffel function itself; the preconditioner uses $N\lambda_\Lambda$                       |
-| 28    | $K_\Lambda$       | $\sum_\alpha\psi_\alpha^2$, the reciprocal; the weight applied is $1/\sqrt{K_\Lambda}$                                               |
-| 45    | $q^2$             | $\frac1N\sum_n v_n^2$, reciprocal and normalised; used directly as the sampling bias                                                 |
+| Paper | Symbol            | Meaning                                                                                                                                                                                                                  |
+| ----- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 22    | $K$, $K_k$        | $\sum_\alpha\varphi_\alpha^2$, the reciprocal of the Christoffel function; $N/K_k$ is called "the (normalised) Christoffel function"                                                                                     |
+| 24    | $\lambda_\Lambda$ | $1/\sum_{i\in\Lambda}\varphi_i^2$, the Christoffel function itself; the preconditioner uses $N\lambda_\Lambda$                                                                                                           |
+| 28    | $K_\Lambda$       | $\sum_\alpha\psi_\alpha^2$, the reciprocal; the weight applied is $1/\sqrt{K_\Lambda}$                                                                                                                                   |
+| 45    | $q^2$             | $\frac1N\sum_n v_n^2$, reciprocal and normalised; used directly as the sampling bias                                                                                                                                     |
 | 54    | $K$, $\Lambda_N$  | here $K$ is the **kernel function itself** (the matrix is $\mathbf A=K(\Xi,\Xi)$) and $\Lambda_N$ is the **Lebesgue constant** — both collide with the rows above, so switch conventions wholesale when reading this one |
 
 ## 22: the stability factor is something one can design away
@@ -864,27 +864,27 @@ This has to be said clearly, because "optimal design" in the title and "quasi-op
 
 **Shared protocol.** Every experiment uses the same setup.
 
-| Item          | Value                                                                                              |
-| ------------- | -------------------------------------------------------------------------------------------------- |
-| Candidate pool | $M=10^4$ centres taken at random in $I_Z$; "uniform" (evenly spaced in $I_Z$) also compared         |
-| Selection     | $N$ RBF centres chosen from the pool by the §3.2 greedy iteration (called "Cholesky" in the paper)   |
-| Baselines     | random, Sobol' and Halton points; the PDE example adds sparse grids                                 |
-| Error         | $E_{\ell_2}=\bigl(\tfrac1Q\sum_{i=1}^Q\lvert s(z_i)-u(z_i)\rvert^2\bigr)^{1/2}$ over $Q=1000$ random test points |
-| Trials        | 50 per configuration; mean reported with 20% and 80% quantiles                                      |
-| Kernels       | Gaussian $\Phi(r)=e^{-r^2}$, IMQ $\Phi(r)=1/\sqrt{1+r^2}$, Wendland CS with $l=\lfloor d/2\rfloor+4$ |
+| Item           | Value                                                                                                            |
+| -------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Candidate pool | $M=10^4$ centres taken at random in $I_Z$; "uniform" (evenly spaced in $I_Z$) also compared                      |
+| Selection      | $N$ RBF centres chosen from the pool by the §3.2 greedy iteration (called "Cholesky" in the paper)               |
+| Baselines      | random, Sobol' and Halton points; the PDE example adds sparse grids                                              |
+| Error          | $E_{\ell_2}=\bigl(\tfrac1Q\sum_{i=1}^Q\lvert s(z_i)-u(z_i)\rvert^2\bigr)^{1/2}$ over $Q=1000$ random test points |
+| Trials         | 50 per configuration; mean reported with 20% and 80% quantiles                                                   |
+| Kernels        | Gaussian $\Phi(r)=e^{-r^2}$, IMQ $\Phi(r)=1/\sqrt{1+r^2}$, Wendland CS with $l=\lfloor d/2\rfloor+4$             |
 
 > [!warning] No condition numbers or errors can be quoted in this section
 > **Every numerical result in this paper is presented as a figure; there is not one data table.** Figures 1-14 are curves, and no condition number or error value appears as a number anywhere in the body. (The HTML rendering of the paper contains forty-odd table elements, but every one of them is a typesetting container for a displayed equation rather than a table of data.) What follows therefore reports the experimental setups and the paper's stated conclusions, both of which can be checked item by item, and quotes no condition-number magnitudes or error values.
 
 **Condition-number experiments.** The first two figures establish the problem before the method is proposed; the last three test the method.
 
-| Figure | Object                                                                 | Abscissa            | Fixed parameters             |
-| ------ | ---------------------------------------------------------------------- | ------------------- | ---------------------------- |
-| Fig. 1 | $\mathbf A$ (Lagrange, solid) and $\mathbf B$ (Hermite, dashed)        | shape parameter $\epsilon$ | $N=50,100,300$; $d=2$ |
-| Fig. 2 | the same                                                               | number of points $N$ | $\epsilon=0.1,1,3$; $d=2$   |
-| Fig. 3 | $\mathbf A$, four selection methods compared                           | $\epsilon$          | $N=100,300$; $d=2$           |
-| Fig. 4 | $\mathbf A$, four selection methods compared                           | $N$                 | $\epsilon=3,5$; $d=2$        |
-| Fig. 5 | $\mathbf A$, different candidate pools                                 | $N$                 | $\epsilon=3,5$               |
+| Figure | Object                                                          | Abscissa                   | Fixed parameters          |
+| ------ | --------------------------------------------------------------- | -------------------------- | ------------------------- |
+| Fig. 1 | $\mathbf A$ (Lagrange, solid) and $\mathbf B$ (Hermite, dashed) | shape parameter $\epsilon$ | $N=50,100,300$; $d=2$     |
+| Fig. 2 | the same                                                        | number of points $N$       | $\epsilon=0.1,1,3$; $d=2$ |
+| Fig. 3 | $\mathbf A$, four selection methods compared                    | $\epsilon$                 | $N=100,300$; $d=2$        |
+| Fig. 4 | $\mathbf A$, four selection methods compared                    | $N$                        | $\epsilon=3,5$; $d=2$     |
+| Fig. 5 | $\mathbf A$, different candidate pools                          | $N$                        | $\epsilon=3,5$            |
 
 The paper's conclusion from Figures 1 and 2 is that the design matrix becomes more singular both as the shape parameter approaches zero and as the number of points grows, with $\mathbf B$ degrading far faster than $\mathbf A$. From Figures 3 and 4: **for both the Gaussian and the IMQ kernel the proposed algorithm is much more stable than the other sampling methods** — that sentence in the source names only those two kernels, and the compactly supported kernel, although plotted in the same figures, is not covered by the claim. Figure 5 concludes that the choice of candidate points, random or evenly spaced, does not dramatically affect the method's performance.
 
@@ -914,11 +914,11 @@ $$
 
 with quantity of interest $u(z)=u(0.5,z)$ and $z^{(i)}\sim U[-1,1]$ i.i.d. (The value of $\sigma$ is not given in the paper, so none is quoted.)
 
-| Figure  | Test problem                | Dimension | Baselines                                     | Notes                        |
-| ------- | --------------------------- | --------- | --------------------------------------------- | ---------------------------- |
-| Fig. 6  | Franke's function, $[0,1]^2$ | $d=2$     | random, Sobol', Halton                        | $\epsilon=3,5$               |
-| Fig. 7  | the same, other candidates  | $d=2$     | uniform and other candidate pools             | $\epsilon=3,5$               |
-| Fig. 8  | the same                    | $d=2$     | several $\epsilon$, plus $\epsilon$ from LOOCV | left condition number, right error |
+| Figure  | Test problem                 | Dimension | Baselines                                           | Notes                               |
+| ------- | ---------------------------- | --------- | --------------------------------------------------- | ----------------------------------- |
+| Fig. 6  | Franke's function, $[0,1]^2$ | $d=2$     | random, Sobol', Halton                              | $\epsilon=3,5$                      |
+| Fig. 7  | the same, other candidates   | $d=2$     | uniform and other candidate pools                   | $\epsilon=3,5$                      |
+| Fig. 8  | the same                     | $d=2$     | several $\epsilon$, plus $\epsilon$ from LOOCV      | left condition number, right error  |
 | Fig. 9  | stochastic elliptic equation | $d=3$     | **plus sparse grids** (Legendre, total order $k=8$) | left Gaussian, middle IMQ, right CS |
 | Fig. 10 | stochastic elliptic equation | $d=6$     | **plus sparse grids** (Legendre, total order $k=4$) | left Gaussian, middle IMQ, right CS |
 
@@ -926,11 +926,11 @@ The paper draws two conclusions from Figure 6, the second more interesting than 
 
 **Gradient-enhanced experiments.** Three test functions:
 
-| Figure  | Test function                                                                            | Dimension | Domain           |
-| ------- | ---------------------------------------------------------------------------------------- | --------- | ---------------- |
-| Fig. 12 | corner peak, $u(z)=\bigl(1+\sum_{i=1}^d\omega_iz^{(i)}\bigr)^{-(d+1)}$, $\omega_i=1/i^2$ | $d=2$     | $[0,1]^2$        |
-| Fig. 13 | Rastrigin, $u(z)=20+\sum_{i=1}^2\bigl((z^{(i)})^2-10\cos(2\pi z^{(i)})\bigr)$            | $d=2$     | $[-4,4]^2$       |
-| Fig. 14 | Friedman, $u(z)=10\sin(\pi z^{(1)}z^{(2)})+20(z^{(3)}-0.5)^2+10z^{(4)}+5z^{(5)}$         | $d=5$     | not stated       |
+| Figure  | Test function                                                                            | Dimension | Domain     |
+| ------- | ---------------------------------------------------------------------------------------- | --------- | ---------- |
+| Fig. 12 | corner peak, $u(z)=\bigl(1+\sum_{i=1}^d\omega_iz^{(i)}\bigr)^{-(d+1)}$, $\omega_i=1/i^2$ | $d=2$     | $[0,1]^2$  |
+| Fig. 13 | Rastrigin, $u(z)=20+\sum_{i=1}^2\bigl((z^{(i)})^2-10\cos(2\pi z^{(i)})\bigr)$            | $d=2$     | $[-4,4]^2$ |
+| Fig. 14 | Friedman, $u(z)=10\sin(\pi z^{(1)}z^{(2)})+20(z^{(3)}-0.5)^2+10z^{(4)}+5z^{(5)}$         | $d=5$     | not stated |
 
 (Figure 11 plots the Rastrigin function itself and carries no results.) The conclusion is that under the proposed algorithm the gradient-enhanced design matrix $\mathbf B$ can be well conditioned, and that accuracy again exceeds the other sampling methods.
 
@@ -946,14 +946,14 @@ So the hedge means something different from what it sounds like. It is not "we t
 
 **The thing most worth seeing is the structural identity with paper 28.** The two papers do the same thing: instead of optimising over a continuum, assemble a large candidate pool and then peel the points off one at a time with a single pivoted matrix factorisation.
 
-| Item             | Paper 28                          | Paper 54                                    |
-| ---------------- | --------------------------------- | ------------------------------------------- |
-| Function space   | polynomial space (weighted $Q$)   | reproducing kernel Hilbert space            |
-| Quantity maximised | Vandermonde-like determinant    | kernel-matrix determinant (Schur complement) |
-| Factorisation    | **column-pivoted QR** of $V^T$    | **pivoted Cholesky** of $\boldsymbol B$     |
-| Candidate pool   | $\tilde M=10^4$                   | $M=10^4$                                    |
-| Statistics       | 50 trials, 20%/80% quantiles      | 50 trials, 20%/80% quantiles                |
-| Theorems         | Theorems 3.1, 3.2 (conditional optimality) | none                               |
+| Item               | Paper 28                                   | Paper 54                                     |
+| ------------------ | ------------------------------------------ | -------------------------------------------- |
+| Function space     | polynomial space (weighted $Q$)            | reproducing kernel Hilbert space             |
+| Quantity maximised | Vandermonde-like determinant               | kernel-matrix determinant (Schur complement) |
+| Factorisation      | **column-pivoted QR** of $V^T$             | **pivoted Cholesky** of $\boldsymbol B$      |
+| Candidate pool     | $\tilde M=10^4$                            | $M=10^4$                                     |
+| Statistics         | 50 trials, 20%/80% quantiles               | 50 trials, 20%/80% quantiles                 |
+| Theorems           | Theorems 3.1, 3.2 (conditional optimality) | none                                         |
 
 Both factorisations can implement the greedy iteration for the same reason: **each writes the determinant as a product over pivots** — QR gives $\prod\lvert r_{ii}\rvert$, Cholesky gives the product of the diagonal blocks — so "add the point that maximises the determinant" automatically becomes "take the next pivot". The only difference is the function space, and with it the kind of factorisation the matrix admits: a non-symmetric design matrix calls for QR, a symmetric positive definite kernel matrix for Cholesky.
 
