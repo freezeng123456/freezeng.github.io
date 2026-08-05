@@ -1017,7 +1017,7 @@
       "status": "published",
       "theme": "scientific-machine-learning",
       "page": "spectral-bias-and-generative-solvers",
-      "doi": "10.2139/ssrn.4982668"
+      "doi": "10.1016/j.cma.2025.117751"
     },
     {
       "n": 82,
@@ -1106,14 +1106,14 @@
     {
       "n": 89,
       "authors": "Yan Wang, Ling Guo, Hao Wu, Tao Zhou",
-      "title": "Energy based diffusion generator for efficient sampling of Boltzmann distributions",
+      "title": "Energy-based diffusion generator for efficient sampling of Boltzmann distributions",
       "venue": "Neural Netw.",
       "detail": "Vol. 194, 108126",
       "year": 2026,
       "status": "published",
       "theme": "scientific-machine-learning",
       "page": "spectral-bias-and-generative-solvers",
-      "doi": "10.2139/ssrn.5046217"
+      "doi": "10.1016/j.neunet.2025.108126"
     },
     {
       "n": 90,
