@@ -178,10 +178,88 @@ The route is the same as in [[en/computational-mathematics/paper-notes/phase-fie
 
 ## 78: linear relaxation with a regularised energy reformulation
 
-Paper 78 takes a different route: **do not improve the time discretisation, rewrite the energy.** Scalar auxiliary variable and invariant energy quadratisation methods rewrite a nonlinear energy as a quadratic form in an auxiliary variable so each step only needs a linear solve. This paper contributes a linear relaxation method with regularised energy reformulation in that family, applied to phase-field models.
+Paper 78 takes a different route: **do not improve the time discretisation, rewrite the energy.** The paper names its method RRER, for relaxation with regularized energy reformulation.
 
-> [!note] Coverage status
-> This page has not yet checked paper 78 equation by equation, so it does not report its relaxation form, regularisation term or stability conclusions. Its position in the topic: like papers 91 and 104 it aims at treating the nonlinearity explicitly while keeping the energy argument, but the means is reformulating the energy rather than designing the scheme or building a criterion.
+### The problem: IEQ and SAV both differentiate the auxiliary variable in time
+
+Invariant energy quadratisation (IEQ) and the scalar auxiliary variable (SAV) method both rewrite a nonlinear energy as a quadratic form in an auxiliary variable, so that each step needs only a linear solve. IEQ typically produces a **coupled** system with **time-dependent** coefficients; SAV produces a **decoupled** system with **constant** coefficients. Both, however, share one move: the evolution equation for the auxiliary variable is obtained by **differentiating that variable in time**, which introduces its own truncation error and makes the discrete system less faithful to the original equation. The paper's own phrasing is that it does not need to take time derivatives of the auxiliary variables.
+
+Its answer is to let the auxiliary variable be defined by an **algebraic** relation only, never differentiated in time.
+
+### The regularised auxiliary variable
+
+With free energy and gradient flow
+
+$$
+E(\phi)=\tfrac12(\mathcal L\phi,\phi)+\bigl(F(\phi),1\bigr),
+\qquad
+\frac{\partial\phi}{\partial t}=-\mathcal G\bigl(\mathcal L\phi+F'(\phi)\bigr),
+$$
+
+where $\mathcal L$ is linear and $\mathcal G\ge0$ is the mobility operator, one has $\frac{\mathrm d}{\mathrm dt}E=-\bigl(\mathcal L\phi+F'(\phi),\mathcal G(\mathcal L\phi+F'(\phi))\bigr)\le0$. Choose $C_0$ so that $F(\phi)+C_0\ge0$, introduce a **stabilisation parameter** $\gamma$, and set
+
+$$
+q=\sqrt{4\bigl(F(\phi)+C_0\bigr)}-\gamma
+\qquad\Longrightarrow\qquad
+F(\phi)=\tfrac14q^2+\tfrac12\gamma q+\tfrac{\gamma^2}{4}-C_0 .
+$$
+
+The equivalent system and its energy are
+
+$$
+\frac{\partial\phi}{\partial t}=-\mathcal G\mu,
+\quad
+\mu=\mathcal L\phi+\tfrac12qq'+\tfrac{\gamma}{2}q',
+\quad
+q=\sqrt{4\bigl(F(\phi)+C_0\bigr)}-\gamma,
+$$
+
+$$
+\widehat E(\phi,q)=\tfrac12(\mathcal L\phi,\phi)
++\Bigl(\tfrac14q^2+\tfrac12\gamma q+\tfrac{\gamma^2}{4}-C_0,\,1\Bigr),
+\qquad
+\frac{\mathrm d}{\mathrm dt}\widehat E=-(\mu,\mathcal G\mu)\le0 .
+$$
+
+**One point must be emphasised: $\widehat E(\phi,q)$ is exactly equal to $E(\phi)$ at the continuous level, not merely an approximation to it.** The paper derives that identity line by line. This is unlike the modified energies of SAV and IEQ, which relate to the original energy only approximately, and it matters for the placement discussion below.
+
+### A staggered time grid makes the scheme linear
+
+Take the molecular beam epitaxy model **with** slope selection — **note that this is a different model from the one in paper 52**, see below:
+
+$$
+E(\phi)=\int_\Omega\Bigl(\frac{\epsilon^2}{2}(\Delta\phi)^2+\frac14\bigl(|\nabla\phi|^2-1\bigr)^2\Bigr)\mathrm d\mathbf x,
+\qquad
+\phi_t=-\epsilon^2\Delta^2\phi+\nabla\cdot\bigl((|\nabla\phi|^2-1)\nabla\phi\bigr),
+$$
+
+with $q=|\nabla\phi|^2-1-\gamma$ for $\gamma>0$. The Crank-Nicolson scheme lives on a **staggered** grid, with $\phi$ at integer levels and $q$ at half-integer levels:
+
+$$
+\begin{aligned}
+&\text{(a)}\ \ \frac{\phi^{n+1}-\phi^{n}}{\delta t}
+=-\epsilon^2\Delta g^{n+\frac12}
++\nabla\cdot\Bigl(q^{n+\frac12}\nabla\frac{\phi^{n+1}+\phi^{n}}{2}\Bigr)
++\gamma g^{n+\frac12},\\
+&\text{(b)}\ \ g^{n+\frac12}=\Delta\frac{\phi^{n+1}+\phi^{n}}{2},
+\qquad
+\text{(c)}\ \ \frac{q^{n+\frac12}+q^{n-\frac12}}{2}=|\nabla\phi^{n}|^2-1-\gamma .
+\end{aligned}
+$$
+
+**What makes the scheme linear is (c): it is algebraic, and its right-hand side involves only the known $\phi^n$.** Each step therefore solves one linear algebraic system. The scheme is second-order in time and carries no step-ratio restriction at all — the steps are uniform and the stability is unconditional.
+
+The paper treats the phase-field crystal model the same way, with $q=\phi^2-b_0-\gamma$, and extends RRER to a ternary phase-field model and a grain-growth model.
+
+### Two theorems
+
+For the molecular beam epitaxy model the scheme **conserves mass**, with $\int_\Omega\phi^{n+1}=\int_\Omega\phi^n$, and is **unconditionally energy stable**. The numerical section uses $P_1$ finite elements in FreeFEM: a manufactured-solution test gives temporal rates of $2.00,2.00,2.00$ against $1.94,1.97,1.99$ for IEQ; for the phase-field crystal model RRER is more accurate than both IEQ and exponential SAV while also the cheapest in CPU time; and the coarsening, stripe and triangle patterns, and the tests on spheres and tori all agree with the phase diagrams in the literature.
+
+### Why this paper is the exception in this topic
+
+This is worth stating plainly, because it bears on a tension running through the whole topic. Paper 78 has no Liao co-authorship, no DOC or DCC kernels, no variable steps and no step-ratio analysis; it belongs to the IEQ/SAV/relaxation branch rather than the convolution-kernel branch.
+
+More importantly, **the type of its energy statement differs**: paper 78 proves dissipation of a **modified** energy $\widehat E(\phi,q)$, whereas papers 40, 48, 52, 57 and 91 work hard precisely to **avoid** that, establishing dissipation of the original or variational energy instead. The tension is explicit in the literature: paper 91's introduction criticises SAV-based high-order schemes for establishing stability only with respect to a modified energy involving the auxiliary variable. What mitigates it here is that $\widehat E\equiv E$ holds exactly at the continuous level, so this modified energy is not a new object but another way of writing the same one.
 
 ## The three approaches side by side
 

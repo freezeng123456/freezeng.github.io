@@ -178,10 +178,88 @@ $$
 
 ## 78：线性松弛与正则化能量重构
 
-编号 78 处理的是另一类思路：**不改进时间离散，而改写能量本身。** 标量辅助变量与不变能量二次化方法把非线性能量重写为一个带辅助变量的二次形式，从而每步只需解线性系统。本文在这一族中给出带正则化能量重构的线性松弛方法，用于相场模型。
+编号 78 处理的是另一类思路：**不改进时间离散，而改写能量本身。** 论文把自己的方法命名为 RRER（relaxation with regularized energy reformulation）。
 
-> [!note] 覆盖进度
-> 本页尚未对编号 78 做逐式核对，因此不报告其松弛形式、正则化项与稳定性结论。它在本专题中的定位是：与编号 91、104 一样以「显式处理非线性、保住能量论证」为目标，但手段是重构能量而不是设计格式或寻找判据。
+### 问题：IEQ 与 SAV 都要对辅助变量求时间导数
+
+不变能量二次化（IEQ）与标量辅助变量（SAV）都把非线性能量写成带辅助变量的二次形式，从而每步只解线性系统。IEQ 通常给出**耦合**且系数**依赖时间**的系统，SAV 则给出**解耦**且系数为**常数**的系统。但两者有一处共同的做法：辅助变量的演化方程是靠**对该变量求时间导数**得到的，这本身引入截断误差，也使离散系统对原方程的忠实度下降。论文的原话是它「不需要对辅助变量求时间导数」。
+
+本文的做法是让辅助变量只由一个**代数**关系定义，从不参与时间求导。
+
+### 正则化辅助变量
+
+设自由能与梯度流为
+
+$$
+E(\phi)=\tfrac12(\mathcal L\phi,\phi)+\bigl(F(\phi),1\bigr),
+\qquad
+\frac{\partial\phi}{\partial t}=-\mathcal G\bigl(\mathcal L\phi+F'(\phi)\bigr),
+$$
+
+$\mathcal L$ 线性、$\mathcal G\ge0$ 为迁移算子，于是 $\frac{\mathrm d}{\mathrm dt}E=-\bigl(\mathcal L\phi+F'(\phi),\mathcal G(\mathcal L\phi+F'(\phi))\bigr)\le0$。取 $C_0$ 使 $F(\phi)+C_0\ge0$，并引入**稳定化参数** $\gamma$，定义
+
+$$
+q=\sqrt{4\bigl(F(\phi)+C_0\bigr)}-\gamma
+\qquad\Longrightarrow\qquad
+F(\phi)=\tfrac14q^2+\tfrac12\gamma q+\tfrac{\gamma^2}{4}-C_0 .
+$$
+
+等价系统与相应的能量为
+
+$$
+\frac{\partial\phi}{\partial t}=-\mathcal G\mu,
+\quad
+\mu=\mathcal L\phi+\tfrac12qq'+\tfrac{\gamma}{2}q',
+\quad
+q=\sqrt{4\bigl(F(\phi)+C_0\bigr)}-\gamma,
+$$
+
+$$
+\widehat E(\phi,q)=\tfrac12(\mathcal L\phi,\phi)
++\Bigl(\tfrac14q^2+\tfrac12\gamma q+\tfrac{\gamma^2}{4}-C_0,\,1\Bigr),
+\qquad
+\frac{\mathrm d}{\mathrm dt}\widehat E=-(\mu,\mathcal G\mu)\le0 .
+$$
+
+**有一处必须强调：$\widehat E(\phi,q)$ 在连续层面与 $E(\phi)$ 精确相等，而不只是近似。** 论文把这个恒等式逐行推了出来。这与 SAV、IEQ 的修正能量不同，后者与原能量之间只有近似关系。这一点在下面的定位讨论中是关键。
+
+### 交错时间网格使格式线性
+
+以带斜率选择的分子束外延模型为例（**注意与编号 52 的模型不同**，见下），
+
+$$
+E(\phi)=\int_\Omega\Bigl(\frac{\epsilon^2}{2}(\Delta\phi)^2+\frac14\bigl(|\nabla\phi|^2-1\bigr)^2\Bigr)\mathrm d\mathbf x,
+\qquad
+\phi_t=-\epsilon^2\Delta^2\phi+\nabla\cdot\bigl((|\nabla\phi|^2-1)\nabla\phi\bigr),
+$$
+
+取 $q=|\nabla\phi|^2-1-\gamma$（$\gamma>0$）。Crank-Nicolson 型格式放在**交错**网格上：$\phi$ 在整数层、$q$ 在半整数层，
+
+$$
+\begin{aligned}
+&\text{(a)}\ \ \frac{\phi^{n+1}-\phi^{n}}{\delta t}
+=-\epsilon^2\Delta g^{n+\frac12}
++\nabla\cdot\Bigl(q^{n+\frac12}\nabla\frac{\phi^{n+1}+\phi^{n}}{2}\Bigr)
++\gamma g^{n+\frac12},\\
+&\text{(b)}\ \ g^{n+\frac12}=\Delta\frac{\phi^{n+1}+\phi^{n}}{2},
+\qquad
+\text{(c)}\ \ \frac{q^{n+\frac12}+q^{n-\frac12}}{2}=|\nabla\phi^{n}|^2-1-\gamma .
+\end{aligned}
+$$
+
+**格式线性的原因就在 (c)：它是代数的，且右端只含已知的 $\phi^n$。** 因此每步只解一个线性代数系统。时间二阶精度，并且没有任何步长比限制——步长均匀，稳定性是无条件的。
+
+论文对相场晶体模型作同样处理（取 $q=\phi^2-b_0-\gamma$），并把 RRER 推广到三元相场模型与晶粒生长模型。
+
+### 两条定理
+
+对分子束外延模型，格式**守质量**（$\int_\Omega\phi^{n+1}=\int_\Omega\phi^n$）且**无条件能量稳定**。数值部分用 $P_1$ 有限元在 FreeFEM 中实现：制造解检验给出的时间收敛率为 $2.00,2.00,2.00$（IEQ 为 $1.94,1.97,1.99$），相场晶体情形 RRER 比 IEQ 与指数型 SAV 都更准，且 CPU 时间最省；粗化、条纹与三角图样、球面与环面上的算例都与文献相图一致。
+
+### 这一篇为什么是本专题的例外
+
+值得把这一点写清楚，因为它关系到整个专题的内在张力。编号 78 没有 Liao 的合作、没有 DOC/DCC 核、没有变步长、也没有步长比分析——它属于 IEQ/SAV/松弛这一支，而不是卷积核那一支。
+
+更要紧的是**能量陈述的类型不同**：编号 78 证明的是**修正**能量 $\widehat E(\phi,q)$ 的耗散，而编号 40、48、52、57、91 恰恰在设法**避免**这一点，它们要的是原能量或变分能量的耗散。这个张力在文献里是明写着的：编号 91 的引言正是批评基于 SAV 的高阶格式只能建立「关于含辅助变量的修正能量」的稳定性。编号 78 的缓解之处在于 $\widehat E\equiv E$ 在连续层面精确成立，因此它的修正能量不是一个新对象，而是同一个能量的另一种写法。
 
 ## 三篇的对策对照
 
