@@ -8,10 +8,10 @@ tags:
   - 论文笔记
 ---
 
-本页收录[主页发表列表](https://lsec.cc.ac.cn/~tzhou/)上的全部 108 项工作。编号沿用主页编号，因此可以逐条对照；同一编号在本站各页面通用。
+本页收录[主页发表列表](https://lsec.cc.ac.cn/~tzhou/)上的全部 108 项工作，编号沿用主页编号。
 
-> [!note] 题录与 DOI 的处理方式
-> 主页列表中的期刊缩写与个别拼写按出版版本规范化，DOI 通过 Crossref 逐条解析并比对题名。以下若干条目的正式题名与主页列表略有差别，本页采用出版版本：
+> [!note] 出版题名与主页列表的差别
+> 以下条目的正式题名与主页列表不同，表中采用出版版本：
 >
 > - 第 11 项：主页写作「Discrete least square projection in unbounded domain...」，出版题名为 _On Discrete Least-Squares Projection in Unbounded Domain with Random Evaluations and its Application to Parametric Uncertainty Quantification_。
 > - 第 25 项：出版题名为 _Efficient spectral sparse grid approximations for solving multi-dimensional forward backward SDEs_。

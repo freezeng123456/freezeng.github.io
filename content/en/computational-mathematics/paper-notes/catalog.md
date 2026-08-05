@@ -8,10 +8,10 @@ tags:
   - paper-notes
 ---
 
-This page lists all 108 items from the [homepage publication list](https://lsec.cc.ac.cn/~tzhou/). The numbering follows the homepage, so entries can be checked one by one, and the same numbers are used throughout this site.
+All 108 items from the [homepage publication list](https://lsec.cc.ac.cn/~tzhou/), numbered as the homepage numbers them.
 
-> [!note] How records and DOIs are handled
-> Journal abbreviations and a few spellings from the homepage list are normalised to the published versions, and every DOI is resolved through Crossref with a title comparison. For the following entries the published title differs from the homepage listing, and this page uses the published one:
+> [!note] Where the published title differs from the homepage listing
+> For these entries the table uses the published title:
 >
 > - Item 11: the homepage gives "Discrete least square projection in unbounded domain..."; the published title is _On Discrete Least-Squares Projection in Unbounded Domain with Random Evaluations and its Application to Parametric Uncertainty Quantification_.
 > - Item 25: published as _Efficient spectral sparse grid approximations for solving multi-dimensional forward backward SDEs_.

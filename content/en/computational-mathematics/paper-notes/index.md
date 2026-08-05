@@ -9,7 +9,7 @@ tags:
   - uncertainty-quantification
 ---
 
-These notes organise all 108 items listed on the homepage of Tao Zhou (Institute of Computational Mathematics and Scientific/Engineering Computing, Chinese Academy of Sciences): 95 published papers and 13 submissions or preprints. The inventory, the bibliographic records and the topic assignment follow the [homepage publication list](https://lsec.cc.ac.cn/~tzhou/) as retrieved on 5 August 2026, with every DOI checked individually against Crossref.
+These notes organise all 108 items listed on the homepage of Tao Zhou (Institute of Computational Mathematics and Scientific/Engineering Computing, Chinese Academy of Sciences): 95 published papers and 13 submissions or preprints. The numbering and topic assignment follow the [homepage publication list](https://lsec.cc.ac.cn/~tzhou/).
 
 > [!info] What these pages are and are not
 > They are **third-party reading notes**, not a restatement of the originals and not the authors' own words. Each page gives the problem setting, the construction, the main results and their qualifications, and closes with the source reference; proofs belong to the papers. Technical content is assembled from public abstracts, public preprints and public full texts. Anything that could not be checked against public material is marked as unverified rather than filled in by guesswork.
@@ -42,7 +42,7 @@ The full bibliography is in the [[en/computational-mathematics/paper-notes/catal
 
 The timeline shows three shifts of emphasis. From 2010 to 2015 the work concentrates on stochastic Galerkin methods, stochastic collocation and discrete least squares, all answering one question: how to characterise parametric dependence from a limited number of forward solves. From 2016 to 2021 two lines run in parallel. One pushes sampling design towards optimal sampling and sparse recovery and then into Bayesian inverse problems. The other turns to the time direction, covering energy analysis for variable-step phase-field schemes and diagonalisation-based parallel-in-time algorithms. After 2022 scientific machine learning dominates, but its technical core comes from the earlier two phases: adaptive sampling inherits collocation design, density flows inherit the change of variables, and martingale methods inherit the probabilistic representation of forward-backward stochastic differential equations.
 
-## Relation to other topics on this site
+## Relation to the other topics here
 
 [[en/computational-mathematics/knowledge-notes/time-parallelization/index|Time Parallelization for Hyperbolic and Parabolic Problems]] is a section-by-section close reading of item 85, the 2025 _Acta Numerica_ survey by Gander, Wu and Zhou, including the original figures and reproducible experiments. The [[en/computational-mathematics/paper-notes/parallel-in-time/index|parallel-in-time]] page here does not repeat that reading; it explains what each of the twelve original papers underneath the survey actually solved.
 
@@ -71,14 +71,4 @@ Both exist here, and both are worth knowing before citing:
 
 ### Three: a paper's stated conclusion sometimes disagrees with its own tables
 
-Where that happens this site records the table and flags the disagreement rather than reconciling it on the paper's behalf. Paper 8 gives two mutually inconsistent rates for $k=6$ ($5.116$ and $6.273$, depending on the mesh range); paper 25's first example reports $2.632$ in the $Y$ component against its third-order claim; paper 93 concedes it trails PINN and RS-PINN yet beats RS-PINN on Allen-Cahn at $d=10^5$ in its own table; and paper 105 claims smoothing uniformly improves on filtering while its Table 9 shows the reverse at $K=50$.
-
-> [!note] On the availability of numerical results
-> How detailed a "numerical experiments" section is varies considerably between pages, and the reason is the source rather than the writing. A substantial number of these papers report results only as figures — papers 15, 27, 42, 54, 75, 81, 101 and 107, along with most of the Bayesian topic — and for those this site gives the full experimental configuration and the qualitative conclusion while stating plainly that the values could not be transcribed. Only papers that tabulate their results have result tables here. **Wherever a number is absent, the reason is given.**
-
-## Data and reproducibility
-
-- Bibliographic data: `scripts/data/tao-zhou-publications.json`, holding number, authors, title, venue, year, status, topic and DOI.
-- DOI resolution and verification: `scripts/enrich-publication-dois.mjs` and `scripts/verify-publication-dois.mjs`, both querying Crossref and comparing titles entry by entry.
-- The tables on the catalogue page are generated from that dataset by `scripts/generate-publication-catalog.mjs`; the prose is hand-written.
-- Every figure is generated as a bilingual SVG pair by `scripts/generate-diagram-svgs.mjs`.
+Paper 8 gives two mutually inconsistent rates for $k=6$ ($5.116$ and $6.273$, depending on the mesh range); paper 25's first example reports $2.632$ in the $Y$ component against its third-order claim; paper 93 concedes it trails PINN and RS-PINN yet beats RS-PINN on Allen-Cahn at $d=10^5$ in its own table; and paper 105 claims smoothing uniformly improves on filtering while its Table 9 shows the reverse at $K=50$.
