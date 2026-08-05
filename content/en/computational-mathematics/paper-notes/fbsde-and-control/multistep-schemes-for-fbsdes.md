@@ -79,7 +79,34 @@ These conditions turn "approximate a first derivative from $k+1$ levels" into a 
 
 ### The order limit comes from a root condition
 
-Stability of a multistep scheme is decided by a root condition on a characteristic polynomial, and the paper observes a stability window $1\le k\le6$. That window is empirical in paper 8; its theoretical explanation waits for paper 47 (see the [[en/computational-mathematics/paper-notes/fbsde-and-control/stability-theory-for-fbsdes|stability theory page]]), where the root condition is precisely the stability half of an equivalence.
+The window $1\le k\le6$ is not a vague empirical observation but a zero-stability check anyone can redo. Applying the same weights to the deterministic ODE $\mathrm dY/\mathrm dt=f(t,Y)$ gives
+
+$$
+\alpha_{k,0}Y^n+\sum_{j=1}^{k}\alpha_{k,j}Y^{n+j}=f(t_n,Y^n),
+$$
+
+with characteristic polynomial
+
+$$
+P(\lambda)=\alpha_{k,0}\lambda^{k}+\sum_{j=1}^{k}\lambda^{k-j}=0,
+$$
+
+subject to the root condition $|\lambda_{k,j}|\le1$, simple where equality holds. The maximum root moduli the paper reports, excluding the common root $1.0$, are
+
+| $k$              | 2      | 3      | 4      | 5      | 6      | 7          | 8          |
+| ---------------- | ------ | ------ | ------ | ------ | ------ | ---------- | ---------- |
+| max root modulus | 0.3333 | 0.4264 | 0.5608 | 0.7087 | 0.8633 | **1.0222** | **1.1839** |
+
+**The modulus crosses $1$ between $k=6$ and $k=7$, so the scheme is unstable for $k\ge7$**, which is why the tabulation stops at $k=6$. What paper 8 lacks is not this computation but a **stochastic** stability theory; that arrives with paper 47 (see the [[en/computational-mathematics/paper-notes/fbsde-and-control/stability-theory-for-fbsdes|stability theory page]]), where the root condition is precisely the stability half of an equivalence.
+
+### Distinguishing it from the other multistep route
+
+Two constructions both called "multistep" need separating here, or their conclusions get attached to the wrong scheme.
+
+- **Interpolate then integrate** (Zhao, Zhang and Ju, _SIAM J. Numer. Anal._ 48(4) 2010): Lagrange-interpolate the integrand of the reference integral identities over several future time levels, then integrate, producing Newton-Cotes-type weights of the form $h\sum_jb_j\mathbb E_i[f(t_{i+j},Y_{i+j},Z_{i+j})]$. Its stability windows **differ between the two directions**: the reference equation for $Y$ is stable only for $K_y\in\{1,\dots,7,9\}$ — note that $K_y=8$ is excluded — while the one for $Z$ is stable only for $K_z\in\{1,2,3\}$.
+- **Differentiate into reference ODEs** (paper 8): it does **not** interpolate the integrand and integrate. It differentiates the reference integral identities in $t$, turning them into two reference ODEs, then discretises with the derivative-approximation weights above. Hence a single window $1\le k\le6$.
+
+One common misattribution is worth correcting in passing: the multistep, interpolate-then-integrate construction is due to Zhao-Zhang-Ju (2010), whereas Zhao, Chen and Peng (_SIAM J. Sci. Comput._ 28(4) 2006) is the origin of the **$\theta$-scheme**, which the multistep scheme extends. The two should not be conflated.
 
 ## 18, 23 and 35: three different routes to higher order
 
@@ -123,15 +150,15 @@ with a paired recursion for $Z^n$ built from $\mathbb E_n[Y^{n+i}\Delta W]/\Delt
 
 ## How the seven relate
 
-| No. | Route to higher order              | Problem class           | Basis of stability                          |
-| --- | ---------------------------------- | ----------------------- | ------------------------------------------- |
-| 8   | Lagrange interpolation over levels | coupled FBSDE           | empirical root-condition window $k\le6$     |
-| 18  | multistep plus jump handling       | FBSDE with jumps        | same family                                 |
-| 23  | deferred correction                | FBSDE                   | same family                                 |
-| 33  | explicit theta-schemes             | mean-field BSDE         | proved in the paper                         |
-| 35  | deferred correction                | second-order FBSDE      | same family                                 |
-| 61  | explicit multistep                 | mean-field FBSDE        | same family                                 |
-| 68  | design backwards from stability    | general multistep FBSDE | new sufficient conditions plus optimisation |
+| No. | Route to higher order             | Problem class           | Basis of stability                          |
+| --- | --------------------------------- | ----------------------- | ------------------------------------------- |
+| 8   | differentiate into reference ODEs | coupled FBSDE           | root-condition window $k\le6$               |
+| 18  | multistep plus jump handling      | FBSDE with jumps        | same family                                 |
+| 23  | deferred correction               | FBSDE                   | same family                                 |
+| 33  | explicit theta-schemes            | mean-field BSDE         | proved in the paper                         |
+| 35  | deferred correction               | second-order FBSDE      | same family                                 |
+| 61  | explicit multistep                | mean-field FBSDE        | same family                                 |
+| 68  | design backwards from stability   | general multistep FBSDE | new sufficient conditions plus optimisation |
 
 The shape of the thread is worth summarising: **construct schemes first (papers 8 through 35), then unify the analysis (paper 47), then design backwards from the analysis (paper 68).** Paper 68 is possible precisely because paper 47 had established stability as the necessary and sufficient other half of convergence, which turns "design a stable scheme" into an optimisation problem with a clear target rather than trial and error.
 
@@ -142,7 +169,7 @@ The shape of the thread is worth summarising: **construct schemes first (papers 
 | Coupled FBSDE and the question posed            | 8          | system, prior state of the art, explicit question                                          |
 | Generator theorem and left-endpoint matching    | 8          | generator, theorem, licence, general lesson                                                |
 | Moment conditions for the derivative weights    | 8          | the linear conditions                                                                      |
-| The root-condition window                       | 8          | empirical window and where its theory arrives                                              |
+| The root-condition window                       | 8          | the computed window and where its stochastic theory arrives                                |
 | Jumps, deferred correction, second order        | 18, 23, 35 | each route and its cost                                                                    |
 | Mean-field form and the first-high-order claim  | 33         | McKean-Vlasov form, meaning of explicit (limited verification)                             |
 | Strong-stability design and the scheme template | 68         | origin, three-step statement, template, convex-combination question (limited verification) |
