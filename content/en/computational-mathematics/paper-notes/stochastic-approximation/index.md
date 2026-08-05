@@ -102,7 +102,9 @@ That observation improves the sample budget from roughly $M\gtrsim N^2$ for draw
 ![Fold gradients and sampling density into the recovery problem](assets/diagrams/tao-zhou-papers/en/sparse-recovery.svg)
 
 > [!note] Coverage status
-> Papers 1, 2, 3, 4, 5, 6, 7, 9, 10 and 11 have close-reading content checked equation by equation. The close readings for 13, 14, 21, 22, 24, 28, 29, 32, 36, 38, 44, 45 and 54 are still being filled in; for those this page gives only the core ideas confirmable from titles, abstracts and cross-references in neighbouring papers.
+> Papers 1, 2, 4, 5, 9, 10, 11, 14, 21, 22, 24, 28, 29, 32, 36, 44 and 45 have been checked equation by equation against full texts, so their formulas, theorem hypotheses and constants are transcribed. Papers 6, 7 and 38 reach only abstract and metadata level. Papers 3 and 13 could not be verified — the publisher blocks the full text of both and no aggregator holds an abstract — so their sections give only what indexing keywords, sister papers and third-party literature confirm, and report none of their theorems, constants or numerical results.
+>
+> One terminological caution as well: this group of papers is not consistent about the Christoffel function, some writing $\sum_\alpha\varphi_\alpha^2$ and others its reciprocal. This site uses $K(z)=\sum_\alpha\varphi_\alpha^2(z)$ throughout and takes the Christoffel function to be $N/K(z)$, so every weight appearing on these pages is of the form $1/K$. Check each paper's own convention before quoting it.
 
 ## Relation to the other topics
 

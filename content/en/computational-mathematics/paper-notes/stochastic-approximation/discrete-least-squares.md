@@ -105,7 +105,7 @@ Paper 14 handles parameter domains without tensor-product structure, performing 
 One judgement runs through all five: **the right form of the question "which points" is "how many points, drawn from which density".** Paper 6 asks the former; from paper 9 onward it is replaced by the latter, and the latter admits theorems. That reformulation is why the thread was able to advance.
 
 > [!note] Coverage status
-> The theorems and sample-complexity statements of papers 9 and 11 have been checked. The specific experiments, hypotheses and constants of papers 6, 13 and 14 have not been verified item by item here; the content above is limited to what abstracts, third-party literature and citation relations confirm.
+> The theorems and sample-complexity statements of papers 9, 11 and 14 have been checked against the sources; paper 6 reaches only abstract and metadata level. Paper 13 could not be verified: the publisher blocks the full text and researchr explicitly records that the abstract is missing, so its construction here is inferred from its sister paper 21, which uses an identical design, and the claim of linearly growing sample count rests on a third-party statement (Seshadri-Narayan-Sarkar) rather than on the paper itself. Its constants and probability bounds are not reported.
 
 ## Sources for this page
 

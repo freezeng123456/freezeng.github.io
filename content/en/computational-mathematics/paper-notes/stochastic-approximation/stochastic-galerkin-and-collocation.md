@@ -153,7 +153,7 @@ Paper 3 applies the same machinery to elliptic **interface** problems with rando
 - **38 (Maxwell's equations with random inputs)** gives efficient stochastic Galerkin methods. Maxwell's system is a first-order hyperbolic system and therefore inherits all the regularity difficulties of papers 2, 4 and 5, while its divergence constraint adds a further structural requirement.
 
 > [!note] Coverage status
-> The theorems and key constructions of papers 1, 2 and 4 have been checked. The bi-orthogonal basis definition and the sensitivity mechanism of papers 3 and 5 are transcribed from independent sources by the same group, and their own theorems and numerical results are not verified item by item here; papers 7 and 38 receive only their problem setting and positioning.
+> The theorems and key constructions of papers 1, 2, 4 and 5 have been checked against the sources. Papers 7 and 38 receive only their problem setting and positioning, at the level of abstract and metadata. Paper 3 is the one item that could not be verified: Crossref, OpenAlex, zbMATH and Semantic Scholar all lack its abstract and the publisher page returns 403, so this site reports none of its theorems or numerical results, and the discussion above gives only the constructional idea confirmable from zbMATH indexing keywords and independent sources by the same group.
 
 ## Coverage check
 
