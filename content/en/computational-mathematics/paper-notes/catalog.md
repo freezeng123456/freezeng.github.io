@@ -192,14 +192,14 @@ This page lists all 108 items from the [homepage publication list](https://lsec.
 
 **Published**
 
-| No. | Paper                                                                                                                         | Publication                                                 | Close reading |
-| --- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------- |
-| 92  | [Fast computation of the fractional power of a matrix](https://doi.org/10.1137/25m1757411)                                    | SIAM J. Sci. Comput., Vol. 48, No. 1, pp. A309-A334, 2026   | —             |
-| 83  | [A dynamical variable-separation method for parameter-dependent dynamical systems](https://doi.org/10.1137/24M168427X)        | SIAM J. Sci. Comput., Vol. 47, No. 3, pp. A1783-A1808, 2025 | —             |
-| 42  | [Rational spectral methods for PDEs involving fractional Laplacian in unbounded domains](https://doi.org/10.1137/19m1244299)  | SIAM J. Sci. Comput., Vol. 42, No. 2, pp. A585-A611, 2020   | —             |
-| 27  | [Hermite spectral collocation methods for fractional PDEs in unbounded domains](https://doi.org/10.4208/cicp.2018.hh80.12)    | Commun. Comput. Phys., Vol. 24, pp. 1143-1168, 2018         | —             |
-| 17  | [A multilevel finite element method for Fredholm integral eigenvalue problems](https://doi.org/10.1016/j.jcp.2015.09.043)     | J. Comput. Phys., Vol. 303, pp. 173-184, 2015               | —             |
-| 15  | [Error analysis of the dynamically orthogonal approximation of time dependent random PDEs](https://doi.org/10.1137/140967787) | SIAM J. Sci. Comput., Vol. 37, No. 2, pp. A776-A810, 2015   | —             |
+| No. | Paper                                                                                                                         | Publication                                                 | Close reading                                                                                          |
+| --- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 92  | [Fast computation of the fractional power of a matrix](https://doi.org/10.1137/25m1757411)                                    | SIAM J. Sci. Comput., Vol. 48, No. 1, pp. A309-A334, 2026   | [[en/computational-mathematics/paper-notes/spectral-and-reduced-order/unbounded-domain-spectral        | Unbounded Domains and Fractional Operators]] |
+| 83  | [A dynamical variable-separation method for parameter-dependent dynamical systems](https://doi.org/10.1137/24M168427X)        | SIAM J. Sci. Comput., Vol. 47, No. 3, pp. A1783-A1808, 2025 | [[en/computational-mathematics/paper-notes/spectral-and-reduced-order/low-rank-and-variable-separation | Low-Rank Manifolds and Variable Separation]] |
+| 42  | [Rational spectral methods for PDEs involving fractional Laplacian in unbounded domains](https://doi.org/10.1137/19m1244299)  | SIAM J. Sci. Comput., Vol. 42, No. 2, pp. A585-A611, 2020   | [[en/computational-mathematics/paper-notes/spectral-and-reduced-order/unbounded-domain-spectral        | Unbounded Domains and Fractional Operators]] |
+| 27  | [Hermite spectral collocation methods for fractional PDEs in unbounded domains](https://doi.org/10.4208/cicp.2018.hh80.12)    | Commun. Comput. Phys., Vol. 24, pp. 1143-1168, 2018         | [[en/computational-mathematics/paper-notes/spectral-and-reduced-order/unbounded-domain-spectral        | Unbounded Domains and Fractional Operators]] |
+| 17  | [A multilevel finite element method for Fredholm integral eigenvalue problems](https://doi.org/10.1016/j.jcp.2015.09.043)     | J. Comput. Phys., Vol. 303, pp. 173-184, 2015               | [[en/computational-mathematics/paper-notes/spectral-and-reduced-order/low-rank-and-variable-separation | Low-Rank Manifolds and Variable Separation]] |
+| 15  | [Error analysis of the dynamically orthogonal approximation of time dependent random PDEs](https://doi.org/10.1137/140967787) | SIAM J. Sci. Comput., Vol. 37, No. 2, pp. A776-A810, 2015   | [[en/computational-mathematics/paper-notes/spectral-and-reduced-order/low-rank-and-variable-separation | Low-Rank Manifolds and Variable Separation]] |
 
 <!-- generated:catalog:end -->
 
