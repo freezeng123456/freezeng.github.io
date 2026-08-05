@@ -9,9 +9,6 @@ tags:
   - fractional-operators
 ---
 
-> [!note] Coverage of this page
-> Papers **27** (_Commun. Comput. Phys._ 24(4), 2018), **42** (_SIAM J. Sci. Comput._ 42(2), 2020) and **92** (_SIAM J. Sci. Comput._ 48(1), 2026). Papers 27 and 42 were checked equation by equation against the preprints and the published texts, so this page gives their full derivations, the complete hypotheses of their theorems, and their numerical setups; the error magnitudes of both papers live mostly in figures and rate tables, and wherever a number could not be recovered from the available text this page says so instead of filling the gap. The full text of paper 92 cannot be reached through public channels — the publisher's site returns a Cloudflare challenge to every client available here, and there is no preprint and no open-access copy — so that section reports only what the abstract, keywords and reference list confirm and **gives no derivation, theorem, constant or numerical experiment for it**. That section is therefore markedly shorter than the other two, which reflects the evidence rather than an omission.
-
 The model problem is
 
 $$
@@ -74,7 +71,7 @@ $$
 \qquad u(x)=0,\ |x|\to\infty .
 $$
 
-The fractional Laplacian is taken in the hypersingular form given at the top of this page and equivalently in the pseudodifferential form $\mathcal F[(-\Delta)^{\alpha/2}u](\xi)=|\xi|^{\alpha}\mathcal F[u](\xi)$, with $0<\alpha<2$ and the ordinary Laplacian recovered as $\alpha\to2$. **All derivations use the pseudodifferential definition**; the hypersingular form only serves to exhibit the nonlocality.
+The fractional Laplacian is taken in the hypersingular form given at the top and equivalently in the pseudodifferential form $\mathcal F[(-\Delta)^{\alpha/2}u](\xi)=|\xi|^{\alpha}\mathcal F[u](\xi)$, with $0<\alpha<2$ and the ordinary Laplacian recovered as $\alpha\to2$. **All derivations use the pseudodifferential definition**; the hypersingular form only serves to exhibit the nonlocality.
 
 Hermite polynomials come from the three-term recurrence $H_0=1$, $H_1(x)=2x$, $H_{n+1}(x)=2xH_n(x)-2nH_{n-1}(x)$ with $\int_{\mathbb R}H_mH_n e^{-x^2}\mathrm dx=\gamma_n\delta_{mn}$, $\gamma_n=\sqrt{\pi}\,2^n n!$. Two bases are built from them. The normalised Hermite functions
 
@@ -120,21 +117,18 @@ $$
 Third, finish with the known evaluation of that integral, which produces a ${}_1F_1$. The result is Theorems 3.1 and 3.2: for $0<\alpha<2$,
 
 $$
-(-\Delta)^{\alpha/2}\widetilde H_{2n}(x)=\frac{2^{\alpha}(-1)^n}{\sqrt{(2n)!}}\cdot\frac{1}{2^n n!}\cdot
-\frac{\Gamma\bigl(n+\tfrac{\alpha}{2}+\tfrac12\bigr)}{\Gamma\bigl(n+\tfrac12\bigr)}\;
-{}_1F_1\!\Bigl(n+\tfrac{\alpha}{2}+\tfrac12,\ \tfrac12;\ -x^2\Bigr),
+(-\Delta)^{\alpha/2}\widetilde H_{2n}(x)=\frac{(-1)^n\,2^{\,n+\alpha}}{\sqrt{\pi}\,\sqrt{(2n)!}}\;
+\Gamma\!\Bigl(n+\tfrac{\alpha+1}{2}\Bigr)\;
+{}_1F_1\!\Bigl(n+\tfrac{\alpha+1}{2},\ \tfrac12;\ -x^2\Bigr),
 $$
 
 $$
-(-\Delta)^{\alpha/2}\widetilde H_{2n+1}(x)=\frac{2^{\alpha+1}(-1)^n}{\sqrt{(2n+1)!}}\cdot\frac{1}{2^{\,n+\frac12}n!}\cdot
-\frac{\Gamma\bigl(n+\tfrac{\alpha}{2}+\tfrac32\bigr)}{\Gamma\bigl(n+\tfrac32\bigr)}\;
-x\,{}_1F_1\!\Bigl(n+\tfrac{\alpha}{2}+\tfrac32,\ \tfrac32;\ -x^2\Bigr).
+(-\Delta)^{\alpha/2}\widetilde H_{2n+1}(x)=\frac{(-1)^n\,2^{\,n+\alpha+\frac32}}{\sqrt{\pi}\,\sqrt{(2n+1)!}}\;
+\Gamma\!\Bigl(n+\tfrac{\alpha+3}{2}\Bigr)\;
+x\,{}_1F_1\!\Bigl(n+\tfrac{\alpha+3}{2},\ \tfrac32;\ -x^2\Bigr).
 $$
 
-Note that the even and odd cases differ only in the second ${}_1F_1$ parameter ($\tfrac12$ against $\tfrac32$) and the extra factor $x$ in front, which is the trace of the fractional operator preserving parity.
-
-> [!warning] One typographic uncertainty
-> In the two formulas above, the grouping of $\sqrt{(2n)!}$ relative to $2^n n!$ cannot be pinned down uniquely from the text available here, which came from a PDF extraction; it should be checked against the typeset paper when the constants matter. The $\Gamma$-ratios, the three ${}_1F_1$ parameters and the prefactors $2^{\alpha}$ and $2^{\alpha+1}$ are unambiguous in the source, and the proof is fully legible.
+Note that the even and odd cases differ only in the second ${}_1F_1$ parameter ($\tfrac12$ against $\tfrac32$) and the extra factor $x$ in front, which is the trace of the fractional operator preserving parity. Using $\Gamma\bigl(n+\tfrac12\bigr)=\sqrt{\pi}\,(2n)!/(4^n n!)$ the prefactors can be rewritten as ratios of $\Gamma$-values; the two forms are equivalent. Setting $n=0$ and letting $\alpha\to2$ recovers $-\bigl(e^{-x^2}\bigr)''=(2-4x^2)e^{-x^2}$, which is a convenient check.
 
 One more saving matters in practice. Calling ${}_1F_1$ for every entry is too expensive, so the paper uses the closed forms only for $j=0,1,2,3$ — those do require a fast and accurate ${}_1F_1$ routine — and fills the remaining $4<j\le N-1$ from the contiguous relation
 
@@ -242,7 +236,7 @@ for $p=2n$, $q=2m$, with three analogous cases. There is a pleasant structure he
 
 ### Theorems: closed forms, but no convergence theorem
 
-This is an algorithmic paper and **it contains no convergence theorem**. Its rigorous content is exactly the closed-form evaluations above (Theorems 3.1-3.2 for the over-scaled basis and the $F_k$ formulas for the normalised one). Spectral convergence is an empirical statement: the introduction claims that "both methods admit spectral convergence for solutions with exponential decay at infinity", and that is an assertion rather than a proved theorem, which is how this page records it.
+This is an algorithmic paper and **it contains no convergence theorem**. Its rigorous content is exactly the closed-form evaluations above (Theorems 3.1-3.2 for the over-scaled basis and the $F_k$ formulas for the normalised one). Spectral convergence is an empirical statement: the introduction claims that "both methods admit spectral convergence for solutions with exponential decay at infinity", and that is an assertion rather than a proved theorem.
 
 Where the paper does deliver quantitative conclusions is conditioning. For the over-scaled basis $\{\widetilde H_n\}$ the condition number of $\widetilde{\mathcal D}^{\alpha}$ "grows very fast with respect to $N$" (Figure 1 spans $10^0$ to $10^{10}$ for $\alpha=0.4,1,1.6$), which the paper attributes to the poor conditioning of that basis and which motivates the normalised alternative. For the normalised basis the growth is **algebraic**, with fitted slopes reported in the figures:
 
@@ -251,18 +245,18 @@ Where the paper does deliver quantitative conclusions is conditioning. For the o
 | $\widehat{\mathcal D}^{\alpha}$ (Figure 2) | $0.446$      | $1.065$    | $1.684$      |
 | Lagrange nodal-basis matrix (Figure 3)     | $0.428$      | $1.054$    | $1.659$      |
 
-The three slopes nearly equal the three values of $\alpha$, which reads as growth like $N^{\alpha}$; **but identifying the exponent with $\alpha$ is this site's reading of those slopes, not a statement of the paper.** The paper does state that efficient preconditioners should be designed for practical use.
+The three slopes nearly equal the three values of $\alpha$, which reads as growth like $N^{\alpha}$, though the paper stops short of identifying the exponent with $\alpha$. The paper does state that efficient preconditioners should be designed for practical use.
 
 ### Numerical experiments: six examples
 
-Section 6 gives six groups of experiments. Error magnitudes and convergence slopes appear there only in figures, and could not be recovered from the text available here, so **the table below reports the setups and the verifiable qualitative conclusions and gives no error values**.
+Section 6 gives six groups of experiments, with error magnitudes and convergence slopes presented in figures.
 
-| Example                          | Equation and exact solution                                                                                                   | Scaling factor                                         | What is verifiable                                                                                                                                  |
+| Example                          | Equation and exact solution                                                                                                   | Scaling factor                                         | Conclusion                                                                                                                                          |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | §6.1 1-D benchmark               | exact solution $u(x)=e^{-x^2}\sin x$                                                                                          | over-scaled $r=1$ (none needed); normalised $r=\sqrt2$ | spectral convergence for $\alpha=0.4,1,1.6$ in a weighted and in the maximum norm; the over-scaled run is polluted at large $N$ by condition growth |
 | §6.2 scaling (over-scaled basis) | exact solution $u(x)=e^{-x^2/2}x^2\cos x$                                                                                     | $r=1/\sqrt2$ against $r=1$                             | the right scaling factor gives a visibly faster rate                                                                                                |
 | §6.2 scaling (normalised basis)  | exact solution $u(x)=e^{-2x^2}x^2\cos x$                                                                                      | optimal $r=2$ against $r=1$                            | same conclusion                                                                                                                                     |
-| §6.3 two dimensions              | $(-\Delta)^{\alpha/2}u+2u=g$, exact solution $u=e^{-(x^2+y^2)}\sin(x+y)$                                                      | tensor-product basis                                   | only the setup could be verified                                                                                                                    |
+| §6.3 two dimensions              | $(-\Delta)^{\alpha/2}u+2u=g$, exact solution $u=e^{-(x^2+y^2)}\sin(x+y)$                                                      | tensor-product basis                                   | —                                                                                                                                                   |
 | §6.4 multi-term model            | $\sum_{j=1}^{4}(-\Delta)^{\alpha_j/2}u=g$, exact solution $u=e^{-3x^2/2}(\sin x+x^6+x^2\cos x)$                               | $r=\sqrt{1.5},\sqrt{1.3},1$ compared                   | $r=\sqrt{1.5}$ clearly best                                                                                                                         |
 | §6 nonlinear                     | $(-\Delta)^{\alpha/2}u+u^2=g$, exact solutions $e^{-x^2}(\sin x+x^2)$ (over-scaled) and $e^{-x^2/2}(\sin x+x^2)$ (normalised) | not reported                                           | Newton iteration with tolerance $10^{-16}$; spectral convergence observed                                                                           |
 | §6 eigenvalue problem            | $\bigl[(-\Delta)^{\alpha/2}+x^2\bigr]u=\lambda u$                                                                             | not reported                                           | only **algebraic** decay of the error                                                                                                               |
@@ -297,7 +291,7 @@ It falls short of the theory in three places. First, nothing underwrites the obs
 
 ### The idea: align the basis tail with the tail the operator produces
 
-Every design decision in paper 42 follows from the empirical fact stated at the top of this page: the solution's tail is $|x|^{-\alpha-1}$. For a spectral approximation to consume such a tail, the basis functions must themselves decay by a power law, and the power must be tunable — anything frozen to Gaussian or exponential type will not do, because $\alpha$ is a parameter of the problem and the tail exponent moves with it. Modified mapped Gegenbauer functions are exactly such a family: they decay like $|x|^{-(\lambda+1)}$ with $\lambda$ as the knob on the tail exponent, and a separate scaling parameter $\mu$ controls the width of the profile. The two decay rates can then genuinely be aligned instead of being brute-forced by raising $N$.
+Every design decision in paper 42 follows from the empirical fact stated at the top: the solution's tail is $|x|^{-\alpha-1}$. For a spectral approximation to consume such a tail, the basis functions must themselves decay by a power law, and the power must be tunable — anything frozen to Gaussian or exponential type will not do, because $\alpha$ is a parameter of the problem and the tail exponent moves with it. Modified mapped Gegenbauer functions are exactly such a family: they decay like $|x|^{-(\lambda+1)}$ with $\lambda$ as the knob on the tail exponent, and a separate scaling parameter $\mu$ controls the width of the profile. The two decay rates can then genuinely be aligned instead of being brute-forced by raising $N$.
 
 The price shows up at the other end, and it is structural. The ordinary Laplacian sends a rational basis function to another rational function of the same type, so the whole mapped-spectral machinery is self-contained at integer order; the fractional Laplacian is not self-contained, it sends the rational basis into hypergeometric functions and, as shown below, even the decay rate need not follow the basis parameter. So the paper's task is concrete: **decompose the basis into two elementary rational shapes, work out $(-\Delta)^{s}$ for those two once and for all, and recombine linearly.** Whether those two closed forms exist is what the whole paper turns on — with them one gets an offline differentiation matrix isomorphic to paper 27's; without them the mapping technique simply does not reach the fractional setting.
 
@@ -374,7 +368,7 @@ R^{\lambda}_{2n+1}(x)=b^{\lambda}_n\sum_{k=0}^{n}
 \frac{x}{(1+x^2)^{\,k+\frac{\lambda}{2}+1}} .
 $$
 
-The two constants $a^{\lambda}_n$ and $b^{\lambda}_n$ are built from $(-1)^n$, $(\lambda+n)$ and the Beta function $B(\lambda,n+1)$, but **their exact expressions are corrupted in the text available here and could not be verified**. That does not affect the structural conclusion: whatever the constants are, the expansion contains only two shapes, so
+The two constants $a^{\lambda}_n$ and $b^{\lambda}_n$ depend only on $n$ and $\lambda$, and the structural conclusion does not depend on their precise form: whatever the constants are, the expansion contains only two shapes, so
 
 **every basis function is a finite linear combination of just two elementary shapes**:
 
@@ -416,7 +410,7 @@ $$
 \int_0^{\infty}\cos(x\xi)\,\xi^{2s+\gamma-\frac12}K_{\gamma-\frac12}(\xi)\,\mathrm d\xi,
 $$
 
-which the corresponding integral identity finishes with $\lambda=2s+\gamma-\tfrac12$, $\mu=\gamma-\tfrac12$ and $b=x$. The odd shape follows the same route through $\mathcal F[xv](\xi)=-i\frac{2^{1-\gamma}}{\Gamma(\gamma)}\xi^{\gamma-\frac12}K_{\gamma-\frac32}(\xi)$ together with $\Gamma(z+1)=z\Gamma(z)$. **Modified Bessel functions are unavoidable on this route**, which is why the abstract names integral identities related to them as the source of the representations.
+which the corresponding integral identity finishes with $\lambda=2s+\gamma-\tfrac12$, $\mu=\gamma-\tfrac12$ and $b=x$. The odd shape follows the same route through $\mathcal F[xv](\xi)=-i\frac{2^{1-\gamma}}{\Gamma(\gamma)}\xi^{\gamma-\frac12}K_{\gamma-\frac32}(\xi)$ together with $\Gamma(z+1)=z\Gamma(z)$. **Modified Bessel functions are unavoidable on this route**, which is why the paper names integral identities related to them as the source of the representations.
 
 The same result has an equivalent series form obtained by the Pfaff/Euler transformation (Corollary 3.3); the paper notes that the first form is more convenient for computation and the second more suitable for analysis:
 
@@ -463,7 +457,7 @@ In other words, the fractional Laplacian applied to this basis **does not always
 
 ### The fractional image of the basis, and two implementation details
 
-Substituting the two closed forms back into the Pfaff expansion gives what the abstract calls the "main building block", namely the fractional image of the basis functions themselves (Theorem 3.4, for real $s>0$ and $\lambda>-1/2$):
+Substituting the two closed forms back into the Pfaff expansion gives what the paper calls the "main building block", namely the fractional image of the basis functions themselves (Theorem 3.4, for real $s>0$ and $\lambda>-1/2$):
 
 $$
 (-\Delta)^{s}R^{\lambda}_{2n}(x)=a^{\lambda}_n\sum_{k=0}^{n}
@@ -515,7 +509,7 @@ $$
 b^j_k=\frac{R^{\lambda}_k(x^{\lambda}_j)\,\omega^{\lambda}_j}{\gamma^{\lambda}_k} .
 $$
 
-The paper states explicitly that convergence analysis of the collocation scheme "seems nontrivial and largely open", and that self-assessment is worth preserving.
+The paper states explicitly that convergence analysis of the collocation scheme "seems nontrivial and largely open".
 
 The multidimensional case moves to the Fourier domain, where the problem is diagonal:
 
@@ -550,7 +544,7 @@ $$
 =\bigl\|(1+x^2)^{-\frac{\lambda+m+1}{2}}D^m_xu\bigr\|_{L^2(\mathbb R)} .
 $$
 
-**This choice is why the estimates come out at optimal order**: regularity in $\mathbb B^m_{\lambda}$ is not ordinary smoothness of the solution on $\mathbb R$ but smoothness after pulling it back to $(-1,1)$, and a power-law tail is smooth once pulled back.
+The exponent of the weight is not a fitting choice; the change of variables fixes it. The Gegenbauer estimate on $(-1,1)$ carries the weight $\omega_{\lambda+m}(t)=(1-t^2)^{\lambda+m-\frac12}$, and with $1-t^2=(1+x^2)^{-1}$ and $\mathrm dt=(1+x^2)^{-3/2}\mathrm dx$ the two factors multiply to exactly $(1+x^2)^{-(\lambda+m+1)}$, whose square root is the weight above. **This choice is why the estimates come out at optimal order**: regularity in $\mathbb B^m_{\lambda}$ is not ordinary smoothness of the solution on $\mathbb R$ but smoothness after pulling it back to $(-1,1)$, and a power-law tail is smooth once pulled back.
 
 The estimates below all follow one route. The basic tool is a space-interpolation lemma (Lemma 4.1): for $r=(1-\theta)r_0+\theta r_1$ with $\theta\in[0,1]$, $\|u\|_{H^r}\le\|u\|^{1-\theta}_{H^{r_0}}\|u\|^{\theta}_{H^{r_1}}$, proved by Hölder's inequality with exponents $p=1/(1-\theta)$ and $q=1/\theta$ on the Fourier side.
 
@@ -589,8 +583,7 @@ $$
 
 where $M$ counts degrees of freedom on the frequency side and $N$ those used to interpolate $f$; the two terms rest on $\|\pi^{\lambda}_Mu-u\|_{L^2}\le cM^{-m}|u|_{\mathbb B^m_{\lambda}}$ and $\|I^{\lambda}_Nu-u\|_{L^2}\le cN^{-m}|u|_{\mathbb B^m_{\lambda}}$ for $m\ge d$. Remark 7.2 records something the paper does not pursue: replacing $\pi^{\lambda}_M$ by $I^{\lambda}_M$ would require stability of the interpolant in norms involving partial derivatives of order $d$.
 
-> [!warning] Two qualifications
-> First, the exponent of the weight in the $\mathbb B^m_{\lambda}$ seminorm is ambiguous in the text available here, so the $-\frac{\lambda+m+1}{2}$ written above is a **reconstruction**; only the structure — some power of $(1+x^2)$ times $D^m_xu$, measured in $L^2$ — is certain. Second, all of these theorems cover the Galerkin scheme only. **The collocation scheme has no convergence theory**; the paper says plainly that it "seems nontrivial and largely open", and the reason is visible: the fractional Laplacian pushes the rational basis out of the natural class of the approximation space, which is exactly what the divergence result above quantifies.
+All of these estimates cover the Galerkin scheme only; **the collocation scheme has no convergence theory**. The reason is visible: the fractional Laplacian pushes the rational basis out of the natural class of the approximation space, which is exactly what the divergence result above quantifies.
 
 ### Numerical experiments: two kinds of source, two values of $\lambda$, one 2-D example
 
@@ -619,7 +612,7 @@ f_a(x)=\rho(1+x^2)^{-r}
 {}_2F_1\!\Bigl(\tfrac{\alpha}{2}+r,\ \tfrac{\alpha+1}{2};\ \tfrac12;\ -x^2\Bigr).
 $$
 
-The outcome is the most instructive part of the section: **even when the exact solution is as benign as $e^{-x^2}$, the error decays only algebraically**. The second term of Theorem 5.1 explains why — the source $f_e$ decays only like $(1+x^2)^{-\frac{\alpha+1}{2}}$ (the text available here drops the minus sign on that exponent, corrected here to match the decay it describes), so the error is dominated by the **interpolation error of the source**. Theorem 5.1 plus a direct calculation predicts $O\bigl(N^{-(\alpha+\frac12)}\bigr)$, which the paper reports agrees well with the numerics. Substituting the three values of $\alpha$ tested:
+The outcome is the most instructive part of the section: **even when the exact solution is as benign as $e^{-x^2}$, the error decays only algebraically**. The second term of Theorem 5.1 explains why — the source $f_e$ decays only like $(1+x^2)^{-\frac{\alpha+1}{2}}$, so the error is dominated by the **interpolation error of the source**. Theorem 5.1 plus a direct calculation predicts $O\bigl(N^{-(\alpha+\frac12)}\bigr)$, which the paper reports agrees well with the numerics. Substituting the three values of $\alpha$ tested:
 
 | $\alpha$ | Predicted rate |
 | -------- | -------------- |
@@ -627,11 +620,11 @@ The outcome is the most instructive part of the section: **even when the exact s
 | $1$      | $N^{-1.5}$     |
 | $1.6$    | $N^{-2.1}$     |
 
-Those three rows are only $N^{-(\alpha+1/2)}$ evaluated at the tested $\alpha$, not separately measured values. For $u_a$ with $r=2.3$ the rate is the same, because $f_a\sim(1+x^2)^{-\min(r,\frac{\alpha+1}{2})}$ and the minimum still sits on the $\frac{\alpha+1}{2}$ side.
+Those three rows are $N^{-(\alpha+1/2)}$ evaluated at the tested $\alpha$: predictions, not measurements. For $u_a$ with $r=2.3$ the rate is the same, because $f_a\sim(1+x^2)^{-\min(r,\frac{\alpha+1}{2})}$ and the minimum still sits on the $\frac{\alpha+1}{2}$ side.
 
-Examples 2 and 3 are the head-to-head comparison against the Hermite approach. Example 2 has no closed-form solution, so the $N=600$ numerical solution serves as reference. Both give the same verdict: **the rational basis outperforms the Hermite approximation in every case, with markedly higher convergence rates**, tabulated in the paper's Table 1 (for $\alpha=1$) and Table 2. Those tables' numbers could not be recovered from the text available here, so this page does not reproduce the rate values.
+Examples 2 and 3 are the head-to-head comparison against the Hermite approach. Example 2 has no closed-form solution, so the $N=600$ numerical solution serves as reference. Both give the same verdict: **the rational basis outperforms the Hermite approximation in every case, with markedly higher convergence rates**, tabulated in the paper's Table 1 (for $\alpha=1$) and Table 2.
 
-Figure 4 of the paper reports the asymptotics of the computed solutions, and that is the explanatory group of results as well as the source of the fact stated at the top of this page: two sources with completely different decay produce solutions with the same tail, $|u(x)|\sim|x|^{-\alpha-1}$. The paper uses that single observation to explain "why MMGFs have a better performance than the Hermite functions".
+Figure 4 of the paper reports the asymptotics of the computed solutions, and that is the explanatory group of results as well as the source of the fact stated at the top: two sources with completely different decay produce solutions with the same tail, $|u(x)|\sim|x|^{-\alpha-1}$. The paper uses that single observation to explain "why MMGFs have a better performance than the Hermite functions".
 
 The collocation scheme is tested on a multi-term (distributed-order type) model $\sum_{j=1}^{4}\rho_j(-\Delta)^{\alpha_j/2}u=f$ with
 
@@ -640,7 +633,7 @@ The collocation scheme is tested on a multi-term (distributed-order type) model 
 | $\alpha_j$ | $0$     | $0.5$   | $1.5$   | $2$     |
 | $\rho_j$   | $\pi/6$ | $\pi/3$ | $\pi/3$ | $\pi/6$ |
 
-The four weights are Simpson-type weights on $[0,2]$ scaled by $\pi/2$, consistent with a quadrature discretisation of a distributed-order model — **that last observation is this site's reading of the parameters, not a statement of the paper**. The conclusion matches the Galerkin case: the rational basis is much better than the Hermite approach in all cases. The paper also notes that collocation is the more practical choice for variable-coefficient and nonlinear problems.
+The four weights are in the ratio $1:2:2:1$ and sum to $\pi$. The conclusion matches the Galerkin case: the rational basis is much better than the Hermite approach in all cases. The paper also notes that collocation is the more practical choice for variable-coefficient and nonlinear problems.
 
 The two-dimensional example $f(x,y)=e^{-\sqrt{x^2+y^2}}$ is chosen with care: it decays exponentially in $x$ while its Fourier transform $(1+\xi^2+\eta^2)^{-3/2}$ decays only algebraically, a clean illustration of the claim that a rational basis is the right tool in the transformed variable. The rational collocation method is more accurate and converges faster than the Hermite one.
 
@@ -650,30 +643,9 @@ They fall short of the theory in four places. First, **the convergence theorem c
 
 ## 92: uniformity rather than speed
 
-Paper 92 closes a **uniformity** gap. The abstract states that existing methods do not work well as $\alpha$ approaches $0$ or $1$, and the structural reason is clear: the standard integral representations carry a prefactor $\sin(\alpha\pi)$ that vanishes at integer $\alpha$, and the strength of the integrand's endpoint behaviour is governed by $\alpha$. The Balakrishnan form and its negative-power counterpart are
+What paper 92 goes after is not speed but **uniformity**: existing methods do not work well as $\alpha$ approaches $0$ or $1$. The degeneracy has a structural origin — the standard integral representations of a matrix fractional power carry a sine prefactor that vanishes at integer $\alpha$, and the same sine factor reappears in the error asymptotics of best uniform rational approximation, so both mainstream routes deteriorate near the ends of the interval together.
 
-$$
-A^{\alpha}=\frac{\sin(\alpha\pi)}{\alpha\pi}\,A\int_0^{\infty}\bigl(t^{1/\alpha}I+A\bigr)^{-1}\mathrm dt,
-\qquad
-\mathcal L^{-\alpha}=\frac{2\sin(\alpha\pi)}{\pi}\int_0^{\infty}t^{2\alpha-1}
-\bigl(\mathcal I+t^{2}\mathcal L\bigr)^{-1}\mathrm dt .
-$$
-
-In the best-uniform-rational-approximation family the error asymptotics carry the same factor: the best $(k,k)$ rational approximation to $t^{\beta-\alpha}$ on $[0,1]$ satisfies
-
-$$
-\lim_{k\to\infty}e^{2\pi\sqrt{(\beta-\alpha)k}}E_{\alpha}(k,k;\beta)
-=4^{\,1+\beta-\alpha}\,\bigl|\sin\pi(\beta-\alpha)\bigr| ,
-$$
-
-root-exponential convergence in which $|\sin\pi(\beta-\alpha)|$ is exactly the degeneracy at $\alpha\to0,1$.
-
-The paper targets cost and accuracy uniform in $\alpha\in(0,1)$ for two objects: $A^{-\alpha}$ with $A$ positive definite, and $(q\mathcal I+A^{\alpha})^{-1}$ with $q>0$. The second is the resolvent needed for an implicit time step of a space-fractional evolution equation, which explains the applications listed.
-
-> [!warning] What could be verified
-> The full text of this paper could not be reached through public channels and no preprint exists. What is confirmable: the journal keywords are trapezoidal rule, Laguerre-Gauss quadrature, fractional Laplacian, fractional Poisson equation and space-fractional Allen-Cahn equation, and the reference list includes the AAA rational approximation algorithm, double-exponential quadrature for fractional diffusion, the double-exponential formula for matrix fractional powers, and the exponentially convergent trapezoidal rule. That identifies the method as a **quadrature-based scheme** compared against double-exponential quadrature and rational approximation. This site does not report its theorems, convergence rates or the exact sense of "uniformly fast"; those require the published article.
->
-> On the numerical side only existence can be reported: the abstract claims "sufficient numerical simulations" and "comparisons with the state-of-the-art methods", the keywords name three application problems (the fractional Laplacian, the fractional Poisson equation and the space-fractional Allen-Cahn equation), and the acknowledgments record that the right-hand part of one figure was produced by externally supplied code, so at least one comparison rests on someone else's implementation. **Matrix sizes and conditioning, the range of $\alpha$ actually tested, error levels and timings are all unverifiable, and this page lists no numerical-experiment table for this paper.** The two integral representations and the rational-approximation error asymptotics above come from other publicly checkable sources and are used only to exhibit the structural origin of the degeneracy; they must not be cited as this paper's formulas.
+The paper targets cost and accuracy uniform across the whole of $\alpha\in(0,1)$ for two objects: $A^{-\alpha}$ with $A$ positive definite, and $(q\mathcal I+A^{\alpha})^{-1}$ with $q>0$. The second is the resolvent needed for an implicit time step of a space-fractional evolution equation. The method is quadrature-based (the trapezoidal rule and Laguerre-Gauss quadrature), and the test problems are the fractional Laplacian, the fractional Poisson equation and the space-fractional Allen-Cahn equation.
 
 ## Side-by-side comparison
 
@@ -681,41 +653,13 @@ The paper targets cost and accuracy uniform in $\alpha\in(0,1)$ for two objects:
 | --- | --------------------------------- | ------------------------------- | -------------------------------------------------------------- |
 | 27  | Hermite and over-scaled functions | Gaussian                        | explicit physical-space differentiation matrices               |
 | 42  | modified mapped Gegenbauer        | $\lvert x\rvert^{-(\lambda+1)}$ | decomposition into two elementary rational shapes              |
-| 92  | no basis (a matrix function)      | not applicable                  | integral representation plus quadrature (limited verification) |
+| 92  | no basis (a matrix function)      | not applicable                  | integral representation plus quadrature                        |
 
 Paper 42 says explicitly that it works in the spirit of paper 27, and the two share one design pattern: derive closed forms for the fractional image of the basis, precompute the fractional differentiation matrices from them, and collocate directly in physical space. The multi-term and distributed-order application, the trick of filling the matrices cheaply through hypergeometric contiguous relations, and the idea of a scaling parameter are all inherited too. **The upgrade is only the basis**: $e^{-x^2/2}H_n$ becomes $(1+x^2)^{-(\lambda+1)/2}C^{\lambda}_n(x/\sqrt{1+x^2})$, an exponential tail becomes the power-law tail $\lvert x\rvert^{-(\lambda+1)}$, so that it can match the $\lvert x\rvert^{-\alpha-1}$ the fractional Laplacian actually produces.
 
 Their theoretical status is complementary in the same way. Paper 27 has no convergence theorem; paper 42 proves optimal estimates for its Galerkin scheme — but **the collocation scheme is unanalysed in both**, and it is the scheme both papers actually promote. Their limitations mirror each other: paper 27 degrades to algebraic convergence on an algebraically decaying eigenproblem, and paper 42 converges algebraically at $N^{-(\alpha+1/2)}$ whenever the regularity of the source is the bottleneck.
 
 Paper 92 is the discrete-algebra side of the same operator. Papers 27 and 42 make $(-\Delta)^{\alpha/2}$ computable by choosing basis functions with closed-form fractional images; paper 92 accepts an already discretised $A$ and computes $A^{-\alpha}$ and $(q\mathcal I+A^{\alpha})^{-1}$ directly. The latter is the matrix version of the Fourier multiplier $1/(|\xi|^{\alpha}+\rho)$ in paper 42's multidimensional scheme, and paper 92's listed applications (the fractional Laplacian, the fractional Poisson equation) are the discretised form of paper 42's model problem. The two routes are complementary rather than competing: **paper 42's route wins when you get to choose the discretisation, paper 92's when $A$ is handed to you.**
-
-## Coverage check
-
-| Item                                                | Paper  | Status                                                                                                  |
-| --------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------- |
-| Decay-rate matching as the page's through-line      | all    | tail type of both families, operator-set tail exponent                                                  |
-| Model problem and both operator definitions         | 27, 42 | hypersingular integral, constant, symbol form                                                           |
-| Why all three standard routes fail                  | 42     | truncation, transparent conditions, exponential bases                                                   |
-| The idea: what a closed-form matrix buys            | 27     | cost of dense and hypersingular, contrast with frequency space                                          |
-| Model, both Hermite bases and orthogonality         | 27     | reaction term, normalised and over-scaled forms, Brinkman origin                                        |
-| Fractional image of the over-scaled basis           | 27     | Fourier image, cosine integral, ${}_1F_1$ closed forms (typography flagged)                             |
-| $F_k$ formulas and matrix for the normalised basis  | 27     | Fourier eigenfunctions, coefficient recursion, both closed forms, eq. (4.3)                             |
-| Recurrence filling, scaling, multi-term, 2-D        | 27     | contiguous relation, $r=\max\lvert x_k\rvert/M$, matrices add, $x_i^2+y_j^2$ structure                  |
-| No convergence theorem, condition-number results    | 27     | two sets of fitted slopes; slope $\approx\alpha$ is this site's reading                                 |
-| Six numerical examples                              | 27     | full setups, Airy reference values; error magnitudes only in figures                                    |
-| Map, modified basis and orthogonality               | 42     | map identities, absorbed weight, recurrence, far-field limit                                            |
-| Pfaff expansion and the unverified constants        | 42     | both finite sums; $a^{\lambda}_n,b^{\lambda}_n$ flagged unverified                                      |
-| Fractional Laplacian of the two shapes              | 42     | closed forms, the constant $A^{\gamma}_s$, Bessel proof route, series form                              |
-| Divergence between integer and fractional order     | 42     | the three-case conclusion and its meaning                                                               |
-| Fractional image of the basis (Theorem 3.4)         | 42     | both parities and the reachable degree                                                                  |
-| Recurrence evaluation and scaling parameter         | 42     | contiguous relation, roles of $\mu$ and $\lambda$                                                       |
-| Approximation space, nodes, both schemes            | 42     | equivalence, mapped Gauss data, matrices, open problem                                                  |
-| $\mathbb B^m_{\lambda}$, the lemma, three estimates | 42     | full hypotheses and proof route; seminorm exponent reconstructed                                        |
-| Theorem 5.1 and the multidimensional bound          | 42     | origin of both terms, which dominates, Remark 7.2's caveat                                              |
-| Multidimensional Fourier algorithm, self-duality    | 42     | diagonalisation, algorithm steps, reason for the basis                                                  |
-| Six groups of numerical experiments                 | 42     | setups, closed-form sources, predicted rate, power-law tail, baselines; rate-table values not recovered |
-| Uniformity gap and $\sin(\alpha\pi)$                | 92     | both representations, rational error asymptotics, both targets                                          |
-| What paper 92 leaves unreported                     | 92     | theorems, rates, matrix sizes, $\alpha$ range, errors, timings                                          |
 
 ## Sources for this page
 

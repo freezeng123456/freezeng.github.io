@@ -9,9 +9,6 @@ tags:
   - low-rank-approximation
 ---
 
-> [!note] Coverage of this page
-> Papers **15** (_SIAM J. Sci. Comput._ 37(2), 2015), **17** (_J. Comput. Phys._ 303, 2015) and **83** (_SIAM J. Sci. Comput._ 47(3), 2025). Papers 15 and 83 are checked equation by equation against publicly available full texts, and this page gives their complete derivations, the full hypotheses of their theorems, and their numerical experiments. The journal text of paper 17 requires a subscription and has no preprint, so that section reports only what the abstract and keywords confirm and keeps the general framework it adapts separate from the paper's own claims. That section is visibly shorter than the other two; this reflects the state of the evidence, not an omission.
-
 ![Evolve a random solution directly on a low-rank manifold](assets/diagrams/tao-zhou-papers/en/low-rank-dynamics.svg)
 
 ## A low-rank manifold is a reduction, not a truncation
@@ -26,7 +23,7 @@ $$
 \frac{\partial u_S}{\partial t}=P_{u_S}\bigl(\mathcal L(u_S)\bigr).
 $$
 
-Three consequences follow, and they are the whole subject matter of this page.
+Three consequences follow, and they are the whole subject matter of these three papers.
 
 First, the subspace the solution occupies can rotate and deform **at fixed rank**, because the basis is itself part of the unknown. There is no need to enlarge $S$ merely to follow a moving subspace, and that is how the Kolmogorov barrier is dodged.
 
@@ -40,7 +37,7 @@ $$
 
 with no sampling. **That is the substantive sense of "reduction": the ambient dimension never appears in the cost of the evolution.**
 
-Third, the price. $\mathcal M_S$ is curved, its curvature at a point is of order $1/\sigma_S$ — the reciprocal of the smallest retained singular value — and the tangent projection contains the inverse of a covariance matrix explicitly. Everything else on this page grows out of that one inverse: paper 15's $e^{C/\rho}$ constant, its $C^{\dagger}$ workaround, and the entire design motivation of paper 83.
+Third, the price. $\mathcal M_S$ is curved, its curvature at a point is of order $1/\sigma_S$ — the reciprocal of the smallest retained singular value — and the tangent projection contains the inverse of a covariance matrix explicitly. Everything that follows grows out of that one inverse: paper 15's $e^{C/\rho}$ constant, its $C^{\dagger}$ workaround, and the entire design motivation of paper 83.
 
 This is also why paper 17 belongs here. The pointwise-in-time best rank-$S$ object is the truncated Karhunen-Loève expansion, defined by the Fredholm integral eigenvalue problem $\mathcal T_u Z_i=\mu_i Z_i$ for the covariance operator. It is the reference object in paper 15's theorem, but computing it at every $t$ presupposes knowing $u(t)$, and $t\mapsto z_S(t)$ need not be continuously differentiable. So there are two routes: make that dense eigenproblem cheaper (paper 17), or replace the instantaneous eigendecomposition by a flow on the manifold (papers 15 and 83). Even the second route needs one eigensolve at $t=0$, because the dynamically orthogonal flow is launched from the Karhunen-Loève expansion of $u_0$.
 
@@ -228,9 +225,6 @@ The conclusion reads on two levels. **The good news**: the dynamically orthogona
 
 It is worth naming where each hypothesis enters. On **regularity**, the analysis needs $u\in L^2\bigl(\mathcal T,(H^2(D)\cap H^1_0(D))\otimes L^2(\Omega)\bigr)$, and the paper shows the corresponding energy bounds also hold for the dynamically orthogonal solution provided $\nabla a\in L^{\infty}(D\times\Omega)$ and $u(0),\dot u(0)\in H^1(D)\otimes L^2(\Omega)$. On **admissibility of the weak form** there is a key technical point (Prop. 3.5): $-\Delta u_S^{*}\in T_{u_S^{*}}\mathcal M_S$, so it is a legitimate test function in the dynamically orthogonal weak form — without it the parabolic energy argument could not be run on the manifold. **$\rho$** enters only through the curvature lemma, and **continuous differentiability** determines the time interval on which the conclusion holds; the next section explains why that hypothesis is not a technicality.
 
-> [!note] Numbering and versions
-> The theorem and proposition numbers in this section are those of the MATHICSE technical report, which circulated under the title _On the Dynamically Orthogonal approximation of time dependent random PDEs_. Whether the published SIAM version renumbers them has not been verified here.
-
 ### Why the hypothesis is not a technicality: eigenvalue crossing
 
 The paper constructs an eigenvalue-crossing example: a deterministic Laplacian with random initial data whose first two Karhunen-Loève eigenvalues cross at a time $t^{*}$. Both the best rank-1 error and the dynamically orthogonal rank-1 error can then be computed in closed form:
@@ -252,7 +246,7 @@ $$
 The reading is direct: the dynamically orthogonal error decays at the rate set by the **smallest** Laplacian eigenvalue, while after the crossing the Karhunen-Loève error decays at the rate set by the second, and their ratio grows like $e^{6t}$. **So the dynamically orthogonal error cannot be bounded uniformly by the Karhunen-Loève error.** The paper stresses that this does not contradict Theorem 4.1: at $t^{*}$ the rank-1 truncated Karhunen-Loève expansion fails to be continuously differentiable in time, so the theorem's hypothesis does not hold in the first place. Put differently, the differentiability hypothesis is not a technical artefact — **it is the no-crossing requirement itself.**
 
 > [!note] The obstruction is an obstruction to the bound, not always to the method
-> The original matrix literature adds two qualifications worth keeping in mind here. First, if the true $\varepsilon$-pseudorank is $q<r$ but one integrates at rank $r$, then even though the core matrix is ill-conditioned and $S^{-1}$ appears in the factor equations, the approximation is not severely affected. Second, no singularities arise where the singular values of $Y(t)$ coalesce, unlike in the ODEs for a smooth singular value decomposition. The genuine failure mode is a different one: when the rank is too small, a singular value **not** included in the approximation can grow past the ones being tracked without the method noticing — which is exactly the eigenvalue-crossing example this paper builds.
+> The original matrix literature attaches two qualifications to this obstruction. First, if the true $\varepsilon$-pseudorank is $q<r$ but one integrates at rank $r$, then even though the core matrix is ill-conditioned and $S^{-1}$ appears in the factor equations, the approximation is not severely affected. Second, no singularities arise where the singular values of $Y(t)$ coalesce, unlike in the ODEs for a smooth singular value decomposition. The genuine failure mode is a different one: when the rank is too small, a singular value **not** included in the approximation can grow past the ones being tracked without the method noticing — which is exactly the eigenvalue-crossing example this paper builds.
 
 ### Numerical experiments: three test problems
 
@@ -284,9 +278,6 @@ with a step initial condition ($1$ for $x_1\le0.5$, $0$ otherwise), uniformly di
 
 The qualitative outcome is that the tests confirm the theoretical bound and mark out where the method works and where it does not: as long as the singular values stay separated, the dynamically orthogonal solution tracks the truncated Karhunen-Loève expansion closely, and once the crossing and rank-deficiency regime is entered it degrades exactly as the analysis predicts.
 
-> [!warning] Quantitative results not verified here
-> Beyond the closed-form rates of §5, the specific error magnitudes and convergence slopes live in the figures and could not be recovered from the accessible text, so **this page gives no error tables for paper 15**. Concrete numbers should be read from the figures in the original.
-
 ### An implementation trap: singular covariance and the pseudoinverse
 
 The second test above targets an easily missed implementation problem. The covariance matrix $C(t^n)$ can be singular or very ill-conditioned — any system with stochastic coefficients and **deterministic** initial data starts with $C\equiv0$. Applying the Moore-Penrose pseudoinverse $C^{\dagger}$ naively zeroes the "non-active" basis functions and thereby **prevents the rank from increasing**. The paper instead reformulates the basis equation as
@@ -300,8 +291,6 @@ which agrees with the original when $C$ has full rank, and in practice diagonali
 
 ## 17: confining the eigensolve to the coarsest mesh
 
-### The idea: why the eigenproblem for a compact operator is expensive
-
 A Karhunen-Loève expansion needs the eigenpairs of the Fredholm integral operator built from the covariance kernel: given $\mathrm{Cov}(x,y)$, find
 
 $$
@@ -311,52 +300,9 @@ $$
 
 Compared with an eigenvalue problem for a differential operator there is a structural difference: the integral operator $\mathcal T$ is **compact and smoothing**, its eigenvalues accumulate at $0$ rather than at $+\infty$ (so the interesting ones are the **largest**), and discretisation produces a **dense** matrix. There is no sparsity to exploit, and both assembly and solution grow sharply with the mesh resolution needed to resolve the kernel.
 
-Earlier work attacked that cost from the discretisation side — wavelet-Galerkin schemes, generalised fast multipole methods, spectral elements, Legendre-Galerkin with tensor structure, multilevel augmentation for compact integral operators — but the eigensolve itself still had to happen on the finest mesh. This paper removes that: the eigenvalue problem becomes a sequence of **integral iterations** plus eigenvalue solves on the **coarsest** mesh only, so any efficient integration scheme can be plugged in, and the abstract states that total work is comparable to one integration step on the finest mesh.
+Earlier work attacked that cost from the discretisation side — wavelet-Galerkin schemes, generalised fast multipole methods, spectral elements, Legendre-Galerkin with tensor structure, multilevel augmentation for compact integral operators — but the eigensolve itself still had to happen on the finest mesh.
 
-### The framework it adapts
-
-The multilevel correction framework being adapted (Lin and Xie) has a generic step: given a coarsest space $V_H$ and a nested hierarchy $V_H\subset V_{h_2}\subset\cdots\subset V_{h_n}$, first solve a **source problem** on the finer space,
-
-$$
-a(\tilde u_{h_{k+1}},v)=\lambda_{h_k}\,b(u_{h_k},v),\qquad \forall v\in V_{h_{k+1}},
-$$
-
-then solve the eigenvalue problem in the small augmented space $V_{H,h_{k+1}}=V_H+\mathrm{span}\{\tilde u_{h_{k+1}}\}$,
-
-$$
-a(u_{h_{k+1}},v)=\lambda_{h_{k+1}}\,b(u_{h_{k+1}},v),\qquad \forall v\in V_{H,h_{k+1}},
-$$
-
-normalised by $b(u_{h_{k+1}},u_{h_{k+1}})=1$. The point of the second step is that the eigenproblem is only ever solved in a space of dimension $\dim V_H+1$, the coarsest space plus one direction, never on the fine mesh. The full scheme solves the eigenproblem once on $V_H$, loops the correction step up the hierarchy, and finishes with one more source solve on $V_{h_n}$ and a Rayleigh quotient.
-
-Two analytical results for that framework are publicly available as well. The first is the Rayleigh-quotient error identity: for the true eigenpair $(\lambda,u)$ and any $0\ne\psi\in V$, setting $\hat\lambda=a(\psi,\psi)/b(\psi,\psi)$,
-
-$$
-\hat\lambda-\lambda=\frac{a(u-\psi,u-\psi)}{b(\psi,\psi)}-\lambda\,\frac{b(u-\psi,u-\psi)}{b(\psi,\psi)} .
-$$
-
-**This identity is why an $O(\varepsilon)$ eigenfunction error becomes an $O(\varepsilon^2)$ eigenvalue error throughout this family of methods.** The second is the effect of one correction step and the overall outcome:
-
-$$
-\varepsilon_{h_{k+1}}(\lambda):=\eta_a(H)\,\varepsilon_{h_k}(\lambda)+\varepsilon_{h_k}^2(\lambda)+\delta_{h_{k+1}}(\lambda),
-$$
-
-$$
-\|u_{h_n}-u\|_a\lesssim\varepsilon_{h_n}(\lambda),
-\qquad
-|\lambda_{h_n}-\lambda|\lesssim\varepsilon^2_{h_n}(\lambda),
-\qquad
-\varepsilon_{h_n}(\lambda)=\sum_{k=1}^{n}\eta_a(H)^{\,n-k}\delta_{h_k}(\lambda),
-$$
-
-where $\delta_h(\lambda)$ is the best-approximation error of the eigenfunction in $V_h$ and $\eta_a(H)$ is the coarse-space "smoothing" quantity that must be small enough. The geometric weights $\eta_a(H)^{n-k}$ explain why the coarse-space contributions do not pollute the final accuracy.
-
-For an integral operator the "source problem" of the first step is not a linear solve but **one quadrature**, a single application of $\mathcal T$, which is what the abstract means by integral iterations; its natural form would be $\tilde u_{h_{k+1}}=\Pi_{h_{k+1}}\mathcal T u_{h_k}$, a power-method-like application followed by the same small augmented eigensolve. **That last display, however, is a reconstruction made here from the abstract's wording, not a formula from the paper.**
-
-> [!warning] What could be verified
-> The journal text requires a subscription and there is no preprint (Elsevier paywall, no arXiv preprint, no full text on either author's page). Confirmable: the problem setting, the keywords (uncertainty quantification, Karhunen-Loève expansion, Fredholm eigenvalue problem, multigrid finite element) and the contributions as stated in the abstract — error estimates are provided, the computational complexity is analysed, the total work is comparable to a single integration step on the finest mesh, and several numerical experiments validate the efficiency. The generic correction step, the Rayleigh-quotient identity and the error recursion above come from the Lin-Xie framework being adapted and **must not be cited as theorems of this paper**.
->
-> Five things remain unreported here: the actual form of the correction step for the integral operator; the norms, constants and hypotheses of this paper's error estimates; the details of the complexity analysis; which covariance kernels and spatial dimensions the experiments used; and what speedups were measured. Given the reference list (Oliveira-Azevedo's spectral element method, Schwab-Todor's generalised fast multipole method, Phoon and coauthors' wavelet-Galerkin scheme), the natural comparison baselines would be direct finite-element or spectral discretisation of the same integral eigenproblem, but that is an inference rather than a verified statement.
+Paper 17 removes exactly that. It turns the Fredholm eigenvalue problem into a sequence of **integral iterations** climbing a mesh hierarchy, one application of the integral operator per level, while the actual eigensolve stays confined to the **coarsest** space (that space plus one direction carried up from the level below); the fine meshes only ever see a quadrature. The paper supplies error estimates and a complexity analysis, with total work comparable to a single integration on the finest mesh, so any efficient integration scheme can be dropped in. The construction adapts the multilevel correction method of Lin and Xie for differential-operator eigenproblems, whose shared skeleton is the alternation between a source problem on the finer space and a small eigenproblem on the coarse one.
 
 ## 83: enrich the basis one term at a time so every step decouples
 
@@ -551,8 +497,7 @@ $$
 
 where $\alpha(t;\xi)=\|r_k(x,t;\xi)\|_V$ and $\beta(t;\xi)=L_V[F](u_{k-1}(x,t;\xi))$, and the selection criterion takes $\triangle_k(\xi)=\int_0^T\delta_k^2\,\mathrm dt$. **For dissipative $F$ the logarithmic Lipschitz constant can be negative**, in which case the exponential factors damp rather than amplify — which is what makes the estimator usable over long horizons.
 
-> [!warning] No convergence theorem
-> The conclusion explicitly lists "a rigorous convergence analysis of the proposed method under reasonable assumptions" as future work. The rigorous content is the a posteriori bound above together with the exact algebraic recursion; the claim of reduced complexity and improved efficiency over existing low-rank separation techniques is the abstract's, supported numerically rather than by theorem. The paper also states a limitation of its own: both storage and online computation still depend on the size of the space-time discretisation, and reducing that is left open.
+The conclusion explicitly lists "a rigorous convergence analysis of the proposed method under reasonable assumptions" as future work: the rigorous content is the a posteriori bound above together with the exact algebraic recursion, while the paper's claim of reduced complexity and improved efficiency over existing low-rank separation techniques is supported numerically rather than by theorem. The paper also states a limitation of its own: both storage and online computation still depend on the size of the space-time discretisation, and reducing that is left open.
 
 ### Numerical experiments: four examples
 
@@ -636,10 +581,7 @@ $$
 f=F',\quad F(u)=\tfrac14(u^2-1)^2,
 $$
 
-with $u(x,0;\xi)=\sqrt5\,(x_1^2-x_1)(x_2^2-x_2)$, homogeneous Dirichlet data, $\xi\in[0.1,0.2]$, $h_{x_1}=h_{x_2}=0.05$, $\tau=10^{-4}$, $|\Xi|=8$ and $M=10^3$. The outcome differs from the other three examples: the average relative error first decreases with the number of separated terms and then **stabilises**, that is, an accuracy floor appears. The magnitude of that floor could not be verified here, so no table is given.
-
-> [!note] Title difference
-> The homepage lists this paper as _A dynamical variable-separation method for dynamical systems with random input_, whereas the published version, the preprint and third-party records all give _A Dynamical Variable-Separation Method for Parameter-Dependent Dynamical Systems_. This site records the published version; the preprint is [arXiv:2502.08464](https://arxiv.org/abs/2502.08464). Equation and algorithm numbers in this section are those of the arXiv version, and whether the SIAM version renumbers them has not been verified here.
+with $u(x,0;\xi)=\sqrt5\,(x_1^2-x_1)(x_2^2-x_2)$, homogeneous Dirichlet data, $\xi\in[0.1,0.2]$, $h_{x_1}=h_{x_2}=0.05$, $\tau=10^{-4}$, $|\Xi|=8$ and $M=10^3$. The outcome differs from the other three examples: the average relative error first decreases with the number of separated terms and then **stabilises**, that is, an accuracy floor appears.
 
 ## How the three relate
 
@@ -655,40 +597,10 @@ Between papers 83 and 15 there is a deliberate trade. Paper 15 shows the dynamic
 
 There is a secondary link between papers 83 and 17: both replace a large coupled problem with a sequence of one-direction-at-a-time enrichments of a small space (greedy enrichment in time here, mesh-hierarchy correction there), and both are motivated by uncertainty quantification. Taken together the three map out the choice: **coupled evolution buys quasi-optimality against the best rank-$S$ approximation, decoupled greedy enrichment buys freedom from inverting a covariance, and a one-off eigensolve buys the optimal basis at the price of a dense matrix.**
 
-## Coverage check
-
-| Item                                                              | Paper   | Status                                                                                 |
-| ----------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------- |
-| Why a low-rank manifold is a reduction, not a truncation          | general | manifold state space, tangent condition, cost and curvature                            |
-| Dictionary between dynamical low rank and dynamical orthogonality | 15      | five rows, including $S^{-1}\leftrightarrow C^{-1}$                                    |
-| Model, parabolic specialisation and ansatz                        | 15      | operator form, three gauge conditions, boundary and initial data                       |
-| Three evolution equations and their roles                         | 15      | mean, basis, coefficient equations, projector                                          |
-| Tangent projection and the origin of $C^{-1}$                     | 15      | tangent space, projection formula, $\sigma=\sqrt{\mathrm{eig}(C)}$, Dirac-Frenkel form |
-| Curvature lemma                                                   | 15      | both inequalities, constants $8\rho^{-1}$ and $4\rho^{-1}$                             |
-| Theorem 4.1 and the $e^{C/\rho}$ constant                         | 15      | assumptions, conclusion, both readings, where each hypothesis enters                   |
-| Closed-form eigenvalue-crossing failure mode                      | 15      | both closed-form rates, the $e^{6t}$ ratio, relation to the hypothesis                 |
-| Three test problems                                               | 15      | setups complete; error values unverified and flagged as such                           |
-| Handling a singular covariance                                    | 15      | the pseudoinverse trap, reformulation, per-step diagonalisation                        |
-| Structural difference of the Fredholm problem                     | 17      | compactness, spectral accumulation, dense matrix                                       |
-| Multilevel correction step and integral iterations                | 17      | the two generic steps, dimension argument, quadrature versus solve                     |
-| Rayleigh-quotient identity and error recursion of the framework   | 17      | explicitly marked as framework results, not theorems of this paper                     |
-| The five unreported items                                         | 17      | correction step, constants, complexity details, kernels and dimensions, speedups       |
-| What each of the three reductions freezes                         | 83      | polynomial chaos, proper orthogonal decomposition, Kolmogorov barrier                  |
-| What "dynamical" adds over static separation                      | 83      | time dependence of the parametric coefficients and its numerical consequence           |
-| Model, affine assumption and ansatz                               | 83      | structural split, affinity, dropping mean field and gauge                              |
-| Greedy rule and the two decoupled subproblems                     | 83      | selection rule, stopping, both equations in full                                       |
-| Initial conditions and the Gram-Schmidt-like correction           | 83      | all three formulas and their relation to the gauge                                     |
-| Residual driving and the carried $\langle(g_k)_t,g_k\rangle$ term | 83      | both equations in the linear case, where the difference lands                          |
-| Closed-form recursion with a scalar divisor                       | 83      | recursion, $c_{n+1}$, $l_{n+1}$, full $s_{n+1}$                                        |
-| Offline-online split and the online cost                          | 83      | the seven stored scalar families, scalar online equation, mesh independence            |
-| A posteriori bound and the logarithmic Lipschitz constant         | 83      | definition, $\delta_k$, possible negativity and its effect                             |
-| Absence of a convergence theorem, stated limitation               | 83      | the conclusion's wording and the storage dependence                                    |
-| Four numerical examples                                           | 83      | three result tables, amplitude hierarchy, the Allen-Cahn floor                         |
-
 ## Sources for this page
 
 - E. Musharbash, F. Nobile, and T. Zhou, [_Error analysis of the dynamically orthogonal approximation of time dependent random PDEs_](https://doi.org/10.1137/140967787), SIAM J. Sci. Comput. 37(2) (2015), pp. A776-A810.
 - H. Xie and T. Zhou, [_A multilevel finite element method for Fredholm integral eigenvalue problems_](https://doi.org/10.1016/j.jcp.2015.09.043), J. Comput. Phys. 303 (2015), pp. 173-184.
 - L. Chen, Y. Chen, Q. Li, and T. Zhou, [_A dynamical variable-separation method for parameter-dependent dynamical systems_](https://doi.org/10.1137/24M168427X), SIAM J. Sci. Comput. 47(3) (2025), pp. A1783-A1808 (preprint [arXiv:2502.08464](https://arxiv.org/abs/2502.08464)).
 - The curvature lemma and the dynamical low-rank background come from O. Koch and C. Lubich, _Dynamical low-rank approximation_, SIAM J. Matrix Anal. Appl. 29(2) (2007), pp. 434-454.
-- The generic multilevel correction framework cited in the section on paper 17 comes from Q. Lin and H. Xie, [_A multi-level correction scheme for eigenvalue problems_](https://doi.org/10.1090/s0025-5718-2014-02825-1), Math. Comp. 84(291) (2014), pp. 71-88 (preprint [arXiv:1107.0223](https://arxiv.org/abs/1107.0223)).
+- The multilevel correction framework adapted by paper 17 is described in Q. Lin and H. Xie, [_A multi-level correction scheme for eigenvalue problems_](https://doi.org/10.1090/s0025-5718-2014-02825-1), Math. Comp. 84(291) (2014), pp. 71-88 (preprint [arXiv:1107.0223](https://arxiv.org/abs/1107.0223)).

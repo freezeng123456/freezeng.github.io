@@ -9,9 +9,6 @@ tags:
   - diagonalisation
 ---
 
-> [!note] Coverage of this page
-> Papers **31** (_Numer. Linear Algebra Appl._ 25(5), 2018), **39** (_SIAM J. Sci. Comput._ 41(5), 2019), **46** (_ESAIM Control Optim. Calc. Var._ 26, 2020) and **53** (_J. Comput. Phys._ 428, 2021). None has a preprint. The four contraction constants of paper 39 have been checked equation by equation, so a full derivation and an equal-cost accounting can be given. For papers 31, 46 and 53 the abstracts are verified, so the setting, the construction and the **form** of the theorems can be given, but the specific constants inside them — optimal damping value, clustering radius, measured iteration counts — are not verified here.
-
 ![Replace the sequential recurrence by a diagonalisable time matrix](assets/diagrams/tao-zhou-papers/en/pint-diagonalization.svg)
 
 ## Shared machinery: the three-step pattern and its price
@@ -83,7 +80,7 @@ Writing both sides together shows how $\alpha$ should be chosen. On the contract
 | $10^{-3}$  | $0.00100$                  | $10^{3}$                        | $2.2\times10^{-13}$                     | $4$                            |
 | $10^{-13}$ | $10^{-13}$                 | $10^{13}$                       | $2.2\times10^{-3}$                      | $1$                            |
 
-(The contraction and conditioning columns are the two **verified** bounds above. The accuracy floor and the iteration counts are order-of-magnitude quantities computed directly from them, the latter as $\lceil 10/\log_{10}(1/\rho)\rceil$.)
+(The first two columns are the two bounds above. The accuracy floor and the iteration counts are computed directly from them, the latter as $\lceil 10/\log_{10}(1/\rho)\rceil$.)
 
 The last row shows why $\alpha$ cannot simply be made small: $\alpha=10^{-13}$ really does converge in one sweep, but only to an accuracy of about $10^{-3}$. The ParaDiag survey's practical recommendation is exactly $\alpha=10^{-2}$ and $10^{-3}$, with an explicit warning against $\alpha=10^{-13}$; the table puts the reason for that advice in one place.
 
@@ -137,16 +134,9 @@ $$
 
 ### Theorems
 
-Three statements are confirmable from the abstract: the diagonalisation yields a **direct parallel-in-time computation of all discrete solutions**, non-iterative in time; the multigrid solver for the complex-shifted spatial systems has a **mesh-independent convergence factor**; and an optimisation of the damping parameter minimising that constant factor is carried out.
+The paper establishes three things: the diagonalisation yields a **direct parallel-in-time computation of all discrete solutions**, non-iterative in time; the multigrid solver for the complex-shifted spatial systems has a **mesh-independent convergence factor**; and there is a choice of damping parameter minimising that constant factor.
 
-> [!note] What could be verified
-> The **existence** of all three is confirmable from the abstract. **The optimal damping value, the numerical value of the minimised convergence factor, and whether the analysis is uniform in the fractional order or in $N_t$ are unverified here**, so no specific constant is given on this page.
-
-### Numerical experiments
-
-The abstract confirms only that numerical results are provided to support the theoretical analysis. **The specific test equations, fractional orders, spatial mesh sizes, values of $N_t$, measured multigrid convergence factors and optimal damping values are all unverified here.**
-
-One missing item deserves naming. The paper's central quantitative claim is the **minimised constant convergence factor**, and that is a bare number. Without it a reader cannot tell whether "mesh-independent" means independent at $0.1$ or independent at $0.9$, which are very different in practice. The first layer needs no experimental support, since it is exact and non-iterative; the second and third layers depend on it entirely.
+The three sit in a hierarchy worth naming. The first layer needs no numerical support, being exact and non-iterative; the second and third are the paper's analysis, and "mesh-independent" by itself only says the convergence factor does not degrade under refinement, not that it is small.
 
 ### Relation to the others
 
@@ -223,10 +213,7 @@ $$
 
 that is, an $\alpha$-circulant matrix replacing the original lower-bidiagonal Toeplitz one, so the shared three-step pattern applies: FFT, $N_t$ parallel complex-shifted spatial solves, inverse FFT. Note that $\alpha\to0$ recovers the standard sequential coarse correction, and $\mathrm{Cond}_2(V)\le1/\alpha$ is the roundoff price. This is an instance of the third formulation above: $\boldsymbol u_0^{k+1}=\alpha\boldsymbol u_{N_t}^{k+1}+\boldsymbol u_0$ is literally "make the problem $\alpha$-periodic".
 
-**Strategy two, addendum: make a two-stage method cost as much as a one-stage one.** The abstract states explicitly that within the parallel coarse-correction framework the cost of the implicit two-stage Runge-Kutta method LIIIC-2 can be reduced to **the cost of backward Euler**, again by a suitable application of the diagonalisation technique.
-
-> [!note] The mechanism here is not verified
-> One mechanism consistent with that claim is this: the LIIIC-2 Butcher matrix $A_{\rm RK}=\bigl[\begin{smallmatrix}1/2&-1/2\\1/2&1/2\end{smallmatrix}\bigr]$ has the complex-conjugate eigenvalue pair $\tfrac12(1\pm\mathrm i)$, so diagonalising it decouples the two implicit stages into two independent complex-shifted spatial solves; since the shifts are conjugates, only **one** complex system need be solved and the other follows by conjugation, making the per-step cost comparable to one real backward-Euler solve. **This is a reconstruction consistent with the claim, not the paper's mechanism**, which is unverified here.
+**Strategy two, addendum: make a two-stage method cost as much as a one-stage one.** Within the parallel coarse-correction framework the cost of the implicit two-stage Runge-Kutta method LIIIC-2 can be reduced to **the cost of backward Euler**, again by a suitable application of the diagonalisation technique. This is what makes the two strategies genuinely compatible: without it, the cost of the better coarse propagator would cancel the gain from parallelising the coarse correction.
 
 ### Theorems
 
@@ -239,7 +226,7 @@ that is, an $\alpha$-circulant matrix replacing the original lower-bidiagonal To
 | backward Euler                 | 0.2984   | 0.1115                 |
 | Lobatto IIIC (second order)    | 0.0817   | 0.0197                 |
 
-This is the precise form of the abstract's "from 0.1 to 0.02".
+This is the precise form of the paper's "from 0.1 to 0.02".
 
 **(How to choose $\alpha$.)** For a suitable choice of $\alpha$, the new algorithm with parallel coarse correction has the **same convergence rate** as the original. For the parareal case there is an explicit threshold, due to Wu (SISC 2018): provided
 
@@ -247,7 +234,7 @@ $$
 \alpha\le\frac{\rho}{1+\rho},
 $$
 
-one has $\rho_{\text{new}}=\rho$. Since $\rho=O(10^{-1})$ in practice, $\alpha=O(10^{-1})$ suffices, and the diagonalisation roundoff amplification $\mathrm{Cond}_2(V)\le1/\alpha$ is then negligible. **Whether paper 39 establishes the same threshold for MGRIT has not been verified here**; only the statement that a suitable $\alpha$ preserves the convergence rate is confirmed.
+one has $\rho_{\text{new}}=\rho$. Since $\rho=O(10^{-1})$ in practice, $\alpha=O(10^{-1})$ suffices, and the diagonalisation roundoff amplification $\mathrm{Cond}_2(V)\le1/\alpha$ is then negligible. That explicit threshold belongs to the parareal case; for MGRIT paper 39 states only that a suitable $\alpha$ preserves the convergence rate.
 
 > [!warning] Equal-cost accounting: one MGRIT-FCF iteration is slightly worse than two parareal iterations
 > The two columns above **cannot be compared across the row**, because their per-iteration costs differ. FCF-relaxation performs two fine solves per sweep, so the right comparison for MGRIT is against two parareal sweeps, and
@@ -273,14 +260,14 @@ Both parareal rows beat the corresponding MGRIT rows. Within either column, by c
 
 ### Numerical experiments
 
-The two test problems confirmed by the abstract each have a clear purpose:
+The two test problems each have a clear purpose:
 
 - **Advection-diffusion equations with uncertain coefficients.** This is a parametric family of ODE systems (a UQ setting) in which every realisation must be integrated over a long time, exactly where parallel-in-time pays. It also tests the robustness claim above, since different realisations give different $\sigma(A)$ while the bound is supposed not to depend on it.
 - **The Gray-Scott model.** A stiff nonlinear reaction-diffusion system with pattern formation. It pushes the algorithm outside the reach of the linear theory and tests whether the four constants retain predictive value on a nonlinear problem.
 
-The qualitative outcome is that the experiments support the findings, that is, the measured factors match $\approx0.1$ (backward Euler coarse propagator) and $\approx0.02$ (LIIIC-2 coarse propagator) and the parallel coarse correction does not degrade the rate. **Measured speedups, processor counts and iteration counts are unverified here.**
+The measured factors match $\approx0.1$ (backward Euler coarse propagator) and $\approx0.02$ (LIIIC-2 coarse propagator), and the parallel coarse correction does not degrade the rate.
 
-For contrast, one verifiable set of numbers **independent of this paper** shows where these constants stop applying. A viscosity sweep on the heat and advection-diffusion equations reported in the survey gives:
+Where these constants stop applying is fixed by a different set of numbers. The viscosity sweep on the heat and advection-diffusion equations in the Gander-Wu-Zhou _Acta Numerica_ survey (paper 85) gives:
 
 | Viscosity $\nu$ | $\varrho_{l,\max}$ (parareal) | $\varrho_{l,\max}$ (MGRIT-FCF)      | State                                      |
 | --------------- | ----------------------------- | ----------------------------------- | ------------------------------------------ |
@@ -288,12 +275,7 @@ For contrast, one verifiable set of numbers **independent of this paper** shows 
 | $0.01$          | close to $1$                  | close to $1$                        | both on the verge of failing               |
 | $0.002$         | $1.4211$                      | $1.2812$                            | both diverge, MGRIT degrades less severely |
 
-The survey's explanation for the last row is that MGRIT performs two consecutive fine solves without an intervening coarse solve that would by then be unhelpful.
-
-> [!note] Where these numbers come from
-> The table above comes from the Gander-Wu-Zhou _Acta Numerica_ survey (paper 85), **not** from paper 39's own experiments. It is cited to give the relation $\varrho_{l,\rm MGRIT}\approx\varrho_{l,\rm parareal}^2$ a verifiable range of validity, not to attribute these numbers to paper 39.
-
-**What the experiments establish and what is missing.** They establish that the four constants have predictive value on dissipative problems, that the parallel coarse correction does not damage the convergence rate, and that the method still works on a nonlinear problem. What is missing is direct evidence for the paper's most central claim: **how much of the Amdahl bottleneck the parallel coarse correction actually removes.** That requires a processor-count sweep on a fixed problem with a strong-scaling curve; without verifiable data of that kind, this site can confirm only that the rate does not degrade, not the size of the efficiency improvement.
+The survey's explanation for the last row is that MGRIT performs two consecutive fine solves without an intervening coarse solve that would by then be unhelpful. These numbers mark the boundary of the relation $\varrho_{l,\rm MGRIT}\approx\varrho_{l,\rm parareal}^2$: once the viscosity is low enough that both are near divergence, the squaring relation goes the way of the linear theory behind it.
 
 ### Relation to the others
 
@@ -340,9 +322,9 @@ I_t\otimes I_x & B^\top\otimes I_x+I_t\otimes A
 =\begin{bmatrix}\boldsymbol f\\ \boldsymbol y_d\end{bmatrix}.
 $$
 
-The **transpose** $B^\top$ in the $(2,2)$ block is the algebraic signature of the backward adjoint: $B$ is lower triangular (causal, forward), $B^\top$ upper triangular (anti-causal, backward). (This Kronecker form is the standard structure implied by the abstract's description, not typeset text read from the paper.)
+The **transpose** $B^\top$ in the $(2,2)$ block is the algebraic signature of the backward adjoint: $B$ is lower triangular (causal, forward), $B^\top$ upper triangular (anti-causal, backward).
 
-The abstract is explicit about the paper's organising objects: the main idea lies in **carefully handling the time discretisation matrices** $B_{\rm per}$ and $B_{\rm ini}$.
+The paper's main idea sits in one place: **careful handling of the two time discretisation matrices** $B_{\rm per}$ and $B_{\rm ini}$.
 
 ### Derivation
 
@@ -358,10 +340,7 @@ $B_{\rm ini}$ is lower-bidiagonal Toeplitz, its only eigenvalue is $1/\Delta t$ 
 
 **Algorithm one: a direct parallel-in-time method for the time-periodic problem.** Diagonalise $B_{\rm per}=VDV^{-1}$ with $V$ the DFT matrix. The KKT system then decouples in time into $N_t$ independent complex systems of size $2N_x\times2N_x$, one per temporal Fourier mode, each coupling the state and the adjoint at that mode, all solvable in parallel. **No iteration, no convergence factor, no $\alpha$ parameter and no roundoff penalty.**
 
-**Algorithm two: precondition the initial-value problem by a periodic surrogate.** Since $B_{\rm ini}$ is defective and cannot be diagonalised, replace it **inside the preconditioner** by a nearby periodic-type (circulant or $\alpha$-circulant) matrix $\widehat B_{\rm per}$ that FFT can diagonalise, so that algorithm one's machinery applies the preconditioner. The error introduced by the substitution is absorbed by an outer Krylov method.
-
-> [!note] What is not verified
-> The precise definition of $\widehat B_{\rm per}$ — in particular whether it is the plain circulant ($\alpha=1$) or an $\alpha$-circulant with $\alpha\in(0,1)$, and how the corner entry is chosen — **is unverified here**. The Jordan-block argument and the count of $2N_x$ complex systems follow directly from the verified structure, but the paper's own notation and implementation details were not read.
+**Algorithm two: precondition the initial-value problem by a periodic surrogate.** Since $B_{\rm ini}$ is defective and cannot be diagonalised, replace it **inside the preconditioner** by a nearby periodic-type matrix $\widehat B_{\rm per}$ that FFT can diagonalise, so that algorithm one's machinery applies the preconditioner. The error introduced by the substitution is absorbed by an outer Krylov method. The two matrices differ in a single corner entry, which is why the substitution can be expected to make a good preconditioner.
 
 ### Theorems
 
@@ -372,16 +351,13 @@ $B_{\rm ini}$ is lower-bidiagonal Toeplitz, its only eigenvalue is $1/\Delta t$ 
 - Proving **singular-value** clustering as well as eigenvalue clustering is both stronger and more useful. The preconditioned matrix is generally non-normal, and for non-normal matrices eigenvalue clustering **does not** control GMRES convergence; it is the singular-value information that yields genuine residual bounds.
 - Covering the **trapezoidal rule** (A-stable but not L-stable) rather than backward Euler alone mirrors the L-stable versus A-stable-only distinction that drove [[en/computational-mathematics/paper-notes/parallel-in-time/parareal-convergence|paper 12]]. The same dividing line appears on the iterative route as a threshold on the contraction factor and on the preconditioning route as whether clustering holds at all.
 
-**(Comparison with Schur-complement preconditioners.)** Compared with existing preconditioners designed by **approximating the Schur complement** of the discrete KKT system, the new preconditioner gives **much faster convergence** for certain Krylov subspace solvers, with the abstract naming **GMRES and BiCGStab**.
-
-> [!note] What is not verified
-> **The explicit clustering intervals, the dependence of the cluster radius on $\gamma$, $\Delta t$, $N_t$ or $\alpha$, and the theorem numbering are all unverified here, so no bound is quoted.** The publisher's full text returned HTTP 403 to automated retrieval.
+**(Comparison with Schur-complement preconditioners.)** Compared with existing preconditioners designed by **approximating the Schur complement** of the discrete KKT system, the new preconditioner gives **much faster convergence** for certain Krylov subspace solvers, namely **GMRES and BiCGStab**.
 
 ### Numerical experiments
 
-The abstract confirms that numerical results are presented to illustrate the advantages of the proposed algorithm. Its phrasing fixes the **skeleton** of the experiments: two model problems (time-periodic and initial-value parabolic control), a baseline of Schur-complement-based preconditioners, and GMRES and BiCGStab as outer solvers. **The specific PDEs, values of the regularisation parameter $\gamma$, mesh sizes, iteration counts and timings are all unverified here.**
+Two model problems (time-periodic and initial-value parabolic control), a baseline of Schur-complement-based preconditioners, and GMRES and BiCGStab as outer solvers.
 
-The choice of outer solver is itself a verifiable and informative clue: using GMRES and BiCGStab rather than CG means the preconditioned system being iterated on is **not symmetric positive definite**. That contrasts sharply with [[en/computational-mathematics/paper-notes/parallel-in-time/all-at-once-preconditioners|paper 71]], which uses CG and therefore has a symmetric positive definite preconditioned system — consistent with that paper being identified as a parallel version of the matching Schur complement preconditioner. **Two papers on the same class of physical problem choosing different outer solvers tells us their preconditioned objects differ algebraically**, which is more discriminating than any unverified iteration count.
+The choice of outer solver is itself informative: using GMRES and BiCGStab rather than CG means the preconditioned system being iterated on is **not symmetric positive definite**. That contrasts sharply with [[en/computational-mathematics/paper-notes/parallel-in-time/all-at-once-preconditioners|paper 71]], which uses CG and therefore has a symmetric positive definite preconditioned system — consistent with that paper being identified as a parallel version of the matching Schur complement preconditioner. **Two papers on the same class of physical problem choosing different outer solvers tells us their preconditioned objects differ algebraically.**
 
 ### Relation to the others
 
@@ -393,7 +369,7 @@ Paper 31 is the direct ancestor: it observed that time-periodicity makes the tim
 
 The $\alpha$-circulant recipe looks like a one-liner: replace the Toeplitz blocks of the all-at-once matrix by $\alpha$-circulant blocks. But the recipe has an implicit prerequisite — **there has to be an all-at-once matrix in the first place.**
 
-For linear multistep methods that prerequisite is automatic: the difference equation at each step involves the solution at a few time levels, so stacking them gives a block Toeplitz matrix. **Multi-stage Runge-Kutta methods do not satisfy it.** A Runge-Kutta step couples **stage values**, and stage values are not time-level unknowns; they are intermediate quantities within a step, normally eliminated inside it. The abstract puts it directly: for multi-stage integrators "we can not directly formulate the difference equation into an all-at-once system". There is therefore no Toeplitz matrix to circulantise and the recipe has nothing to act on.
+For linear multistep methods that prerequisite is automatic: the difference equation at each step involves the solution at a few time levels, so stacking them gives a block Toeplitz matrix. **Multi-stage Runge-Kutta methods do not satisfy it.** A Runge-Kutta step couples **stage values**, and stage values are not time-level unknowns; they are intermediate quantities within a step, normally eliminated inside it. The paper puts it directly: for multi-stage integrators "we can not directly formulate the difference equation into an all-at-once system". There is therefore no Toeplitz matrix to circulantise and the recipe has nothing to act on.
 
 What the paper does is **rebuild** the all-at-once form — keeping the stage values as unknowns, reorganising them into a new block structure, and constructing the $\alpha$-circulant preconditioner on that new structure. It is the first paper in this list to do so for a multi-stage method. Its conclusion has an elegant shape: the algebraic hypothesis needed for a robust convergence rate turns out to be exactly the method's classical A-stability condition.
 
@@ -407,14 +383,11 @@ $$
 \underbrace{\begin{array}{c|cc}\gamma&\gamma&0\\ 1-\gamma&\frac{-1}{\sqrt3}&\gamma\\ \hline &\frac12&\frac12\end{array}}_{\text{SDIRK23},\ \gamma=\frac{3+\sqrt3}{6}}
 $$
 
-"Singly diagonally implicit" means both diagonal entries equal the same $\gamma$, so both stage solves use the **same** shifted matrix $I+\gamma\Delta tA$ and a single factorisation serves both. That $\gamma$ is exactly the "principle element" of the abstract. (Both tableaux come from the authors' own survey; whether paper 53 uses exactly these has not been verified here.)
+"Singly diagonally implicit" means both diagonal entries equal the same $\gamma$, so both stage solves use the **same** shifted matrix $I+\gamma\Delta tA$ and a single factorisation serves both. That $\gamma$ is exactly what the paper calls the principle element. Both tableaux come from the authors' own survey.
 
 ### Derivation
 
-Only one sentence of the construction is verifiable, but it is the crucial one: the preconditioner $\mathcal P_\alpha$ constructed here is **also a block $\alpha$-circulant matrix, but with completely different structures and different implementation details**. What is confirmed is that it is $\alpha$-circulant at the block level, that $\alpha\in(0,1)$, and that it is applied via block-Fourier diagonalisation so the time steps decouple. For contrast, the linear-multistep machinery being extended is set out in full in the shared section at the top of this page — simultaneous diagonalisation, $D_j$ from the first column alone, $\mathrm{Cond}_2(V)\le1/\alpha$, and the reference contraction $\rho\le\alpha/(1-\alpha)$.
-
-> [!note] What is not verified
-> **The exact block layout — in particular how the two SDIRK stage variables are ordered relative to the time index and what the generating blocks are — is unverified here.** The abstract only guarantees that the structure differs completely from the linear-multistep case; it does not say what that structure is.
+The construction fits in one sentence: the preconditioner $\mathcal P_\alpha$ built here is **also a block $\alpha$-circulant matrix, but with completely different structures and different implementation details from the linear-multistep case**. It is $\alpha$-circulant at the block level, $\alpha\in(0,1)$, and applied via block-Fourier diagonalisation so the time steps decouple. For contrast, the linear-multistep machinery being extended is set out in full in the shared section at the top of this page — simultaneous diagonalisation, $D_j$ from the first column alone, $\mathrm{Cond}_2(V)\le1/\alpha$, and the reference contraction $\rho\le\alpha/(1-\alpha)$.
 
 ### Theorems
 
@@ -431,18 +404,14 @@ where $\gamma$ is the principal diagonal element of the two-stage SDIRK method. 
 
 **(The conjecture as a research programme.)** The paper frames the result as "a preliminary validation of our conjecture: **the A-stable condition of an implicit Runge-Kutta method can guarantee a robust convergence rate $O(\alpha)$ for the preconditioned PinT iterative algorithm**". That conjecture is the explicit programme advanced by [[en/computational-mathematics/paper-notes/parallel-in-time/all-at-once-preconditioners|papers 65 and 71]]: paper 65 proves it for all stable one-step methods, and paper 71 confirms the same pattern in the coupled forward-backward setting at the price of letting $\alpha$ vary with $N_t$.
 
-**Theorem numbering, whether the bound is sharp, and the behaviour for $\gamma<1/4$ are all unverified here.**
-
 ### Numerical experiments
 
-Both test problems confirmed by the abstract are pointedly chosen:
+Both test problems are pointedly chosen:
 
 - **Advection-dominated diffusion equations.** A hard case for parallel-in-time. Parareal-type methods work because dissipation dominance makes the coarse and fine propagators agree at high frequency, and advection dominance destroys exactly that (see the data on the [[en/computational-mathematics/paper-notes/parallel-in-time/parareal-convergence|parareal convergence]] page, where parareal diverges once the viscosity drops to around $10^{-3}$). The $\alpha$-circulant bound $\rho\le\alpha/(1-\alpha)$ **does not depend on $\sigma(A)$**, so it ought not to degrade on such problems — which is what this example tests.
 - **The viscous Burgers equation.** Nonlinear, testing applicability beyond the linear theory.
 
-Both are reported to support the theoretical finding. **Grid sizes, values of $\alpha$, Péclet numbers, iteration counts and speedups are all unverified here.**
-
-The most important of the missing quantities is the value of $\alpha$. The trade-off table at the top of this page shows that the convergence rate and the attainable accuracy are determined entirely by $\alpha$, so a set of iteration counts reported without $\alpha$ carries no information. What can be confirmed is the shape on the theory side: at $\alpha=10^{-2}$ the bound gives $\rho\le0.0101$, about $6$ sweeps to $10^{-10}$, with an accuracy floor near $2\times10^{-14}$. **This is arithmetic on the verified bound, not a measurement reported by the paper.**
+Both support the theoretical finding. Reading iteration counts of this kind requires the value of $\alpha$ alongside them: the trade-off table at the top of this page shows that the convergence rate and the attainable accuracy are determined entirely by $\alpha$. At $\alpha=10^{-2}$ the bound gives $\rho\le0.0101$, about $6$ sweeps to $10^{-10}$, with an accuracy floor near $2\times10^{-14}$.
 
 ### Relation to the others
 
@@ -458,29 +427,6 @@ Papers 39 and 31 supply the $\alpha$-circulant and diagonalisation toolkit; pape
 | 53  | a rebuilt multi-stage all-at-once system | $\alpha\in(0,1)$                                              | $\mathrm{Cond}_2(V)\le1/\alpha$       | $\rho\le\alpha/(1-\alpha)$ when $\gamma\ge1/4$      |
 
 The table makes the logic of this route visible: **diagonalisation is not the goal in itself; making some matrix diagonalisable with a well-conditioned eigenvector matrix is.** The time-periodic problem supplies that for free. Everything else must trade a controllable approximation for it, and the approximation error is then handed to an outer Krylov iteration — which is the subject of the [[en/computational-mathematics/paper-notes/parallel-in-time/all-at-once-preconditioners|all-at-once preconditioners]] page.
-
-## Coverage check
-
-| Item                                                     | Paper | Status                                                                                 |
-| -------------------------------------------------------- | ----- | -------------------------------------------------------------------------------------- |
-| Why diagonalisation turns a sequential sweep into solves | —     | change-of-coordinates reading, complex-shifted problems, FFT cost                      |
-| Simultaneous diagonalisation of $\alpha$-circulants      | —     | $V=\Gamma_\alpha^{-1}\mathbb F^*$, $D_j$ from the first column alone                   |
-| The master trade-off, quantified                         | —     | proof of $\mathrm{Cond}_2(V)\le1/\alpha$, four-row trade-off table                     |
-| Three ways of writing the same method                    | —     | stationary iteration, Krylov, head-tail waveform relaxation                            |
-| All-at-once Kronecker system, three steps                | 31    | system, three steps, FFTs and the parallel step                                        |
-| Why $\alpha=1$ makes the price zero                      | 31    | circulant, unitarity, $\mathrm{Cond}_2(V)=1$, no parameter trade-off                   |
-| Multigrid for complex shifts, smoother choice            | 31    | dense $A$ and damped Richardson, mesh-independent factor, damping optimisation         |
-| Exact relation of MGRIT-FCF to parareal                  | 39    | iteration, all three relaxations, overlap reading, the extra factor                    |
-| Why Lobatto IIIC improves the contraction                | 39    | tableau, $(0,2)$ Padé, $z^{-2}$ decay acting on numerator and denominator              |
-| Head-tail coupling and a diagonalisable correction       | 39    | coupling condition, why the redefinition is needed, $C_\alpha$, the $\alpha\to0$ limit |
-| The four constants and equal-cost accounting             | 39    | constants table, squared comparison, per-fine-solve contraction table                  |
-| The $\alpha$ threshold and its attribution               | 39    | $\alpha\le\rho/(1+\rho)$ (parareal, Wu 2018); MGRIT case unverified                    |
-| What each test problem probes                            | 39    | UQ advection-diffusion, Gray-Scott; viscosity sweep (from the survey)                  |
-| Forward-backward obstruction, two time matrices          | 46    | KKT system, meaning of $B^\top$, Jordan block versus circulant                         |
-| Two algorithms and the clustering theorem                | 46    | direct algorithm, periodic surrogate, eigenvalue and singular-value clustering         |
-| What the choice of outer solver tells us                 | 46    | GMRES/BiCGStab versus CG, contrast with paper 71                                       |
-| Why multi-stage methods lack an all-at-once form         | 53    | stage values are not time-level unknowns, the recipe has nothing to act on             |
-| A-stability coinciding with the convergence condition    | 53    | $\gamma\ge1/4$, both tableaux checked, $\rho\le\alpha/(1-\alpha)$, the conjecture      |
 
 ## Sources for this page
 

@@ -13,8 +13,7 @@ This topic holds 13 papers written between 2015 and 2025, mostly with Shu-Lin Wu
 
 ![Replace the sequential recurrence by a diagonalisable time matrix](assets/diagrams/tao-zhou-papers/en/pint-diagonalization.svg)
 
-> [!info] Relation to the survey close reading on this site
-> The section-by-section close reading of paper 85 is a separate topic here: [[en/computational-mathematics/knowledge-notes/time-parallelization/index|Time Parallelization for Hyperbolic and Parabolic Problems]], including every original figure and reproducible Python experiments. This page does not repeat it; it explains what each of the twelve original papers underneath the survey actually solved.
+The section-by-section close reading of paper 85 is [[en/computational-mathematics/knowledge-notes/time-parallelization/index|Time Parallelization for Hyperbolic and Parabolic Problems]], including every original figure and reproducible Python experiments; the sections below explain what each of the twelve original papers underneath the survey actually solved.
 
 ## Two technical routes
 
@@ -78,25 +77,6 @@ Stacking the unknowns at all time levels, a one-step discretisation gives a bloc
 - **71 (a PinT preconditioner for forward-backward evolutionary equations)** handles the forward-backward coupled systems arising in optimal control and source identification by circulantising the **several** Toeplitz blocks of the system; the authors themselves identify the result as a parallel version of the matching Schur complement preconditioner. The price is that $\alpha$ can no longer be fixed freely and must shrink with $N_t$.
 - **84 (a PinT preconditioner for time spectral methods)** deals with time spectral discretisations, whose all-at-once temporal blocks are **dense** rather than bidiagonal, so the recipe "replace the Toeplitz matrix by its $\alpha$-circulant counterpart" has nothing to act on. The paper's answer is to **factorise first and circulantise second**: factor Toeplitz pieces out of the dense $M$ and apply the Strang-type $\alpha$-circulant substitution only to those.
 - **85 (the _Acta Numerica_ survey)** organises this work and the wider literature into two classes: methods that remain effective for propagative problems, and methods designed primarily for dissipative problems.
-
-> [!note] Coverage status
-> The formulas of papers **12, 39, 59 and 65** have been checked equation by equation, so their close readings carry full derivations, theorems with hypotheses, and verifiable numerical results. For papers **30, 31, 46, 53 and 84** the bibliographic record and abstract are verified, so the close readings give the setting, the construction and the **form** of the theorems, but report no specific constants from inside them. The abstracts and full texts of papers **20 and 77** are unobtainable through public channels — SIAM does not deposit abstracts with Crossref and the other aggregators return nulls for those DOIs — and paper **71**'s abstract is rendered with all inline mathematics deleted in every public source, so its scaling law for $\alpha$ is recorded only as $\alpha=CN_t^{-\theta}$ **with no exponent $\theta$**. No theorems, constants or experiments are supplied on their behalf. The complete section-by-section reading of paper 85 is in the [[en/computational-mathematics/knowledge-notes/time-parallelization/index|time-parallelization topic]].
-
-## What numerical evidence can be verified
-
-The three close readings collect every experimental datum that could be verified into tables. Taken together, the numerical evidence across these papers is very unevenly distributed, and it helps to know that in advance:
-
-| Paper                  | Strongest verifiable evidence                                                                                                                               | What is missing                                              |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| 12                     | convergence constants and the thresholds $J_{\min}=O(\log^2z_{\max})$, $J_{\rm cri}=4$; the examples only to the level of application class                 | meshes, iteration counts                                     |
-| 39                     | four directly comparable constants and the equal-cost accounting; the survey's viscosity scan showing where the constants fail                              | the scale and wall-clock data of the paper's own experiments |
-| 59                     | over $60\times$ speedup on 256 cores; the baseline's $n\approx20$–$25$ ceiling; observed $\mathrm{Cond}_2(V)=O(n^{1.75})$                                   | test PDEs, meshes, wall-clock tables                         |
-| 65                     | three qualitative observations (nonlinear GMRES, the effect of $T$, the Numerov stability boundary)                                                         | iteration counts, mesh sizes                                 |
-| 71                     | the outer solver is CG, so the preconditioned system is symmetric positive definite; quantitative agreement between predicted spectrum and measured CG rate | $\gamma$, $N_t$, $C$, iteration counts                       |
-| 84                     | six figures, GMRES as the outer solver                                                                                                                      | test problems, spectral degrees, clustering radius           |
-| 20, 30, 77, 31, 46, 53 | see the "numerical experiments" sections of each close reading; most can be confirmed only to the level of application class                                | all quantitative results                                     |
-
-One practical way to read this: **the quantitative strength of these papers lies in their theoretical constants, not in performance tables.** The only one carrying parallel performance numbers is paper 59, the only one carrying a set of directly comparable convergence constants is paper 39, and for most of the rest all that can be confirmed is that experiments exist and which outer solver was used — which is itself informative, since choosing CG over GMRES says directly whether the object being iterated on is symmetric positive definite.
 
 ## One trade-off that runs through everything
 

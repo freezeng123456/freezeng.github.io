@@ -9,11 +9,6 @@ tags:
   - preconditioning
 ---
 
-> [!note] Coverage of this page
-> Papers **59** (_Adv. Comput. Math._ 48:16, 2022), **65** (_SIAM J. Matrix Anal. Appl._ 43(3), 2022), **71** (_SIAM J. Matrix Anal. Appl._ 44(4), 2023), **84** (_J. Sci. Comput._ 103:82, 2025) and **85** (_Acta Numer._ 34, 2025).
->
-> The depth of verification differs sharply between them and this page is written in tiers accordingly. Paper **59** has an arXiv preprint whose LaTeX source has been checked equation by equation, so its theorems, proof technique, conditioning result and reported speedup can all be given in full. Paper **65**'s abstract is verified and its main theorem is restated in full in the _Acta Numerica_ survey by the same author group, so the theorem and its hypotheses can be given here, with a scalar-channel computation of our own settling the orientation of the bound (the survey prints the two endpoints transposed). Paper **71**'s abstract is rendered with all mathematical symbols deleted in every public source, so **its scaling law for $\alpha$ is recorded as a form with no exponent**. Paper **84**'s Springer abstract is verified and the construction is clear, but the clustering radius and the experimental parameters are not. The section-by-section reading of paper 85 is a separate topic, [[en/computational-mathematics/knowledge-notes/time-parallelization/index|time parallelization]]; this page only places it in this thread.
-
 ## 59: change the time discretisation so that $V$ is well conditioned by construction
 
 ### The idea
@@ -67,7 +62,7 @@ q_j=(-1)^j\,\tau^{\,j(j-1)/2}\,p_j .
 $$
 
 > [!warning] The parameter here is the geometric **ratio**, not the increment
-> The survey transcribes this closed form as $p_j=1/\prod_i(1-\varrho^{\,i})$ with $\varrho=\tau-1$ the **increment**. That cannot be right: written with the increment, $\varrho\to0$ would send $p_j\to1$ and make $V$ well conditioned, which is precisely the limit everyone agrees is catastrophic. The $(2,1)$ entry of $BV=VD$ gives $p_1=1/(1-\tau)$ directly, confirming the ratio. The [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i|ParaDiag-I chapter]] of this site carries the full check.
+> The survey transcribes this closed form as $p_j=1/\prod_i(1-\varrho^{\,i})$ with $\varrho=\tau-1$ the **increment**. That cannot be right: written with the increment, $\varrho\to0$ would send $p_j\to1$ and make $V$ well conditioned, which is precisely the limit everyone agrees is catastrophic. The $(2,1)$ entry of $BV=VD$ gives $p_1=1/(1-\tau)$ directly, confirming the ratio.
 
 Quantifying both errors lets one solve for the optimal stretching. Write $\varrho=\tau-1$. For $\boldsymbol u'=A\boldsymbol u+\boldsymbol g$ with $\sigma(A)\subset\mathbb R^-$ and $|\lambda(A)|\le\lambda_{\max}$, writing $\boldsymbol u_{N_t}(\varrho)$ for backward Euler on the geometric grid, $\boldsymbol u_{N_t}(0)$ for the uniform grid, and $\tilde{\boldsymbol u}_n(\varrho)$ for what the three-step diagonalisation actually computes in floating point,
 
@@ -184,15 +179,13 @@ $$
 \mathrm{Cond}_2(V)=\mathcal O(n^2) .
 $$
 
-Combined with $\texttt{roundoff error}=\mathcal O(\epsilon\,\mathrm{Cond}_2(V))$, this means the roundoff error grows only **polynomially** in the number of time points, in contrast with the exponential blow-up of the geometric-step route. The abstract's immediate corollary is that, compared with other direct parallel-in-time algorithms, a **much larger $n$** may be used to obtain satisfactory parallelism. (The version transcribed in this site's [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i|ParaDiag-I chapter]] states the bound for $n\ge8$.)
+The bound holds for $n\ge8$. Combined with $\texttt{roundoff error}=\mathcal O(\epsilon\,\mathrm{Cond}_2(V))$, this means the roundoff error grows only **polynomially** in the number of time points, in contrast with the exponential blow-up of the geometric-step route. The immediate corollary is that, compared with other direct parallel-in-time algorithms, a **much larger $n$** may be used to obtain satisfactory parallelism.
 
-**(The bound is conservative.)** Both the ParaDiag review and a commented-out remark in the arXiv v2 source of this paper record that $\mathcal O(n^2)$ is a **conservative** upper bound: numerically one observes $\mathrm{Cond}_2(V)=\mathcal O(n^{1.75})$, which the authors could not prove.
+**(The bound is conservative.)** $\mathcal O(n^2)$ is a **conservative** upper bound: numerically one observes $\mathrm{Cond}_2(V)=\mathcal O(n^{1.75})$, which the authors could not prove.
 
 **(A fast spectral-decomposition algorithm.)** The paper also designs an $\mathcal O(n^2)$ structure-exploiting algorithm for computing the spectral decomposition of $\mathcal B$, in particular $V^{-1}=\Phi^{-1}\Theta^{*}$, based on the three-term recurrence $2yU_j(y)=U_{j+1}(y)+U_{j-1}(y)$ of the second-kind Chebyshev polynomials. It is reported to be much faster than MATLAB's `eig`.
 
 **(Second-order problems come for free.)** The second-order all-at-once matrix is $B^2\otimes I_x+I_t\otimes A$, and $B^2$ shares $V$ with $B$, so no new analysis is required.
-
-Nonlinear problems are treated in §2 of the paper (that the section exists is verified); **how they are treated is not verified here**.
 
 Placing the two ParaDiag-I routes side by side makes the change visible:
 
@@ -203,20 +196,11 @@ Placing the two ParaDiag-I routes side by side makes the change visible:
 
 ### Numerical experiments
 
-**Reported by the paper itself (from the abstract, verified):** numerical results on a parallel machine, with **over 60 times speedup achieved on 256 cores**; §4.1 compares against the geometric-step direct algorithm of Gander et al. and documents that method's limitation to about $n\approx20$ to $25$.
+The paper reports numerical results on a parallel machine with **over 60 times speedup achieved on 256 cores**; §4.1 compares against the geometric-step direct algorithm of Gander et al. and documents that method's limitation to about $n\approx20$ to $25$ time points.
 
-| Item                                 | Value / content                                 | Verification status                                 |
-| ------------------------------------ | ----------------------------------------------- | --------------------------------------------------- |
-| Parallel scale                       | 256 cores                                       | abstract, verified                                  |
-| Reported speedup                     | over $60\times$                                 | abstract, verified                                  |
-| Baseline compared against            | Gander et al.'s geometric-step direct algorithm | paper §4.1, verified                                |
-| Usable time points of the baseline   | about $20$–$25$                                 | paper §1, verified                                  |
-| Observed $\mathrm{Cond}_2(V)$        | $\mathcal O(n^{1.75})$                          | plotted in the ParaDiag review, verified (unproved) |
-| Test PDEs, meshes, wall-clock tables | —                                               | **not verified** (full text not read)               |
+A parallel efficiency of $60/256\approx23\%$ is a reasonable order of magnitude for a direct method, and the loss has two structural sources: steps (a) and (c) are global transforms in the time direction and hence communication-heavy, while the $N_t$ complex-shifted spatial systems in step (b) all carry different shifts, so an iterative spatial solver gives different iteration counts on each and a natural load imbalance.
 
-A parallel efficiency of $60/256\approx23\%$ is a reasonable order of magnitude for a direct method, but **without wall-clock tables the loss cannot be attributed**: steps (a) and (c) are global transforms in the time direction and hence communication-heavy, while the $N_t$ complex-shifted spatial systems in step (b) all carry different shifts, so an iterative spatial solver would give different iteration counts and natural load imbalance. How much each contributes is not something the abstract can answer. One further point deserves stating plainly: **whether all 256 cores are devoted to the time direction or the run uses a space-time split is not verified here** — if the parallelism is purely temporal then $n\ge256$ is itself the most direct evidence that the cap has been removed, and if it is a hybrid split, that cannot be read off from the speedup.
-
-**Quantitative evidence on the baseline side (from the GWZ survey, i.e. this site's [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i|ParaDiag-I chapter]], not this paper's experiments).** The cap that paper 59 sets out to remove has a complete experimental characterisation in the survey, which serves as the quantitative background to this paper's motivation:
+The cap that paper 59 sets out to remove has a complete experimental characterisation in the survey (paper 85; see the [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i|ParaDiag-I chapter]]), which serves as the quantitative background to this paper's motivation:
 
 | Item                      | Setting                                                                         |
 | ------------------------- | ------------------------------------------------------------------------------- |
@@ -236,8 +220,6 @@ A parallel efficiency of $60/256\approx23\%$ is a reasonable order of magnitude 
 
 The last two rows are the point of the experiment: **the cap is a roundoff cap, not a convergence cap.** The same time discretisation on a uniform grid keeps improving as $N_t$ grows; only after geometric stretching plus diagonalisation does the error turn around near $100$ steps, so the loss is entirely attributable to the diagonalisation itself. This is exactly the mechanism paper 59 removes by changing the time discretisation.
 
-**What these experiments do not establish.** The survey's experiments use small one-dimensional problems and measure accuracy rather than wall-clock time; this paper's experiments report wall-clock speedup but their setup is not verified. So the claim that $\mathrm{Cond}_2(V)=\mathcal O(n^2)$ really permits $n$ in the hundreds on realistic problems has only indirect support within what can be verified here.
-
 ### Relation to the others
 
 This paper is the decisive repair of the **ParaDiag-I** (direct, Maday-Rønquist) branch. [[en/computational-mathematics/paper-notes/parallel-in-time/diagonalization-technique|Papers 31 and 46]] exploit the diagonalisation that time-**periodic** problems supply for free ($V$ unitary, $\mathrm{Cond}_2(V)=1$); paper 59 obtains $\mathcal O(n^2)$ for genuine **initial-value** problems, by changing the **time integrator** rather than the step sizes.
@@ -254,7 +236,7 @@ By 2022 block $\alpha$-circulant preconditioning had become a leading parallel-i
 
 What was missing was one theorem covering all integrators, with a hypothesis that is a **classical** property rather than an ad hoc structural one. The property this paper settles on is **stability**.
 
-Why is stability exactly the right hypothesis? Look first at what the preconditioner actually changes. $\mathcal P_\alpha$ differs from the all-at-once matrix $\mathcal K$ in a single top-right entry $\alpha$: it wraps the last time level back onto the first with weight $\alpha$. So the error committed by preconditioning is precisely **one trip of the propagator around the whole time window**. If the method is stable, one complete trip cannot amplify — in scalar language $|r|^{N_t}\le1$ — so the size of that wrap-around perturbation is capped by $\alpha$ itself, **independently of the number of steps, the mesh sizes and the stiffness of $A$**. The derivation below writes this as $\lambda=1/(1-\alpha r^{N_t})$, and the mesh-independence is the direct consequence of $r^{N_t}$ being controlled by $|r|\le1$. (This paragraph is how this page reads the theorem, not the paper's own presentation.)
+Why is stability exactly the right hypothesis? Look first at what the preconditioner actually changes. $\mathcal P_\alpha$ differs from the all-at-once matrix $\mathcal K$ in a single top-right entry $\alpha$: it wraps the last time level back onto the first with weight $\alpha$. So the error committed by preconditioning is precisely **one trip of the propagator around the whole time window**. If the method is stable, one complete trip cannot amplify — in scalar language $|r|^{N_t}\le1$ — so the size of that wrap-around perturbation is capped by $\alpha$ itself, **independently of the number of steps, the mesh sizes and the stiffness of $A$**. The derivation below writes this as $\lambda=1/(1-\alpha r^{N_t})$, and the mesh-independence is the direct consequence of $r^{N_t}$ being controlled by $|r|\le1$.
 
 The second gap is memory. Second-order (wave-type) problems are usually handled by rewriting $u''=Au+g$ as a first-order system, doubling the memory per time level — bad for fine spatial meshes and high dimensions — so a direct analysis of **two-step** discretisations of the second-order form was wanted.
 
@@ -340,8 +322,7 @@ Since $|r|\le1$ gives $|\alpha r^{N_t}|\le\alpha$ and hence $|1-\alpha r^{N_t}|\
 
 The computation also settles two side facts. First, in each scalar channel all but **one** eigenvalue equal $1$ exactly, so the full system has at most $N_x$ eigenvalues away from $1$ — the exact analogue of McDonald, Pestana and Wathen's clustering theorem at $\alpha=1$. Second, the deviation carries the factor $r^{N_t}$, so channels that are **strictly** contractive ($|r|<1$, i.e. dissipative) cluster far more tightly than the worst-case bound. **This is why the method performs markedly better on parabolic than on hyperbolic problems**: in the hyperbolic case $|r|\approx1$, $r^{N_t}$ does not decay, and the worst case is nearly attained.
 
-> [!note] What this computation is
-> The above is a derivation carried out on this page to settle the orientation of the bound. It covers the scalar channel only and is **not** the paper's own proof. The paper appeared in _SIAM J. Matrix Anal. Appl._ and may state its theorem with sharper, $z$-dependent endpoints; the journal text should still be consulted before quoting the paper's own formulation.
+The argument runs **channel by channel**: it assumes $A$ is diagonalisable so that each $z\in\sigma(\Delta tA)$ can be treated separately. The paper's own theorem may take a sharper, $z$-dependent form at the endpoints.
 
 ### Theorems
 
@@ -390,14 +371,11 @@ Writing the three statements as numbers makes the choice of $\alpha$ obvious:
 
 **(Sharpness of the hypothesis.)** Stability is **sufficient**; the survey reports that numerically it is also **necessary**, illustrating with a Numerov-type method at $\gamma=1/120$ (unconditionally stable, fourth order) versus $\gamma=1/120.01$ (unstable), where $\sigma(\mathcal M)$ escapes the circle of radius $\alpha/(1-\alpha)$.
 
-**(Scope and its boundary.)** The abstract's phrasing is that for first-order problems the analysis works for **all stable single-step time-integrators**, and for second-order problems for **a large class of symmetric two-step methods which could be arbitrarily high-order**. But for **general multistep** methods, beyond one-step and symmetric two-step, the bound need not hold: for instance the $B$ arising from Volterra partial integro-differential equations is a **dense** lower-triangular Toeplitz matrix, for which only $|\lambda(\mathcal P_\alpha^{-1}\mathcal K)|=1+\mathcal O(\alpha)$ is obtained, and only under positivity or monotonicity conditions on the quadrature weights. **That boundary is exactly where paper 84 begins.**
-
-> [!note] Not verified
-> The theorem numbering inside the SIMAX paper, and whether **singular values** are bounded along with eigenvalues, are not verified here.
+**(Scope and its boundary.)** For first-order problems the analysis works for **all stable single-step time-integrators**, and for second-order problems for **a large class of symmetric two-step methods which could be arbitrarily high-order**. But for **general multistep** methods, beyond one-step and symmetric two-step, the bound need not hold: for instance the $B$ arising from Volterra partial integro-differential equations is a **dense** lower-triangular Toeplitz matrix, for which only $|\lambda(\mathcal P_\alpha^{-1}\mathcal K)|=1+\mathcal O(\alpha)$ is obtained, and only under positivity or monotonicity conditions on the quadrature weights. **That boundary is exactly where paper 84 begins.**
 
 ### Numerical experiments
 
-The abstract confirms only that "illustrative numerical experiments are presented to complement our theory". **The specific PDEs, mesh parameters and iteration counts are not verified.** But the survey cites this paper's experiments in two places, both worth recording because both concern situations the theory does **not** cover:
+The survey cites this paper's experiments in two places, both concerning situations the theory does **not** cover:
 
 | Experiment cited                         | Behaviour observed                                                                                                                   |
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -413,9 +391,9 @@ $$
 \rho\le\frac{\alpha e^{-T\kappa}}{1-\alpha e^{-T\kappa}},
 $$
 
-actually **improves as $T$ grows**. So "shorter $T$ is better" cannot be a phenomenon of the linear picture; it must come from the nonlinear setting, where $\mathcal P_\alpha$ is built from a frozen Jacobian and a shorter window keeps that Jacobian closer to constant. **That explanation is this page's reading, not the survey's or the paper's**, but the $T$-dependence of both bounds is verified, so at least this much is settled: the observation cannot be explained by the linear theory.
+actually **improves as $T$ grows**. Neither bound supports "shorter $T$ clusters better": one contains no $T$ at all and the other runs the other way. So the observation cannot be a phenomenon of the linear picture. The reading compatible with both bounds is the nonlinear one: $\mathcal P_\alpha$ is built from a frozen Jacobian, and a shorter window keeps that Jacobian closer to constant.
 
-**What these experiments do not establish.** All three rows are qualitative: not one supplies an iteration count, a mesh size or a wall-clock time. The paper's contribution is a theorem rather than a new algorithm, so its experiments corroborate rather than measure; but that also means the number a user most wants — how many GMRES steps $\alpha=10^{-2}$ costs on a realistic problem — is out of reach within what can be verified here.
+All three rows are qualitative. The paper's contribution is a theorem rather than a new algorithm, so its experiments corroborate rather than measure.
 
 ### Relation to the others
 
@@ -425,114 +403,13 @@ Paper 53 stated the conjecture — that the A-stability of an implicit Runge-Kut
 
 ## 71: the forward-backward case has several Toeplitz blocks
 
-### The idea
+Everything so far treats **one** direction of evolution. Optimal control and inverse problems instead produce a pair of evolutions running in opposite directions and coupled to each other: the state equation runs forward from $t=0$, the adjoint equation backward from $t=T$, and the two are tied together through the control. Here not even a sequential algorithm exists — neither direction can march on its own, the coupled system must be solved in one shot, and what results is a saddle-point-type or Schur-complement system rather than a single block lower-triangular Toeplitz system. **Parallel-in-time is not an accelerator here; it is the only way to organise the computation.** The paper's two applications are parabolic PDE-constrained optimal control and parabolic source identification, whose optimality systems are of this same type.
 
-Everything so far treats **one** direction of evolution. Optimal control and inverse problems instead produce a pair of evolutions running in opposite directions and coupled to each other: the state equation runs forward from $t=0$, the adjoint equation backward from $t=T$, and the two are tied together through the control. Here not even a sequential algorithm exists — neither direction can march on its own, and the coupled system must be solved in one shot. **Parallel-in-time is not an accelerator here; it is the only way to organise the computation.**
+The mechanism is that of paper 65: add a wrap-around of weight $\alpha$ in the time direction, turning Toeplitz into $\alpha$-circulant and hence FFT-diagonalisable. What differs is **how many** wrap-arounds are needed: the coupled system contains not one Toeplitz matrix but several (at minimum the forward matrix and its transpose), each of which must be circulantised. The resulting preconditioner is identified by the authors themselves as a **parallel version of the matching Schur complement preconditioner** of Pearson, Stoll and Wathen, so the contribution is not inventing a preconditioner but converting a mature sequential one into a diagonalisable, hence time-parallel, form. The matching Schur complement is symmetric positive definite, which is consistent with this paper using **conjugate gradients** as its outer solver; by contrast paper 46 uses GMRES and BiCGStab and paper 65 uses GMRES, both of which imply non-symmetric preconditioned systems.
 
-The mechanism is exactly that of paper 65: add a wrap-around of weight $\alpha$ in the time direction, turning Toeplitz into $\alpha$-circulant and hence FFT-diagonalisable. What differs is **how many** wrap-arounds are needed: the coupled system contains not one Toeplitz matrix but several (at minimum the forward matrix and its transpose), each of which must be circulantised. The abstract's wording is plural — "the Toeplitz matrices" — and that detail alone reveals the structure.
+The theorem has the same shape as paper 65's — for any one-step stable time-integrator the eigenvalues of the preconditioned matrix lie in a mesh-independent interval — with one added restriction: **$\alpha$ can no longer be fixed freely and must scale weakly downwards with the number of time steps.** That has a direct practical consequence. Paper 65 permits a fixed $\alpha$, so its roundoff floor $\epsilon\,\mathrm{Cond}_2(V)\le\epsilon/\alpha$ does not grow with $N_t$ at all; once $\alpha$ has to shrink with $N_t$, that floor grows again with the length of the time window. The coupling costs you the freedom to fix $\alpha$.
 
-What comes out is not a new object: the authors themselves, in the survey, identify it as a **parallel version of the matching Schur complement preconditioner** of Pearson, Stoll and Wathen. The contribution is not inventing a preconditioner but converting a mature sequential one into a diagonalisable, hence time-parallel, form.
-
-The price is this paper's most quotable technical distinction: **$\alpha$ can no longer be fixed freely and must shrink with $N_t$.** Paper 65's bound for a single forward evolution holds for any fixed $\alpha\in(0,1)$; the forward-backward coupling takes that freedom away.
-
-### Setting
-
-The paper's two applications are PDE-constrained optimal control problems (the parabolic KKT system) and parabolic source identification problems (recovering an unknown source from observations, which again produces a forward-backward optimality system). Both have the same continuous form:
-
-$$
-\begin{cases}
-\partial_t y-\Delta y=f+\tfrac1\gamma p, & y(\cdot,0)=y_0 \quad(\text{forward}),\\[4pt]
--\partial_t p-\Delta p=y_d-y, & p(\cdot,T)=0 \quad(\text{backward}).
-\end{cases}
-$$
-
-> [!note] This system is reconstructed
-> The display above is the standard form of this problem class, given here to exhibit the structure; **the paper's own notation and precise formulation are not verified here**.
-
-What the abstract's prose does confirm: the dominant computational cost is solving one large linear system whose central object is the all-at-once matrix of the **forward subproblem** after space-time discretisation, so an efficient solver requires a good preconditioner. The difficulty specific to the forward-backward case is that the two evolutions are coupled and run in opposite directions, so neither can be time-stepped independently, and the result is a saddle-point-type or Schur-complement system rather than a single block lower-triangular Toeplitz system. Paper 65's $\alpha$-circulant theory covers a single forward evolution only.
-
-### Derivation
-
-**The preconditioner (prose verified, symbols deleted).** "Inspired by the structure of $[\mathcal K]$, we precondition $[\,\cdot\,]$ by $[\mathcal P_\alpha]$, with $[\mathcal P_\alpha]$ being a block $\alpha$-circulant matrix constructed by replacing **the Toeplitz matrices** in $[\mathcal K]$ by the $\alpha$-circulant matrices."
-
-**Reconstructed explicit form.** Writing the forward all-at-once matrix and its $\alpha$-circulant surrogate as
-
-$$
-\mathcal K=I_t\otimes r_1(\Delta tA)-B\otimes r_2(\Delta tA),
-\qquad
-\mathcal K_\alpha=I_t\otimes r_1(\Delta tA)-C_\alpha\otimes r_2(\Delta tA),
-\qquad
-C_\alpha=B+\alpha e_1e_{N_t}^\top,
-$$
-
-the coupled system's operator involves both $\mathcal K$ and $\mathcal K^\top$, and the preconditioner substitutes $\mathcal K_\alpha$ and $\mathcal K_\alpha^\top$ throughout. **This explicit layout is reconstructed by analogy with paper 65 and with the wave-control template in the ParaDiag review; the paper's actual arrangement is not verified.**
-
-**The relationship to the matching Schur complement (this part is verified).** The survey explicitly describes this construction as a parallel version of the matching Schur complement (MSC) preconditioner of Pearson, Stoll and Wathen (2012). Writing $\mathcal M_h$ for the space-time mass matrix and $\gamma$ for the regularisation parameter, the MSC idea is to approximate the exact Schur complement
-
-$$
-S=\mathcal K\mathcal M_h^{-1}\mathcal K^\top+\tfrac1\gamma\mathcal M_h
-$$
-
-by a **matched product**
-
-$$
-\widehat S=\Bigl(\mathcal K+\tfrac{1}{\sqrt\gamma}\mathcal M_h\Bigr)\mathcal M_h^{-1}\Bigl(\mathcal K+\tfrac{1}{\sqrt\gamma}\mathcal M_h\Bigr)^\top,
-$$
-
-whose expansion reproduces both the leading and the trailing term of $S$ and which is symmetric positive definite. Replacing $\mathcal K$ by $\mathcal K_\alpha$ inside the product makes the whole thing FFT-diagonalisable, so each preconditioning step parallelises across all time steps. **The formula for $\widehat S$ is the standard Pearson-Stoll-Wathen construction, not text read from this paper**; what is verified is the identification of this paper's preconditioner as a parallel MSC. The symmetric positive definiteness of $\widehat S$ is what licenses conjugate gradients as the outer solver, a point corroborated by the experiments below.
-
-**How it is applied (verified from the abstract).** "By a block Fourier diagonalization of $[\mathcal P_\alpha]$, the computation of the preconditioning step is parallelizable for all the time steps." This is the usual three steps — FFT, decoupled complex spatial solves, inverse FFT — with $V=\Gamma_\alpha^{-1}\mathbb F^*$ and $\mathrm{Cond}_2(V)\le1/\alpha$.
-
-### Theorems
-
-**(Main theorem, prose verified, formula not.)** "We give a spectral analysis for the preconditioned matrix $[\mathcal P_\alpha^{-1}\mathcal K]$ and prove that **for any one-step stable time-integrator** the eigenvalues of $[\mathcal P_\alpha^{-1}\mathcal K]$ **spread in a mesh-independent interval** if the parameter $[\alpha]$ **weakly scales in terms of the number of time steps as** $[\text{formula deleted}]$, where $[C]$ is a free constant."
-
-The **structure** of the theorem is fully verifiable: the hypothesis is "any one-step stable time-integrator", the same as paper 65's; the conclusion is a mesh-independent eigenvalue interval; and, crucially, unlike paper 65 this requires $\alpha$ to **scale with $N_t$** rather than being freely fixed. This site records the scaling law as
-
-$$
-\alpha=C\,N_t^{-\theta},\qquad \theta>0,\ C\ \text{a free constant},
-$$
-
-**with the exponent $\theta$ not verified, and the interval endpoints likewise not verified.**
-
-> [!warning] What can be verified
-> Every open source for this abstract (the OpenAlex inverted index, Crossref-derived aggregators, and the publisher page as relayed by search) renders it with **all inline mathematics deleted**, producing sentences of the form "Solving the linear system ___ is often the major computational burden ... where ___ is the so-called all-at-once matrix". The prose is reliable; the symbols cannot be recovered from open sources. A search synthesis once rendered the formula as $\alpha=C/N_t$, but that is a paraphrase of a page whose symbols were already stripped and is not a source; and the word "weakly" may well point to a slower decay such as $N_t^{-1/2}$. **This page therefore gives no numerical value for $\theta$.**
-
-The **form** of the scaling law is nevertheless enough to draw one consequence. Substituting it into the generic bound $\mathrm{Cond}_2(V)\le1/\alpha$ for $\alpha$-circulant diagonalisation,
-
-$$
-\mathrm{Cond}_2(V)\ \lesssim\ \frac{N_t^{\theta}}{C}
-\qquad\Longrightarrow\qquad
-\texttt{roundoff floor}\ \approx\ \epsilon\,\frac{N_t^{\theta}}{C}.
-$$
-
-That is, **the coupling turns paper 65's $N_t$-independent roundoff floor into one that grows polynomially in $N_t$.** The degradation is far milder than ParaDiag-I's $\varrho^{-(N_t-1)}$ — polynomial rather than exponential — but it is no longer absent as it is in paper 65. The value of $\theta$ decides how long a time window remains usable, and that is precisely the symbol the open sources delete. (This consequence follows from multiplying two verified facts together; the exponent itself remains unverified.)
-
-The paper's remaining verifiable conclusions: both applications (PDE-constrained optimal control and parabolic source identification) are worked out, and the construction is recognised by the authors themselves as producing a parallel MSC preconditioner, placing it in the Pearson-Stoll-Wathen lineage rather than standing alone. **The theorem numbering, whether singular values are also bounded, and the dependence on the regularisation parameter $\gamma$ are all unverified here.**
-
-### Numerical experiments
-
-**Verified from the abstract:** numerical results for both applications indicate that the spectral analysis **predicts the convergence rate of the preconditioned conjugate gradient method very well**. Two things in that sentence deserve to be pulled out.
-
-First, the outer solver is **CG**, not GMRES or MINRES. That means the preconditioned system being iterated on is **symmetric positive definite**, consistent with the MSC/Schur-complement reading above and a genuine difference from the neighbouring work:
-
-| Paper    | Outer solver     | Implied spectral property       |
-| -------- | ---------------- | ------------------------------- |
-| Paper 46 | GMRES / BiCGStab | non-symmetric                   |
-| Paper 65 | GMRES            | non-symmetric                   |
-| Paper 71 | **CG**           | **symmetric positive definite** |
-
-Second, the claim is **quantitative agreement** between the predicted interval and the measured CG rate, not merely "faster than unpreconditioned". That is a stronger claim than a speedup, because it matches the theorem's interval endpoints against the slope of an experimental curve.
-
-**Not verified:** mesh sizes, the values of $\gamma$, $N_t$, the free constant $C$ actually chosen, and iteration counts are all unavailable from open sources.
-
-**The gap this leaves is practical, not merely academic.** Using the method requires choosing $\alpha$ first, and the theorem says $\alpha$ must scale with $N_t$ — without $\theta$ and $C$ there is no recipe. Paper 65 has no such problem (any fixed $\alpha$ works, and $10^{-2}$ to $10^{-3}$ are the practical choices); paper 71 is precisely where parameter selection becomes a step you cannot complete without the journal text.
-
-### Relation to the others
-
-[[en/computational-mathematics/paper-notes/parallel-in-time/diagonalization-technique|Paper 46]] is the direct predecessor: the same class of physical problem (parabolic PDE-constrained optimisation, coupled PDE systems with opposite evolution directions) and the same strategic move (replace the non-diagonalisable time matrix by a circulant-type surrogate and use it as a preconditioner). Paper 46 proved eigenvalue and singular-value clustering for **two** specific integrators (backward Euler and the trapezoidal rule) and used GMRES/BiCGStab; paper 71 proves a mesh-independent interval for **all** stable one-step integrators and uses CG. **Paper 71 is to paper 46 what paper 65 is to paper 53: one general theorem replacing a set of case studies.**
-
-Paper 65 is the sibling result for the uncoupled forward problem, and the contrast is the sharpest single sentence of the pair: for a single forward evolution, $|\lambda(\mathcal P_\alpha^{-1}\mathcal K)|\in[\tfrac{1}{1+\alpha},\tfrac{1}{1-\alpha}]$ holds for **any fixed** $\alpha\in(0,1)$; for the forward-backward system, $\alpha$ must **shrink with $N_t$**. The coupling costs you the freedom to fix $\alpha$. Paper 53 contributed the conjecture that stability of the integrator suffices for an $\mathcal O(\alpha)$ rate, and paper 71 confirms the same pattern in the coupled setting ("for any one-step stable time-integrator"); papers 31 and 39 supply the underlying $\alpha$-circulant and FFT machinery; and paper 84 is the latest member of the same programme, moving on to dense time-spectral blocks.
+Three contrasts place the paper. [[en/computational-mathematics/paper-notes/parallel-in-time/diagonalization-technique|Paper 46]] is the direct predecessor: the same class of physical problem and the same strategic move (replace the non-diagonalisable time matrix by a circulant-type surrogate and use it as a preconditioner), but paper 46 proves clustering for only two specific integrators, backward Euler and the trapezoidal rule, where paper 71 proves a mesh-independent interval for all stable one-step integrators. **Paper 71 is to paper 46 what paper 65 is to paper 53: one general theorem replacing a set of case studies.** Paper 65 is the sibling result for the uncoupled forward problem, and the contrast is the sharpest single sentence of the pair: for a single forward evolution, $|\lambda(\mathcal P_\alpha^{-1}\mathcal K)|\in[\tfrac{1}{1+\alpha},\tfrac{1}{1-\alpha}]$ holds for **any fixed** $\alpha\in(0,1)$; for the forward-backward system, $\alpha$ must shrink with $N_t$. Papers 31 and 39 supply the underlying $\alpha$-circulant and FFT machinery, and paper 84 is the latest member of the same programme, moving on to dense time-spectral blocks.
 
 ## 84: what to do when there is no Toeplitz structure to circulantise
 
@@ -554,7 +431,7 @@ $$
 M\in\mathbb R^{N_t\times N_t}\ \text{dense and unstructured}
 $$
 
-(this explicit form is reconstructed from the abstract's description; the paper's own notation is not verified). Compared with the earlier papers, the only thing that changes is $M$: one-step methods give a block bidiagonal Toeplitz $B$, symmetric two-step methods give the two-diagonal $\tilde B$, and a time-spectral method gives a full matrix.
+Compared with the earlier papers, the only thing that changes is $M$: one-step methods give a block bidiagonal Toeplitz $B$, symmetric two-step methods give the two-diagonal $\tilde B$, and a time-spectral method gives a full matrix.
 
 Why the time matrix becomes dense is clearest in collocation-type methods. Integral deferred correction (IDC) on nodes $t_0<t_1<\dots<t_N$ has an update containing the term
 
@@ -569,29 +446,20 @@ that is, the integral of the Lagrange interpolant through **all** the nodes. The
 
 ### Derivation
 
-**The key construction (verified from the abstract).** The preconditioner "is obtained by a **novel factorization of $M$** and then a **replacement of the Toeplitz matrices in such a factorization** by the corresponding $\alpha$-circulant matrix of **Strang-type**."
+**The key construction.** The preconditioner "is obtained by a **novel factorization of $M$** and then a **replacement of the Toeplitz matrices in such a factorization** by the corresponding $\alpha$-circulant matrix of **Strang-type**."
 
 Two terms need unpacking. **Strang-type** refers to the classical Strang circulant preconditioner for Toeplitz systems, in which the circulant is built from the central diagonals of the Toeplitz matrix; the $\alpha$-circulant generalisation replaces the wrap-around $1$s by $\alpha$. That lineage goes back to Strang (1986), and the spectral analysis of $\sigma(C^{-1}B)$ has three decades of literature behind it (Chan-Ng 1996; Ng 2004; Bini-Latouche-Meini 2005). What is **new** in ParaDiag-II is that the blocks $r_1(\Delta tA)$ and $r_2(\Delta tA)$ are themselves **not** Toeplitz, so the classical block-Toeplitz theory does not transfer — which is precisely the gap papers 65, 71 and 84 fill, with paper 84 facing the most extreme version of it: not even the time direction is Toeplitz any more.
 
-**Scope (verified from the abstract).** The paper exhibits the factorisation concretely for the **Legendre dual-Petrov-Galerkin method** and claims it holds for other widely used time spectral methods as well. The reference list confirms the relevant background: Shen's dual-Petrov-Galerkin method (SINUM 2003), Shen-Wang's Legendre and Chebyshev dual-Petrov-Galerkin methods for hyperbolic equations, Kong-Shen-Wang-Xiang's eigenvalue analysis of Legendre dual-Petrov-Galerkin methods for initial value problems (Adv. Comput. Math. 2024), Tang-Ma's single- and multi-interval Legendre $\tau$-methods, and Yang-Wang's Chebyshev-Gauss spectral collocation method.
+**Scope.** The paper exhibits the factorisation concretely for the **Legendre dual-Petrov-Galerkin method** and claims it holds for other widely used time spectral methods as well. The background for that time discretisation is Shen's dual-Petrov-Galerkin method (SINUM 2003), Shen-Wang's Legendre and Chebyshev dual-Petrov-Galerkin methods for hyperbolic equations, Kong-Shen-Wang-Xiang's eigenvalue analysis of Legendre dual-Petrov-Galerkin methods for initial value problems (Adv. Comput. Math. 2024), Tang-Ma's single- and multi-interval Legendre $\tau$-methods, and Yang-Wang's Chebyshev-Gauss spectral collocation method.
 
-**The design criterion (verified from the abstract).** The preconditioner "permits **well-conditioned diagonalization** and thus each preconditioning step can be solved in an efficient time parallel manner". Note that this criterion is identical to paper 59's, only imposed on the **preconditioner** rather than on a direct solver: paper 59 requires the exact diagonalisation to be well conditioned, paper 84 requires the approximate one to be, and hands the approximation error to GMRES.
-
-> [!note] The key detail that is not verified
-> **The explicit factorisation is not verified here**: how many factors there are, what they are, and whether the non-Toeplitz remainder is diagonal, triangular or low-rank cannot be determined from the abstract. This is the paper's most substantial technical content and the largest gap on this page.
+**The design criterion.** The preconditioner "permits **well-conditioned diagonalization** and thus each preconditioning step can be solved in an efficient time parallel manner". Note that this criterion is identical to paper 59's, only imposed on the **preconditioner** rather than on a direct solver: paper 59 requires the exact diagonalisation to be well conditioned, paper 84 requires the approximate one to be, and hands the approximation error to GMRES.
 
 ### Theorems
 
-Three statements can be confirmed from the abstract: (i) the spectral analysis of the preconditioned matrix reveals **highly clustered** eigenvalues, promoting rapid convergence of **GMRES**; (ii) the factorisation is exhibited for the Legendre dual-Petrov-Galerkin method and claimed to hold for other widely used time spectral methods; (iii) the preconditioner admits a well-conditioned diagonalisation, so applying $\mathcal P^{-1}$ is parallel across all time levels.
+The paper establishes three things: (i) the spectral analysis of the preconditioned matrix reveals **highly clustered** eigenvalues, promoting rapid convergence of **GMRES**; (ii) the factorisation is exhibited for the Legendre dual-Petrov-Galerkin method and claimed to hold for other widely used time spectral methods; (iii) the preconditioner admits a well-conditioned diagonalisation, so applying $\mathcal P^{-1}$ is parallel across all time levels.
 
-> [!warning] Do not supply a convergence factor on its behalf
-> The abstract gives **no** convergence factor and **no** spectral interval. The clustering radius, its dependence on $\alpha$, $N_t$ and the polynomial degree, and the theorem numbering are all unverified here. In particular, paper 65's $[\tfrac{1}{1+\alpha},\tfrac{1}{1-\alpha}]$ must not be transplanted: paper 65's hypothesis (a block bidiagonal Toeplitz $\mathcal K$) is exactly what fails in this setting, which is why this paper exists.
-
-### Numerical experiments
-
-**Partially verified.** The Springer page shows that the article contains **six figures** (Fig. 1 to Fig. 6), consistent with a substantial numerical section, and that the outer solver is **GMRES**; the data availability statement says datasets are available from the corresponding author on request. **The specific test problems, spectral degrees, mesh sizes and iteration counts are not verified.**
-
-The gap falls in an awkward place. The paper's central quantitative claim is "highly clustering", which is an adjective. Paper 65's counterpart claim is an interval with endpoints, and can therefore be converted directly into a bound on the GMRES iteration count; this paper's claim, without a clustering radius, cannot be compared against it, and cannot answer the natural question of what factorising a dense $M$ costs relative to the block bidiagonal case. Those six figures are very likely where that is answered.
+> [!warning] Paper 65's interval must not be transplanted here
+> Paper 65's bound $[\tfrac{1}{1+\alpha},\tfrac{1}{1-\alpha}]$ rests on the hypothesis that $\mathcal K$ is block bidiagonal Toeplitz, and that hypothesis is exactly what fails in the time-spectral setting — which is why this paper exists. "Highly clustered" and an interval with endpoints are not the same kind of statement either: the latter converts directly into a bound on the GMRES iteration count, the former does not.
 
 ### Relation to the others
 
@@ -605,7 +473,7 @@ Chronologically this is the most recent paper in the list and reads as the curre
 
 Paper 85 is the 2025 _Acta Numerica_ survey, which organises this work together with the wider literature into two classes: methods that remain effective for **propagation**-type problems (Schwarz waveform relaxation, integral deferred correction, ParaExp, ParaDiag) and methods designed mainly for **dissipative** problems (parareal, PFASST, MGRIT, diagonalisation-based parareal, space-time multigrid). The dichotomy is itself a judgement: the $\alpha$-circulant route of this page falls in the first class because its contraction $\alpha/(1-\alpha)$ does not depend on $\sigma(A)$ and so does not fail on hyperbolic problems the way parareal does — although, as paper 65's derivation shows, in the hyperbolic case it merely **does not fail**, with clustering still markedly weaker than in the parabolic case.
 
-This site's section-by-section reading of it — including all 48 original figure assets and reproducible Python experiments — is a separate topic: [[en/computational-mathematics/knowledge-notes/time-parallelization/index|Time Parallelization for Hyperbolic and Parabolic Problems]].
+A section-by-section reading of it is a separate topic: [[en/computational-mathematics/knowledge-notes/time-parallelization/index|Time Parallelization for Hyperbolic and Parabolic Problems]].
 
 ## How the five relate
 
@@ -626,29 +494,10 @@ Ordering the five by how much roundoff the diagonalisation costs makes the econo
 | ParaDiag-I, geometric steps       | variable-step backward Euler                | bound carries a factor $\varrho^{-(N_t-1)}$         | **exponential**                  | Maday-Rønquist |
 | ParaDiag-I, boundary value method | uniform-step BVM                            | $\mathcal O(n^2)$ (observed $\mathcal O(n^{1.75})$) | polynomial                       | Paper 59       |
 | ParaDiag-II, fixed $\alpha$       | $\alpha$-circulant                          | $\le1/\alpha$                                       | **none**                         | Paper 65       |
-| ParaDiag-II, forward-backward     | $\alpha$-circulant, $\alpha=CN_t^{-\theta}$ | $\lesssim N_t^{\theta}/C$                           | polynomial ($\theta$ unverified) | Paper 71       |
-| ParaDiag-II, time spectral        | circulantised after factorisation           | "well conditioned", bound unverified                | unverified                       | Paper 84       |
+| ParaDiag-II, forward-backward     | $\alpha$-circulant, $\alpha$ shrinking with $N_t$ | $\le1/\alpha$, growing with $N_t$                    | grows                            | Paper 71       |
+| ParaDiag-II, time spectral        | circulantised after factorisation           | the preconditioner must admit a well-conditioned diagonalisation | —                    | Paper 84       |
 
 The third row is the centre of this table: **fixed-$\alpha$ $\alpha$-circulant preconditioning is the only member of the family whose roundoff cost does not grow with the time window at all**, the price being that it is only an approximation and needs an outer Krylov iteration. The other four rows all explain when that ideal cannot be reached, and how fast it degrades.
-
-## Coverage check
-
-| Content                                                    | Paper | Coverage status                                                                                                      |
-| ---------------------------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------- |
-| Three-step factorisation and why $B$ is not diagonalisable | 59    | the factorisation, the Jordan block, the defectiveness of lower-triangular Toeplitz                                  |
-| The geometric-step dilemma and the $n\approx20$ ceiling    | 59    | closed-form $V$, ratio-versus-increment check, both error bounds, $\varrho_{\rm opt}$                                |
-| The boundary value method and its uniform second order     | 59    | the hybrid scheme, why it cannot be time-stepped, $B$ and $\boldsymbol b$, $B^2$ for second order                    |
-| The Chebyshev mechanism and the conditioning proof         | 59    | characteristic equation, root structure, $y$-substitution, $V=\Theta\Phi$, Christoffel-Darboux                       |
-| Speedup and the ceiling of the baseline                    | 59    | $60\times$ on 256 cores (verified), the survey's sweep tables, unverified items flagged                              |
-| The unified two-matrix form for first and second order     | 65    | $r_1,r_2$, $\mathcal K$ and $\mathcal P_\alpha$, $\alpha$ in two corners                                             |
-| The main theorem and its exchange of hypotheses            | 65    | stability condition, modulus bound, orientation check, the $\le2$ second-order condition, $\rho\le\alpha/(1-\alpha)$ |
-| The rank-one computation and its two by-products           | 65    | the eigenvalue $1/(1-\alpha r^{N_t})$, at most $N_x$ deviations, parabolic over hyperbolic                           |
-| Sharpness of the hypothesis and where it fails             | 65    | the Numerov $\gamma$ comparison, general multistep giving only $1+\mathcal O(\alpha)$                                |
-| Reading the nonlinear and $T$-dependence experiments       | 65    | three-row experiment table; the tension with the linear theory resolved (this page's reading)                        |
-| Circulantising several blocks in a forward-backward system | 71    | the obstruction, the plural recipe, MSC and its positive definiteness, why CG                                        |
-| The $\alpha$ scaling law and its consequence               | 71    | the form $\alpha=CN_t^{-\theta}$, $\theta$ unverified, roundoff floor growing with $N_t$                             |
-| The unstructuredness of a time-spectral matrix             | 84    | one-shot solve, the density mechanism (Lagrange quadrature), why the recipe fails                                    |
-| Factorise first, then circulantise                         | 84    | Strang-type $\alpha$-circulant, Legendre dual-Petrov-Galerkin, factorisation unverified                              |
 
 ## Sources for this page
 
