@@ -2134,6 +2134,1797 @@ function longSequenceDecisionFramework(lang) {
   })
 }
 
+const publications = JSON.parse(
+  fs.readFileSync(path.join(scriptDir, "data", "tao-zhou-publications.json"), "utf8"),
+)
+
+function researchMap(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "RESEARCH MAP",
+          title: "七个专题共享同一条技术主线",
+          subtitle: "先把不确定性写成可逼近的对象，再从数据反推参数，最后让时间演化可算",
+          groups: [
+            "把随机输入变成可逼近的对象",
+            "从有限数据反推未知量",
+            "让时间演化在有限资源下可算",
+          ],
+          themes: [
+            [
+              "随机逼近与配点设计",
+              "23 篇",
+              "把 Galerkin、配点与最小二乘",
+              "统一成加权采样问题",
+              "核心量：Christoffel 函数",
+            ],
+            [
+              "谱方法与降阶表示",
+              "6 篇",
+              "无界区域基函数、低秩流形",
+              "与分数幂矩阵的快速算法",
+              "核心量：解的衰减与秩",
+            ],
+            [
+              "贝叶斯反问题与数据同化",
+              "10 篇",
+              "代理模型与采样器交替细化",
+              "误差指标决定何时补算真解",
+              "核心量：后验误差指标",
+            ],
+            [
+              "科学机器学习",
+              "22 篇",
+              "残差损失、密度流与算子学习",
+              "采样点分布是主要自由度",
+              "核心量：失效概率与频谱",
+            ],
+            [
+              "FBSDE 与随机最优控制",
+              "22 篇",
+              "用概率表示替代网格离散",
+              "多步插值提高时间精度",
+              "核心量：条件期望",
+            ],
+            [
+              "相场模型与变步长离散",
+              "12 篇",
+              "变步长 BDF 与 IMEX 的",
+              "离散能量与二次型正定性",
+              "核心量：步长比阈值",
+            ],
+            [
+              "时间并行算法",
+              "13 篇",
+              "全时间系统的对角化与预条件",
+              "把串行递推变成并发求解",
+              "核心量：谱与条件数",
+            ],
+          ],
+          moves: [
+            "把串行或高维结构写成一个整体算子",
+            "为该算子设计带权、带自适应的近似逆",
+            "用误差指标决定在哪里补算真实信息",
+          ],
+        }
+      : {
+          kicker: "RESEARCH MAP",
+          title: "Seven Topics on One Technical Spine",
+          subtitle:
+            "First make randomness approximable, then invert data for unknowns, then make time evolution computable",
+          groups: [
+            "turn random input into approximable objects",
+            "recover unknowns from limited data",
+            "make time evolution affordable",
+          ],
+          themes: [
+            [
+              "Stochastic approximation",
+              "23 papers",
+              "Galerkin, collocation and least squares",
+              "become one weighted sampling problem",
+              "central object: Christoffel function",
+            ],
+            [
+              "Spectral and reduced order",
+              "6 papers",
+              "bases on unbounded domains, low-rank",
+              "manifolds, fractional matrix powers",
+              "central object: decay and rank",
+            ],
+            [
+              "Bayesian inverse problems",
+              "10 papers",
+              "surrogate and sampler refine together",
+              "an indicator decides when to solve",
+              "central object: posterior indicator",
+            ],
+            [
+              "Scientific machine learning",
+              "22 papers",
+              "residual losses, density flows, operators",
+              "the sample distribution is the knob",
+              "central object: failure probability",
+            ],
+            [
+              "FBSDEs and control",
+              "22 papers",
+              "probabilistic representation instead",
+              "of grids; multistep interpolation",
+              "central object: conditional expectation",
+            ],
+            [
+              "Phase field and time steps",
+              "12 papers",
+              "discrete energy and quadratic-form",
+              "positivity for variable-step BDF/IMEX",
+              "central object: step-ratio threshold",
+            ],
+            [
+              "Parallel in time",
+              "13 papers",
+              "diagonalise and precondition the",
+              "all-at-once space-time operator",
+              "central object: spectrum, conditioning",
+            ],
+          ],
+          moves: [
+            "write the sequential or high-dimensional structure as one operator",
+            "design a weighted, adaptive approximate inverse for it",
+            "let an error indicator decide where true information is added",
+          ],
+        }
+
+  const groupX = [30, 496, 962]
+  const groupW = [420, 420, 408]
+  const groupColor = [C.blue, C.indigo, C.teal]
+  const themeColor = [C.blue, C.green, C.indigo, C.rose, C.teal, C.amber, C.blue]
+  const themeFill = [
+    C.blueSoft,
+    C.greenSoft,
+    C.indigoSoft,
+    C.roseSoft,
+    C.tealSoft,
+    C.amberSoft,
+    C.blueSoft,
+  ]
+  const layout = [
+    [0, 1],
+    [2, 3],
+    [4, 5, 6],
+  ]
+
+  let panels = ""
+  layout.forEach((indices, group) => {
+    panels += section(groupX[group], 196, groupW[group], 466, t.groups[group], groupColor[group], {
+      fill: C.white,
+    })
+    const count = indices.length
+    const height = count === 3 ? 122 : 190
+    const gap = count === 3 ? 132 : 200
+    indices.forEach((themeIndex, slot) => {
+      const theme = t.themes[themeIndex]
+      const y = 262 + slot * gap
+      panels += card(groupX[group] + 22, y, groupW[group] - 44, height, {
+        title: theme[0],
+        body: count === 3 ? [theme[2], theme[3]] : [theme[2], theme[3], theme[4]],
+        accent: themeColor[themeIndex],
+        fill: themeFill[themeIndex],
+        titleSize: 18,
+        bodySize: 13,
+      })
+      panels += pill(
+        groupX[group] + groupW[group] - 128,
+        y + 14,
+        84,
+        theme[1],
+        themeColor[themeIndex],
+        C.white,
+        { h: 26, size: 12 },
+      )
+    })
+  })
+
+  const body = `
+    ${panels}
+    ${lineArrow(456, 429, 490, 429, { color: C.indigo, width: 2.8 })}
+    ${lineArrow(922, 429, 956, 429, { color: C.teal, width: 2.8 })}
+    ${textBlock(700, 700, [lang === "zh" ? "三个反复出现的动作" : "Three recurring moves"], {
+      size: 16,
+      weight: 800,
+      fill: C.ink,
+    })}
+    ${pill(30, 726, 420, t.moves[0], C.blue, C.white, { h: 44, size: 12 })}
+    ${pill(496, 726, 420, t.moves[1], C.indigo, C.white, { h: 44, size: 12 })}
+    ${pill(962, 726, 408, t.moves[2], C.teal, C.white, { h: 44, size: 12 })}
+  `
+  return frame({
+    width: 1400,
+    height: 800,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function researchTimeline(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "TIMELINE",
+          title: "2010 至 2026 年的专题分布",
+          subtitle: "圆点面积表示该年在该专题上的论文数量；数据取自主页发表列表",
+          lanes: {
+            "stochastic-approximation": "随机逼近与配点设计",
+            "spectral-reduced-order": "谱方法与降阶表示",
+            "bayesian-inference": "贝叶斯反问题",
+            "scientific-machine-learning": "科学机器学习",
+            "fbsde-control": "FBSDE 与随机控制",
+            "phase-field": "相场与变步长离散",
+            "parallel-in-time": "时间并行算法",
+          },
+          legend: "1 篇 / 2 篇 / 4 篇及以上",
+          note: "论文按发表年份计入；投稿与预印本按主页标注年份计入",
+        }
+      : {
+          kicker: "TIMELINE",
+          title: "Topic Distribution from 2010 to 2026",
+          subtitle: "Disc area encodes papers per topic per year, taken from the homepage list",
+          lanes: {
+            "stochastic-approximation": "Stochastic approximation",
+            "spectral-reduced-order": "Spectral and reduced order",
+            "bayesian-inference": "Bayesian inverse problems",
+            "scientific-machine-learning": "Scientific machine learning",
+            "fbsde-control": "FBSDEs and control",
+            "phase-field": "Phase field, time steps",
+            "parallel-in-time": "Parallel in time",
+          },
+          legend: "1 / 2 / 4 or more papers",
+          note: "Counted by publication year; submissions use the year given on the homepage",
+        }
+
+  const laneOrder = [
+    "stochastic-approximation",
+    "spectral-reduced-order",
+    "bayesian-inference",
+    "scientific-machine-learning",
+    "fbsde-control",
+    "phase-field",
+    "parallel-in-time",
+  ]
+  const laneColor = [C.blue, C.green, C.indigo, C.rose, C.teal, C.amber, C.blue]
+  const years = Array.from({ length: 17 }, (_, index) => 2010 + index)
+  const left = 330
+  const step = 62
+  const x = (year) => left + (year - 2010) * step
+
+  const counts = new Map()
+  for (const paper of publications.papers) {
+    const key = `${paper.theme}:${paper.year}`
+    counts.set(key, (counts.get(key) ?? 0) + 1)
+  }
+
+  let grid = years
+    .map(
+      (year) =>
+        `<path d="M ${x(year)} 216 L ${x(year)} 640" stroke="${C.line}" stroke-opacity=".35" stroke-width="1"/>
+         ${textBlock(x(year), 668, [`${year}`], { size: 12, weight: 650, fill: C.muted })}`,
+    )
+    .join("")
+
+  let lanes = ""
+  laneOrder.forEach((theme, index) => {
+    const y = 250 + index * 56
+    lanes += `<rect x="30" y="${y - 24}" width="1340" height="48" rx="16" fill="${index % 2 ? C.slateSoft : C.white}" fill-opacity=".7"/>
+      ${textBlock(300, y + 5, [t.lanes[theme]], { size: 14, weight: 700, fill: laneColor[index], anchor: "end" })}`
+    for (const year of years) {
+      const count = counts.get(`${theme}:${year}`) ?? 0
+      if (!count) continue
+      const radius = 7 + Math.sqrt(count) * 5
+      lanes += `<circle cx="${x(year)}" cy="${y}" r="${radius}" fill="${laneColor[index]}" fill-opacity=".2" stroke="${laneColor[index]}" stroke-width="1.8"/>
+        ${textBlock(x(year), y + 5, [`${count}`], { size: 13, weight: 800, fill: laneColor[index] })}`
+    }
+  })
+
+  const body = `
+    ${grid}
+    ${lanes}
+    <circle cx="80" cy="716" r="12" fill="${C.blue}" fill-opacity=".2" stroke="${C.blue}" stroke-width="1.8"/>
+    <circle cx="124" cy="716" r="14" fill="${C.blue}" fill-opacity=".2" stroke="${C.blue}" stroke-width="1.8"/>
+    <circle cx="174" cy="716" r="17" fill="${C.blue}" fill-opacity=".2" stroke="${C.blue}" stroke-width="1.8"/>
+    ${textBlock(204, 721, [t.legend], { size: 13, weight: 650, fill: C.muted, anchor: "start" })}
+    ${pill(760, 698, lang === "zh" ? 500 : 560, t.note, C.muted, C.white, { h: 36, size: 12 })}
+  `
+  return frame({
+    width: 1400,
+    height: 770,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function samplingDesign(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "WEIGHTED LEAST SQUARES",
+          title: "配点设计的统一流程",
+          subtitle: "同一条流水线容纳随机采样、诱导采样与贪心选点；差别只在“从哪个密度取点”",
+          stages: [
+            ["选定多项式空间", "指标集 Λ，维数 N", "正交基 {φₙ}", "目标测度 ω"],
+            ["构造采样密度", "μ 与 ω 的比值", "决定权函数 w", "Christoffel 函数 λ_N"],
+            ["取 M 个样本点", "随机 / 诱导 / 贪心", "形成设计矩阵 A", "权重矩阵 W"],
+            ["解加权最小二乘", "min ‖W(Ac − f)‖₂", "或稀疏化 ℓ₁ 问题", "得到系数 c"],
+          ],
+          gramian: "关键量：加权 Gram 矩阵",
+          gramianBody: "样本足够多时它接近单位矩阵，最小二乘才稳定",
+          budget: "样本预算随采样密度改变",
+          budgets: [
+            ["均匀 / 目标测度采样", "M ≳ N² 量级", C.rose],
+            ["Christoffel 加权采样", "M ≳ N log N", C.amber],
+            ["贪心选点（近似 Fekete）", "M 接近 N", C.green],
+          ],
+          feedback: "同一份候选点集可反复复用，只更换权与选点准则",
+        }
+      : {
+          kicker: "WEIGHTED LEAST SQUARES",
+          title: "One Pipeline for Collocation Design",
+          subtitle:
+            "Random, induced and greedy designs share this pipeline; only the sampling density changes",
+          stages: [
+            [
+              "Fix the polynomial space",
+              "index set Λ, dimension N",
+              "basis {φₙ}",
+              "target measure ω",
+            ],
+            [
+              "Build a sampling density",
+              "ratio of μ against ω",
+              "fixes the weight w",
+              "Christoffel function λ_N",
+            ],
+            [
+              "Draw M design points",
+              "random / induced / greedy",
+              "assemble the matrix A",
+              "weight matrix W",
+            ],
+            [
+              "Weighted least squares",
+              "min ‖W(Ac − f)‖₂",
+              "or a sparse ℓ₁ problem",
+              "return coefficients c",
+            ],
+          ],
+          gramian: "Central object: the weighted Gram matrix",
+          gramianBody: "Least squares is stable once enough samples make it close to the identity",
+          budget: "The sample budget follows the sampling density",
+          budgets: [
+            ["uniform / target-measure draws", "M of order N²", C.rose],
+            ["Christoffel-weighted draws", "M of order N log N", C.amber],
+            ["greedy points (approximate Fekete)", "M close to N", C.green],
+          ],
+          feedback: "One candidate pool is reused; only weights and the selection rule change",
+        }
+
+  const xs = [40, 385, 730, 1075]
+  const colors = [C.blue, C.indigo, C.teal, C.green]
+  const fills = [C.blueSoft, C.indigoSoft, C.tealSoft, C.greenSoft]
+  const stages = t.stages
+    .map(
+      (stage, i) => `${card(xs[i], 200, 285, 196, {
+        title: stage[0],
+        body: [stage[1], stage[2], stage[3]],
+        accent: colors[i],
+        fill: fills[i],
+        step: `${i + 1}`,
+        titleSize: 17,
+        bodySize: 13,
+      })}
+      ${i < 3 ? lineArrow(xs[i] + 292, 298, xs[i + 1] - 8, 298, { color: colors[i], width: 3 }) : ""}`,
+    )
+    .join("")
+
+  const budgets = t.budgets
+    .map(
+      (row, i) => `<g>
+        ${pill(742, 500 + i * 58, 380, row[0], row[2], C.white, { h: 44, size: 13 })}
+        ${pill(1140, 500 + i * 58, 225, row[1], row[2], C.white, { h: 44, size: 13 })}
+      </g>`,
+    )
+    .join("")
+
+  const body = `
+    ${stages}
+    ${card(40, 470, 640, 200, {
+      title: t.gramian,
+      body: ["G = Aᵀ W² A ≈ I_N", t.gramianBody],
+      accent: C.amber,
+      fill: C.amberSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 15,
+    })}
+    ${textBlock(1055, 470, [t.budget], { size: 16, weight: 800, fill: C.ink })}
+    ${budgets}
+    ${pill(lang === "zh" ? 420 : 400, 420, lang === "zh" ? 560 : 600, t.feedback, C.muted, C.white, { h: 34, size: 13 })}
+  `
+  return frame({
+    width: 1400,
+    height: 710,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function sparseRecovery(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "SPARSE RECOVERY",
+          title: "把梯度信息与采样密度一起写进恢复问题",
+          subtitle: "同一个稀疏系数向量同时解释函数值与导数值，测量行数因此成倍增加",
+          valueRow: "函数值测量",
+          gradRow: "梯度测量",
+          valueBody: "每个样本 1 行",
+          valueFormula: "φ(y⁽ᵐ⁾)ᵀ c ≈ f(y⁽ᵐ⁾)",
+          gradBody: "同一样本再加 d 行",
+          gradFormula: "∂φ(y⁽ᵐ⁾)ᵀ c ≈ ∂f(y⁽ᵐ⁾)",
+          stack: "堆叠测量矩阵",
+          stackBody: ["行数由 M 变为 M(1+d)", "未知量仍是 N 个系数"],
+          precond: "预条件与采样密度",
+          precondBody: ["左乘对角权矩阵", "使各行范数接近一致"],
+          rip: "有界正交系下的样本复杂度",
+          ripBody: [
+            "行归一化后落入有界正交系框架",
+            "s 稀疏恢复所需行数约为 s 乘对数因子",
+            "行范数越均衡，常数越小",
+          ],
+          program: "ℓ₁ 或加权 ℓ₁ 问题",
+          programBody: ["min ‖c‖₁", "s.t. ‖W(Ac − b)‖₂ ≤ δ"],
+          gain: "每个昂贵样本的信息量",
+          gainBody: [
+            "一次正问题求解同时给出函数值",
+            "与全部偏导数，行数放大 (1+d) 倍",
+            "未知量个数保持不变",
+          ],
+        }
+      : {
+          kicker: "SPARSE RECOVERY",
+          title: "Fold Gradients and Sampling Density into the Recovery Problem",
+          subtitle:
+            "One sparse coefficient vector must explain values and derivatives, multiplying the measurement rows",
+          valueRow: "value measurements",
+          gradRow: "gradient measurements",
+          valueBody: "one row per sample",
+          valueFormula: "φ(y⁽ᵐ⁾)ᵀ c ≈ f(y⁽ᵐ⁾)",
+          gradBody: "d more rows per sample",
+          gradFormula: "∂φ(y⁽ᵐ⁾)ᵀ c ≈ ∂f(y⁽ᵐ⁾)",
+          stack: "Stacked measurement matrix",
+          stackBody: ["rows grow from M to M(1+d)", "while N coefficients stay unknown"],
+          precond: "Preconditioning and density",
+          precondBody: ["a diagonal weight matrix", "equalises the row norms"],
+          rip: "Sample complexity",
+          ripBody: [
+            "row scaling puts the matrix in the",
+            "bounded orthonormal system setting,",
+            "where s-sparse recovery needs O(s · log)",
+          ],
+          program: "ℓ₁ or weighted ℓ₁ program",
+          programBody: ["min ‖c‖₁", "s.t. ‖W(Ac − b)‖₂ ≤ δ"],
+          gain: "Information per expensive sample",
+          gainBody: [
+            "one forward solve returns the value",
+            "and every partial derivative, so rows",
+            "grow by (1+d) with no new unknowns",
+          ],
+        }
+
+  const rows = (x, y, w, color, count) => {
+    let out = ""
+    for (let i = 0; i < count; i++) {
+      out += `<rect x="${x}" y="${y + i * 17}" width="${w}" height="11" rx="5" fill="${color}" fill-opacity="${0.22 + 0.1 * (i % 3)}"/>`
+    }
+    return out
+  }
+
+  const body = `
+    ${section(40, 196, 400, 252, t.valueRow, C.blue, { fill: "#f7faff", subtitle: t.valueBody })}
+    ${rows(72, 262, 336, C.blue, 4)}
+    ${pill(80, 358, 320, t.valueFormula, C.blue, C.white, { h: 38, size: 14 })}
+    ${textBlock(240, 424, [lang === "zh" ? "共 M 行、N 列" : "M rows, N columns"], { size: 14, weight: 700, fill: C.blue })}
+    ${section(40, 476, 400, 252, t.gradRow, C.amber, { fill: "#fffaf0", subtitle: t.gradBody })}
+    ${rows(72, 542, 336, C.amber, 6)}
+    ${pill(80, 650, 320, t.gradFormula, C.amber, C.white, { h: 38, size: 14 })}
+    ${textBlock(240, 706, [lang === "zh" ? "共 Md 行、N 列" : "Md rows, N columns"], { size: 14, weight: 700, fill: C.amber })}
+    ${pathArrow("M 448 300 C 480 300, 480 372, 496 372", { color: C.blue, width: 3 })}
+    ${pathArrow("M 448 600 C 480 600, 480 460, 496 460", { color: C.amber, width: 3 })}
+    ${card(504, 340, 390, 156, {
+      title: t.stack,
+      body: t.stackBody,
+      accent: C.indigo,
+      fill: C.indigoSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${card(504, 196, 390, 128, {
+      title: t.precond,
+      body: t.precondBody,
+      accent: C.teal,
+      fill: C.tealSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${lineArrow(699, 330, 699, 334, { color: C.teal, width: 3 })}
+    ${card(504, 552, 390, 148, {
+      title: t.program,
+      body: t.programBody,
+      accent: C.green,
+      fill: C.greenSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 15,
+    })}
+    ${lineArrow(699, 502, 699, 546, { color: C.indigo, width: 3 })}
+    ${section(950, 196, 410, 300, t.rip, C.rose, { fill: "#fff8f9" })}
+    ${textBlock(1155, 360, t.ripBody, { size: 14, weight: 550, fill: C.muted, lineHeight: 30 })}
+    ${lineArrow(902, 400, 942, 400, { color: C.rose, width: 3 })}
+    ${section(950, 528, 410, 200, t.gain, C.blue, { fill: "#f8fbff" })}
+    ${textBlock(1155, 640, t.gainBody, { size: 14, weight: 550, fill: C.muted, lineHeight: 30 })}
+    ${lineArrow(902, 626, 942, 626, { color: C.green, width: 3 })}
+  `
+  return frame({
+    width: 1400,
+    height: 770,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function bayesianSurrogateLoop(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "ADAPTIVE INFERENCE",
+          title: "代理模型与采样器交替细化",
+          subtitle: "只有当误差指标判定当前代理不可信时，才调用一次昂贵的正问题求解",
+          nodes: [
+            ["先验与观测", "高斯先验", "加噪声模型", "确定后验密度"],
+            ["当前代理", "多项式混沌、神经网络", "或算子网络", "给出快速前向映射"],
+            ["采样或反演", "MCMC、RTO、SVGD", "或集合 Kalman", "都在代理上推进"],
+            ["误差指标", "残差、方差", "或校正量大小", "判断代理是否可信"],
+            ["补算真解", "在被选中的点上", "调用真前向模型", "并扩充训练集"],
+          ],
+          cheap: "廉价循环：代理内部反复采样",
+          expensive: "昂贵步骤：真前向模型",
+          criterion: "触发准则",
+          criterionBody: "指标超过阈值即细化；否则继续在代理上采样",
+          guard: "去偏保护",
+          guardBody: "接受率修正或后验加权，防止代理误差直接进入后验",
+        }
+      : {
+          kicker: "ADAPTIVE INFERENCE",
+          title: "Surrogate and Sampler Refine Together",
+          subtitle:
+            "An expensive forward solve happens only when the error indicator declares the surrogate untrustworthy",
+          nodes: [
+            ["Prior and data", "Gaussian prior", "and a noise model", "fix the posterior"],
+            [
+              "Current surrogate",
+              "polynomial chaos,",
+              "network or operator net",
+              "fast forward map",
+            ],
+            ["Sample or invert", "MCMC, RTO, SVGD", "or ensemble Kalman", "run on the surrogate"],
+            ["Error indicator", "residual, variance", "or correction size", "judges the surrogate"],
+            ["True solve", "the exact forward model", "at selected points", "extends the data set"],
+          ],
+          cheap: "cheap loop: repeated surrogate evaluations",
+          expensive: "expensive step: the true forward model",
+          criterion: "Refinement trigger",
+          criterionBody: "refine when the indicator exceeds a threshold, otherwise keep sampling",
+          guard: "Debiasing guard",
+          guardBody:
+            "acceptance corrections or posterior reweighting keep surrogate error out of the posterior",
+        }
+
+  const nx = [31, 303, 575, 847, 1119]
+  const colors = [C.blue, C.indigo, C.teal, C.amber, C.rose]
+  const fills = [C.blueSoft, C.indigoSoft, C.tealSoft, C.amberSoft, C.roseSoft]
+  const nodes = t.nodes
+    .map(
+      (node, i) => `${card(nx[i], 250, 250, 150, {
+        title: node[0],
+        body: [node[1], node[2], node[3]],
+        accent: colors[i],
+        fill: fills[i],
+        step: `${i + 1}`,
+        titleSize: 16,
+        bodySize: 12,
+      })}
+      ${i < 4 ? lineArrow(nx[i] + 257, 325, nx[i + 1] - 8, 325, { color: colors[i], width: 3 }) : ""}`,
+    )
+    .join("")
+
+  const body = `
+    ${nodes}
+    ${pathArrow("M 1244 406 C 1244 476, 430 476, 430 408", { color: C.rose, width: 3 })}
+    ${pathArrow("M 640 244 C 640 208, 372 208, 372 242", { color: C.teal, width: 2.6, dashed: true })}
+    ${pill(lang === "zh" ? 590 : 550, 458, lang === "zh" ? 400 : 470, t.expensive, C.rose, C.white, { h: 34, size: 12 })}
+    ${pill(lang === "zh" ? 400 : 370, 194, lang === "zh" ? 300 : 360, t.cheap, C.teal, C.white, { h: 30, size: 12 })}
+    ${card(31, 550, 660, 160, {
+      title: t.criterion,
+      body: [t.criterionBody],
+      accent: C.amber,
+      fill: C.amberSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 14,
+    })}
+    ${card(709, 550, 660, 160, {
+      title: t.guard,
+      body: [t.guardBody],
+      accent: C.green,
+      fill: C.greenSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 14,
+    })}
+  `
+  return frame({
+    width: 1400,
+    height: 750,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function failureInformedSampling(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "FAILURE-INFORMED PINN",
+          title: "用可靠性分析决定下一批配点",
+          subtitle: "把“残差偏大”定义成失效事件，再用失效概率控制采样与停机",
+          field: "残差场",
+          fieldNote: "训练后的 PINN 在部分区域残差明显偏大",
+          event: "失效事件",
+          eventBody: "定义 {y : ε(y) > 阈值}，其中 ε 为局部残差",
+          prob: "失效概率",
+          probBody: "P_F = ∫ 1{ε(y)>阈值} dρ(y)，用采样估计",
+          sample: "在失效域内取新点",
+          sampleBody: "重要采样或子集模拟给出失效域内的样本",
+          retrain: "扩充训练集并继续训练",
+          retrainBody: "旧点保留或按重采样策略替换",
+          stop: "停机准则",
+          stopBody: "失效概率降到容差以下即停止，不再依赖固定迭代次数",
+          inverse: "反问题变体",
+          inverseBody: "观测残差与 PDE 残差共同定义失效事件",
+        }
+      : {
+          kicker: "FAILURE-INFORMED PINN",
+          title: "Let Reliability Analysis Choose the Next Collocation Batch",
+          subtitle:
+            "Declare a large residual to be a failure event, then use its probability to drive sampling and stopping",
+          field: "residual field",
+          fieldNote: "after training, some regions keep a visibly larger residual",
+          event: "Failure event",
+          eventBody: "define {y : ε(y) > tolerance} with ε the local residual",
+          prob: "Failure probability",
+          probBody: "P_F = ∫ 1{ε(y)>tol} dρ(y), estimated by sampling",
+          sample: "Draw points inside the failure region",
+          sampleBody: "importance sampling or subset simulation supplies them",
+          retrain: "Extend the training set and continue",
+          retrainBody: "old points are kept or replaced by a resampling rule",
+          stop: "Stopping rule",
+          stopBody:
+            "stop when the failure probability drops below tolerance, not after a fixed count",
+          inverse: "Inverse-problem variant",
+          inverseBody: "data misfit and PDE residual jointly define the failure event",
+        }
+
+  let heat = ""
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 6; j++) {
+      const hot = (i >= 5 && j >= 3) || (i <= 1 && j <= 1)
+      heat += `<rect x="${72 + i * 44}" y="${248 + j * 30}" width="40" height="26" rx="7" fill="${hot ? C.rose : C.blue}" fill-opacity="${hot ? 0.32 + 0.08 * ((i + j) % 3) : 0.08}"/>`
+    }
+  }
+
+  const body = `
+    ${section(40, 196, 400, 300, t.field, C.blue, { fill: C.white, subtitle: "ε(y)" })}
+    ${heat}
+    ${textBlock(240, 466, [t.fieldNote], { size: 13, weight: 600, fill: C.muted })}
+    ${card(470, 200, 420, 132, {
+      title: t.event,
+      body: [t.eventBody],
+      accent: C.rose,
+      fill: C.roseSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${card(470, 356, 420, 132, {
+      title: t.prob,
+      body: [t.probBody],
+      accent: C.amber,
+      fill: C.amberSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${card(920, 200, 440, 132, {
+      title: t.sample,
+      body: [t.sampleBody],
+      accent: C.indigo,
+      fill: C.indigoSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${card(920, 356, 440, 132, {
+      title: t.retrain,
+      body: [t.retrainBody],
+      accent: C.teal,
+      fill: C.tealSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${lineArrow(447, 266, 462, 266, { color: C.rose, width: 3 })}
+    ${lineArrow(680, 338, 680, 350, { color: C.rose, width: 3 })}
+    ${lineArrow(897, 422, 912, 422, { color: C.amber, width: 3 })}
+    ${lineArrow(1140, 338, 1140, 350, { color: C.indigo, width: 3 })}
+    ${pathArrow("M 1000 494 C 1000 552, 240 552, 240 510", { color: C.teal, width: 3, dashed: true })}
+    ${card(40, 580, 640, 150, {
+      title: t.stop,
+      body: [t.stopBody],
+      accent: C.green,
+      fill: C.greenSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 14,
+    })}
+    ${card(720, 580, 640, 150, {
+      title: t.inverse,
+      body: [t.inverseBody],
+      accent: C.blue,
+      fill: C.blueSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 14,
+    })}
+  `
+  return frame({
+    width: 1400,
+    height: 770,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function densityFlowSolvers(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "FLOW-BASED PDE SOLVERS",
+          title: "用可逆映射把密度方程写成参数化问题",
+          subtitle: "解不再是网格上的数值，而是一个把参考密度推前到目标密度的可逆变换",
+          refTitle: "参考密度",
+          refBody: ["标准高斯或均匀分布", "可直接采样"],
+          mapTitle: "可逆映射 f_θ",
+          mapBody: ["由若干耦合层复合", "Jacobian 为三角结构", "行列式可显式计算"],
+          pushTitle: "推前密度",
+          pushBody: ["p(x) = q(f_θ(x)) · |det ∇f_θ(x)|", "q 是参考密度，无需归一化常数"],
+          lossTitle: "损失来自方程本身",
+          lossBody: ["把 p_θ 代入 Fokker-Planck 残差", "在采样点上取平方平均"],
+          timeTitle: "时间方向",
+          timeBody: ["把 t 作为条件变量输入", "一次训练覆盖整个时间区间"],
+          boundedTitle: "有界支撑的处理",
+          boundedBody: ["逻辑映射把无界坐标压回区间", "避免密度泄漏到定义域之外"],
+          gain: "两个自动满足的性质",
+          gainList: ["非负性由推前公式保证", "归一化由变量替换保证"],
+        }
+      : {
+          kicker: "FLOW-BASED PDE SOLVERS",
+          title: "Write a Density Equation as a Parametrised Transport Map",
+          subtitle:
+            "The unknown becomes an invertible map that pushes a reference density onto the target",
+          refTitle: "Reference density",
+          refBody: ["standard Gaussian or uniform", "can be sampled directly"],
+          mapTitle: "Invertible map f_θ",
+          mapBody: [
+            "a composition of coupling layers",
+            "triangular Jacobian",
+            "explicit determinant",
+          ],
+          pushTitle: "Push-forward density",
+          pushBody: [
+            "p(x) = q(f_θ(x)) · |det ∇f_θ(x)|",
+            "q is the reference; no normaliser needed",
+          ],
+          lossTitle: "The loss comes from the equation",
+          lossBody: [
+            "insert p_θ into the Fokker-Planck residual",
+            "average its square over samples",
+          ],
+          timeTitle: "The time direction",
+          timeBody: ["feed t as a conditioning input", "one training run covers the interval"],
+          boundedTitle: "Handling bounded supports",
+          boundedBody: [
+            "a logistic map folds coordinates back",
+            "so no mass leaks outside the domain",
+          ],
+          gain: "Two properties hold by construction",
+          gainList: [
+            "positivity follows from the push-forward",
+            "normalisation follows from the change of variables",
+          ],
+        }
+
+  let layers = ""
+  for (let i = 0; i < 4; i++) {
+    const x = 520 + i * 92
+    layers += `<rect x="${x}" y="252" width="72" height="164" rx="16" fill="${i % 2 ? C.indigoSoft : C.tealSoft}" stroke="${i % 2 ? C.indigo : C.teal}" stroke-opacity=".4"/>
+      ${textBlock(x + 36, 342, [`L${i + 1}`], { size: 17, weight: 800, fill: i % 2 ? C.indigo : C.teal })}`
+  }
+
+  const body = `
+    ${card(40, 250, 240, 166, {
+      title: t.refTitle,
+      body: t.refBody,
+      accent: C.blue,
+      fill: C.blueSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${section(500, 196, 400, 268, t.mapTitle, C.indigo, { fill: C.white })}
+    ${layers}
+    ${textBlock(700, 442, [t.mapBody[1]], { size: 13, weight: 650, fill: C.muted })}
+    ${lineArrow(288, 333, 492, 333, { color: C.blue, width: 3 })}
+    ${card(940, 250, 420, 166, {
+      title: t.pushTitle,
+      body: t.pushBody,
+      accent: C.teal,
+      fill: C.tealSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${lineArrow(908, 333, 932, 333, { color: C.indigo, width: 3 })}
+    ${card(40, 496, 420, 180, {
+      title: t.lossTitle,
+      body: t.lossBody,
+      accent: C.rose,
+      fill: C.roseSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${card(490, 496, 420, 180, {
+      title: t.timeTitle,
+      body: t.timeBody,
+      accent: C.amber,
+      fill: C.amberSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${card(940, 496, 420, 180, {
+      title: t.boundedTitle,
+      body: t.boundedBody,
+      accent: C.green,
+      fill: C.greenSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${pathArrow("M 1150 424 C 1150 460, 260 460, 260 490", { color: C.rose, width: 2.6, dashed: true })}
+    ${textBlock(700, 716, [t.gain], { size: 15, weight: 800, fill: C.ink })}
+    ${pill(300, 736, lang === "zh" ? 340 : 400, t.gainList[0], C.teal, C.white, { h: 34, size: 12 })}
+    ${pill(lang === "zh" ? 680 : 740, 736, lang === "zh" ? 400 : 440, t.gainList[1], C.blue, C.white, { h: 34, size: 12 })}
+  `
+  return frame({
+    width: 1400,
+    height: 800,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function operatorLearningUq(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "OPERATOR LEARNING + UQ",
+          title: "算子学习中的三处不确定性",
+          subtitle: "输入函数的采样方式、算子近似本身与外推区域各自贡献不同的误差来源",
+          inputTitle: "输入函数样本",
+          inputBody: ["每个样本是一条离散化的函数", "传感器位置可以不固定"],
+          encoderTitle: "编码器",
+          encoderBody: ["置换不变的集合编码", "或固定网格分支网络"],
+          decoderTitle: "解码器",
+          decoderBody: ["在查询点上求值", "与坐标嵌入结合"],
+          predTitle: "预测输出",
+          predBody: ["每个查询点给出一个值", "以及一个置信区间"],
+          uqTitle: "不确定性来源",
+          rows: [
+            ["输入采样", "传感器数量与位置", C.blue],
+            ["算子近似", "有限参数与有限数据", C.indigo],
+            ["外推", "查询落在训练分布之外", C.rose],
+          ],
+          methods: "三条给出置信度的路线",
+          methodList: [
+            ["信息瓶颈", "压缩输入表示，用变分界给出噪声尺度"],
+            ["隐变量 + 高斯过程", "隐变量给均值，过程给相关结构"],
+            ["集合或后验采样", "多组参数给出预测分布"],
+          ],
+        }
+      : {
+          kicker: "OPERATOR LEARNING + UQ",
+          title: "Three Places Uncertainty Enters Operator Learning",
+          subtitle:
+            "How input functions are sampled, how the operator is approximated, and where queries fall",
+          inputTitle: "Input function samples",
+          inputBody: [
+            "each sample is a discretised function",
+            "sensor locations need not be fixed",
+          ],
+          encoderTitle: "Encoder",
+          encoderBody: ["permutation-invariant set encoding", "or a fixed-grid branch network"],
+          decoderTitle: "Decoder",
+          decoderBody: ["evaluates at query points", "combined with coordinate embeddings"],
+          predTitle: "Prediction",
+          predBody: ["a value at every query point", "together with a confidence band"],
+          uqTitle: "Sources of uncertainty",
+          rows: [
+            ["Input sampling", "sensor count and placement", C.blue],
+            ["Operator approximation", "finite parameters, finite data", C.indigo],
+            ["Extrapolation", "queries outside the training law", C.rose],
+          ],
+          methods: "Three routes to a calibrated confidence",
+          methodList: [
+            ["Information bottleneck", "compress the input, bound the noise variationally"],
+            ["Latent variable and GP", "the latent gives a mean, the process a covariance"],
+            ["Ensembles or posteriors", "several parameter sets give a predictive spread"],
+          ],
+        }
+
+  let curves = ""
+  for (let i = 0; i < 4; i++) {
+    const y = 262 + i * 38
+    curves += `<path d="M 72 ${y} C 118 ${y - 16 + i * 4}, 168 ${y + 18 - i * 5}, 214 ${y - 4} S 300 ${y + 12}, 340 ${y - 8}" fill="none" stroke="${C.blue}" stroke-width="2.6" stroke-opacity="${0.35 + i * 0.15}" stroke-linecap="round"/>`
+  }
+
+  const rows = t.rows
+    .map(
+      (row, i) => `${pill(720, 500 + i * 60, 300, row[0], row[2], C.white, { h: 46, size: 14 })}
+      ${pill(1036, 500 + i * 60, 330, row[1], row[2], C.white, { h: 46, size: 13 })}`,
+    )
+    .join("")
+
+  const methods = t.methodList
+    .map(
+      (
+        method,
+        i,
+      ) => `${pill(40, 500 + i * 60, lang === "zh" ? 190 : 250, method[0], [C.teal, C.green, C.amber][i], C.white, { h: 46, size: 13 })}
+      ${pill(lang === "zh" ? 246 : 306, 500 + i * 60, lang === "zh" ? 400 : 340, method[1], [C.teal, C.green, C.amber][i], C.white, { h: 46, size: 12 })}`,
+    )
+    .join("")
+
+  const body = `
+    ${section(40, 196, 340, 232, t.inputTitle, C.blue, { fill: C.white })}
+    ${curves}
+    ${textBlock(210, 408, [t.inputBody[1]], { size: 12, weight: 600, fill: C.muted })}
+    ${card(420, 214, 290, 196, {
+      title: t.encoderTitle,
+      body: t.encoderBody,
+      accent: C.indigo,
+      fill: C.indigoSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${card(750, 214, 290, 196, {
+      title: t.decoderTitle,
+      body: t.decoderBody,
+      accent: C.teal,
+      fill: C.tealSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${card(1080, 214, 280, 196, {
+      title: t.predTitle,
+      body: t.predBody,
+      accent: C.rose,
+      fill: C.roseSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${lineArrow(388, 312, 412, 312, { color: C.blue, width: 3 })}
+    ${lineArrow(718, 312, 742, 312, { color: C.indigo, width: 3 })}
+    ${lineArrow(1048, 312, 1072, 312, { color: C.teal, width: 3 })}
+    ${textBlock(340, 468, [t.methods], { size: 15, weight: 800, fill: C.ink })}
+    ${textBlock(1050, 468, [t.uqTitle], { size: 15, weight: 800, fill: C.ink })}
+    ${methods}
+    ${rows}
+  `
+  return frame({
+    width: 1400,
+    height: 730,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function fbsdeMultistep(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "FBSDE SCHEMES",
+          title: "多步格式如何提高倒向方程的时间精度",
+          subtitle: "倒推一步时使用多个已知的未来层，用插值多项式代替被积函数",
+          forward: "正向：模拟状态轨道",
+          backward: "倒向：解条件期望",
+          known: "已知层",
+          target: "待求层",
+          interpTitle: "多步插值",
+          interp: "用 k 个已知未来层做 Lagrange 插值",
+          zproc: "Z 过程由同一插值给出",
+          quadTitle: "条件期望的求积",
+          quad: "对 Brown 增量用 Gauss-Hermite 求积",
+          space: "空间方向用插值或稀疏网格表示",
+          orderTitle: "阶数与代价",
+          order: "k 个未来层给出约 k 阶时间精度",
+          cost: "代价是启动值与更严的稳定性条件",
+        }
+      : {
+          kicker: "FBSDE SCHEMES",
+          title: "How Multistep Schemes Raise the Backward Accuracy",
+          subtitle:
+            "Each backward step uses several known future levels, replacing the integrand by an interpolant",
+          forward: "forward: simulate the state paths",
+          backward: "backward: solve conditional expectations",
+          known: "known levels",
+          target: "level being solved",
+          interpTitle: "Multistep interpolation",
+          interp: "Lagrange interpolation over k future levels",
+          zproc: "the Z process uses the same interpolant",
+          quadTitle: "Quadrature for expectations",
+          quad: "Gauss-Hermite rule in the Brownian increment",
+          space: "space uses interpolation or a sparse grid",
+          orderTitle: "Order and cost",
+          order: "k future levels give roughly order k in time",
+          cost: "the price is starting values and stability",
+        }
+
+  const xs = Array.from({ length: 8 }, (_, i) => 120 + i * 152)
+  let axis = `<path d="M 80 300 L 1340 300" stroke="${C.line}" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M 80 470 L 1340 470" stroke="${C.line}" stroke-width="1.8" stroke-linecap="round"/>`
+  let nodes = ""
+  xs.forEach((x, i) => {
+    nodes += `<circle cx="${x}" cy="300" r="18" fill="${C.tealSoft}" stroke="${C.teal}" stroke-width="2"/>
+      ${textBlock(x, 306, [`X${i}`], { size: 13, weight: 750, fill: C.teal })}`
+    const isTarget = i === 3
+    const isKnown = i > 3
+    const color = isTarget ? C.rose : isKnown ? C.indigo : C.line
+    const fill = isTarget ? C.roseSoft : isKnown ? C.indigoSoft : C.slateSoft
+    nodes += `<circle cx="${x}" cy="470" r="18" fill="${fill}" stroke="${color}" stroke-width="${isTarget ? 3 : 2}"/>
+      ${textBlock(x, 476, [`Y${i}`], { size: 13, weight: 750, fill: color === C.line ? C.muted : color })}`
+    if (i < 7) {
+      nodes += lineArrow(x + 24, 300, xs[i + 1] - 24, 300, { color: C.teal, width: 2.4 })
+    }
+    if (i > 3) {
+      nodes += `<path d="M ${x} 448 C ${x - 20} 400, ${xs[3] + 30} 400, ${xs[3] + 24} 452" fill="none" stroke="${C.indigo}" stroke-width="2.2" stroke-opacity=".55" stroke-linecap="round" marker-end="url(#arrowIndigo)"/>`
+    }
+    nodes += `<path d="M ${x} 322 L ${x} 448" stroke="${C.line}" stroke-width="1.4" stroke-dasharray="4 6"/>`
+  })
+
+  const body = `
+    ${axis}
+    ${nodes}
+    ${pill(80, 232, lang === "zh" ? 280 : 300, t.forward, C.teal, C.tealSoft, { h: 32, size: 13 })}
+    ${pill(80, 510, lang === "zh" ? 320 : 360, t.backward, C.indigo, C.indigoSoft, { h: 32, size: 13 })}
+    ${pill(xs[3] - 78, 388, lang === "zh" ? 220 : 200, t.target, C.rose, C.white, { h: 30, size: 12 })}
+    ${pill(xs[5] - 60, 356, lang === "zh" ? 120 : 130, t.known, C.indigo, C.white, { h: 30, size: 12 })}
+    ${card(80, 566, 400, 158, {
+      title: t.interpTitle,
+      body: [t.interp, t.zproc],
+      accent: C.indigo,
+      fill: C.indigoSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${card(500, 566, 400, 158, {
+      title: t.quadTitle,
+      body: [t.quad, t.space],
+      accent: C.amber,
+      fill: C.amberSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${card(920, 566, 420, 158, {
+      title: t.orderTitle,
+      body: [t.order, t.cost],
+      accent: C.rose,
+      fill: C.roseSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+  `
+  return frame({
+    width: 1400,
+    height: 770,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function martingaleTraining(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "MARTINGALE LEARNING",
+          title: "把方程残差改写成鞅性质",
+          subtitle: "残差为零等价于某个过程是鞅；判别网络负责检验，值网络负责修正",
+          pdeTitle: "原始表述",
+          pdeBody: ["求解算子方程的残差为零", "高维时无法在网格上检验"],
+          martTitle: "等价表述",
+          martBody: ["构造沿轨道的过程 Mₜ", "残差为零 ⟺ Mₜ 是鞅"],
+          testTitle: "判别网络",
+          testBody: ["用可测函数族检验鞅性质", "取使违背最大的检验方向"],
+          valueTitle: "值网络",
+          valueBody: ["最小化被检出的违背量", "无需显式求 inf_u H"],
+          controlTitle: "控制网络",
+          controlBody: ["在同一循环内更新反馈控制", "不再逐点求解最优化子问题"],
+          minmax: "min–max 训练",
+          minmaxBody: "值网络与控制网络下降，判别网络上升",
+          gain: "为何能进入很高维度",
+          gainBody: ["所有量都是沿模拟轨道的期望", "整个算法不出现空间网格"],
+        }
+      : {
+          kicker: "MARTINGALE LEARNING",
+          title: "Rewrite the Equation Residual as a Martingale Property",
+          subtitle:
+            "A vanishing residual is equivalent to a martingale; a test network checks it and a value network fixes it",
+          pdeTitle: "Original statement",
+          pdeBody: [
+            "make the operator residual vanish",
+            "unverifiable on a grid in high dimension",
+          ],
+          martTitle: "Equivalent statement",
+          martBody: ["build a path process Mₜ", "residual zero ⟺ Mₜ is a martingale"],
+          testTitle: "Test network",
+          testBody: ["probes the martingale property", "picks the most violated direction"],
+          valueTitle: "Value network",
+          valueBody: ["minimises the detected violation", "no explicit inf_u H is needed"],
+          controlTitle: "Control network",
+          controlBody: ["updates the feedback control", "inside the same training loop"],
+          minmax: "min-max training",
+          minmaxBody: "value and control descend, the test network ascends",
+          gain: "Why high dimensions work",
+          gainBody: ["every quantity is an expectation", "along paths, so no grid appears"],
+        }
+
+  const body = `
+    ${card(40, 210, 380, 170, {
+      title: t.pdeTitle,
+      body: t.pdeBody,
+      accent: C.muted,
+      fill: C.slateSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${card(40, 420, 380, 170, {
+      title: t.martTitle,
+      body: t.martBody,
+      accent: C.teal,
+      fill: C.tealSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${pathArrow("M 230 386 L 230 414", { color: C.teal, width: 3 })}
+    ${section(460, 196, 500, 448, t.minmax, C.indigo, { fill: C.white })}
+    ${pill(490, 596, 440, t.minmaxBody, C.indigo, C.indigoSoft, { h: 34, size: 12 })}
+    ${card(490, 266, 440, 140, {
+      title: t.testTitle,
+      body: t.testBody,
+      accent: C.rose,
+      fill: C.roseSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${card(490, 440, 440, 140, {
+      title: t.valueTitle,
+      body: t.valueBody,
+      accent: C.blue,
+      fill: C.blueSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${lineArrow(600, 410, 600, 436, { color: C.rose, width: 2.8 })}
+    ${lineArrow(820, 436, 820, 410, { color: C.blue, width: 2.8 })}
+    ${card(1000, 266, 360, 140, {
+      title: t.controlTitle,
+      body: t.controlBody,
+      accent: C.amber,
+      fill: C.amberSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 12,
+    })}
+    ${lineArrow(968, 336, 992, 336, { color: C.indigo, width: 3 })}
+    ${card(1000, 440, 360, 140, {
+      title: t.gain,
+      body: t.gainBody,
+      accent: C.green,
+      fill: C.greenSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 12,
+    })}
+    ${lineArrow(968, 510, 992, 510, { color: C.blue, width: 3 })}
+  `
+  return frame({
+    width: 1400,
+    height: 700,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function pintDiagonalization(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "DIAGONALIZATION",
+          title: "把串行时间递推换成可对角化的时间矩阵",
+          subtitle: "代价是特征向量矩阵的条件数：步长比越激进，并行度越好而舍入放大越严重",
+          seqTitle: "串行结构",
+          seqBody: ["下三角块 Toeplitz 系统", "必须按时间顺序回代"],
+          gridTitle: "几何步长",
+          gridBody: ["τₙ = τ₁ γⁿ⁻¹，γ > 1", "时间矩阵特征值互不相同"],
+          diagTitle: "对角化",
+          diagBody: ["B = V D V⁻¹", "D 的元素给出复移位"],
+          solveTitle: "并发空间求解",
+          solveBody: ["每个移位系统独立", "可放在不同进程上"],
+          backTitle: "回到时间层",
+          backBody: ["乘回 V 得到全部时间层", "整个过程无外层迭代"],
+          tradeTitle: "条件数权衡",
+          tradeBody: ["γ 越接近 1，cond(V) 越大", "γ 越大，末端时间步越粗"],
+          altTitle: "另一条路线：α-循环预条件",
+          altBody: ["等步长下用循环矩阵近似时间矩阵", "对角化由 FFT 完成，条件数受控"],
+          use: "两种用法",
+          uses: ["直接求解：一次变换即得结果", "预条件：放进 Krylov 迭代做加速"],
+        }
+      : {
+          kicker: "DIAGONALIZATION",
+          title: "Replace the Sequential Recurrence by a Diagonalisable Time Matrix",
+          subtitle:
+            "The price is the eigenvector conditioning: aggressive step growth buys concurrency and amplifies roundoff",
+          seqTitle: "Sequential structure",
+          seqBody: ["block lower-triangular", "Toeplitz in time"],
+          gridTitle: "Geometric steps",
+          gridBody: ["τₙ = τ₁ γⁿ⁻¹ with γ > 1", "distinct time eigenvalues"],
+          diagTitle: "Diagonalise",
+          diagBody: ["B = V D V⁻¹", "D gives complex shifts"],
+          solveTitle: "Concurrent solves",
+          solveBody: ["each shifted system", "is fully independent"],
+          backTitle: "Back to time levels",
+          backBody: ["multiply by V", "no outer iteration"],
+          tradeTitle: "Conditioning trade-off",
+          tradeBody: ["γ near 1 inflates cond(V)", "large γ coarsens the late steps"],
+          altTitle: "The other route: α-circulant preconditioning",
+          altBody: [
+            "uniform steps, a circulant approximation in time",
+            "diagonalised by FFT with controlled conditioning",
+          ],
+          use: "Two ways to use it",
+          uses: [
+            "direct solver: one transform gives the answer",
+            "preconditioner: accelerate a Krylov iteration",
+          ],
+        }
+
+  const xs = [31, 303, 575, 847, 1119]
+  const colors = [C.muted, C.blue, C.indigo, C.teal, C.green]
+  const fills = [C.slateSoft, C.blueSoft, C.indigoSoft, C.tealSoft, C.greenSoft]
+  const titles = [t.seqTitle, t.gridTitle, t.diagTitle, t.solveTitle, t.backTitle]
+  const bodies = [t.seqBody, t.gridBody, t.diagBody, t.solveBody, t.backBody]
+  const stages = titles
+    .map(
+      (title, i) => `${card(xs[i], 214, 250, 160, {
+        title,
+        body: bodies[i],
+        accent: colors[i],
+        fill: fills[i],
+        step: `${i + 1}`,
+        titleSize: 16,
+        bodySize: 12,
+      })}
+      ${i < 4 ? lineArrow(xs[i] + 257, 294, xs[i + 1] - 8, 294, { color: colors[i], width: 3 }) : ""}`,
+    )
+    .join("")
+
+  const body = `
+    ${stages}
+    ${card(31, 416, 660, 168, {
+      title: t.tradeTitle,
+      body: t.tradeBody,
+      accent: C.rose,
+      fill: C.roseSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 14,
+    })}
+    ${card(709, 416, 660, 168, {
+      title: t.altTitle,
+      body: t.altBody,
+      accent: C.amber,
+      fill: C.amberSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${textBlock(700, 626, [t.use], { size: 15, weight: 800, fill: C.ink })}
+    ${pill(200, 646, lang === "zh" ? 440 : 470, t.uses[0], C.indigo, C.white, { h: 40, size: 13 })}
+    ${pill(lang === "zh" ? 680 : 710, 646, lang === "zh" ? 440 : 450, t.uses[1], C.teal, C.white, { h: 40, size: 13 })}
+  `
+  return frame({
+    width: 1400,
+    height: 710,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function variableStepEnergy(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "VARIABLE-STEP STABILITY",
+          title: "变步长离散的能量论证由二次型正定性支撑",
+          subtitle: "步长比进入一个实二次型；该二次型正定，离散能量律与最大值原理才成立",
+          problem: "问题",
+          problemBody: ["自适应步长破坏常步长的求和技巧", "旧的能量论证不再逐项成立"],
+          kernelTitle: "卷积核重排",
+          kernelBody: ["用离散正交卷积核抵消历史项", "把多步差分化成单步形式"],
+          formTitle: "实二次型",
+          formBody: ["历史项汇成 Σ 系数 vⱼ vₖ", "其正定性只依赖步长比序列"],
+          energyTitle: "离散能量律",
+          energyBody: ["能量单调不增，无需步长上界", "或仅需与界面宽度无关的上界"],
+          mbpTitle: "最大值原理",
+          mbpBody: ["非线性项的单调性加正定性", "给出逐层的界"],
+          ladder: "这条文献中的三个步长比门槛",
+          ladderRows: [
+            ["r < 1 + √2 ≈ 2.4142", "零稳定性；最大值原理与最大范数收敛", C.blue],
+            ["r < (3 + √17)/2 ≈ 3.5616", "变步长 BDF2 的离散能量稳定性", C.amber],
+            ["r < 1.4877", "变步长 BDF3 的能量耗散律", C.green],
+          ],
+          note: "同一套工具也用于三阶 BDF、时间滤波 Euler、分数阶 L1 逼近与 IMEX Runge-Kutta",
+        }
+      : {
+          kicker: "VARIABLE-STEP STABILITY",
+          title: "Energy Arguments for Variable Steps Rest on a Quadratic Form",
+          subtitle:
+            "The step ratios enter a real quadratic form; positive definiteness delivers the energy law and the maximum bound",
+          problem: "The obstruction",
+          problemBody: [
+            "adaptive steps break uniform-step telescoping",
+            "term-by-term energy arguments fail",
+          ],
+          kernelTitle: "Convolution kernels",
+          kernelBody: [
+            "orthogonal kernels cancel the history",
+            "a multistep difference becomes one-step",
+          ],
+          formTitle: "A real quadratic form",
+          formBody: [
+            "history collects into Σ coefficients vⱼ vₖ",
+            "definiteness depends only on step ratios",
+          ],
+          energyTitle: "Discrete energy law",
+          energyBody: [
+            "energy decreases with no step-size cap",
+            "or a cap independent of interface width",
+          ],
+          mbpTitle: "Maximum bound principle",
+          mbpBody: ["monotone nonlinearity plus definiteness", "gives a bound at every level"],
+          ladder: "Three step-ratio thresholds in this literature",
+          ladderRows: [
+            [
+              "r < 1 + √2 ≈ 2.4142",
+              "zero stability; maximum bound and max-norm convergence",
+              C.blue,
+            ],
+            [
+              "r < (3 + √17)/2 ≈ 3.5616",
+              "discrete energy stability for variable-step BDF2",
+              C.amber,
+            ],
+            ["r < 1.4877", "energy dissipation law for variable-step BDF3", C.green],
+          ],
+          note: "The same toolkit serves third-order BDF, time-filtered Euler, fractional L1 rules and IMEX Runge-Kutta",
+        }
+
+  const rows = t.ladderRows
+    .map(
+      (row, i) => `${pill(740, 432 + i * 62, 268, row[0], row[2], C.white, { h: 48, size: 14 })}
+      ${pill(1022, 432 + i * 62, 344, row[1], row[2], C.white, { h: 48, size: 11 })}`,
+    )
+    .join("")
+
+  const body = `
+    ${card(40, 196, 420, 176, {
+      title: t.problem,
+      body: t.problemBody,
+      accent: C.rose,
+      fill: C.roseSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${card(490, 196, 420, 176, {
+      title: t.kernelTitle,
+      body: t.kernelBody,
+      accent: C.indigo,
+      fill: C.indigoSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${card(940, 196, 420, 176, {
+      title: t.formTitle,
+      body: t.formBody,
+      accent: C.teal,
+      fill: C.tealSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${lineArrow(467, 284, 482, 284, { color: C.rose, width: 3 })}
+    ${lineArrow(917, 284, 932, 284, { color: C.indigo, width: 3 })}
+    ${textBlock(360, 402, [lang === "zh" ? "由此得到的两条结论" : "The two conclusions it yields"], { size: 15, weight: 800, fill: C.ink })}
+    ${textBlock(1053, 402, [t.ladder], { size: 15, weight: 800, fill: C.ink })}
+    ${card(40, 424, 330, 176, {
+      title: t.energyTitle,
+      body: t.energyBody,
+      accent: C.green,
+      fill: C.greenSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 12,
+    })}
+    ${card(390, 424, 330, 176, {
+      title: t.mbpTitle,
+      body: t.mbpBody,
+      accent: C.blue,
+      fill: C.blueSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 12,
+    })}
+    ${rows}
+    ${pill(lang === "zh" ? 300 : 240, 638, lang === "zh" ? 800 : 920, t.note, C.muted, C.white, { h: 40, size: 13 })}
+  `
+  return frame({
+    width: 1400,
+    height: 710,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function unboundedSpectral(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "UNBOUNDED DOMAINS",
+          title: "让基函数的衰减与解的衰减一致",
+          subtitle: "分数阶算子的解在无穷远只是代数衰减；基函数选错会毁掉谱精度",
+          decayTitle: "解的远场行为",
+          decayBody: ["局部光滑，远场代数衰减", "衰减指数由算子的阶决定"],
+          hermiteTitle: "Hermite 函数",
+          hermiteBody: ["自带高斯衰减，适合指数衰减解", "需要引入缩放因子"],
+          rationalTitle: "有理基函数",
+          rationalBody: ["由代数映射拉回参考区间", "远场按代数速率衰减"],
+          symbolTitle: "算子的作用",
+          symbolBody: ["分数阶 Laplacian 的符号为 |ξ| 的 2s 次幂", "也可写成超奇异积分"],
+          matrixTitle: "离散后的关键量",
+          matrixBody: ["基函数在算子下的像", "决定刚度矩阵能否显式算出"],
+          matpowTitle: "矩阵的分数次幂",
+          matpowBody: ["把 A 的 α 次幂写成有理函数", "或写成围道积分"],
+          nodeTitle: "求积节点的代价",
+          nodeBody: ["每个节点是一次移位线性求解", "节点之间彼此独立"],
+          lesson: "选基的准则",
+          lessons: ["匹配远场衰减率", "保持算子像的可积性", "让刚度矩阵结构可利用"],
+          algebraic: "代数尾部",
+          gaussian: "高斯尾部",
+        }
+      : {
+          kicker: "UNBOUNDED DOMAINS",
+          title: "Match the Decay of the Basis to the Decay of the Solution",
+          subtitle:
+            "Solutions of fractional operators decay only algebraically, and the wrong basis destroys spectral accuracy",
+          decayTitle: "Far-field behaviour",
+          decayBody: [
+            "smooth locally, algebraic at infinity",
+            "the rate follows the operator order",
+          ],
+          hermiteTitle: "Hermite functions",
+          hermiteBody: ["Gaussian decay suits exponential tails", "and needs a scaling factor"],
+          rationalTitle: "Rational basis",
+          rationalBody: ["pulled back by an algebraic map", "so the tail decays algebraically"],
+          symbolTitle: "Action of the operator",
+          symbolBody: [
+            "the fractional Laplacian has symbol |ξ| to the 2s",
+            "or a hypersingular integral form",
+          ],
+          matrixTitle: "The decisive object",
+          matrixBody: ["the image of each basis function", "decides if the stiffness is explicit"],
+          matpowTitle: "Fractional matrix powers",
+          matpowBody: ["write the α power of A as a rational", "function or as a contour integral"],
+          nodeTitle: "Cost per quadrature node",
+          nodeBody: ["each node is one shifted linear solve", "and the nodes are independent"],
+          lesson: "Criteria for choosing a basis",
+          lessons: [
+            "match the far-field rate",
+            "keep the operator image integrable",
+            "keep exploitable stiffness structure",
+          ],
+          algebraic: "algebraic tail",
+          gaussian: "Gaussian tail",
+        }
+
+  const body = `
+    ${section(40, 196, 360, 246, t.decayTitle, C.blue, { fill: C.white })}
+    <path d="M 76 410 L 380 410" stroke="${C.line}" stroke-width="1.6"/>
+    <path d="M 80 410 L 80 268" stroke="${C.line}" stroke-width="1.6"/>
+    <path d="M 88 274 C 168 306, 240 348, 300 372 S 348 390, 374 394" fill="none" stroke="${C.rose}" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M 88 274 C 122 292, 146 384, 196 396 S 300 402, 374 402" fill="none" stroke="${C.blue}" stroke-width="3.4" stroke-linecap="round"/>
+    ${pill(86, 416, 132, t.algebraic, C.rose, C.white, { h: 26, size: 11 })}
+    ${pill(238, 416, 142, t.gaussian, C.blue, C.white, { h: 26, size: 11 })}
+    ${textBlock(220, 480, [t.lesson], { size: 15, weight: 800, fill: C.ink })}
+    ${pill(40, 502, 360, t.lessons[0], C.blue, C.white, { h: 38, size: 12 })}
+    ${pill(40, 550, 360, t.lessons[1], C.indigo, C.white, { h: 38, size: 12 })}
+    ${pill(40, 598, 360, t.lessons[2], C.teal, C.white, { h: 38, size: 12 })}
+    ${card(430, 196, 300, 168, {
+      title: t.hermiteTitle,
+      body: t.hermiteBody,
+      accent: C.blue,
+      fill: C.blueSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${card(430, 396, 300, 168, {
+      title: t.rationalTitle,
+      body: t.rationalBody,
+      accent: C.rose,
+      fill: C.roseSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 13,
+    })}
+    ${card(760, 196, 300, 168, {
+      title: t.symbolTitle,
+      body: t.symbolBody,
+      accent: C.indigo,
+      fill: C.indigoSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 12,
+    })}
+    ${card(760, 396, 300, 168, {
+      title: t.matrixTitle,
+      body: t.matrixBody,
+      accent: C.teal,
+      fill: C.tealSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${card(1090, 196, 280, 168, {
+      title: t.matpowTitle,
+      body: t.matpowBody,
+      accent: C.amber,
+      fill: C.amberSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 12,
+    })}
+    ${card(1090, 396, 280, 168, {
+      title: t.nodeTitle,
+      body: t.nodeBody,
+      accent: C.green,
+      fill: C.greenSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 12,
+    })}
+    ${lineArrow(408, 280, 422, 280, { color: C.blue, width: 3 })}
+    ${lineArrow(408, 480, 422, 480, { color: C.rose, width: 3 })}
+    ${lineArrow(737, 280, 752, 280, { color: C.blue, width: 3 })}
+    ${lineArrow(737, 480, 752, 480, { color: C.rose, width: 3 })}
+    ${lineArrow(1067, 280, 1082, 280, { color: C.indigo, width: 3 })}
+    ${lineArrow(1225, 372, 1225, 388, { color: C.amber, width: 3 })}
+  `
+  return frame({
+    width: 1400,
+    height: 660,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
+function lowRankDynamics(lang) {
+  const t =
+    lang === "zh"
+      ? {
+          kicker: "LOW-RANK DYNAMICS",
+          title: "在低秩流形上直接演化随机解",
+          subtitle: "基与系数同时随时间变化；规范条件固定了分解的多余自由度",
+          ansatzTitle: "分解形式",
+          ansatzBody: ["u(t,x,ω) ≈ Σ Uᵢ(t,x) Yᵢ(t,ω)", "秩 R 远小于原始自由度"],
+          manifoldTitle: "秩 R 流形",
+          manifoldBody: ["所有秩不超过 R 的场构成流形", "真解一般不在流形上"],
+          projTitle: "切空间投影",
+          projBody: ["把右端投影到切空间", "得到 U 与 Y 的耦合演化方程"],
+          gaugeTitle: "规范条件",
+          gaugeBody: ["要求基的时间导数与基正交", "消去分解的旋转自由度"],
+          errorTitle: "误差来源",
+          errorBody: ["最佳秩 R 逼近的距离", "加上切空间投影带来的偏离"],
+          riskTitle: "退化风险",
+          riskBody: ["最小奇异值趋零时曲率变大", "误差常数随之放大"],
+          fixTitle: "两条缓解路线",
+          fixList: ["自适应调整秩，及时补充新方向", "对随机方向单独构造演化，减少全局耦合"],
+        }
+      : {
+          kicker: "LOW-RANK DYNAMICS",
+          title: "Evolve a Random Solution Directly on a Low-Rank Manifold",
+          subtitle:
+            "Basis and coefficients both move in time, and a gauge condition removes the redundant freedom",
+          ansatzTitle: "The ansatz",
+          ansatzBody: ["u(t,x,ω) ≈ Σ Uᵢ(t,x) Yᵢ(t,ω)", "rank R far below the full dimension"],
+          manifoldTitle: "The rank-R manifold",
+          manifoldBody: [
+            "fields of rank at most R form a manifold",
+            "the true solution is not on it",
+          ],
+          projTitle: "Tangent projection",
+          projBody: [
+            "project the right-hand side onto the tangent",
+            "coupled evolution for U and Y",
+          ],
+          gaugeTitle: "Gauge condition",
+          gaugeBody: ["basis time derivatives stay orthogonal", "removing the rotational freedom"],
+          errorTitle: "Error sources",
+          errorBody: [
+            "distance to the best rank-R field",
+            "plus the drift from tangent projection",
+          ],
+          riskTitle: "Degeneracy risk",
+          riskBody: [
+            "a vanishing smallest singular value",
+            "raises curvature and the error constant",
+          ],
+          fixTitle: "Two mitigations",
+          fixList: [
+            "adapt the rank and inject new directions",
+            "evolve stochastic directions separately",
+          ],
+        }
+
+  const body = `
+    ${card(40, 200, 400, 168, {
+      title: t.ansatzTitle,
+      body: t.ansatzBody,
+      accent: C.blue,
+      fill: C.blueSoft,
+      align: "center",
+      titleSize: 18,
+      bodySize: 14,
+    })}
+    ${section(480, 196, 400, 320, t.manifoldTitle, C.indigo, { fill: C.white })}
+    <path d="M 520 430 C 590 340, 700 486, 838 372" fill="none" stroke="${C.indigo}" stroke-width="3.4" stroke-linecap="round"/>
+    <circle cx="648" cy="404" r="9" fill="${C.indigo}"/>
+    ${textBlock(648, 456, [lang === "zh" ? "当前低秩近似" : "current low-rank state"], { size: 12, weight: 650, fill: C.indigo })}
+    <circle cx="700" cy="300" r="9" fill="${C.rose}"/>
+    ${textBlock(738, 286, [lang === "zh" ? "真解" : "true solution"], { size: 12, weight: 650, fill: C.rose })}
+    ${pathArrow("M 654 396 L 692 308", { color: C.rose, width: 2.4, dashed: true })}
+    ${pathArrow("M 648 404 L 792 386", { color: C.teal, width: 2.8 })}
+    ${textBlock(770, 356, [lang === "zh" ? "切空间方向" : "tangent direction"], { size: 12, weight: 650, fill: C.teal })}
+    ${card(920, 196, 440, 152, {
+      title: t.projTitle,
+      body: t.projBody,
+      accent: C.teal,
+      fill: C.tealSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${card(920, 364, 440, 152, {
+      title: t.gaugeTitle,
+      body: t.gaugeBody,
+      accent: C.amber,
+      fill: C.amberSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${card(40, 400, 400, 152, {
+      title: t.errorTitle,
+      body: t.errorBody,
+      accent: C.green,
+      fill: C.greenSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${card(40, 570, 400, 152, {
+      title: t.riskTitle,
+      body: t.riskBody,
+      accent: C.rose,
+      fill: C.roseSoft,
+      align: "center",
+      titleSize: 17,
+      bodySize: 13,
+    })}
+    ${textBlock(700, 566, [t.fixTitle], { size: 15, weight: 800, fill: C.ink })}
+    ${pill(490, 592, lang === "zh" ? 440 : 440, t.fixList[0], C.indigo, C.white, { h: 44, size: 13 })}
+    ${pill(950, 592, 410, t.fixList[1], C.teal, C.white, { h: 44, size: 13 })}
+    ${lineArrow(447, 284, 472, 284, { color: C.blue, width: 3 })}
+    ${lineArrow(888, 272, 912, 272, { color: C.indigo, width: 3 })}
+  `
+  return frame({
+    width: 1400,
+    height: 760,
+    kicker: t.kicker,
+    title: t.title,
+    subtitle: t.subtitle,
+    body,
+  })
+}
+
 const diagrams = [
   ["ml-inference", "serving-loop", servingLoop],
   ["ml-inference", "paged-kv-cache", pagedKv],
@@ -2160,6 +3951,20 @@ const diagrams = [
   ["long-sequence-recommendation", "design-space", longSequenceDesignSpace],
   ["long-sequence-recommendation", "hybrid-memory", longSequenceHybridMemory],
   ["long-sequence-recommendation", "decision-framework", longSequenceDecisionFramework],
+  ["tao-zhou-papers", "research-map", researchMap],
+  ["tao-zhou-papers", "research-timeline", researchTimeline],
+  ["tao-zhou-papers", "sampling-design", samplingDesign],
+  ["tao-zhou-papers", "sparse-recovery", sparseRecovery],
+  ["tao-zhou-papers", "bayesian-surrogate-loop", bayesianSurrogateLoop],
+  ["tao-zhou-papers", "failure-informed-sampling", failureInformedSampling],
+  ["tao-zhou-papers", "density-flow-solvers", densityFlowSolvers],
+  ["tao-zhou-papers", "operator-learning-uq", operatorLearningUq],
+  ["tao-zhou-papers", "fbsde-multistep", fbsdeMultistep],
+  ["tao-zhou-papers", "martingale-training", martingaleTraining],
+  ["tao-zhou-papers", "pint-diagonalization", pintDiagonalization],
+  ["tao-zhou-papers", "variable-step-energy", variableStepEnergy],
+  ["tao-zhou-papers", "unbounded-spectral", unboundedSpectral],
+  ["tao-zhou-papers", "low-rank-dynamics", lowRankDynamics],
 ]
 
 let generated = 0

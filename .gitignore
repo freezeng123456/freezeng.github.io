@@ -17,3 +17,4 @@ docs/
 .github/ISSUE_TEMPLATE/
 .github/dependabot.yml
 .github/pull_request_template.md
+.diagram-preview

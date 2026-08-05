@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="770" viewBox="0 0 1400 770" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">把梯度信息与采样密度一起写进恢复问题</title>
+  <desc id="diagram-desc">同一个稀疏系数向量同时解释函数值与导数值，测量行数因此成倍增加</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1384" height="754" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1384" height="754" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="201" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="154.5" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="154.5" dy="0">SPARSE RECOVERY</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">把梯度信息与采样密度一起写进恢复问题</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">同一个稀疏系数向量同时解释函数值与导数值，测量行数因此成倍增加</tspan></text>
+
+    <g>
+    <rect x="40" y="196" width="400" height="252" rx="26" fill="#f7faff" stroke="#2563eb" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="40" y="196" width="400" height="52" rx="26" fill="#2563eb" fill-opacity=".1"/>
+    <rect x="40" y="222" width="400" height="26" fill="#2563eb" fill-opacity=".1"/>
+    <text x="64" y="229" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#2563eb" opacity="1"><tspan x="64" dy="0">函数值测量</tspan></text>
+    <text x="416" y="229" text-anchor="end" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="600" fill="#5e6b7f" opacity="1"><tspan x="416" dy="0">每个样本 1 行</tspan></text>
+  </g>
+    <rect x="72" y="262" width="336" height="11" rx="5" fill="#2563eb" fill-opacity="0.22"/><rect x="72" y="279" width="336" height="11" rx="5" fill="#2563eb" fill-opacity="0.32"/><rect x="72" y="296" width="336" height="11" rx="5" fill="#2563eb" fill-opacity="0.42000000000000004"/><rect x="72" y="313" width="336" height="11" rx="5" fill="#2563eb" fill-opacity="0.22"/>
+    <g>
+    <rect x="80" y="358" width="320" height="38" rx="19" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="240" y="381.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#2563eb" opacity="1"><tspan x="240" dy="0">φ(y⁽ᵐ⁾)ᵀ c ≈ f(y⁽ᵐ⁾)</tspan></text>
+  </g>
+    <text x="240" y="424" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#2563eb" opacity="1"><tspan x="240" dy="0">共 M 行、N 列</tspan></text>
+    <g>
+    <rect x="40" y="476" width="400" height="252" rx="26" fill="#fffaf0" stroke="#d97706" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="40" y="476" width="400" height="52" rx="26" fill="#d97706" fill-opacity=".1"/>
+    <rect x="40" y="502" width="400" height="26" fill="#d97706" fill-opacity=".1"/>
+    <text x="64" y="509" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#d97706" opacity="1"><tspan x="64" dy="0">梯度测量</tspan></text>
+    <text x="416" y="509" text-anchor="end" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="600" fill="#5e6b7f" opacity="1"><tspan x="416" dy="0">同一样本再加 d 行</tspan></text>
+  </g>
+    <rect x="72" y="542" width="336" height="11" rx="5" fill="#d97706" fill-opacity="0.22"/><rect x="72" y="559" width="336" height="11" rx="5" fill="#d97706" fill-opacity="0.32"/><rect x="72" y="576" width="336" height="11" rx="5" fill="#d97706" fill-opacity="0.42000000000000004"/><rect x="72" y="593" width="336" height="11" rx="5" fill="#d97706" fill-opacity="0.22"/><rect x="72" y="610" width="336" height="11" rx="5" fill="#d97706" fill-opacity="0.32"/><rect x="72" y="627" width="336" height="11" rx="5" fill="#d97706" fill-opacity="0.42000000000000004"/>
+    <g>
+    <rect x="80" y="650" width="320" height="38" rx="19" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="240" y="673.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#d97706" opacity="1"><tspan x="240" dy="0">∂φ(y⁽ᵐ⁾)ᵀ c ≈ ∂f(y⁽ᵐ⁾)</tspan></text>
+  </g>
+    <text x="240" y="706" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#d97706" opacity="1"><tspan x="240" dy="0">共 Md 行、N 列</tspan></text>
+    <g class="flow-connector" opacity="1">
+    <path d="M 448 300 C 480 300, 480 372, 496 372" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 448 300 C 480 300, 480 372, 496 372" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)" />
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 448 600 C 480 600, 480 460, 496 460" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 448 600 C 480 600, 480 460, 496 460" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowAmber)" />
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="504" y="340" width="390" height="156" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="504" y="340" width="8" height="156" rx="4" fill="#4f46e5"/>
+
+    <text x="699" y="383" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="18" font-weight="750" fill="#14213d" opacity="1"><tspan x="699" dy="0">堆叠测量矩阵</tspan></text>
+    <text x="699" y="405.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="699" dy="0">行数由 M 变为 M(1+d)</tspan><tspan x="699" dy="19">未知量仍是 N 个系数</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="504" y="196" width="390" height="128" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="504" y="196" width="8" height="128" rx="4" fill="#0f766e"/>
+
+    <text x="699" y="239" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="750" fill="#14213d" opacity="1"><tspan x="699" dy="0">预条件与采样密度</tspan></text>
+    <text x="699" y="261.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="699" dy="0">左乘对角权矩阵</tspan><tspan x="699" dy="19">使各行范数接近一致</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 699 330 L 699 334" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 699 330 L 699 334" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)" />
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="504" y="552" width="390" height="148" rx="22" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="504" y="552" width="8" height="148" rx="4" fill="#16865b"/>
+
+    <text x="699" y="595" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="750" fill="#14213d" opacity="1"><tspan x="699" dy="0">ℓ₁ 或加权 ℓ₁ 问题</tspan></text>
+    <text x="699" y="616" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="699" dy="0">min ‖c‖₁</tspan><tspan x="699" dy="22">s.t. ‖W(Ac − b)‖₂ ≤ δ</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 699 502 L 699 546" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 699 502 L 699 546" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g>
+    <g>
+    <rect x="950" y="196" width="410" height="300" rx="26" fill="#fff8f9" stroke="#dc4c64" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="950" y="196" width="410" height="52" rx="26" fill="#dc4c64" fill-opacity=".1"/>
+    <rect x="950" y="222" width="410" height="26" fill="#dc4c64" fill-opacity=".1"/>
+    <text x="974" y="229" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#dc4c64" opacity="1"><tspan x="974" dy="0">有界正交系下的样本复杂度</tspan></text>
+
+  </g>
+    <text x="1155" y="330" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="550" fill="#5e6b7f" opacity="1"><tspan x="1155" dy="0">行归一化后落入有界正交系框架</tspan><tspan x="1155" dy="30">s 稀疏恢复所需行数约为 s 乘对数因子</tspan><tspan x="1155" dy="30">行范数越均衡，常数越小</tspan></text>
+    <g class="flow-connector" opacity="1">
+    <path d="M 902 400 L 942 400" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 902 400 L 942 400" fill="none" stroke="#dc4c64" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)" />
+  </g>
+    <g>
+    <rect x="950" y="528" width="410" height="200" rx="26" fill="#f8fbff" stroke="#2563eb" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="950" y="528" width="410" height="52" rx="26" fill="#2563eb" fill-opacity=".1"/>
+    <rect x="950" y="554" width="410" height="26" fill="#2563eb" fill-opacity=".1"/>
+    <text x="974" y="561" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#2563eb" opacity="1"><tspan x="974" dy="0">每个昂贵样本的信息量</tspan></text>
+
+  </g>
+    <text x="1155" y="610" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="550" fill="#5e6b7f" opacity="1"><tspan x="1155" dy="0">一次正问题求解同时给出函数值</tspan><tspan x="1155" dy="30">与全部偏导数，行数放大 (1+d) 倍</tspan><tspan x="1155" dy="30">未知量个数保持不变</tspan></text>
+    <g class="flow-connector" opacity="1">
+    <path d="M 902 626 L 942 626" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 902 626 L 942 626" fill="none" stroke="#16865b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowGreen)" />
+  </g>
+
+</svg>

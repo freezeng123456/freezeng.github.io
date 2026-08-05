@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="710" viewBox="0 0 1400 710" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">配点设计的统一流程</title>
+  <desc id="diagram-desc">同一条流水线容纳随机采样、诱导采样与贪心选点；差别只在“从哪个密度取点”</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1384" height="694" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1384" height="694" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="278" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="193" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="193" dy="0">WEIGHTED LEAST SQUARES</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">配点设计的统一流程</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">同一条流水线容纳随机采样、诱导采样与贪心选点；差别只在“从哪个密度取点”</tspan></text>
+
+    <g filter="url(#shadow)">
+    <rect x="40" y="200" width="285" height="196" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="40" y="200" width="8" height="196" rx="4" fill="#2563eb"/>
+    <circle cx="297" cy="228" r="17" fill="#2563eb"/>
+           <text x="297" y="233" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="297" dy="0">1</tspan></text>
+    <text x="68" y="243" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="750" fill="#14213d" opacity="1"><tspan x="68" dy="0">选定多项式空间</tspan></text>
+    <text x="68" y="256" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="68" dy="0">指标集 Λ，维数 N</tspan><tspan x="68" dy="19">正交基 {φₙ}</tspan><tspan x="68" dy="19">目标测度 ω</tspan></text>
+  </g>
+      <g class="flow-connector" opacity="1">
+    <path d="M 332 298 L 377 298" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 332 298 L 377 298" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)" />
+  </g><g filter="url(#shadow)">
+    <rect x="385" y="200" width="285" height="196" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="385" y="200" width="8" height="196" rx="4" fill="#4f46e5"/>
+    <circle cx="642" cy="228" r="17" fill="#4f46e5"/>
+           <text x="642" y="233" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="642" dy="0">2</tspan></text>
+    <text x="413" y="243" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="750" fill="#14213d" opacity="1"><tspan x="413" dy="0">构造采样密度</tspan></text>
+    <text x="413" y="256" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="413" dy="0">μ 与 ω 的比值</tspan><tspan x="413" dy="19">决定权函数 w</tspan><tspan x="413" dy="19">Christoffel 函数 λ_N</tspan></text>
+  </g>
+      <g class="flow-connector" opacity="1">
+    <path d="M 677 298 L 722 298" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 677 298 L 722 298" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g><g filter="url(#shadow)">
+    <rect x="730" y="200" width="285" height="196" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="730" y="200" width="8" height="196" rx="4" fill="#0f766e"/>
+    <circle cx="987" cy="228" r="17" fill="#0f766e"/>
+           <text x="987" y="233" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="987" dy="0">3</tspan></text>
+    <text x="758" y="243" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="750" fill="#14213d" opacity="1"><tspan x="758" dy="0">取 M 个样本点</tspan></text>
+    <text x="758" y="256" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="758" dy="0">随机 / 诱导 / 贪心</tspan><tspan x="758" dy="19">形成设计矩阵 A</tspan><tspan x="758" dy="19">权重矩阵 W</tspan></text>
+  </g>
+      <g class="flow-connector" opacity="1">
+    <path d="M 1022 298 L 1067 298" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 1022 298 L 1067 298" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)" />
+  </g><g filter="url(#shadow)">
+    <rect x="1075" y="200" width="285" height="196" rx="22" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="1075" y="200" width="8" height="196" rx="4" fill="#16865b"/>
+    <circle cx="1332" cy="228" r="17" fill="#16865b"/>
+           <text x="1332" y="233" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="1332" dy="0">4</tspan></text>
+    <text x="1103" y="243" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="750" fill="#14213d" opacity="1"><tspan x="1103" dy="0">解加权最小二乘</tspan></text>
+    <text x="1103" y="256" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="1103" dy="0">min ‖W(Ac − f)‖₂</tspan><tspan x="1103" dy="19">或稀疏化 ℓ₁ 问题</tspan><tspan x="1103" dy="19">得到系数 c</tspan></text>
+  </g>
+
+    <g filter="url(#shadow)">
+    <rect x="40" y="470" width="640" height="200" rx="22" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="40" y="470" width="8" height="200" rx="4" fill="#d97706"/>
+
+    <text x="360" y="513" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="18" font-weight="750" fill="#14213d" opacity="1"><tspan x="360" dy="0">关键量：加权 Gram 矩阵</tspan></text>
+    <text x="360" y="534" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="360" dy="0">G = Aᵀ W² A ≈ I_N</tspan><tspan x="360" dy="22">样本足够多时它接近单位矩阵，最小二乘才稳定</tspan></text>
+  </g>
+    <text x="1055" y="470" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="800" fill="#14213d" opacity="1"><tspan x="1055" dy="0">样本预算随采样密度改变</tspan></text>
+    <g>
+        <g>
+    <rect x="742" y="500" width="380" height="44" rx="22" fill="#ffffff" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="932" y="526.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="932" dy="0">均匀 / 目标测度采样</tspan></text>
+  </g>
+        <g>
+    <rect x="1140" y="500" width="225" height="44" rx="22" fill="#ffffff" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="1252.5" y="526.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="1252.5" dy="0">M ≳ N² 量级</tspan></text>
+  </g>
+      </g><g>
+        <g>
+    <rect x="742" y="558" width="380" height="44" rx="22" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="932" y="584.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#d97706" opacity="1"><tspan x="932" dy="0">Christoffel 加权采样</tspan></text>
+  </g>
+        <g>
+    <rect x="1140" y="558" width="225" height="44" rx="22" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="1252.5" y="584.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#d97706" opacity="1"><tspan x="1252.5" dy="0">M ≳ N log N</tspan></text>
+  </g>
+      </g><g>
+        <g>
+    <rect x="742" y="616" width="380" height="44" rx="22" fill="#ffffff" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="932" y="642.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#16865b" opacity="1"><tspan x="932" dy="0">贪心选点（近似 Fekete）</tspan></text>
+  </g>
+        <g>
+    <rect x="1140" y="616" width="225" height="44" rx="22" fill="#ffffff" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="1252.5" y="642.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#16865b" opacity="1"><tspan x="1252.5" dy="0">M 接近 N</tspan></text>
+  </g>
+      </g>
+    <g>
+    <rect x="420" y="420" width="560" height="34" rx="17" fill="#ffffff" stroke="#5e6b7f" stroke-opacity=".28"/>
+    <text x="700" y="441.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#5e6b7f" opacity="1"><tspan x="700" dy="0">同一份候选点集可反复复用，只更换权与选点准则</tspan></text>
+  </g>
+
+</svg>
