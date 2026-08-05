@@ -74,7 +74,7 @@ Three choices hide inside it, usually left at their defaults. Where the $x_i$ co
 - **105 (FLUID)** carries the random-field flow route of paper 62 into a unified inference framework for dynamics, replacing the Karhunen-Loève-structured reference field with conditional flows.
 
 > [!note] Coverage status
-> Papers 66, 70, 73, 76, 80, 62, 64, 72, 87, 60, 90, 102, 75, 81 and 94 have close-reading content checked equation by equation. The close readings for 89, 95, 98, 101, 103, 105 and 107 are still being filled in: public material for these is limited, and this page gives only the core ideas confirmable from titles, abstracts and cross-references in neighbouring papers, without expanding the formulas.
+> The constructions, losses and principal results of all twenty-two papers in this topic have been checked equation by equation against preprint or journal full texts. What remains unchecked is only the analysis of high-frequency amplification in paper 101's Appendix A — the Fourier scaling argument in its main text has been checked — together with the journal status of papers 101, 103 and 105, none of which carries journal information on its arXiv record.
 
 ## Three transferable judgements
 
