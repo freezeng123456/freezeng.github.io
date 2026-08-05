@@ -10,8 +10,8 @@ tags:
   - Systems
 ---
 
-> [!note] Source and scope
-> This page is an independently structured note based on the KM article “[AI Infra Introduction: How Large Models Perform Efficient Inference](https://km.woa.com/articles/show/659449?kmref=profile_feeds)” (updated May 12, 2026), not a reproduction of the original. Example parameters use Llama 3 8B. vLLM behavior follows the v1 implementation analyzed by the article and should be checked against source code after version upgrades. The public version omits identities, organizations, comments, and internal operational information.
+> [!note] Scope
+> Example parameters use Llama 3 8B. vLLM behaviour follows the v1 implementation and should be checked against source code after version upgrades.
 
 ## One Picture: The Serving Loop
 

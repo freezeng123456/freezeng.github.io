@@ -10,8 +10,8 @@ tags:
   - Systems
 ---
 
-> [!note] Source and scope
-> This page is an independently structured note based on the KM article “[AI Infra Introduction: How GPUs Work](https://km.woa.com/articles/show/631982?kmref=profile_feeds)” (updated October 25, 2025), not a reproduction of the original. The public version retains the technical thread, example parameters, and experimental results while omitting identities, organizations, comments, and internal information. Driver command formats, queue implementations, and scheduling details vary across GPU architectures, drivers, and CUDA versions; this note uses abstractions supported by public documentation where those details matter.
+> [!note] Scope
+> Driver command formats, queue implementations and scheduling details vary across GPU architectures, drivers and CUDA versions. This page uses abstractions supported by public documentation where those details matter; check the source and documentation for a specific version before relying on exact behaviour.
 
 ## The Core Mental Model
 

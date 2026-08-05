@@ -10,8 +10,8 @@ tags:
   - Multimodal-Learning
 ---
 
-> [!note] Source and public scope
-> This page is an independently structured note based on the KM article “[Long-Sequence Modeling for Recommender Systems: What Is Happening in Industry?](https://km.woa.com/articles/show/666385?kmref=vkm_discover)” (updated July 31, 2026), with method details checked against the public papers cited there. The public adaptation retains the technical argument, mechanisms, important parameters, and engineering tradeoffs. It omits identities, organizations, internal links, comments, and unpublished business information. The route-level assessments establish a design framework; they are not universal judgments about any one method.
+> [!note] Scope
+> Method details follow the public papers cited for each route. The route-level assessments establish a design framework; they are not universal judgments about any one method.
 
 ## Executive Summary
 
