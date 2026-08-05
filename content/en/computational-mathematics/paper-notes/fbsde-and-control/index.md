@@ -83,7 +83,9 @@ with $\xi=\varphi(X_T)$. The system is decoupled when $b$ and $\sigma$ do not de
 - **108 (deep policy iteration for high-dimensional mean-field games)** handles mean-field games through a regenerative reformulation.
 
 > [!note] Coverage status
-> Papers 8, 16, 18, 19, 23, 25, 26, 33, 35, 41, 47 and 50 have close-reading content checked equation by equation. The close readings for 51, 61, 63, 68, 86, 93, 96, 97, 100 and 108 are still being filled in.
+> Papers 8, 19, 23, 25, 26, 50, 51, 86, 93, 96, 97, 100 and 108 have been checked equation by equation against preprints, published texts or author-accepted manuscripts, so their formulas are transcribed. For papers 16, 18, 33, 35, 41, 47, 61, 63 and 68 the title, authors, volume, issue, pages, DOI and a **verbatim abstract** are all verified, but the article bodies could not be obtained — SIAM and Springer require subscriptions, Global Science Press returns 403 or is unreachable at its PDF endpoints, and none of the nine has a preprint — so their schemes are reconstructed with each ingredient's independent source named, and their theorem statements are not quoted as verified.
+>
+> Two of those nine were compensated for further: the content of paper 47's main theorem, a mean-square Lax equivalence theorem, is confirmed from its abstract and corroborated independently by the Chessari-Kawai-Shinozaki-Yamada survey; and paper 63's two ingredients were verified separately, the $\theta$-scheme from that survey and the Sinc quadrature rule from the same group's freely available CSIAM-AM paper.
 
 ## Two judgements that run through the topic
 

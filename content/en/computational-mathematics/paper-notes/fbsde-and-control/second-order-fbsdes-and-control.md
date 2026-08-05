@@ -20,6 +20,22 @@ The second-order forward-backward system of Cheridito, Soner, Touzi and Victoir 
 
 Papers **16 (probabilistic high-order schemes for fully nonlinear parabolic PDEs)** and **19 (high-order schemes for second-order FBSDEs)** treat this setting, with the title of paper 19 naming the application: stochastic optimal control. Both belong to the same technical tradition as paper 8 on the [[en/computational-mathematics/paper-notes/fbsde-and-control/multistep-schemes-for-fbsdes|multistep page]], with one extra process to handle. Paper **35** treats the same setting by deferred correction.
 
+Written out, the coupled second-order system that paper 19 treats is three equations:
+
+$$
+\begin{cases}
+X_t=x+\displaystyle\int_0^tb(s,\Theta_s)\,\mathrm ds+\int_0^t\sigma(s,\Theta_s)\,\mathrm dW_s,\\[4pt]
+Y_t=g(X_T)+\displaystyle\int_t^Tf(s,\Theta_s)\,\mathrm ds-\int_t^TZ_s\,\mathrm dW_s,\\[4pt]
+Z_t=Z_0+\displaystyle\int_0^tA_s\,\mathrm ds+\int_0^t\Gamma_s\,\mathrm dW_s,
+\end{cases}
+\qquad
+\Theta_t=(X_t,Y_t,Z_t,A_t,\Gamma_t)\in\mathbb R^m\times\mathbb R\times\mathbb R^d\times\mathbb S^d,
+$$
+
+with $\mathbb S^d$ the $d\times d$ real symmetric matrices. **The third equation is the whole of what is new in the second-order setting**: it expands $Z$ itself as an Itô process, and its diffusion coefficient $\Gamma$ is the process corresponding to the Hessian. "Decoupled" means $b$ and $\sigma$ do not depend on $(Y,Z,A,\Gamma)$.
+
+The paper's reading of the state of the art is that existing high-order FBSDE schemes work only in low dimension while existing high-dimensional schemes are low order — it cites a 12-dimensional coupled FBSDE example converging at order 1, against paper 25's sparse-grid schemes reaching dimension 6 with rates up to 3. Its stated gap: to the authors' knowledge there was no study of high-order numerical methods for second-order FBSDEs.
+
 ## 25: the number of evaluation points for a conditional expectation
 
 In several dimensions a conditional expectation is a multidimensional Gaussian integral, and tensor-product quadrature makes the number of evaluation points grow exponentially with dimension. Paper 25 addresses that growth with **spectral sparse grids**, under the published title _Efficient spectral sparse grid approximations for solving multi-dimensional forward backward SDEs_.
@@ -28,19 +44,79 @@ Its position is worth naming: in this thread the temporal accuracy problem is so
 
 ## 26: organising the control iteration as a gradient projection
 
-Paper 26 treats stochastic optimal control. The stochastic maximum principle writes the optimality condition as a forward-backward (Pontryagin) system, and the control variable is usually constrained, for instance to a convex set. The natural iteration is then a **gradient projection**: descend along the Gâteaux derivative of the cost with respect to the control, then project back onto the feasible set.
+### The problem and the gap in existing routes
 
-The technical focus is making that iteration efficient: each gradient evaluation requires one solve of the forward-backward system, so both the iteration count and the per-iteration cost must be controlled. Paper **41 (highly accurate schemes for stochastic optimal control via FBSDEs)** improves the same problem from the other side, bringing high-order FBSDE schemes into the control setting so each forward-backward solve is itself more accurate.
+The goal is the constrained stochastic optimal control problem
 
-**The division of labour between these two is a recurring pattern in this thread**: one paper improves the outer iteration, another improves the inner solve.
+$$
+\min_{u\in K}J(u)=\mathbb E\Bigl[\int_0^T\bigl(h(x_t^u)+j(u(t))\bigr)\mathrm dt+k(x_T^u)\Bigr],
+\qquad
+\mathrm dx_t^u=b(x_t^u,u(t))\,\mathrm dt+\sigma(x_t^u,u(t))\,\mathrm dW_t .
+$$
+
+The paper sorts existing numerical routes into four: reduction to finite-dimensional stochastic programming; dynamic programming, that is solving the HJB equation, which it calls one of the most widely used methods; martingale-based methods; and methods based on the **stochastic maximum principle**. The gap it identifies is specific: while the stochastic maximum principle is a popular tool for theoretical work, it has not been widely used in the numerical setting. That is what this paper addresses.
+
+One easily missed part of the setup: the control space $U=L^2([0,T];\mathbb R)$ consists of **deterministic** square-integrable controls, which the paper defends on the grounds that engineering and financial applications need this kind of advance planning; the adapted (feedback) case is handled separately in its Section 5.
+
+### A fixed-point characterisation
+
+The first-order optimality condition is the variational inequality $(J'(u^\ast),v-u^\ast)\ge0$ for all $v\in K$. Writing $P_K\omega=\arg\min_{u\in K}\|u-\omega\|$ for the projection, equivalently characterised by $(P_K\omega-\omega,v-P_K\omega)\ge0$, and comparing the two gives, for any $\rho>0$, the **fixed-point characterisation**
+
+$$
+u^\ast=P_K\bigl(u^\ast-\rho J'(u^\ast)\bigr).
+$$
+
+The algorithm is then the gradient projection iteration $u^{i+1,N}=P_{K_N}\bigl(u^{i,N}-\rho_iJ_N'(u^{i,N})\bigr)$, with the control space discretised into piecewise constants $U_N=\{\sum_n\alpha_n\chi_{I_n^N}\}$ and $J_N'$ a numerical approximation of $J'$. **This turns constrained optimal control into repeated gradient evaluation and projection, so the entire computational difficulty concentrates in one question: how to compute $J'$.**
+
+### The gradient comes from an adjoint BSDE
+
+Computing $J'$ directly needs the Gâteaux derivative $Dx_t^u(v)$, which is expensive. The paper instead introduces an adjoint process and applies Itô's formula to $p_t^uDx_t^u(v)$; the $Dx_t^u(v)$ terms cancel, leaving
+
+$$
+J'(u)\big|_t=\mathbb E\bigl[p_t^u\,b_u'(x_t^u,u(t))+q_t^u\,\sigma_u'(x_t^u,u(t))\bigr]+j'(u(t)),
+$$
+
+where $(p^u,q^u)$ solves the adjoint BSDE
+
+$$
+-\mathrm dp_t^u=f(x_t^u,p_t^u,q_t^u,u(t))\,\mathrm dt-q_t^u\,\mathrm dW_t,
+\qquad p_T^u=g(x_T^u),
+$$
+
+with generator $f(x,p,q,u)=h'(x)+p\,b_x'(x,u)+q\,\sigma_x'(x,u)$. **Note that it is linear in $p$ and $q$** — which is why the scheme below, nominally implicit, needs no iteration.
+
+The paper deliberately contrasts this with an earlier route in its Remark 1: there the adjoint equation is an **anticipating** stochastic differential equation whose solution must be backward-adapted rather than forward-adapted in the classical sense, and the paper observes that such a requirement does not hold in general, so its well-posedness is unclear. The BSDE above is well posed by standard theory. **That is a substantive methodological difference, not a matter of preference.**
+
+### Discretisation and an error balance
+
+The forward-backward system is discretised by Euler, the backward equation integrated over $[t_n,t_{n+1}]$ and conditioned, using the **left-point rectangle rule**; under the Euler state the conditional expectations become Gaussian integrals, evaluated by an $L$-point Gauss-Hermite rule with linear interpolation.
+
+Convergence has two layers. Outer: if $J'$ is Lipschitz and uniformly monotone near the optimum and $\epsilon_N=\sup_i\|J'(u^{i,N})-J_N'(u^{i,N})\|\to0$, the iteration converges; if in addition $u^\ast$ and $J'(u^\ast)$ are Lipschitz, then $\epsilon_N\sim O(\Delta t)$ gives $\|u^\ast-u^{i,N}\|\sim O(\Delta t)$. Inner is the adjoint system's error,
+
+$$
+\hat{\mathbb E}\bigl[(\mu_n)^2\bigr]+\Delta t\sum_{n=0}^{N-1}\hat{\mathbb E}\bigl[(\nu_n)^2\bigr]
+=O\bigl((\Delta t)^2\bigr)+O\bigl((\Delta x)^4/(\Delta t)^2\bigr),
+$$
+
+with $(\mu_n,\nu_n)$ the errors in $(p_n,q_n)$. **The form of the second term is worth remembering: the spatial interpolation error enters as $(\Delta x)^4/(\Delta t)^2$, so $\Delta x$ and $\Delta t$ cannot be refined independently** — balancing the two forces the spatial grid to be refined along with the time step, which is the characteristic price of interpolation-based conditional expectations.
+
+Paper **41 (highly accurate schemes for stochastic optimal control via FBSDEs)** improves the same problem from the other side, bringing high-order FBSDE schemes into the control setting so each forward-backward solve is itself more accurate. **The division of labour between these two is a recurring pattern in this thread**: one paper improves the outer iteration, another improves the inner solve.
 
 ## 50 and 51: the edge of the family
 
-- **50 (an efficient numerical algorithm for data-driven feedback control)** computes feedback control in a data-driven setting. The difference from the preceding papers is that the control law is no longer derived from the optimality conditions of a known model but must be obtained from data, so filtering and control become coupled.
-- **51 (a Gauss-Seidel type method for dynamic nonlinear complementarity problems)** treats dynamic problems with complementarity constraints. Complementarity makes the problem nonsmooth, so gradient-type iterations no longer apply directly and a Gauss-Seidel-type block iteration is used instead. Its connection to FBSDEs is looser, but it shares the theme of constrained dynamic optimisation with paper 26.
+- **50 (an efficient numerical algorithm for data-driven feedback control)** has control and **observation** together: the state satisfies $\mathrm dX_t=b(t,X_t,u_t)\mathrm dt+\sigma(t,X_t,u_t)\mathrm dW_t$ with cost $J(u)=\mathbb E[\int_0^Tf(t,X_t,u_t)\mathrm dt+h(X_T)]$, and there is a separate observation process $\mathrm dM_t=g(X_t)\mathrm dt+\mathrm dB_t$. That third equation is the difference from the preceding papers: the control law cannot come from the optimality conditions of a known model alone but must use the observations to update the state estimate, so **filtering and control become coupled**.
+- **51 (a Gauss-Seidel type method for dynamic nonlinear complementarity problems)** treats
+
+  $$
+  \dot x(t)=F(t,x(t),y(t)),
+  \qquad
+  0\le y(t)\ \perp\ G(t,x(t),y(t))\ge0,
+  $$
+
+  with $x(t)\in\mathbb R^m$ and $y(t)\in\mathbb R^n_+$, including the differential semiaffine system and the dynamic linear complementarity problem as subclasses. Backward Euler in time leaves a coupled nonlinear system to solve at every time point, and the paper identifies definite defects in both mainstream approaches: **direct elimination** is valid only in the linear case, and after eliminating $x_j$ the reduced matrix $M_h=hN(I-hA)^{-1}B+M$ **may fail to be a P-matrix even when $M$ is**, while forming it requires $n$ large linear solves; **semismooth Newton** is only locally convergent and needs the Clarke generalized Jacobian, which is expensive and awkward at scale. The Gauss-Seidel-type block iteration targets exactly those two. Its connection to FBSDEs is looser, but it shares the theme of constrained dynamic optimisation with paper 26.
 
 > [!note] Coverage status
-> This page has not checked papers 16, 19, 25, 26, 41, 50 and 51 equation by equation. What it gives is the problem setting of each and its position within the topic, without expanding the schemes, theorems and convergence orders. Most of these appeared in journals with no preprint, and their texts require a subscription.
+> Papers 19, 25, 26, 50 and 51 have been checked against full preprint or author-accepted texts. The full texts of papers 16 and 41 could not be obtained — the publisher returns 403 to direct PDF download for the former and the PDF endpoint is unreachable for the latter, and neither has a preprint — so those two receive only their problem setting and position in the topic, with no schemes, theorems or convergence orders reported. Paper 16's constructional idea is inferred from the sister paper it cites, paper 19, and is flagged as such here.
 
 ## Where the seven sit
 
