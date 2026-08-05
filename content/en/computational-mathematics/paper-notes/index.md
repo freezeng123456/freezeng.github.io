@@ -72,9 +72,3 @@ Both exist here, and both are worth knowing before citing:
 ### Three: a paper's stated conclusion sometimes disagrees with its own tables
 
 Paper 8 gives two mutually inconsistent rates for $k=6$ ($5.116$ and $6.273$, depending on the mesh range); paper 25's first example reports $2.632$ in the $Y$ component against its third-order claim; paper 93 concedes it trails PINN and RS-PINN yet beats RS-PINN on Allen-Cahn at $d=10^5$ in its own table; and paper 105 claims smoothing uniformly improves on filtering while its Table 9 shows the reverse at $K=50$.
-
-## Two close readings on recommender systems
-
-Organised the same way — problem, mechanism, trade-off — but the subject is industrial recommender systems rather than computational mathematics, so they sit apart.
-
-- [[en/computational-mathematics/paper-notes/recommender-systems/long-sequence-modeling|Long-sequence modeling for recommender systems]]: how retrieval, compression, hierarchy, sparse interaction and linear models trade information fidelity against latency and memory.

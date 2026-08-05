@@ -17,7 +17,7 @@ tags:
 | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [[computational-mathematics/index\|计算数学]] | [[computational-mathematics/research/index\|个人科研]]：[[computational-mathematics/research/rsse\|RSSE]]、[[computational-mathematics/research/apolarity\|Apolarity]] | [[computational-mathematics/knowledge-notes/index\|知识整理]]：[[computational-mathematics/knowledge-notes/time-parallelization/index\|时间并行方法]]；[[computational-mathematics/paper-notes/index\|周涛研究工作精读]] |
 | [[计算机科学/index\|机器学习]]                | [[计算机科学/个人科研/MCoTTA\|MCoTTA]]                                                                                                                                 | [[计算机科学/知识整理/index\|知识整理]]：[[计算机科学/知识整理/efficient-llm-inference\|高效大模型推理]]、[[计算机科学/知识整理/how-gpus-work\|GPU 如何工作]]                                                            |
-| [[推荐系统理论/index\|推荐系统理论]]          | —                                                                                                                                                                      | [[computational-mathematics/paper-notes/推荐系统/长序列建模\|长序列建模]]；工程专题：[[推荐系统理论/OneRec/index\|OneRec 工业实现链路]]                                                                                  |
+| [[推荐系统理论/index\|推荐系统理论]]          | —                                                                                                                                                                      | [[推荐系统理论/长序列建模\|长序列建模]]；工程专题：[[推荐系统理论/OneRec/index\|OneRec 工业实现链路]]                                                                                                                    |
 
 ## 阅读约定
 
@@ -26,7 +26,7 @@ tags:
 - **OneRec 页**是临时内部评审稿；仅保留架构与工程逻辑，剔除凭据、内网地址、人员信息和真实业务样本。
 
 > [!tip] 推荐阅读路径
-> 如果第一次来，可先看 [[computational-mathematics/knowledge-notes/time-parallelization/index\|时间并行方法地图]]，再看 [[computational-mathematics/paper-notes/推荐系统/长序列建模\|推荐系统长序列建模]]。前者展示如何组织数学理论，后者展示如何把算法路线、工程预算与实验验证放入同一套框架。
+> 如果第一次来，可先看 [[computational-mathematics/knowledge-notes/time-parallelization/index\|时间并行方法地图]]，再看 [[推荐系统理论/长序列建模\|推荐系统长序列建模]]。前者展示如何组织数学理论，后者展示如何把算法路线、工程预算与实验验证放入同一套框架。
 
 ## 当前建设状态
 
