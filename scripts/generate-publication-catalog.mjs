@@ -65,7 +65,10 @@ function noteCell(paper, target, pageTitles) {
   const key = `${slug}/${paper.page}`
   const label = pageTitles[key]
   if (!label) return target.noNote
-  return `[[${target.root}/${key}|${label}]]`
+  // The alias separator must be escaped: an unescaped pipe would be read as a
+  // table column separator, splitting the cell and leaving the wikilink
+  // unparsed. Quartz's wikilink regex accepts `\|`.
+  return `[[${target.root}/${key}\\|${label}]]`
 }
 
 function buildTable(rows, headers) {
