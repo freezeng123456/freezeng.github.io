@@ -23,3 +23,7 @@ These pages report the main insight, the algorithmic structure, and selected res
 The [[en/computational-mathematics/knowledge-notes/index|Knowledge Notes]] directory is reserved for expository material derived from papers, books, and reproducible computational studies.
 
 Its first topic, [[en/computational-mathematics/knowledge-notes/time-parallelization/index|Time Parallelization for Hyperbolic and Parabolic Problems]], follows the five-section structure of the 2025 Acta Numerica survey by Gander, Wu, and Zhou. Numerical results are placed directly in the chapter where the corresponding equation or algorithm is discussed.
+
+## Paper notes
+
+[[en/computational-mathematics/paper-notes/index|Close Readings of Tao Zhou's Work]] organises all 108 items from Tao Zhou's homepage into seven topics: uncertainty quantification, Bayesian inverse problems, scientific machine learning, forward-backward stochastic differential equations, phase-field models, and parallel-in-time algorithms. The complete bibliography is in the [[en/computational-mathematics/paper-notes/catalog|catalogue]].

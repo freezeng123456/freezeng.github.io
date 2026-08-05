@@ -13,3 +13,7 @@ This directory contains technical notes derived from primary sources. Each topic
 ## Current topic
 
 [[en/computational-mathematics/knowledge-notes/time-parallelization/index|Time Parallelization for Hyperbolic and Parabolic Problems]] follows the organization of the 2025 Acta Numerica survey by Gander, Wu, and Zhou. The notes connect the mathematical mechanisms of parallel-in-time methods to reproducible NumPy/SciPy experiments.
+
+## Related topic
+
+[[en/computational-mathematics/paper-notes/index|Close Readings of Tao Zhou's Work]] is a set of paper notes organised by topic, covering all 108 items on the homepage publication list. The difference from this directory: a topic here follows one primary source, whereas a page there follows one technical thread across several papers.

@@ -23,3 +23,7 @@ tags:
 [[computational-mathematics/knowledge-notes/index|知识整理]]用于收录由论文、专著和可复现实验整理而成的专题笔记。
 
 第一个专题是[[computational-mathematics/knowledge-notes/time-parallelization/index|双曲与抛物问题的时间并行方法]]。它按 Gander、Wu 和 Zhou 在 2025 年 _Acta Numerica_ 综述中的五章结构组织，并将数值结果放入对应方程或算法所在的章节。
+
+## 论文笔记
+
+[[computational-mathematics/paper-notes/index|周涛研究工作精读]]按七个专题整理周涛主页上列出的全部 108 项工作，包括不确定性量化、贝叶斯反问题、科学机器学习、正倒向随机微分方程、相场模型与时间并行算法。完整题录见[[computational-mathematics/paper-notes/catalog|论文总目录]]。

@@ -13,3 +13,7 @@ tags:
 ## 当前专题
 
 [[computational-mathematics/knowledge-notes/time-parallelization/index|双曲与抛物问题的时间并行方法]]沿用 Gander、Wu 和 Zhou 在 2025 年 _Acta Numerica_ 综述中的结构，将时间并行方法的数学机制与可复现的 NumPy/SciPy 实验对应起来。
+
+## 相关专题
+
+[[computational-mathematics/paper-notes/index|周涛研究工作精读]]是一组按专题组织的论文笔记，覆盖主页发表列表上的全部 108 项工作。它与本目录的区别在于：这里的专题围绕一份第一手资料展开，那里的页面围绕一条技术线索串联多篇论文。
