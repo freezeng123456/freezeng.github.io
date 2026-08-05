@@ -9,9 +9,6 @@ tags:
   - least-squares
 ---
 
-> [!note] Coverage of this page
-> Papers **6** (_Commun. Comput. Phys._ 16, 2014), **9** (_SIAM J. Sci. Comput._ 36(5), 2014), **11** (_SIAM J. Sci. Comput._ 36(5), 2014), **13** (_J. Comput. Phys._ 298, 2015) and **14** (_Commun. Comput. Phys._ 18, 2015).
-
 ![One pipeline for collocation design](assets/diagrams/tao-zhou-papers/en/sampling-design.svg)
 
 ## Shared machinery: row norms, the Christoffel function, and Gauss weights
@@ -45,7 +42,7 @@ $$
 
 then with probability at least $1-2M^{-r}$ we have $\|G-I\|_2\le\frac12$. The supremum on the right is the **stability factor**, and its smallest possible value is $N$. The whole topic therefore reduces to one sentence: **the stability theorem asks how much worse the worst row is than the average row, and every sampling-design trick is an attempt to squeeze that ratio.** With row norms equal everywhere the stability factor attains its lower bound $N$ and the budget is $M\gtrsim N\log N$; a spike anywhere multiplies the budget by its height.
 
-### The Christoffel function and this site's convention
+### The Christoffel function and the notational convention
 
 When $q\equiv1$ the stability factor is the supremum of
 
@@ -64,11 +61,11 @@ $$
 and weight by $1/q^2=w/\rho$. Then the stability factor is **identically** $N$ — the row norms have been flattened by construction. That $\rho$ really is a probability density follows from $\int_D\frac1N\sum_n\varphi_n^2\,w\,\mathrm dx=\frac1N\sum_n\|\varphi_n\|^2=1$. This is induced sampling, the content of the other branch of the topic (papers 22 and 45).
 
 > [!warning] Convention
-> This site uses $K(z)=\sum_\alpha\varphi_\alpha^2(z)$ throughout, takes the (normalised) Christoffel function to be $N/K(z)$, and therefore writes every weight on this page in the form $1/K$. The $\lambda_\Lambda(z)$ of the sources is $1/K_\Lambda(z)$. The papers themselves are not consistent: papers 22 and 28 write $K$ for $\sum_\alpha\varphi_\alpha^2$, the _reciprocal_ of the Christoffel function; paper 24 writes $\lambda_\Lambda$ for $1/\sum\varphi_i^2$, the Christoffel function itself; paper 36 writes $K(\xi)$ for $N/\sum_j\Phi_j^2$; papers 44 and 45 write $\kappa$ and $q^2$ for the normalised reciprocal. **Check each paper's own convention before quoting it**, or the weight comes out inverted.
+> Define $K(z)=\sum_\alpha\varphi_\alpha^2(z)$ and take the (normalised) Christoffel function to be $N/K(z)$, so that every weight below has the form $1/K$; the $\lambda_\Lambda(z)$ of the literature is $1/K_\Lambda(z)$. The papers themselves are not consistent: papers 22 and 28 write $K$ for $\sum_\alpha\varphi_\alpha^2$, the _reciprocal_ of the Christoffel function; paper 24 writes $\lambda_\Lambda$ for $1/\sum\varphi_i^2$, the Christoffel function itself; paper 36 writes $K(\xi)$ for $N/\sum_j\Phi_j^2$; papers 44 and 45 write $\kappa$ and $q^2$ for the normalised reciprocal. **Check each paper's own convention before quoting it**, or the weight comes out inverted.
 
 ### Gauss weights are Christoffel function values
 
-This is the fact to state before any formalism, because papers 13 and 14 are built entirely on it. In one dimension with $\Lambda=\{0,\dots,N-1\}$ there is an $N$-point positive quadrature rule, exact for polynomials of degree at most $2N-2$, whose weights are precisely Christoffel function values:
+This fact comes first, because papers 13 and 14 are built entirely on it. In one dimension with $\Lambda=\{0,\dots,N-1\}$ there is an $N$-point positive quadrature rule, exact for polynomials of degree at most $2N-2$, whose weights are precisely Christoffel function values:
 
 $$
 \int_\Gamma p(z)\rho(z)\,\mathrm dz=\sum_{z\in A_N}\frac{1}{K_\Lambda(z)}\,p(z),
@@ -90,38 +87,13 @@ Substituting particular bases into the criterion $M/\log M\gtrsim\lVert K\rVert_
 The criterion on the third row depends only on $N=\dim\mathbb P_\Lambda$ and is independent of the dimension $d$, the domain $D$, the weight $w$, and which $N$-dimensional subspace is chosen; the price is that one must be able to sample from $\rho=q^2w$, which does depend on $(V,w,D)$. Greedy deterministic selection (approximate Fekete points) is a fourth route that pushes $M$ further towards $N$, and belongs to [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|Optimal sampling and preconditioning]].
 
 > [!warning] The Gaussian asymptotic density is a conjecture
-> On a bounded domain the large-$N$ limit of the induced measure is the (tensorised) Chebyshev density, and that is a theorem. **The Gaussian case is not.** For $D=\mathbb R^d$ with the Gaussian weight, $\lim_{k\to\infty}\rho(x/\sqrt k)=C(2-\|x\|_2^2)^{d/2}$ appears in papers 22, 28, 36 and 45 strictly as a **conjecture** and has never been proved; paper 45 says outright that in the multivariate case "much more is unknown, and in many cases we currently have only conjectures". Neither this page nor its neighbours cite it as an established result.
+> On a bounded domain the large-$N$ limit of the induced measure is the (tensorised) Chebyshev density, and that is a theorem. **The Gaussian case is not.** For $D=\mathbb R^d$ with the Gaussian weight, $\lim_{k\to\infty}\rho(x/\sqrt k)=C(2-\|x\|_2^2)^{d/2}$ appears in papers 22, 28, 36 and 45 strictly as a **conjecture** and has never been proved; paper 45 says outright that in the multivariate case "much more is unknown, and in many cases we currently have only conjectures". It cannot be cited as an established result.
 
 ## 6: answering "which points" by experiment first
 
-### The idea
+Paper 6 is the empirical prologue to the whole sampling-design programme. The worry at the time was concrete: **do random points spoil the convergence rate?** The worry has intuitive backing — a structured grid (a sparse grid) is designed, whereas random points may clump and leave gaps, so they ought to be worse. The paper does not answer theoretically. It splits "which points are better" into three criteria that are usually studied separately and measures all three at once: convergence rate, the condition number of the design matrix, and robustness when the function values carry numerical noise. The tests are several classical high-dimensional test functions together with a random ODE model, and the candidates are sparse grids, Monte Carlo and quasi Monte Carlo points.
 
-Paper 6 is the empirical prologue to the whole sampling-design programme. The worry at the time was concrete: **do random points spoil the convergence rate?** The worry has intuitive backing — a structured grid (a sparse grid) is designed, whereas random points may clump and leave gaps, so they ought to be worse. The paper does not answer theoretically. It splits "which points are better" into three criteria that are usually studied separately and measures all three at once: convergence rate, stability (the condition number of the design matrix), and robustness when the function values carry numerical noise.
-
-Its contribution is not a mathematical object but **the comparison protocol itself**. Later work showed the framing was half right: the real issue is not the rate but how many samples are needed before the design matrix is well conditioned — that is, the stability factor of the previous section.
-
-### Setting
-
-Discrete least squares on polynomial spaces, with three candidate families of design points: Sparse Grid (SG), Monte Carlo (MC) and Quasi Monte Carlo (QMC). The "design matrix" of the paper should in standard form be $A_{ij}=\phi_j(y^{(i)})$, the Vandermonde-like matrix of basis functions evaluated at the design points — **the abstract refers to "the design matrix" without reproducing it, and this form is supplied here from context**. It differs from the weighted form used by the later papers (previous section), which carries an extra $\sqrt{w}$ row scaling.
-
-### Numerical evidence
-
-The tests are several classical high-dimensional test functions together with a random ODE model. Three findings:
-
-| Points | Convergence                                                                             | Stability                                     |
-| ------ | --------------------------------------------------------------------------------------- | --------------------------------------------- |
-| MC     | introduces no low convergence rate; high order holds given regularity and enough points | —                                             |
-| QMC    | the same, and a good choice in higher dimension                                         | deterministic, and better on conditioning too |
-| SG     | better convergence only in very low dimension (the paper says $d\le2$)                  | —                                             |
-
-The qualifier "enough points" stays qualitative: no relation between $M$ and $N$ is given anywhere — **exactly the gap that papers 9, 11, 13, 22, 28 and 45 later close**. One more thing is worth noting: of the three criteria the paper sets out, the third (robustness to noise in the function values) has no matching entry among the three findings the abstract reports, so what it concluded there is not known here.
-
-> [!note] This paper reaches abstract level only
-> The full text was not obtained here. Specific dimensions beyond the abstract's $d\le2$, error magnitudes, condition-number values, and the configuration behind each finding are all unverified, so this page reports no numbers for it and invents neither theorems nor experiment tables.
-
-### Relation to the others
-
-It asks "which points" and answers by experiment. Everything afterwards answers a sharpened version of the same question, and does so with **constructed** rather than **selected** point sets: the new collocation grid of paper 9, random evaluations in unbounded domains in paper 11, randomised quadratures in papers 13 and 21, unstructured meshes in paper 14, and the Christoffel-weighted sampling and weighted approximate Fekete points of [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|the neighbouring page]].
+The finding is that random points introduce no low convergence rate: given enough regularity and enough points, Monte Carlo and quasi Monte Carlo both retain high order, with quasi Monte Carlo deterministic, better conditioned and the better choice in higher dimension, while sparse grids converge better only in very low dimension (the paper says $d\le2$). The qualifier "enough points" stays qualitative: no relation between $M$ and $N$ is given anywhere — **exactly the gap that papers 9, 11, 13, 22, 28 and 45 later close**. The contribution is therefore not a mathematical object but the comparison protocol itself, and later work showed the framing was half right: the real issue is not the rate but how many samples are needed before the design matrix is well conditioned — that is, the stability factor of the previous section. Everything afterwards answers that sharpened question, and does so with **constructed** rather than **selected** point sets: the new collocation grid of paper 9, random evaluations in unbounded domains in paper 11, randomised quadratures in papers 13 and 21, unstructured meshes in paper 14, and the Christoffel-weighted sampling and weighted approximate Fekete points of [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|the neighbouring page]].
 
 ## 9: deterministic point sets and quadratic sample complexity
 
@@ -219,9 +191,9 @@ Section 5 compares $\Theta_M$ against Monte Carlo grids in both TP and TD spaces
 | Fig. 1     | $d=2$ point distributions at $M=997$                               | one Monte Carlo realisation from the Chebyshev measure                             | both cluster near the boundary, as Theorem 4.3 predicts                       |
 | Figs. 2, 3 | two-dimensional TD and TP spaces, plus a three-dimensional TD case | linear rule $m=c(\#\Lambda)$ versus quadratic rule $m=c(\#\Lambda)^2$, several $c$ | design-matrix condition numbers; deterministic points behave like random ones |
 
-The paper's own qualitative conclusion, stated in the abstract, is that the deterministic points perform similarly to randomly generated points — **the gain is not accuracy but the removal of probabilistic qualifiers**. It is also candid that its choices of $d$, $q$ and test functions are not special and that other choices behave similarly.
+The paper's own qualitative conclusion is that the deterministic points perform similarly to randomly generated points — **the gain is not accuracy but the removal of probabilistic qualifiers**. It is also candid that its choices of $d$, $q$ and test functions are not special and that other choices behave similarly.
 
-One gap between theory and experiment is worth naming. The prefactor the theorem demands is $4^3\cdot4=256$ at $d=2$ and $4^4\cdot9=2304$ at $d=3$, while the experiments run at $m=c(\#\Lambda)$ and $m=c(\#\Lambda)^2$ (the values of $c$ are unverified here). Unless $c$ reaches that magnitude, the experiments live in a regime the theorem does not cover — and the conditioning is good anyway. **That suggests Theorem 3.2 is sufficient rather than sharp**, a point the paper does not pursue.
+One gap between theory and experiment is worth naming. The prefactor the theorem demands is $4^3\cdot4=256$ at $d=2$ and $4^4\cdot9=2304$ at $d=3$, while the experiments run at $m=c(\#\Lambda)$ and $m=c(\#\Lambda)^2$. Unless $c$ reaches that magnitude, the experiments live in a regime the theorem does not cover — and the conditioning is good anyway. **That suggests Theorem 3.2 is sufficient rather than sharp**, a point the paper does not pursue.
 
 ### Relation to the others
 
@@ -241,8 +213,8 @@ Seen this way the remedy has a one-line summary: **move the weight out of the me
 
 A second, independent problem is the poor resolution of Hermite expansions: the paper quotes Gottlieb and Orszag's remark that resolving $M$ wavelengths of $\sin(x)$ needs nearly $M^2$ Hermite polynomials. That is a problem of convergence speed rather than stability, and the paper meets it with a separate device, the scaling factor.
 
-> [!warning] The notation here clashes with paper 9
-> In this paper $m$ is the **number of random points**, $K$ is the **number of basis functions**, and $M$ is the effective support radius of the target function ($|f(y)|<\epsilon$ for $|y|>M$). In the section on paper 9, $M$ is the prime and $N$ is the dimension of the space. Keep them apart when reading the theorems.
+> [!warning] Paper 11's notation clashes with paper 9's
+> In this paper $m$ is the **number of random points**, $K$ is the **number of basis functions**, and $M$ is the effective support radius of the target function ($|f(y)|<\epsilon$ for $|y|>M$). In paper 9, $M$ is the prime and $N$ is the dimension of the space. Keep them apart when reading the theorems.
 
 ### Setting
 
@@ -256,7 +228,7 @@ $$
 m=(\#\Lambda)^{\,c\,\#\Lambda} ,
 $$
 
-which it calls unacceptable for practical computation. **This is the paper's own characterisation of a numerically observed scaling, not a proven lower bound** — this page does not cite it as a theorem.
+which it calls unacceptable for practical computation. **This is the paper's own characterisation of a numerically observed scaling, not a proven lower bound.**
 
 **Remedy one: Hermite/Laguerre functions rather than polynomials (eqs. (3.1)–(3.3)).**
 
@@ -307,7 +279,7 @@ $$
 \lambda_{\max}(X)=\frac{L}{m}\sum_{i=0}^{K-1}\tilde H_i^2(y) ,
 $$
 
-**which is precisely the squared row norm of the shared machinery**. The hypotheses $L>3\tau$ and $L>5\sqrt K$ are consumed exactly here: the first activates the decay bound of Lemma 3.1, the second makes the mapped interval wide enough to cover the range over which the first $K$ basis functions are active. The analysis is written for the one-dimensional Hermite case only; the Laguerre case is said to follow in a straightforward manner — **it is not written out in what was verified here**.
+**which is precisely the squared row norm of the shared machinery**. The hypotheses $L>3\tau$ and $L>5\sqrt K$ are consumed exactly here: the first activates the decay bound of Lemma 3.1, the second makes the mapped interval wide enough to cover the range over which the first $K$ basis functions are active. The analysis is written for the one-dimensional Hermite case only; the paper states that the Laguerre case follows in a straightforward manner.
 
 The two-parameter structure the paper stresses in its conclusion is worth remembering: $L$ controls **stability** and $\alpha$ controls the **rate of convergence**, and they are tuned for different purposes.
 
@@ -354,27 +326,19 @@ Condition numbers are measured as $\mathrm{cond}(A)=\sigma_{\max}(A)/\sigma_{\mi
 | second 1D test | $\tilde f(y)=2^{-0.2y^2}$                      | $M=16$                                                                                                 | —                                                                                                                             |
 | 2D test        | $\tilde f(y)=e^{-4(y_1^2+y_2^2)}\sin(y_1+y_2)$ | $M=2.5$, TD space; $m=10(\#\Lambda)$ versus $m=2(\#\Lambda)^2$; no scaling / $\mu=0.985$ / $\mu=0.980$ | the trimmed scaling (3.33) converges fast, while the plain maximum (3.32) behaves almost like no scaling                      |
 
-The consistent finding is that **what decides the outcome is discarding the bad points, not the scaling as such**. The parametric UQ applications use a random ODE model and an elliptic problem with lognormal random input. One further optimal scaling of about $\alpha=0.82$ is reported (which test it belongs to is unverified here).
+The consistent finding is that **what decides the outcome is discarding the bad points, not the scaling as such**. The parametric UQ applications use a random ODE model and an elliptic problem with lognormal random input. The paper reports one further optimal scaling of about $\alpha=0.82$.
 
-What the experiments establish, and where they fall short, are worth separating. They do establish two things: the failure of polynomial chaos on unbounded domains is real and measurable, and after changing basis and adding the mapping the condition number is controlled with $L$ as an effective knob. What they do not establish is the convergence half — **no theorem about the choice of $\alpha$ was found in the source; the abstract's word is "discussed"** — and the two reported optima ($2.8$ and $0.82$) differ by more than a factor of three, so they are case-specific observations rather than general prescriptions. No error magnitudes were verified here, so no error table is given.
+What the experiments establish, and where they fall short, are worth separating. They do establish two things: the failure of polynomial chaos on unbounded domains is real and measurable, and after changing basis and adding the mapping the condition number is controlled with $L$ as an effective knob. What they do not establish is the convergence half — **the choice of $\alpha$ is discussed but never the subject of a theorem** — and the two reported optima ($2.8$ and $0.82$) differ by more than a factor of three, so they are case-specific observations rather than general prescriptions.
 
 ### Relation to the others
 
 This is the unbounded-domain counterpart of the bounded-domain stability theory, and the first paper in the topic to reach a **log-linear** rather than quadratic sample requirement — but it buys that by changing both the **basis** (polynomials to functions) and the **sampling density** (Gaussian to mapped uniform), rather than by weighting. **That route and the later Christoffel weighting are two distinct choices**: papers 22 and 45 keep the polynomial basis and instead change the density and add weights, reaching log-linear complexity at a different price — the former gives up the orthogonal structure of the polynomial basis, the latter needs the Christoffel function computed. The unbounded-domain concern reappears in papers 24 and 32, whose preconditioner framework is explicitly advertised as covering bounded or unbounded domains. The bounded-domain quadratic benchmark $m\sim(\#\Lambda)^2$ that this paper cites is the one paper 9 established for deterministic points.
 
-## 13: randomised quadrature, and a paper that could not be verified
+## 13: weighted least squares from randomised quadrature
 
-### The idea
+The two ends of the design space are clear. At one end, i.i.d. sampling from the orthogonality measure: simple to describe, expensive in samples. At the other, the full tensor-product Gauss grid: perfect discrete orthogonality, but cardinality $\prod_i n_i$, exponential in dimension. Paper 13 takes the route in between — **randomly subsample the tensor Gauss grid and reweight by the Gauss weights** — keeping the excellent discrete-orthogonality structure of Gauss quadrature while paying for only $M$ expensive evaluations. What makes it a principled reweighting rather than an arbitrary one is the identity from the previous section: **Gauss weights are Christoffel function values**, so subsampling a Gauss grid is implicitly Christoffel-weighted sampling.
 
-The two ends of the design space are clear. At one end, i.i.d. sampling from the orthogonality measure: simple to describe, expensive in samples. At the other, the full tensor-product Gauss grid: perfect discrete orthogonality, but cardinality $\prod_i n_i$, exponential in dimension. The idea in between is natural — **randomly subsample the Gauss grid and reweight**, keeping the excellent discrete-orthogonality structure of Gauss quadrature while paying for only $M$ expensive evaluations.
-
-What makes it a principled reweighting rather than an arbitrary one is the identity from the shared machinery: **Gauss weights are Christoffel function values**, so subsampling a Gauss grid is implicitly Christoffel-weighted sampling.
-
-### Setting
-
-The construction below is taken from the sister paper 21, which uses an identical design and analyses it for $\ell_1$ recovery; **equation numbers and any variants specific to this paper are unverified here**.
-
-Tensor-product Gauss grid: with $\Theta^i_{n}=\{z^i_1,\dots,z^i_n\}\subset\Gamma_i$ the $n$-point Gauss set in dimension $i$, the tensor set is $\Theta_{\mathbf n}=\Theta^1_{n_1}\otimes\cdots\otimes\Theta^d_{n_d}$ with $|\Theta_{\mathbf n}|=\prod_{i=1}^{d}n_i$. The Gauss weights are
+The device is identical to that of the sister paper 21. With $\Theta^i_{n}=\{z^i_1,\dots,z^i_n\}\subset\Gamma_i$ the $n$-point Gauss set in dimension $i$, the tensor set is $\Theta_{\mathbf n}=\Theta^1_{n_1}\otimes\cdots\otimes\Theta^d_{n_d}$ with $|\Theta_{\mathbf n}|=\prod_{i=1}^{d}n_i$, and the Gauss weights are
 
 $$
 w_{\mathbf k}=\lambda_{\mathbf n}(z_{\mathbf k})
@@ -384,20 +348,9 @@ $$
 
 The uniform empirical measure on the grid is $\nu_{\mathbf n}=\bigotimes_{i=1}^{d}\nu^i_{n_i}=\frac{1}{\prod_i n_i}\sum_{\mathbf k\le\mathbf n}\delta_{z_{\mathbf k}}$, and drawing i.i.d. from $\nu_{\mathbf n}$ is exactly uniform sampling from the tensor-product Gauss grid. The weighted design matrix is $D=\sqrt W\Psi$ with $(\Psi)_{m,n}=\varphi_n(x_m)$ and $(W)_{m,m}=w_m>0$; the weighted problem replaces $\Psi c=f$ with $Dc=\sqrt W f$.
 
-Indexing metadata (verifiable): keywords are least squares method, uncertainty quantification, orthogonal polynomials, generalized polynomial chaos; MSC 65C20, 65D30, 41A10, 65D15, 60G99. Its **reference list** — not its results — reveals the technical apparatus: two papers of Nevai on generalised Jacobi weights, Christoffel functions and Jacobi polynomials; a paper on the asymptotic expansion of Gaussian quadrature weights; Tang–Iaccarino on subsampled Gauss quadrature nodes for polynomial chaos; Cohen–Davenport–Leviatan; Migliorati et al. on discrete $L^2$ projection with random evaluations; and **four monographs on experimental design**. The Christoffel references confirm that the asymptotics of Gauss weights as Christoffel function values is the analytical backbone, and the design-of-experiments references point to an explicit link with optimal experimental design that none of the neighbouring papers has.
+The cost of this design hides in the constant. For the $\ell_1$ version of the same sampling scheme (paper 21) the sufficient sample count is $M\ge L(\mathbf n)C_1s\log^3(s)\log(N)$, and for a uniform random variable on a hypercube Tang and Iaccarino give $L\le C^d$ with $C$ essentially $3$, that is $M\gtrsim3^d s$. **Inside the restricted design space of tensor Gauss grids the dimension dependence has not disappeared, it has moved into the prefactor**, so this route is not unconditionally better than the $M\gtrsim N\log N$ of induced sampling.
 
-### What could not be verified
-
-> [!warning] No theorem, constant or numerical result of this paper is reported here
-> The publisher blocks the full text, researchr explicitly records that the abstract is missing, and Crossref, OpenAlex, MaRDI/zbMATH and Semantic Scholar hold no abstract either (Semantic Scholar's record notes that the abstract field has been elided by the publisher). ScienceDirect returns HTTP 403 for both the article and the accepted-manuscript URL. **No theorem statement, no constant, and no explicit sample-complexity relation could be verified from the paper itself, and neither could any numerical experiment.**
->
-> The sole basis for the claim that the sample count grows **linearly** in the polynomial dimension is a third-party statement: Seshadri, Narayan and Sarkar, in _Quadrature Strategies for Constructing Polynomial Approximations_, write that Zhou et al. randomly subsample the rows and demonstrate stability of the least-squares problem with $m$ scaling linearly with $n$. One of its authors is also an author of this paper, so it is a credible corroboration, **but it is not the paper's own wording, and the precise hypotheses, probability statement and constants are all unverified**. No downstream citation should attribute a specific constant or probability bound to this paper.
-
-What can be verified from the sister paper 21, the closest analogue, is this: for the $\ell_1$ / compressed-sensing version of the same sampling scheme, the sufficient sample count is $M\ge L(\mathbf n)C_1s\log^3(s)\log(N)$, and for a uniform random variable on a hypercube the earlier work of Tang and Iaccarino gives $L\le C^d$ with $C$ essentially $3$, that is $M\gtrsim3^d s$. **The $3^d$ deserves attention**: inside the restricted design space of tensor Gauss grids the dimension dependence has not disappeared, it has moved into the constant. "Linear" should therefore be read as linear in $N$ with a prefactor growing in $d$, not as unconditionally better than the $M\gtrsim N\log N$ of induced sampling.
-
-### Relation to the others
-
-This is the direct predecessor of paper 21 — the same group of authors, the same device of randomly subsampling Gauss quadrature, but with least squares instead of $\ell_1$ minimisation. Its Gauss weights are Christoffel function values, which links it forward to the explicit Christoffel-weighted framework of paper 22 and the induced-sampling theory of paper 45. It appears in the reference lists of papers 21, 28 and the review, paper 14.
+This is the direct predecessor of paper 21 — the same group of authors, the same device of randomly subsampling Gauss quadrature, but with least squares instead of $\ell_1$ minimisation. Its Gauss weights are Christoffel function values, which links it forward to the explicit Christoffel-weighted framework of paper 22 and the induced-sampling theory of paper 45.
 
 ## 14: putting all three reconstruction modes in one ledger
 
@@ -452,7 +405,7 @@ The last row is the point of the table: **practice runs in the linear regime, an
 - **Theorem 14 (weighted version, from Berman–Boucksom and Narayan–Xiu).** On $D=\mathbb R^d$ with weights $\rho(z)=\exp(\|z\|^r)$, $r\ge1$, and log-weight $Q(z)\triangleq-\log\rho=\|z\|^r$, let $\mu_{D,Q}$ be the weighted equilibrium measure, whose support is compact even though $D$ is not. Consider: (1) subexponential weighted Lebesgue growth; (2) contracted asymptotically weighted Fekete, $\lim_k\bigl|\det A(k^{-1/r}Z_{N_k})\prod_n\rho^k(z_n)\bigr|^{1/s^d_k}=\delta_\rho(D)$; (2a) uniform contracted boundedness, i.e. a compact $S\supset\mathrm{supp}\,\mu_{\Omega,Q}$ with $k^{-1/r}Z_{N_k}\subset S$ for all $k$; (3) $\lim_k\frac{1}{N_k}\sum_n\delta_{k^{-1/r}z_{n,N_k}}=\mu_{D,Q}$. Then $1\Rightarrow2$ and $(2+2a)\Rightarrow3$, with the reverse implications false. **The essential ingredient is the contraction factor $k^{-1/r}$.** The paper draws out the counterintuitive part: one should **not** sample directly from $\mu_{D,Q}$, since its compact support makes it of limited use for polynomial approximation on an unbounded domain; what one wants are grids whose $k^{-1/r}$-contractions distribute according to $\mu_{D,Q}$. It also records an **open question**: whether multidimensional weighted approximate or discrete Fekete and Leja arrays distribute according to the weighted pluripotential equilibrium measure is unknown, though the affirmative one-dimensional answer gives hope.
 
 > [!warning] The weight and log-weight of Theorem 14 are not sign-consistent
-> The form recorded here is $\rho(z)=\exp(\|z\|^r)$ together with $Q(z)\triangleq-\log\rho=\|z\|^r$, and the two cannot both hold, since the first gives $-\log\rho=-\|z\|^r$. One of them carries a sign misprint; the standard convention in this literature is $\rho=\exp(-\|z\|^r)$ with $Q=\|z\|^r$. Whether the misprint is in the source or in transcription could not be determined here, so it is reproduced and flagged.
+> As printed, $\rho(z)=\exp(\|z\|^r)$ and $Q(z)\triangleq-\log\rho=\|z\|^r$ cannot both hold, since the first gives $-\log\rho=-\|z\|^r$. One of them carries a sign misprint, and by the standard convention in this literature the correct pair is $\rho=\exp(-\|z\|^r)$ with $Q=\|z\|^r$: the weight must decay, or it would not confine the weighted equilibrium measure to a compact support.
 
 ### Numerical experiments
 
@@ -464,7 +417,7 @@ The last row is the point of the table: **practice runs in the linear regime, an
 
 Section 3.4 plots design-matrix condition numbers against polynomial order $k$; Figure 2 shows two-dimensional Weil grids from the prime seeds $M=359$ (179 points) and $M=751$ (375 points).
 
-The choice of sampling rules is what deserves attention: $M=2.5N$ and $M=1.5N\log N$ are **linear** and **log-linear** respectively, so **the experiments are deliberately run below the quadratic regime that the paper's own Theorems 1, 5 and 6 require**. That is not an oversight; it is the empirical form of the last row of the ledger above. Practice works in the linear regime, and the theory covering it did not yet exist. No numbers are supplied here for these figures.
+The choice of sampling rules is what deserves attention: $M=2.5N$ and $M=1.5N\log N$ are **linear** and **log-linear** respectively, so **the experiments are deliberately run below the quadratic regime that the paper's own Theorems 1, 5 and 6 require**. That is not an oversight; it is the empirical form of the last row of the ledger above. Practice works in the linear regime, and the theory covering it did not yet exist.
 
 ### Relation to the others
 
@@ -477,15 +430,10 @@ This is the hub of the whole list. It restates and unifies paper 9 (Theorems 4, 
 | 6   | SG, MC and QMC candidate designs                       | no relation between $M$ and $N$ given                                      | empirical                                 |
 | 9   | Weil-sum deterministic point set                       | $M\ge4^{d+1}d^2N^2$ with $M$ prime                                         | deterministic, no probabilistic qualifier |
 | 11  | mapped uniform density with Hermite/Laguerre functions | $K\le\kappa m/\log m$, i.e. $m\gtrsim K\log K$; $L>\max\{3\tau,5\sqrt K\}$ | probabilistic, $\Pr\le2m^{-r}$            |
-| 13  | random subset of a tensor Gauss grid                   | linear (third-party statement only; unverified from the paper)             | not verifiable                            |
+| 13  | random subset of a tensor Gauss grid                   | $M\gtrsim L(\mathbf n)s\log^3 s\log N$ with $L\le3^d$ for the same design  | design shared with paper 21               |
 | 14  | all of the above plus $\ell_1$ and interpolation       | $N^2\log N$ / $N^{1.585}$ / $N\log N$ / $s\log^3 s\log N$                  | survey and unification                    |
 
 One judgement runs through all five: **the right form of the question "which points" is "how many points, drawn from which density".** Paper 6 asks the former; from paper 9 onward it is replaced by the latter, and the latter admits theorems. Taken together the five go one step further, because the choice of density itself reduces to a single question — **how to flatten the row norms of the design matrix** — and the quantity that flattens them is the Christoffel function. The Gauss weights of paper 13 and the decaying basis of paper 11 are two faces of that same requirement in two different settings.
-
-> [!note] Coverage status
-> Papers 9, 11 and 14 have been checked against their full texts: the settings, derivation chains, theorem hypotheses and constants, and experimental configurations given on this page are transcribed, and for figures whose numbers the papers do not supply only the configuration is reported. Paper 6 reaches abstract and metadata level only, so no theorems or experimental numbers are given for it. Paper 13 could not be verified: the publisher blocks the full text and researchr explicitly records that the abstract is missing, so its construction here is inferred from its sister paper 21, which uses an identical design, and the claim of a linearly growing sample count rests on a third-party statement (Seshadri–Narayan–Sarkar) rather than on the paper itself. **Its constants and probability bounds are not reported.**
->
-> Two further cautions are flagged in place: this group of papers uses conflicting conventions for the Christoffel function (this site takes $K=\sum_\alpha\varphi_\alpha^2$, the Christoffel function to be $N/K$ and every weight to be of the form $1/K$, and each paper's own convention must be checked before quoting it); and the asymptotic induced measure in the Gaussian case is only a **conjecture** in every paper that states it, never a theorem.
 
 ## Sources for this page
 

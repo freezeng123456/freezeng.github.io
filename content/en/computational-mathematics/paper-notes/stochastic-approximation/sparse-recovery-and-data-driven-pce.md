@@ -9,14 +9,11 @@ tags:
   - sparse-recovery
 ---
 
-> [!note] Coverage of this page
-> Papers **10** (_SIAM J. Sci. Comput._ 36(4), 2014), **21** (_SIAM J. Sci. Comput._ 39(1), 2017), **29** (_Commun. Comput. Phys._ 24, 2018), **32** (_J. Comput. Phys._ 367, 2018), **36** (_J. Comput. Phys._ 381, 2019) and **44** (_Commun. Math. Res._ 36, 2020).
-
 ![Fold gradients and sampling density into the recovery problem](assets/diagrams/tao-zhou-papers/en/sparse-recovery.svg)
 
 ## Sparse recovery and least squares are governed by the same quantity
 
-In the sparse-recovery framework the design matrix must satisfy the restricted isometry property in a bounded orthonormal system, and the required number of measurements is controlled by the uniformity of the row norms — **exactly the quantity that governs the [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|least-squares case]]**. That is why the work on this page shares the language of Christoffel weights and preconditioning with that page.
+In the sparse-recovery framework the design matrix must satisfy the restricted isometry property in a bounded orthonormal system, and the required number of measurements is controlled by the uniformity of the row norms — **exactly the quantity that governs the [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|least-squares case]]**. That is why these six papers share the language of Christoffel weights and preconditioning with that thread.
 
 The six papers can be read by asking what supplies the rows, what supplies the columns, and how the rows get normalised:
 
@@ -25,14 +22,15 @@ The six papers can be read by asking what supplies the rows, what supplies the c
 - Papers **29** and **32** extract **$d$ extra rows per sample** (the gradient), paying with row norms that are no longer uniform and so must be preconditioned;
 - Papers **36** and **44** change the **columns**: the orthogonal basis is no longer handed down by a known density but has to be estimated from the empirical measure.
 
-> [!note] Notation used on this page
-> **Christoffel convention.** Throughout, this site writes the reproducing-kernel diagonal as $K(z)=\sum_{\alpha\in\Lambda}\varphi_\alpha^2(z)$, the Christoffel function as its reciprocal $\lambda_\Lambda(z)=1/K(z)$, and the normalised Christoffel function as $N/K(z)$ with $N=|\Lambda|$. "Christoffel weight" on this page therefore always means $1/K$; the $N/K$ that appears in least-squares objectives differs from $1/K$ by a constant independent of $z$ and does not change the minimiser. The papers themselves disagree: paper 36 writes $K$ for $N/\sum_j\Phi_j^2$ (the normalised Christoffel function itself), while paper 44 writes $\kappa$ for $\frac1N\sum_j\Phi_j^2$ (the reciprocal). Wherever an original formula is quoted it is converted to the convention above and the conversion is stated.
->
-> **Samples versus basis functions.** Papers 10, 21, 36 and 44 put the sample count first: $m$ or $M$ samples and $N$ basis functions. Papers 29 and 32 do the opposite: $N$ samples and $M$ basis functions. Each section below follows the convention of the paper it discusses and says so at the start, but be careful when comparing across sections. Note also that $\Gamma$ denotes the frequency index set $\Gamma\subset\mathbb Z^d$ in paper 29 and the parameter domain in papers 21 and 32.
+### Notational conventions
+
+**Christoffel notation.** The reproducing-kernel diagonal is $K(z)=\sum_{\alpha\in\Lambda}\varphi_\alpha^2(z)$, the Christoffel function is its reciprocal $\lambda_\Lambda(z)=1/K(z)$, and the normalised Christoffel function is $N/K(z)$ with $N=|\Lambda|$. "Christoffel weight" therefore always means $1/K$; the $N/K$ that appears in least-squares objectives differs from $1/K$ by a constant independent of $z$ and does not change the minimiser. The papers themselves disagree, which is the main source of confusion in reading the family: paper 36 writes $K$ for $N/\sum_j\Phi_j^2$ (the normalised Christoffel function itself), while paper 44 writes $\kappa$ for $\frac1N\sum_j\Phi_j^2$ (the reciprocal). Original formulas quoted below are converted to the notation above.
+
+**Samples versus basis functions.** Papers 10, 21, 36 and 44 put the sample count first: $m$ or $M$ samples and $N$ basis functions. Papers 29 and 32 do the opposite: $N$ samples and $M$ basis functions. Each section follows the convention of the paper it discusses and says so at the start, so be careful when comparing across sections. Note also that $\Gamma$ denotes the frequency index set $\Gamma\subset\mathbb Z^d$ in paper 29 and the parameter domain in papers 21 and 32.
 
 ### Two routes to a recovery guarantee
 
-Every theoretical guarantee on this page travels one of two roads. Identify which one first.
+Every theoretical guarantee here travels one of two roads. Identify which one first.
 
 **The coherence route.** The mutual coherence of a design matrix $A$ is
 
@@ -62,7 +60,7 @@ $$
 
 implies that the restricted isometry constant of $\frac{1}{\sqrt M}D$ satisfies $\delta_s\le\delta$ with probability at least $1-N^{-\gamma\log^3(s)}$, with $C,\gamma$ universal. **This route brings the sample count down from $s^2$ to $s$ times logarithms, at the price of a probabilistic conclusion and of having to control $L$ — and $L$ is precisely "the uniformity of the row norms".** Paper 21 and Theorem 3.1 of paper 29 take this route.
 
-Legendre polynomials are **not** uniformly bounded, but multiplying them by $(1-x^2)^{1/4}$ makes them so, and the biased measure that keeps the weighted system orthogonal is the Chebyshev measure. That is the Rauhut–Ward strategy, and it is the **reciprocal pairing** that recurs throughout this page: sample from a density $\propto w/(N\lambda_\Lambda)$ and precondition with $N\lambda_\Lambda$, so that the composite system is uniformly bounded. Paper 21 realises it with Gauss weights, paper 32 with $\sqrt{\rho^{(\alpha,\beta)}/\rho_c}$, and paper 44 by sampling from $\mu\propto\kappa$ and weighting by $1/\kappa$.
+Legendre polynomials are **not** uniformly bounded, but multiplying them by $(1-x^2)^{1/4}$ makes them so, and the biased measure that keeps the weighted system orthogonal is the Chebyshev measure. That is the Rauhut–Ward strategy, and it is the **reciprocal pairing** that recurs throughout: sample from a density $\propto w/(N\lambda_\Lambda)$ and precondition with $N\lambda_\Lambda$, so that the composite system is uniformly bounded. Paper 21 realises it with Gauss weights, paper 32 with $\sqrt{\rho^{(\alpha,\beta)}/\rho_c}$, and paper 44 by sampling from $\mu\propto\kappa$ and weighting by $1/\kappa$.
 
 ## 10: deterministic interpolation points and sparse interpolation
 
@@ -165,10 +163,9 @@ Section 5 compares $\Theta_M$ against interpolation points drawn i.i.d. uniforml
 | Solver         | SPGL1 in MATLAB                                                              |
 | Statistics     | 100 repetitions at each fixed sparsity $s$, giving an empirical success rate |
 
-The reported outcome is that **the deterministic points perform similarly to random points**. What the experiment establishes is therefore not an accuracy advantage but the absence of an accuracy penalty for being deterministic — which is how the abstract itself puts it ("a similar performance").
+The reported outcome is that **the deterministic points perform similarly to random points** (the paper's phrase is "a similar performance"). What the experiment establishes is therefore not an accuracy advantage but the absence of an accuracy penalty for being deterministic.
 
-> [!warning] There are no numbers here to transcribe
-> The results are published as empirical success-rate curves; the material behind this page records the experimental configuration and the authors' qualitative conclusion but **no point-by-point success rates**. Do not infer any specific success probability from the table above. The gap to the theory is worth stating too: Theorem 4.3 demands $m\gtrsim4^dd^2s^2$, whereas the experiments use far fewer points, so what is being tested is how the method behaves outside the range the theorem covers, not the sharpness of the theorem.
+There is also a gap to the theory: Theorem 4.3 demands $m\gtrsim4^dd^2s^2$, whereas the experiments use far fewer points. **That makes the bound sufficient rather than sharp**, and what the experiment tests is how the method behaves outside the range the theorem covers.
 
 ### Relation to the others
 
@@ -204,7 +201,7 @@ w_{\mathbf k}=\lambda_{\mathbf n}(z_{\mathbf k})
 =\prod_{i=1}^{d}\frac{1}{\sum_{k=0}^{n_i-1}\bigl[\phi^i_k(z^i_{k_i})\bigr]^2},
 $$
 
-**that is, the Gauss weights are exactly Christoffel function values** — in this page's convention, $1/K$ in tensorised form. The uniform empirical probability measure on the grid is
+**that is, the Gauss weights are exactly Christoffel function values** (that is, $1/K$ in tensorised form). The uniform empirical probability measure on the grid is
 
 $$
 \nu_{\mathbf n}=\bigotimes_{i=1}^{d}\nu^i_{n_i}
@@ -264,7 +261,7 @@ with probability at least $1-N^{-\gamma\log^3(s)}$, with $C_2,\gamma$ universal.
 > \Pr\Bigl[\|c-c^\sharp\|_2\le C_2\tfrac{\sigma_{s,1}(c)}{\sqrt s}\Bigr]\ \le\ 1-N^{-\gamma\log^3(s)},
 > $$
 >
-> that is, the probability is at **most** $1-N^{-\gamma\log^3 s}$. This contradicts the intended "with high probability" reading and also contradicts Theorem 2.2 of the same paper, which says "with probability at least $1-N^{-\gamma\log^3(s)}$". **This page uses the corrected direction $\Pr[\cdot]\ \ge\ 1-N^{-\gamma\log^3(s)}$** and records that the original prints it the other way. It is almost certainly a misprint, but cite the corrected direction.
+> that is, the probability is at **most** $1-N^{-\gamma\log^3 s}$. That direction is impossible: it holds automatically for any vacuous bound, it reverses the intended "with high probability" reading, and it contradicts Theorem 2.2 of the same paper ("with probability at least $1-N^{-\gamma\log^3(s)}$"). The correct direction is $\Pr[\cdot]\ \ge\ 1-N^{-\gamma\log^3(s)}$, and the statement above is written accordingly.
 
 **The three sample-complexity regimes**, in the paper's own summary form $M\gtrsim L(\mathbf n)s$:
 
@@ -304,8 +301,7 @@ Figure 2 plots recovery probability against sparsity $s$ for Legendre polynomial
 
 Figure 1 plots the theoretical bound $L$ itself: for Jacobi families with symmetric parameters $\gamma=\delta$, and for the two exponential-type densities (Hermite with $\rho=\exp(-x^2)$ on $\mathbb R$, Laguerre with $\rho=\exp(-x)$ on $[0,\infty)$).
 
-> [!warning] What the experiments allow one to transcribe
-> The configuration numbers above ($M=85$; $d=2,n=21,N=231$; $d=10,n=4,N=286$) are verifiable, but **the success-probability curves themselves are not transcribed here**. Note the gap to the theory as well: at $d=10$ Theorem 4.1 requires an $M$ carrying a factor like $C^{10}$, while the experiment uses $M=85$. **The experiments show that the method still works far below the theoretical sample count, not that the bound is sharp.** The paper likewise says only that Figure 1 "suggests" $C=2$, and draws no conclusion.
+The gap to the theory is starkest in the high-dimensional row: at $d=10$ Theorem 4.1 requires an $M$ carrying a factor like $C^{10}$, while the experiment uses $M=85$. **The experiments show that the method still works far below the theoretical sample count, not that the bound is sharp.** The paper likewise says only that Figure 1 "suggests" $C=2$, and draws no conclusion.
 
 ### Relation to the others
 
@@ -348,7 +344,7 @@ The two papers differ in the **basis**, and the difference is essential:
 
 ## 29: gradient-enhanced ℓ1 recovery of sparse trigonometric polynomials
 
-(This section follows the paper: $N$ sample points, $M=\#\Gamma$ basis functions, $\Gamma\subset\mathbb Z^d$ the frequency index set, sparsity $s$. The paper writes $k$ both for the number of directions and for a frequency multi-index; this page renames the number of directions to $r$ to avoid the clash.)
+(This section follows the paper: $N$ sample points, $M=\#\Gamma$ basis functions, $\Gamma\subset\mathbb Z^d$ the frequency index set, sparsity $s$. The paper writes $k$ both for the number of directions and for a frequency multi-index; below, $r$ denotes the number of directions to avoid the clash.)
 
 ### The idea
 
@@ -415,7 +411,7 @@ $$
 \frac{\langle x,y\rangle^2}{\|x\|^2\|y\|^2}\le1-\frac{1}{\|y\|^2\|u\|^2}.
 $$
 
-Apply this to the augmented vectors $x=(1,V^\top k)$ and $y=(1,V^\top k')$: admissibility guarantees they are not proportional, so a $u$ meeting both constraints exists, and bounding $\|y\|^2$ and $\|u\|^2$ uniformly over $\Gamma$ produces the two maxima in the denominator of Theorem 2.1. (The material behind this page records the lemma's statement and the fact that it is the tool used, but **not the explicit construction of $u$**, so this step reproduces the shape of the argument rather than its every line.)
+Apply this to the augmented vectors $x=(1,V^\top k)$ and $y=(1,V^\top k')$: admissibility guarantees they are not proportional, so a $u$ meeting both constraints exists, and bounding $\|y\|^2$ and $\|u\|^2$ uniformly over $\Gamma$ produces the two maxima in the denominator of Theorem 2.1.
 
 **The weighted variant.** Let $W$ be diagonal with value rows kept at weight 1 and **all derivative rows scaled by a single constant $\alpha$**. It is a preconditioner with exactly one free parameter, yet it improves the $q$-dependence of the coherence bound from $O(q^4)$ to $O(q)$, as recorded below.
 
@@ -435,10 +431,7 @@ Z_k:=\{j:\langle v_j,k\rangle^{\tau_j}=0,\ 1\le j\le N\},
 R_0:=\frac{\max_{j\in Z_k^c}|\langle v_j,k\rangle|^{\tau_j}}{\min_{j\in Z_k^c}|\langle v_j,k\rangle|^{\tau_j}},
 $$
 
-with the convention $\langle v_j,k\rangle^{\tau_j}=1$ when $\tau_j=0$. Here $Z_k$ collects the measurements that carry no information at all about frequency $k$, and $R_0$ measures how unevenly the measurements respond to a single frequency — **it is the constant that reappears, possibly large, in the sample complexity below**.
-
-> [!warning] Two constants are typographically ambiguous in the full text used here
-> First, the diagonal entry of $W$ above is printed as $1/\sum_j|\langle v_j,k\rangle|^{2\tau_j}$ with the extent of the radical impossible to determine from the extraction; since its stated purpose is to normalise the **column norms** of $\Psi$, it must be the inverse square root, which is how this page writes it. Second, the optimal $\alpha$ in Theorem 2.2 and its concrete value for $\Gamma=[-q,q]^d$ suffer from the same ambiguity about how far the radical extends. **Both are reconstructions; do not quote these constants without checking the typeset original.**
+with the convention $\langle v_j,k\rangle^{\tau_j}=1$ when $\tau_j=0$. Here $Z_k$ collects the measurements that carry no information at all about frequency $k$, and $R_0$ measures how unevenly the measurements respond to a single frequency — **it is the constant that reappears, possibly large, in the sample complexity below**. The diagonal entry of $W$ carries the inverse square root because its purpose is to normalise the **column norms** of $\Psi$.
 
 ### Theorems
 
@@ -472,7 +465,7 @@ $$
 {\max_k\bigl(1+\alpha^2\|V^\top k\|_\infty^2\bigr)\ \max_k\bigl(1+\alpha^2\|V^\top k\|_2^2\bigr)}\right)^{1/2},
 $$
 
-minimised at $\alpha=\bigl(\max_{k\in\Gamma}\|V^\top k\|_\infty\cdot\max_{k\in\Gamma}\|V^\top k\|\bigr)^{-1/2}$, which is the second ambiguity flagged above. For $\Gamma=[-q,q]^d$, $V=(e_1,\dots,e_d)$ and $\alpha=1/(\sqrt d\,q)$,
+minimised at $\alpha=\bigl(\max_{k\in\Gamma}\|V^\top k\|_\infty\cdot\max_{k\in\Gamma}\|V^\top k\|\bigr)^{-1/2}$, as one sees by treating the bracket as a function of $\alpha^2$ alone and differentiating. For $\Gamma=[-q,q]^d$, $V=(e_1,\dots,e_d)$ and $\alpha=1/(\sqrt d\,q)$,
 
 $$
 \mu(W\tilde\Phi)\le\left(1-\frac{1}{(1+\sqrt d)^2q}\right)^{1/2}\mu(\tilde\Phi),
@@ -497,8 +490,7 @@ $$
 
 **Prior sample counts the paper records (citations, not new results).** Rauhut: uniform samples give $\delta_s\le\delta$ with probability $\ge1-\epsilon$ provided $N/\log N\ge C\delta^{-2}s\log^2(s)\log(M)\log(\epsilon^{-1})$. Kunis–Rauhut: $\mu<\frac{1}{2s-1}$ with probability $\ge1-\epsilon$ provided $N\ge C(2s-1)^2\log(4M^2/\epsilon)$. Xu (deterministic): for $\Gamma=[-q,q]^d$ with $d\ge2$, the points $z_j=2\pi(j,j^2,\dots,j^d)/N$ give $\mu(\Phi)<\frac{1}{2s-1}$ provided $N>\max\{(2s-1)^2(d-1)^2,\ 2q+1\}$ is prime.
 
-> [!note] A conjecture the paper states explicitly
-> Whether derivative information also **decreases the restricted isometry constant**, rather than only the coherence, is left as a **conjecture**: the numerics answer affirmatively but nothing is proved, for uniform samples on $[-\pi,\pi)^d$. Optimal choice of the directions $\{v_j\}$ and of $\alpha$ is also future work, as is extending from the Fourier basis to orthogonal polynomials — which is precisely what paper 32 does.
+**A conjecture the paper states explicitly.** Whether derivative information also **decreases the restricted isometry constant**, rather than only the coherence, is left as a **conjecture**: for uniform samples on $[-\pi,\pi)^d$ the numerics answer affirmatively but nothing is proved. Optimal choice of the directions $\{v_j\}$ and of $\alpha$ is also future work, as is extending from the Fourier basis to orthogonal polynomials — which is precisely what paper 32 does.
 
 ### Numerical experiments
 
@@ -513,14 +505,13 @@ The $\ell_1$ problems are solved with SPGL1 and every experiment uses $\Gamma=[-
 
 The reported outcomes: in Examples 4.1 and 4.2 gradient information improves the recovery rate, **monotonically in how much of it is included**; in Example 4.3 **derivative values play a role similar to function values**, the empirical counterpart of Theorem 3.1; in Example 4.4 gradient information improves accuracy "dramatically".
 
-> [!warning] Experimental data, and one configuration that does not add up
-> No recovery rates or errors are transcribed here; the table records configurations and the authors' qualitative conclusions only. Separately, the configuration recorded for Example 4.3 — $q=5$, $d=2$, $M=40$ — is inconsistent with the paper's own convention $M=\#\Gamma$, since $\#([-5,5]^2\cap\mathbb Z^2)=121$. **Check that configuration against the typeset original.**
->
-> The gap to the theory is also worth stating: Theorems 2.1 and 2.2 bound the coherence **ratio**, whereas Examples 4.1–4.2 measure recovery rates directly, and the step in between requires $\mu<\frac{1}{2s-1}$, which the experimental sizes $N=20$ and $N=30$ come nowhere near. **The experiments support the claim that gradients help; they do not establish sharpness of the theorems.**
+The configuration recorded for Example 4.3 does not add up against the paper's own convention $M=\#\Gamma$: $q=5$ and $d=2$ give $\#([-5,5]^2\cap\mathbb Z^2)=121$, while the example records $M=40$.
+
+The gap to the theory is also worth stating: Theorems 2.1 and 2.2 bound the coherence **ratio**, whereas Examples 4.1 and 4.2 measure recovery rates directly, and the step in between requires $\mu<\frac{1}{2s-1}$, which the experimental sizes $N=20$ and $N=30$ come nowhere near. **The experiments support the claim that gradients help; they do not establish sharpness of the theorems.**
 
 ### Relation to the others
 
-Paper 29 is the trigonometric / Fourier twin of paper **32**, published the same year by an overlapping author set; paper 32 generalises the idea to preconditioned orthogonal polynomial chaos, which is exactly the extension paper 29 lists as future work. Both take the mutual-coherence route ($\mu<1/(2s-1)$), as does paper **10**. The Problem 2 formulation of paper 29 — mixed function and derivative data at **different** locations — reappears verbatim as an open problem in §4 of paper 32. The deterministic quadratic-phase samples $z_j=2\pi(j,j^2,\dots,j^d)/N$ it cites are precisely the **Weil points** of [[en/computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|papers 9 and 14]] and of paper 10 on this page; the Gauss-sum computation $\mu(\Psi)=1/\sqrt p$ in Proposition 2.1 is the same calculation that underlies the coherence estimates of paper 10.
+Paper 29 is the trigonometric / Fourier twin of paper **32**, published the same year by an overlapping author set; paper 32 generalises the idea to preconditioned orthogonal polynomial chaos, which is exactly the extension paper 29 lists as future work. Both take the mutual-coherence route ($\mu<1/(2s-1)$), as does paper **10**. The Problem 2 formulation of paper 29 — mixed function and derivative data at **different** locations — reappears verbatim as an open problem in §4 of paper 32. The deterministic quadratic-phase samples $z_j=2\pi(j,j^2,\dots,j^d)/N$ it cites are precisely the **Weil points** of [[en/computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|papers 9 and 14]] and of paper 10; the Gauss-sum computation $\mu(\Psi)=1/\sqrt p$ in Proposition 2.1 is the same calculation that underlies the coherence estimates of paper 10.
 
 ## 32: gradient-enhanced ℓ1 minimisation for sparse polynomial chaos
 
@@ -536,7 +527,7 @@ The root cause is one crucial difference from the Fourier basis: $\frac{d}{dx}p^
 
 Let $x=(x_1,\dots,x_d)^\top$ have independent components with marginals $\rho_i$ on $\Gamma_i$ and $\rho(x)=\prod_i\rho_i(x_i)$ on $\Gamma=\otimes_i\Gamma_i$; univariate orthonormal $\phi^i_n$ satisfy $\int_{\Gamma_i}\phi^i_n\phi^i_\ell\rho_i=\delta_{n,\ell}$, and the multivariate basis is $\psi_n(x)=\prod_{i=1}^d\phi^i_{n_i}(x_i)$ with $\mathbb E[\psi_n\psi_j]=\delta_{n,j}$. The total-degree index set is $\Lambda^T_n=\{k\in\mathbb N_0^d:\sum_ik_i\le n\}$ of size $M=\binom{d+n}{n}$, and the expansion is $f_n=\sum_{j=1}^Mc_j\psi_j(x)$.
 
-Standard $\ell_1$: with samples $\Xi=\{z^{(1)},\dots,z^{(N)}\}\subset\Gamma$ and $[\Phi]_{ij}=\psi_j(z^{(i)})$, $\Phi\in\mathbb R^{N\times M}$, solve $\arg\min\|c\|_1$ subject to $\Phi c=f$ (or $\|\Phi c-f\|_2\le\epsilon$). The mutual coherence $\mu(\Phi)$ and the criterion $\mu<\frac{1}{2s-1}$ are as described at the top of this page.
+Standard $\ell_1$: with samples $\Xi=\{z^{(1)},\dots,z^{(N)}\}\subset\Gamma$ and $[\Phi]_{ij}=\psi_j(z^{(i)})$, $\Phi\in\mathbb R^{N\times M}$, solve $\arg\min\|c\|_1$ subject to $\Phi c=f$ (or $\|\Phi c-f\|_2\le\epsilon$). The mutual coherence $\mu(\Phi)$ and the recovery criterion $\mu<\frac{1}{2s-1}$ are as described at the outset.
 
 ### Derivation
 
@@ -568,17 +559,10 @@ $$
 **This identity is the template for the whole design**: the two terms on the left carry the orthogonality weight of the value rows and of the gradient rows respectively ($2^{-d}$ for the uniform density, $1-z_k^2$ for the derivative family), the $\delta_{ij}$ says orthogonality survives the weighting, and the bracketed factor is exactly the degree-growing quantity that $P$ must divide out. Accordingly
 
 $$
-W^0_{n,n}=\Bigl(\tfrac{4}{\pi^2}\bigl(1-(z^{(n)}_j)^2\bigr)\Bigr)^{d/4},
-\qquad
-W^j_{n,n}=\frac{W^0_{n,n}}{\sqrt2}\bigl(1-(z^{(n)}_j)^2\bigr)^{1/2},
-\qquad
 P_{i,i}=\Bigl(1+\sum_{k=1}^d c_k\,i_k(i_k+1)\Bigr)^{-1/2},
 $$
 
-with $W$ block diagonal, $W=(W^0,W^1,\dots,W^d)$, giving $\mathbb E_c\bigl[\frac1N\hat\Phi^\top\hat\Phi\bigr]=I$.
-
-> [!warning] Do not copy the two constants of the Legendre case
-> The leading factor in the identity above is printed as "$2d$" in the full text used here, plainly having lost an exponent; the general Jacobi formula below shows it must be the density ratio $\rho/\rho_c$ with $\rho\equiv2^{-d}$ uniform, which is how this page writes it — **a reconstruction**. The expression for $W^0_{n,n}$ involves only the $j$th component yet carries the exponent $d/4$, which strongly suggests the extraction dropped a $\prod_{j=1}^d(\cdot)^{1/4}$. **Do not rely on either printed constant**; the general Jacobi version in the next paragraph is clean and internally consistent and should be used instead.
+while $W$ is block diagonal, $W=(W^0,W^1,\dots,W^d)$, each block being the square root of its own orthogonality weight divided by the sampling density — that is, the $\alpha=\beta=0$ instance of the general Jacobi formulas below. The result is $\mathbb E_c\bigl[\frac1N\hat\Phi^\top\hat\Phi\bigr]=I$.
 
 **General Jacobi with Chebyshev sampling — the clean general form.** The univariate Beta / Jacobi density is
 
@@ -670,10 +654,7 @@ $$
 
 uniformly in $n,\alpha,\beta$. The proof of Theorem 3.1 applies this bound to the two-row structure $\bigl(p_n^{(\alpha,\beta)}(z),\ \frac{d}{dx}p_n^{(\alpha,\beta)}(z)\bigr)=\bigl(p_n^{(\alpha,\beta)}(z),\ c(n,\alpha,\beta)p_{n-1}^{(\alpha+1,\beta+1)}(z)\bigr)$.
 
-> [!warning] What the theorem does not deliver — stated candidly by the authors
-> The paper writes: "Ideally we could show the gradient approach admits an improved (smaller) parameter $\beta_L$, i.e. $\beta_L(\hat\Phi)\le\mu_L(\Phi)$… Our analysis does not bear this fruit." What is actually shown is two things: (i) the coherence bound for both $\Phi$ and $\hat\Phi$ is a constant raised to the $d$th power and is **independent of the polynomial degree**; (ii) the extra factor $C\le1+\frac{\sqrt2}{2}$ is **dimension-independent and small**.
->
-> One more point matters as much: **there is no sample-complexity theorem of the form $N\gtrsim s\log^k$ in this paper**, the guarantee running instead through the quoted criterion $\mu<\frac{1}{2s-1}$. Any claim about a sample-complexity exponent for this method has no source.
+**What the theorem does not deliver, stated candidly by the authors.** The paper writes: "Ideally we could show the gradient approach admits an improved (smaller) parameter $\beta_L$, i.e. $\beta_L(\hat\Phi)\le\mu_L(\Phi)$… Our analysis does not bear this fruit." What is actually shown is two things: (i) the coherence bound for both $\Phi$ and $\hat\Phi$ is a constant raised to the $d$th power and is **independent of the polynomial degree**; (ii) the extra factor $C\le1+\frac{\sqrt2}{2}$ is **dimension-independent and small**. Beyond that, **there is no sample-complexity theorem of the form $N\gtrsim s\log^k$ in this paper**: the recovery guarantee runs through the quoted criterion $\mu<\frac{1}{2s-1}$.
 
 **Open directions the paper raises.** Partial or directional gradient data $D_{v_t}f(z^{(j)})=\langle\nabla f,v_t\rangle$ (with the honest caveat that it is unclear how such directional derivatives would be obtained in practice); and higher-order directional data $D^{\tau_j}_{v_j}f(z_j)=y_j$ where value locations and derivative locations **need not coincide** — which is exactly Problem 2 of paper 29. The paper also states that its preconditioners are **not claimed optimal** and suggests the Christoffel-weighted approach of [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|papers 22 and 24]] as a degree-asymptotically better alternative.
 
@@ -692,10 +673,9 @@ The three test functions of §5.3 are the sphere $f_1(x)=\sum_{i=1}^dx_i^2$, the
 
 **§5.1 is the most important experiment in the paper and the reason the whole preconditioning apparatus exists**: the preconditioned $\hat\Phi$ has a far better mutual coherence than $\Phi$, while **naively stacking derivative rows to form $\tilde\Phi$ actually destroys the stability $\Phi$ had**. Sections 5.2 and 5.3 conclude that including gradients improves the recovery rate, that more gradient information gives better recovery, and that approximation accuracy improves "dramatically".
 
-> [!warning] The text and the figure captions disagree about sample counts
-> In §5.2 the fixed sample count for the "recovery probability vs $s$" plot at $(d,n)=(2,20)$ is **$N=35$ in the text and $N=50$ in the figure caption**; the corresponding number at $(d,n)=(10,3)$ is **$N=70$ in most places and $N=50$ in one**. This page records both inconsistencies without picking a side; the table above uses the more frequently occurring value.
->
-> On the gap to the theory: Theorem 3.1 bounds only the coherence parameters $\mu_L$ and $\beta_L$ and says explicitly that $\beta_L\le\mu_L$ was not proved, whereas the experiments measure recovery probabilities and approximation errors directly. **The experiments establish that the method works, not that the theorem predicted it would.** No specific success rates or errors are transcribed here.
+The text and the figure captions disagree about sample counts in two places: in §5.2 the fixed sample count for the "recovery probability vs $s$" plot at $(d,n)=(2,20)$ is **$N=35$ in the text and $N=50$ in the figure caption**, and the corresponding number at $(d,n)=(10,3)$ is **$N=70$ in most places and $N=50$ in one**. The table above uses the more frequently occurring value.
+
+On the gap to the theory: Theorem 3.1 bounds only the coherence parameters $\mu_L$ and $\beta_L$ and says explicitly that $\beta_L\le\mu_L$ was not proved, whereas the experiments measure recovery probabilities and approximation errors directly. **The experiments establish that the method works, not that the theorem predicted it would.**
 
 ### Relation to the others
 
@@ -719,7 +699,7 @@ The division of labour is: paper 36 uses **weighted least squares** with **equil
 
 Classical generalised polynomial chaos presumes the input density $\rho$ is known — aleatory uncertainty. In many applications one has only **samples or moments** of the inputs, which is epistemic uncertainty, and assuming a wrong density biases the entire surrogate. Data-driven or arbitrary polynomial chaos (aPC) solves the first half by building the orthogonal basis directly from moments, but the existing post-processing was a sparse-grid collocation **whose points are themselves computed from the data-driven basis by matrix operations** — so the design must be recomputed every time the basis changes.
 
-The paper's contribution is to replace that post-processing with one whose **sampling depends neither on the input density nor on the data-driven basis**, and can therefore be done offline, while improving stability from quadratic to quasi-linear in $N$. The mechanism is the one that recurs on this page: Christoffel weighting drives the stability factor $\kappa(N)=\max_\xi\sum_j\Phi_j^2(\xi)$ down to its theoretical minimum $N$. The price is that the weighted basis is no longer orthogonal with respect to $\rho$ but with respect to a transformed measure that depends on the polynomial space — and the paper removes that dependence by passing to a potential-theoretic limit (the equilibrium measure), **so stability holds only in the asymptotic sense $N\to\infty$**.
+The paper's contribution is to replace that post-processing with one whose **sampling depends neither on the input density nor on the data-driven basis**, and can therefore be done offline, while improving stability from quadratic to quasi-linear in $N$. The mechanism achieving this is again the same one: Christoffel weighting drives the stability factor $\kappa(N)=\max_\xi\sum_j\Phi_j^2(\xi)$ down to its theoretical minimum $N$. The price is that the weighted basis is no longer orthogonal with respect to $\rho$ but with respect to a transformed measure that depends on the polynomial space — and the paper removes that dependence by passing to a potential-theoretic limit (the equilibrium measure), **so stability holds only in the asymptotic sense $N\to\infty$**.
 
 ### Setting and derivation
 
@@ -757,7 +737,7 @@ f_N:=\arg\min_{p\in\mathbb P_N}\frac1M\sum_{m=1}^M w_m\bigl(p(z_m)-f(z_m)\bigr)^
 c=\arg\min_{c\in\mathbb R^N}\bigl\|W^{1/2}Ac-W^{1/2}f\bigr\|_2^2,
 $$
 
-with $A=[\Phi_j(z_m)]\in\mathbb R^{M\times N}$ and $W=\mathrm{diag}(w_1,\dots,w_M)$. The weights are normalised Christoffel function values: in this page's convention $K(\xi)=\sum_{j=1}^N\Phi_j^2(\xi)$,
+with $A=[\Phi_j(z_m)]\in\mathbb R^{M\times N}$ and $W=\mathrm{diag}(w_1,\dots,w_M)$. The weights are normalised Christoffel function values: writing $K(\xi)=\sum_{j=1}^N\Phi_j^2(\xi)$,
 
 $$
 w_m=\frac{N}{K(z_m)}=\frac{N}{\sum_{j=1}^N\Phi_j^2(z_m)} .
@@ -776,7 +756,7 @@ The only information required is that the random variable lives in a bounded dom
 **Unbounded domains: conjectures with explicit samplers.** The paper says plainly that very few results are known and that "the results in what follows are our conjectures", validated only numerically.
 
 > [!warning] The unbounded-domain equilibrium measures are conjectures, not theorems
-> Both densities below are labelled **conjectures** in the original, and can only be cited that way. The Gaussian limiting induced / equilibrium measure $C(2-\|\xi\|^2)^{d/2}$ recurs across several papers in this topic, and **it is a conjecture in every one of them, never a theorem**; the Chebyshev limit on bounded domains, by contrast, is backed by a theorem. Do not conflate the two.
+> Both densities below are labelled **conjectures** in the original. The Gaussian limiting induced / equilibrium measure $C(2-\|\xi\|^2)^{d/2}$ recurs across several papers in this family, and **it is a conjecture in every one of them, never a theorem**; the Chebyshev limit on bounded domains, by contrast, is backed by a theorem. The two must not be conflated.
 
 _(Gaussian, $\mathbb R^d$)_: estimate $(\hat\mu,\hat\sigma)$ from the data, standardise $\hat\xi=(\xi-\hat\mu)/\hat\sigma$, and use
 
@@ -798,7 +778,7 @@ $$
 \hat\rho(\xi)=C\sqrt{\frac{\bigl(4-\sum_{i=1}^d\xi_i\bigr)^d}{\prod_{i=1}^d\xi_i}}
 $$
 
-(the placement of the radical over the whole fraction is **reconstructed** from the extraction and flagged as such). The sampler: compute $k$; draw a $(d+1)$-dimensional Dirichlet vector $y$ with parameters $\bigl(\frac12,\frac12,\dots,\frac12,\frac d2+1\bigr)$; discard the last entry; set $z=4ky$. Remark 4.1 concedes that for other unbounded densities **even conjectures are lacking**, and suggests domain truncation plus Chebyshev sampling as a fallback, with the truncation error left unaddressed.
+(the radical covers the whole fraction; at $d=1$ this reduces to the known one-dimensional $\sqrt{(4-\xi)/\xi}$). The sampler: compute $k$; draw a $(d+1)$-dimensional Dirichlet vector $y$ with parameters $\bigl(\frac12,\frac12,\dots,\frac12,\frac d2+1\bigr)$; discard the last entry; set $z=4ky$. Remark 4.1 concedes that for other unbounded densities **even conjectures are lacking**, and suggests domain truncation plus Chebyshev sampling as a fallback, with the truncation error left unaddressed.
 
 ### Theorems
 
@@ -807,13 +787,12 @@ $$
 **Theorem 4.1 (quoted least-squares stability).** For $f$ approximated in $\mathbb P_N=\mathrm{span}\{\Phi_j\}$ with orthogonality density $\rho$, samples $\{z_m\}_{m=1}^M$ drawn from $\rho$, and **unweighted** least squares $c=\arg\min\|Ac-f\|_2^2$,
 
 $$
-\Pr\Bigl\{\|\,\cdot\,-I\|\ge\tfrac12\Bigr\}\le 2M^{-r}
+\Pr\Bigl\{\bigl\|\tfrac1MA^\top A-I\bigr\|\ge\tfrac12\Bigr\}\le 2M^{-r}
 \qquad\text{provided}\qquad
-\kappa(N):=\max_\xi\sum_{j=1}^N\Phi_j^2(\xi)\ \le\ \delta\,\frac{M}{\log M}.
+\kappa(N):=\max_\xi\sum_{j=1}^N\Phi_j^2(\xi)\ \le\ \delta\,\frac{M}{\log M},
 $$
 
-> [!warning] Theorem 4.1 needs two corrections
-> First, the object inside the norm is printed as "$A$", but the content of the theorem requires it to be the **Gram matrix $A^\top A$** or a scaled version of it, and certainly not the rectangular design matrix; this page therefore writes a placeholder there. Second, the constant $\delta$ is printed as $1-\frac{\log2}{2-2r}$, whose fraction structure is ambiguous in the extraction used here; the corresponding constant in the Cohen–Davenport–Leviatan source has the form $\frac{1-\log2}{2+2r}$. **Do not quote this $\delta$ without checking the typeset original.**
+with $\delta$ a constant depending only on $r$. The source prints the design matrix $A$ itself inside the norm, but what must be compared with the identity is the **Gram matrix**: $A$ is $M\times N$ and rectangular, so $\|A-I\|$ has no meaning.
 
 **The motivating consequence — the paper's key argument.** Stability requires $M\gtrsim\kappa(N)$ up to a logarithmic factor. For Legendre polynomials $\kappa(N)\sim N^2$, so $M\ge CN^2$ — **unsatisfactory**. Introducing $W$ amounts to working with the rescaled basis
 
@@ -838,7 +817,7 @@ $$
 so one samples from the equilibrium measure $\hat\rho$ instead and obtains stability **only in the asymptotic sense $N\to\infty$**. The practical payoff is that the design becomes independent of the polynomial space, which is valuable for adaptive schemes.
 
 > [!warning] Equations (4.5) and (4.7) use $K$ in a way that conflicts with (4.3)
-> The paper writes $K$ for $N/\sum_j\Phi_j^2$, the normalised Christoffel function, and the weights $w_m=N/\sum_j\Phi_j^2(z_m)$ of (4.3) are consistent with that. But (4.5) is printed as $\hat\Phi_j=\Phi_j/\sqrt{K}$ and (4.7) as $\tilde\rho\sim K\rho=N\rho/\sum_j\Phi_j^2$, and **read with that same $K$ those two give $\hat\kappa\ne N$ and do not give the induced measure** — they are self-consistent only if $K$ there means $\sum_j\Phi_j^2$, the reciprocal. This page writes the consistent forms above in the site convention $K=\sum_j\Phi_j^2$ and records the difference from the printed form. The test is simple: the correct rescaling must satisfy $\hat\Phi_j=\sqrt{w_m}\,\Phi_j$ with the weights of (4.3).
+> The paper writes $K$ for $N/\sum_j\Phi_j^2$, the normalised Christoffel function, and the weights $w_m=N/\sum_j\Phi_j^2(z_m)$ of (4.3) are consistent with that. But (4.5) is printed as $\hat\Phi_j=\Phi_j/\sqrt{K}$ and (4.7) as $\tilde\rho\sim K\rho=N\rho/\sum_j\Phi_j^2$, and **read with that same $K$ those two give $\hat\kappa\ne N$ and do not give the induced measure** — they are self-consistent only if $K$ there means $\sum_j\Phi_j^2$, the reciprocal, which is the notation set out at the top. The test is simple: the correct rescaling must satisfy $\hat\Phi_j=\sqrt{w_m}\,\Phi_j$ with the weights of (4.3). The two displays above are written accordingly.
 
 **What this paper actually proves.** Theorems 3.1 and 4.1 are **both quoted from prior literature**. The paper's own contributions are the **combination** (aPC basis plus Christoffel-weighted equilibrium sampling), the explicit samplers, and the numerics. **There is no new convergence theorem and no error analysis of the moment-estimation error**: the paper says explicitly that a "density error" is introduced because the mean and variance are estimated, and that "how to quantify and control such errors will be our future projects".
 
@@ -846,7 +825,7 @@ so one samples from the equilibrium measure $\hat\rho$ instead and obtains stabi
 
 All results are averaged over 100 independent trials, and two sampling rates are compared throughout: $M=CN$ (linear) and $M=CN\log N$ (log-linear). The input distributions used are a discrete binomial $\mathrm{Bino}(n,p)$ mapped to $[-1,1]$, a discrete Poisson $\mathrm{Pois}(\lambda)$ on $[-1,1]$, uniform $U[a,b]$, exponential $\mathrm{Exp}(\mu)$ on $(0,\infty)$, and normal $N(\mu,\sigma)$.
 
-**§5.1 stability.** The condition number of $\hat A=W^{1/2}A$ (printed as "$W^2A$", **flagged as an extraction artifact**) is reported as a mean with 20% and 80% quantiles against polynomial degree, for four $d=2$ test types:
+**§5.1 stability.** The condition number of $\hat A=W^{1/2}A$ is reported as a mean with 20% and 80% quantiles against polynomial degree, for four $d=2$ test types:
 
 | Case | $\xi_1$                 | $\xi_2$             |
 | ---- | ----------------------- | ------------------- |
@@ -857,7 +836,7 @@ All results are averaged over 100 independent trials, and two sampling rates are
 
 **Case 4 mixes a bounded with an unbounded marginal, so a different equilibrium measure is used in each dimension** — a demonstration in itself of the per-coordinate sampler design. The rates tested are $M=1.5N$, $2N$, $N\log N$ and $1.5N\log N$; a five-dimensional set of test cases is also used.
 
-**§5.2 accuracy**, measured by a discrete $\ell^2$ error over $L$ reference samples (the printed prefactor is "$L\sum_l$", which must be $\frac1L\sum_l$, **flagged**).
+**§5.2 accuracy**, measured by the discrete $\ell^2$ error $\bigl(\frac1L\sum_l|\cdot|^2\bigr)^{1/2}$ over $L$ reference samples.
 
 - §5.2.1 analytic test functions: $f_1(\xi)=\exp(\sum_k\xi_k)$; $f_2(\xi)=\sum_k0.3+\sin\bigl(\tfrac{16}{15}(\xi_k-0.7)\bigr)+\sin^2\bigl(\tfrac{16}{15}(\xi_k-0.7)\bigr)$; $f_3(\xi)=\exp\bigl(-\sum_kc_k^2(\xi_k-0.01)^2\bigr)$ with $c_k=\exp(-6k/d)$; $f_4(\xi)=\sin(\sum_k\cdot)$.
 - §5.2.2 an **electrical resistor network** with $d=2p$ uncertain resistances driven by $V_0=1$, the quantity of interest being the voltage $V$. Tested with $d=2$ and $\xi_i\sim U[10,100]$, and with $d=4$ and $\xi_1\sim\mathrm{Exp}(0.9)$, $\xi_2\sim\mathrm{Exp}(1.1)$, $\xi_3\sim\mathrm{Exp}(0.8)$, $\xi_4\sim\mathrm{Exp}(1.0)$, with **moments estimated from 1000 samples**.
@@ -865,8 +844,7 @@ All results are averaged over 100 independent trials, and two sampling rates are
 
 The stated qualitative outcome throughout is that Christoffel-weighted least squares gives stable and accurate approximations at both the linear and the log-linear sampling rates.
 
-> [!warning] What is transcribable, and the gap to the theory
-> The configurations are transcribed here — distributions, dimensions, sampling rates, trial counts, the number of samples used to estimate moments — but **the condition numbers and errors themselves are not**. More importantly, §5.1 measures condition numbers at **finite degree**, whereas the guarantee holds only asymptotically in $N$ because $\hat\rho$ replaces $\tilde\rho$; and the discrete and unbounded inputs of cases 3 and 4 fall outside the reach of Theorem 3.1 or rest on the conjectured densities. **The experiments show the method works in these cases; they do not show the theorems cover them.**
+The gap to the theory sits in one place: §5.1 measures condition numbers at **finite degree**, whereas the guarantee holds only asymptotically in $N$ because $\hat\rho$ replaces $\tilde\rho$; and the discrete and unbounded inputs of cases 3 and 4 fall outside the reach of Theorem 3.1, or else rest on the conjectured densities. **The experiments show the method works in these cases; they do not show the theorems cover them.**
 
 ### Relation to the others
 
@@ -880,7 +858,7 @@ Paper 36 is [[en/computational-mathematics/paper-notes/stochastic-approximation/
 
 Two difficulties are coupled here: the input distribution $\omega$ is known only through a finite sample set $S$ (epistemic uncertainty), and the training budget may be far smaller than the polynomial dimension ($M\ll N$), forcing a sparse recovery. Paper 36 handled the first with data-driven bases plus equilibrium-measure weighted least squares, but equilibrium sampling has two problems: it is optimal only in the degree limit, and — critically in the data-driven setting — **it can place samples where the empirical data has essentially no mass, producing sample locations at which the model was never queried**.
 
-The substitution the paper makes is direct: **replace the equilibrium measure by an exact induced measure supported on $S$ itself, and replace least squares by preconditioned $\ell_1$.** The induced measure is the Christoffel weight used in reverse — sample **more** where the basis functions are large, then undo it by weighting with $1/\kappa$. That "sampling density $\propto\kappa$, weight $\propto1/\kappa$" pairing is one more instance of the uniform-boundedness principle stated at the top of this page, and in the discrete setting it buys one extra thing: **every sample lands on a genuine data point**.
+The substitution the paper makes is direct: **replace the equilibrium measure by an exact induced measure supported on $S$ itself, and replace least squares by preconditioned $\ell_1$.** The induced measure is the Christoffel weight used in reverse — sample **more** where the basis functions are large, then undo it by weighting with $1/\kappa$. That reciprocal "sampling density $\propto\kappa$, weight $\propto1/\kappa$" pairing is one more instance of the uniform-boundedness principle stated at the outset, and in the discrete setting it buys one extra thing: **every sample lands on a genuine data point**.
 
 ### Setting and derivation
 
@@ -922,7 +900,7 @@ The paper states plainly that "our multivariate polynomials $\Phi_\lambda$ const
 
 $$
 \kappa\bigl(z;\Lambda^{TD}_K\bigr):=\frac1N\sum_{j=1}^N\Phi_j^2(z)
-\ \ \Bigl(=\frac{K(z)}{N}\ \text{in this page's convention}\Bigr),
+\ \ \Bigl(=\frac{K(z)}{N}\Bigr),
 $$
 
 and the **discrete induced measure supported on $S$** is
@@ -959,12 +937,11 @@ where the $z^{(j)}$ are $M$ i.i.d. samples from $\mu$. **Sampling density $\prop
 
 **The paper states no new theorem.** This is an algorithms-and-experiments paper, with no numbered Theorem, Lemma or Proposition environments anywhere in it. Its justification is by citation: to established compressed-sensing theory for bounded orthonormal systems (error terms proportional to the largest entry of $\sqrt WA$, which is what dictates $W$), and to the induced-sampling least-squares theory surveyed in [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|paper 45]], together with the two structural advantages listed above.
 
-> [!warning] Do not attach a sample-complexity exponent to this algorithm
-> The paper states **no** sample complexity for its own method. Expressions such as $M\gtrsim s\log^3s\log N$ appear in papers 21, 24 and 29 with their own explicit hypotheses, but **none of them is a conclusion about Algorithm 2**. Any such exponent has no source in this paper.
+The paper states **no** sample complexity for Algorithm 2. Expressions such as $M\gtrsim s\log^3s\log N$ appear in papers 21, 24 and 29 with their own explicit hypotheses, but none of them is a conclusion of this paper.
 
 ### Numerical experiments
 
-Three method labels run through all experiments: **induced distribution** (this paper), **CSA** ($\ell_1$ with equilibrium-measure sampling, i.e. the method of [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|paper 24]]), and **MC** (non-preconditioned $\ell_1$ with i.i.d. samples from $\omega$). All results are averaged over 100 independent trials, and accuracy errors are computed as a discrete norm over $E=10{,}000$ i.i.d. samples from $\omega$ (**the printed formula divides by $M$ rather than $E$, flagged as a typo**).
+Three method labels run through all experiments: **induced distribution** (this paper), **CSA** ($\ell_1$ with equilibrium-measure sampling, i.e. the method of [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|paper 24]]), and **MC** (non-preconditioned $\ell_1$ with i.i.d. samples from $\omega$). All results are averaged over 100 independent trials, and accuracy errors are computed as a discrete norm over $E=10{,}000$ i.i.d. samples from $\omega$.
 
 **Figure 1 (illustrative)** is the cleanest single picture in this topic of why the non-asymptotic and asymptotic designs differ. The data set is tensorial, $S=\{(z^{(j)}_1,z^{(k)}_2)\}_{1\le j,k\le24}$ with weights $w_{j,k}=u_jv_k$: the $z^{(j)}_1$ are 24 equispaced points on $[-1,1]$ with $u_j$ the probability mass function of $\mathrm{Binomial}(24,0.5)$, and the $z^{(k)}_2$ are 24 equispaced points on $[-1,1]$ with $v_k$ the first 24 values of the $\mathrm{Poisson}(10)$ mass function (truncated mass about $10^{-5}$, renormalised). The equilibrium (product Chebyshev) samples and the $K=20$ induced samples **visibly concentrate in different regions**, **confirming that $K=20$ is not yet in the asymptotic regime**.
 
@@ -977,23 +954,15 @@ Three method labels run through all experiments: **induced distribution** (this 
 
 The explanation for the second row generalises: **a low-degree space makes $\mu$ close to $\omega$, so induced and naive sampling converge** — the same degree dependence reported in Example 8.1 of paper 45.
 
-**§4.2 analytic function approximation.** The test functions are $f_1(z)=\exp\bigl(-\sum_iz_i\bigr)$; $f_2(z)=\sum_i(1-z_{i-1})^2+\sum_{i\ge2}100(z_i-z_{i-1}^2)^2$ (Rosenbrock); $f_3(z)=\sin(\sum_iz_i)$; and $f_4(z)=\bigl(1+\frac{1}{2d}\sum_ic_i(1+z_i)\bigr)^{-d-1}$ with $c_i=\frac{1+i}{4d}$ (two of them are printed with the same label $f_3$, **flagged as a numbering typo**). In the two-dimensional case with $S$ as in Figure 1 and $K=20$, **induced sampling is much better than both MC and CSA for larger $M$, while for relatively small $M$ MC moderately outperforms it**. Repeating with the mixture data of §4.1 and in $d=5$ with $K=7$, induced sampling again beats MC as $M$ grows.
+**§4.2 analytic function approximation.** The test functions are $f_1(z)=\exp\bigl(-\sum_iz_i\bigr)$; $f_2(z)=\sum_i(1-z_{i-1})^2+\sum_{i\ge2}100(z_i-z_{i-1}^2)^2$ (Rosenbrock); $f_3(z)=\sin(\sum_iz_i)$; and $f_4(z)=\bigl(1+\frac{1}{2d}\sum_ic_i(1+z_i)\bigr)^{-d-1}$ with $c_i=\frac{1+i}{4d}$. In the two-dimensional case with $S$ as in Figure 1 and $K=20$, **induced sampling is much better than both MC and CSA for larger $M$, while for relatively small $M$ MC moderately outperforms it**. Repeating with the mixture data of §4.1 and in $d=5$ with $K=7$, induced sampling again beats MC as $M$ grows.
 
-**§4.3 parametric PDE.** A clamped **Kirchhoff plate bending** problem on a bounded polygonal $D\subset\mathbb R^2$: $-M_{IJ,IJ}(u)=f$ in $\Gamma\times D$ with $u=\partial_nu=0$ on $\Gamma\times\partial D$, $M_{IJ}(u)=D(z,x)\bigl((1-\nu)K_{IJ}(u)+\nu K_{LL}(u)\delta_{IJ}\bigr)$, $K_{IJ}(u)=-\partial_{IJ}u$, and rigid flexibility $D(z,x)=\frac{E(z,x)h^3}{12(1-\nu^2)}$. The **random Young's modulus** enters through a truncated Karhunen–Loève expansion of $Y(z,x)=\log(E(z,x)-100)$, namely $Y=1+Z_1(\sqrt\pi L)^{1/2}+\sum_{i=2}^d\zeta_ig_i(x)Z_i$, for a squared-exponential covariance $K(x_1,x_1')=\exp\bigl(-(x_1-x_1')^2/L_c^2\bigr)$ along $x_1$ only, with eigenfunctions $g_i(x)=\sin\bigl(\lfloor i/2\rfloor\pi x_1/L_p\bigr)$ for even $i$ and $\cos\bigl(\lfloor i/2\rfloor\pi x_1/L_p\bigr)$ for odd $i$ (**the signs as printed are ambiguous in the extraction, flagged**).
+**§4.3 parametric PDE.** A clamped **Kirchhoff plate bending** problem on a bounded polygonal $D\subset\mathbb R^2$: $-M_{IJ,IJ}(u)=f$ in $\Gamma\times D$ with $u=\partial_nu=0$ on $\Gamma\times\partial D$, $M_{IJ}(u)=D(z,x)\bigl((1-\nu)K_{IJ}(u)+\nu K_{LL}(u)\delta_{IJ}\bigr)$, $K_{IJ}(u)=-\partial_{IJ}u$, and rigid flexibility $D(z,x)=\frac{E(z,x)h^3}{12(1-\nu^2)}$. The **random Young's modulus** enters through a truncated Karhunen–Loève expansion of $Y(z,x)=\log(E(z,x)-100)$, namely $Y=1+Z_1(\sqrt\pi L)^{1/2}+\sum_{i=2}^d\zeta_ig_i(x)Z_i$, for a squared-exponential covariance $K(x_1,x_1')=\exp\bigl(-(x_1-x_1')^2/L_c^2\bigr)$ along $x_1$ only, with eigenfunctions the sines and cosines of frequency $\lfloor i/2\rfloor\pi/L_p$, alternating with the parity of $i$.
 
-> [!warning] What the experiments establish, and what they do not
-> No recovery rates or errors are transcribed here. More to the point: **this paper has no theorems**, so there is no "gap to the theory" to discuss, only the question of what the experiments support. They support the claim that in the data-driven setting, at finite degree and with $M$ not too small, induced sampling usually beats both equilibrium-measure sampling and naive Monte Carlo. They do **not** support the claim that induced sampling always wins — in §4.2 MC is moderately better at small $M$ — nor any quantitative statement about the required sample count.
+**What the experiments support.** This paper has no theorems, so there is no "gap to the theory" to discuss, only the question of how far the experiments reach. They support the claim that in the data-driven setting, at finite degree and with $M$ not too small, induced sampling usually beats both equilibrium-measure sampling and naive Monte Carlo. They do **not** support the claim that induced sampling always wins — in §4.2 MC is moderately better at small $M$ — nor any quantitative statement about the required sample count.
 
 ### Relation to the others
 
 Paper 44 is the direct successor of paper **36** — the same aPC/Hankel basis construction, the same authors plus Narayan — with two substitutions: exact induced sampling in place of asymptotic equilibrium sampling, and $\ell_1$ in place of least squares. Its comparison method "CSA" **is** [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|paper 24]], and the paper spells out the relationship itself: paper 24 "utilize precisely the same preconditioning matrix $W$… but choose to sample not from $\mu$, but instead from a $K$-asymptotic version of $\mu$, called the pluripotential equilibrium measure". The least-squares analogue of that asymptotic choice is paper 22, and paper 45 is cited as the review for induced-measure sampling. The bounded-orthonormal-system justification for $W$ uses the same restricted-isometry machinery as papers **21** and 24.
-
-> [!note] Coverage status
-> All six papers — 10, 21, 29, 32, 36 and 44 — were read in full text (10, 21, 32, 36 and 44 from arXiv, 29 from the CiCP record), so all six receive an intuition, a full derivation, theorem statements with their hypotheses, and concrete experimental configurations. Three limitations remain and should be stated:
->
-> 1. **Experimental numbers.** All six publish their success-rate and error results as curves. This page transcribes the configurations (dimensions, degrees, sparsity levels, sample counts, trial counts, success thresholds, test functions and application problems) and the authors' qualitative conclusions, but **no point-by-point success rates or errors**.
-> 2. **Typographic ambiguity.** Two constants in the Legendre case of paper 32 (the leading factor of eq. (14) and the exponent structure of $W^0_{n,n}$), two normalisation constants in paper 29 (the $W$ of Problem 2 and the optimal $\alpha$), and the $\delta$ of Theorem 4.1 together with the use of $K$ in (4.5)/(4.7) of paper 36, are ambiguous or self-contradictory in the full texts used here. Each is flagged in place with a self-consistent form supplied; **check the typeset originals before quoting them**.
-> 3. **Limitations internal to the papers.** Paper 21 prints its main probability inequality in the reversed direction (corrected and flagged here); paper 32 states that $\beta_L\le\mu_L$ was not proved and contains **no sample-complexity theorem at all**; both theorems in paper 36 are quoted from others, its unbounded-domain equilibrium measures are **conjectures**, and it does not analyse the moment-estimation error; paper 44 contains **no new theorem**.
 
 ## How the six relate
 
@@ -1017,7 +986,7 @@ The same six seen through their theoretical route and what it costs:
 | 36  | quoted least-squares stability                        | $M\gtrsim N\log N$                                                  | **asymptotic in $N$ only**; unbounded densities are conjectures  |
 | 44  | quoted bounded-orthonormal-system theory              | uniformly bounded entries of $\sqrt WA$                             | **no new theorem**; tensorisation discards coordinate dependence |
 
-One judgement runs through all six: **sample complexity in sparse recovery is decided by the uniformity of the row norms, so any operation that changes the row structure — adding gradient rows, changing basis, changing the sampling density — must come with a matching preconditioner.** That unifies this page with the [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|optimal sampling page]]: both handle the same quantity, one inside a least-squares framework and one inside an ℓ1 framework.
+One judgement runs through all six: **sample complexity in sparse recovery is decided by the uniformity of the row norms, so any operation that changes the row structure — adding gradient rows, changing basis, changing the sampling density — must come with a matching preconditioner.** That judgement unifies these six papers with the [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|optimal sampling]] ones: both handle the same quantity, one inside a least-squares framework and one inside an ℓ1 framework.
 
 A second judgement concerns the trade between deterministic and probabilistic guarantees. Paper 10 and Theorem 2.1 of paper 29 are the only two **deterministic** results in this topic, and they pay for it respectively with a sample count quadratic in the sparsity and with an extra admissibility hypothesis on the directions. **In this field, removing the phrase "with high probability" is not free.**
 

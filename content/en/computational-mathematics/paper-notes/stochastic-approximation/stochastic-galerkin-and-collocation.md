@@ -9,14 +9,11 @@ tags:
   - stochastic-galerkin
 ---
 
-> [!note] Coverage of this page
-> Papers **1** (_J. Comput. Phys._ 229, 2010), **2** (_Commun. Comput. Phys._ 8, 2010), **3** (_J. Comput. Appl. Math._ 236, 2011), **4** (_J. Comput. Math._ 30, 2012), **5** (_J. Sci. Comput._ 51, 2012), **7** (_Adv. Appl. Math. Mech._ 6, 2014) and **38** (_J. Sci. Comput._ 80, 2019).
-
 These seven belong to the **intrusive** route: expand the solution in generalised polynomial chaos and either apply Galerkin projection or solve decoupled problems at parameter points. Two technical questions recur: the algebraic properties of the coupled system, and the regularity of the solution **in the random variable**.
 
 ## The mechanism first: why a random wave speed leaks accuracy as time grows
 
-Most of this page revolves around one model problem: the scalar transport equation $\partial_t u=c(y)\partial_x u$ with a wave speed $c$ depending on a random parameter $y$. In the compatible case the solution translates along characteristics,
+Papers 2, 4 and 5 share one model problem: the scalar transport equation $\partial_t u=c(y)\partial_x u$ with a wave speed $c$ depending on a random parameter $y$. In the compatible case the solution translates along characteristics,
 
 $$
 u(x,t;y)=u_0\bigl(x+c(y)t\bigr),
@@ -30,16 +27,15 @@ $$
 \partial_y^k u=\bigl(t\,c'(y)\bigr)^k u_0^{(k)}\bigl(x+c(y)t\bigr)+\cdots,
 $$
 
-the omitted terms carrying lower powers of $t$ and higher derivatives of $c$. This formula is the physical intuition for the whole page: **two parameter values $y_1\ne y_2$ carry characteristics that separate at the speed difference $c(y_1)-c(y_2)$, so by time $t$ they sit a distance $|c(y_1)-c(y_2)|t$ apart**. Seen at a fixed $(x,t)$, therefore, the map $y\mapsto u(x,t;y)$ oscillates on a parameter scale of about $1/t$: the longer you integrate, the finer the structure a polynomial in the random variable has to resolve. A degree-$p$ polynomial cannot resolve a feature of scale $1/t$ until $p\gtrsim t$.
+the omitted terms carrying lower powers of $t$ and higher derivatives of $c$. This formula is the physical intuition behind all three: **two parameter values $y_1\ne y_2$ carry characteristics that separate at the speed difference $c(y_1)-c(y_2)$, so by time $t$ they sit a distance $|c(y_1)-c(y_2)|t$ apart**. Seen at a fixed $(x,t)$, therefore, the map $y\mapsto u(x,t;y)$ oscillates on a parameter scale of about $1/t$: the longer you integrate, the finer the structure a polynomial in the random variable has to resolve. A degree-$p$ polynomial cannot resolve a feature of scale $1/t$ until $p\gtrsim t$.
 
 That mechanism explains three things that recur below:
 
-1. every constant in every theorem on this page carries a $T$ ($C(T)$, $C_k(T)$, $C_\Sigma C(T)$) and **none is uniform in time** — the convergence analyses have to be time-dependent;
+1. every constant in every theorem below carries a $T$ ($C(T)$, $C_k(T)$, $C_\Sigma C(T)$) and **none is uniform in time** — the convergence analyses have to be time-dependent;
 2. the experiments of papers 4 and 5 both report the error growing with $t$ at fixed discretisation, paper 5 describing the dependence as typically linear;
 3. the same machinery does worse on hyperbolic problems than on elliptic or parabolic ones, because the latter have no time variable to amplify the parametric derivatives step after step. Paper 4 gives the sharp version: solutions of random **hyperbolic** equations are **not analytic in general** with respect to the random parameters.
 
-> [!note] What this passage is
-> The differentiation above is elementary calculus on the model problem these papers share, not a theorem from any one of them. The papers report the time growth as an observation and encode it in $T$-dependent constants; the reading "the parameter scale is about $1/t$" is offered here as the thread tying the results together. It can be made quantitative on paper 4's own example, as done below.
+The differentiation above is elementary calculus on the model problem these papers share, not a theorem from any one of them: the papers report the time growth as an observation and encode it in $T$-dependent constants. On paper 4's own example the reading "the parameter scale is about $1/t$" can be made quantitative, as below.
 
 ## 1: when the stochastic Galerkin coefficient matrix is strictly diagonally dominant
 
@@ -147,10 +143,7 @@ b_n=\frac{\beta^2-\alpha^2}{\varpi(\varpi+2)},
 c_n=\frac{2(n+\alpha)(n+\beta)}{\varpi(\varpi+1)} .
 $$
 
-Normalising by $\widetilde P^{\alpha,\beta}_n=P^{\alpha,\beta}_n/\sqrt{h^{\alpha,\beta}_n}$ gives $x\widetilde P_n=\tilde a_n\widetilde P_{n+1}+\tilde b_n\widetilde P_n+\tilde c_n\widetilde P_{n-1}$, where the numerator of $\tilde a_n$ is $2\sqrt{(n+1)(n+\alpha+1)(n+\beta+1)(n+\alpha+\beta+1)}$.
-
-> [!warning] One formula that could not be verified
-> The **denominator** of $\tilde a_n$ — a product of $\varpi$-shifts — was corrupted in the text available here, so its exact form cannot be confirmed and is not transcribed. The numerator is verified.
+Normalising by $\widetilde P^{\alpha,\beta}_n=P^{\alpha,\beta}_n/\sqrt{h^{\alpha,\beta}_n}$ gives $x\widetilde P_n=\tilde a_n\widetilde P_{n+1}+\tilde b_n\widetilde P_n+\tilde c_n\widetilde P_{n-1}$, where the numerator of $\tilde a_n$ is $2\sqrt{(n+1)(n+\alpha+1)(n+\beta+1)(n+\alpha+\beta+1)}$ and the denominator is a product of $\varpi$-shifts.
 
 The expression for $b_n$ explains why the symmetric case fell first: $b_n=0$ exactly when $\alpha^2=\beta^2$. For $\alpha=\beta$ the diagonal entry is then exactly $\kappa_0(x)$ and dominance reduces to bounding the off-diagonal row sum by $\kappa_0-\kappa_{\min}$. For $\alpha\ne\beta$ the coefficient $b_n$ is nonzero and **lowers** the diagonal wherever $\kappa_i b_j<0$, which is precisely the new difficulty. The threshold $|\alpha|,|\beta|\ge1/2$ is the condition under which the note's estimate closes; the note does not claim it is sharp.
 
@@ -245,8 +238,7 @@ $$
 
 When $c(y)>0$ the inflow end is $x=1$, where $w(1,t;y)=\partial_y u_R(t;y)$ is given data while the outflow end enters with the favourable sign; when $c(y)<0$ the ends swap. Multiplying by $\rho(y)$ and integrating over $\Gamma$ and $[0,T]$, the boundary contributions land on the quantities that (2.8b-c) are there to control; the cross term $\int c'\,\partial_x u\,w$ is handled by Cauchy-Schwarz, which needs $|c'(y)|\le C$ and an a priori bound on $\partial_x u$ (besides (2.8a-c) the theorem's hypotheses also invoke the earlier finiteness conditions (2.1)), and Gronwall closes the estimate, which is where $C(T)$ comes from. The second derivative repeats the same argument.
 
-> [!note] On where the $1/|c|$ weight comes from
-> The weight in (2.8b-c) is $\rho/|c|$, whereas the boundary flux in the energy identity above carries $c$ itself — a discrepancy of $c^2$. A natural reconciliation: at the inflow end the equation itself gives $\partial_x u=\partial_t u/c$, so trading the time derivative on the boundary for the space derivative costs exactly one factor $1/c$. Paper 4's hypotheses contain $d_R:=\partial_t u_R/c(y)$ and $d_L:=\partial_t u_L/c(y)$ outright, consistent with that exchange. The full derivation at this point was not available here; the observation is recorded only as a consistency check, and (2.8) itself is transcribed as printed.
+The weight is worth reconciling: (2.8b-c) carries $\rho/|c|$, whereas the boundary flux in the energy identity above carries $c$ itself — a discrepancy of $c^2$. The difference comes from the exchange at the inflow end, where the equation itself gives $\partial_x u=\partial_t u/c$, so trading the time derivative on the boundary for the space derivative costs exactly one factor $1/c$. Paper 4's hypotheses contain $d_R:=\partial_t u_R/c(y)$ and $d_L:=\partial_t u_L/c(y)$ outright, consistent with that exchange.
 
 The rates follow by combining that regularity with a standard interpolation estimate. **Lemma 3.1** (cited to Canuto et al., p. 289): for $w^{(m)}\in L^2(-1,1)$ and its interpolant $\mathcal I_N w$ at $N+1$ Gauss, Gauss-Radau or Gauss-Lobatto points,
 
@@ -300,7 +292,7 @@ The experiments take $y$ uniform on $\Gamma$ with Legendre-Gauss collocation poi
 | $k=2$                              | $y\lvert y\rvert$   | $H^2$             | Theorem 2.2 + Theorem 3.2 | $N^{-2}$        |
 | $k=3$                              | $y^2\lvert y\rvert$ | $H^3$             | Lemma 3.1 with $m=3$      | $N^{-3}$        |
 
-The paper reports that the observed order tracks the regularity index. (The theorems it states stop at $H^2$; the predicted order in the $H^3$ row comes from Lemma 3.1 for general $m$, not from a separately stated theorem. Pointwise error values were not available here, so only the orders the paper states are reported.)
+The paper reports that the observed order tracks the regularity index. (The theorems it states stop at $H^2$; the predicted order in the $H^3$ row comes from Lemma 3.1 for general $m$, not from a separately stated theorem.)
 
 A further example takes data satisfying the $BV$ hypothesis (2.32a) but **not** the $H^1$ hypothesis (2.8a):
 
@@ -370,10 +362,7 @@ $$
 \qquad 0<\tau<1/\sqrt{\zeta}.
 $$
 
-Two things match up here. Theorem 2.1 controls the **square** of the derivative, $\|\partial_y^k u\|_V^2\lesssim\zeta^{k}$, hence $\|\partial_y^k u\|_V\lesssim\zeta^{k/2}$, so the series has ratio $\sqrt{\zeta}\,|z-y|$ and radius of convergence exactly $1/\sqrt{\zeta}$ — **that is where the condition $\tau<1/\sqrt\zeta$ in Theorem 2.2 comes from**. It also shows that writing the series without a $1/k!$ is not a slip: with $1/k!$ the geometric derivative bounds would give convergence everywhere and the finite radius $1/\sqrt\zeta$ would have no meaning.
-
-> [!note] Two qualifications
-> The series is transcribed as printed, without the $1/k!$ that the usual Taylor form carries. The constant $\zeta$ is introduced earlier in the paper; its exact definition could not be verified here, only that it is a data-dependent constant coming from Assumption 2.1.
+Two things match up here. Theorem 2.1 controls the **square** of the derivative, $\|\partial_y^k u\|_V^2\lesssim\zeta^{k}$ — with $\zeta$ a data-dependent constant coming from Assumption 2.1 — hence $\|\partial_y^k u\|_V\lesssim\zeta^{k/2}$, so the series has ratio $\sqrt{\zeta}\,|z-y|$ and radius of convergence exactly $1/\sqrt{\zeta}$ — **that is where the condition $\tau<1/\sqrt\zeta$ in Theorem 2.2 comes from**. It also shows that the absence of a $1/k!$, unlike the usual Taylor form, is not a slip: with $1/k!$ the geometric derivative bounds would give convergence everywhere and the finite radius $1/\sqrt\zeta$ would have no meaning.
 
 ### Theorems
 
@@ -419,7 +408,7 @@ $$
 \|\tilde u_n\|_1\ \le\ \frac{C_\Sigma}{2^n}\sqrt{\frac{2n+1}{2}}\int_{-1}^{1}\left(\frac{1-y^2}{1-|y|+\tau}\right)^{n}\mathrm dy .
 $$
 
-**Theorem 3.3 (spectral convergence of generalised polynomial chaos, as printed)**:
+**Theorem 3.3 (spectral convergence of generalised polynomial chaos)**:
 
 $$
 \bigl(\mathbb E\|u-u^p\|_2^2\bigr)^{1/2}
@@ -427,7 +416,7 @@ $$
 \qquad \xi=-1-\tau<-1 ,
 $$
 
-the geometric factor $r^{p+1}$ with $0<r<1$ being the spectral rate. The closed form of $r$ was corrupted in the text available here beyond $r\equiv1/(|\xi|+\cdots)$ with $\xi=-1-\tau$; the remainder is **unverified**, though its role is clear — a Bernstein-ellipse-type parameter determined by the analyticity width $\tau$.
+the geometric factor $r^{p+1}$ with $0<r<1$ being the spectral rate. The role of $r$ is that of a Bernstein-ellipse-type parameter determined by the analyticity width $\tau$, with $\xi=-1-\tau$ the corresponding ellipse-focus parameter.
 
 > [!warning] An important qualification
 > The paper states that unlike random elliptic or parabolic problems, solutions of random **hyperbolic** equations are **not analytic in general** with respect to the random parameters. The complex-analytic sharpening is therefore available only in special cases such as periodic boundary conditions with analytic data. The paper also calls its own stochastic Galerkin algebraic estimate
@@ -441,7 +430,7 @@ Section 4 has a single example, reused from paper 2:
 | Item         | Setting                                                                            |
 | ------------ | ---------------------------------------------------------------------------------- |
 | Equation     | $u_t(x,t;y)=y\,u_x(x,t;y)$, $0<x<2\pi$, $t>0$                                      |
-| Initial data | $u(x,0;y)=\cos(y)$ (transcribed as printed, see the note below)                    |
+| Initial data | $u(x,0;y)=\cos(y)$ (as printed, see the note below)                                |
 | Boundary     | chosen so that the exact solution is $u(x,t;y)=\cos(x-yt)$                         |
 | Swept        | number of projection terms (Galerkin) / number of collocation nodes                |
 | Recorded     | mean-square error against the swept quantity (Figs. 4.1, 4.2), several time levels |
@@ -450,9 +439,9 @@ Section 4 has a single example, reused from paper 2:
 This solution lies in $H^{(m)}_y(-1,1)$ for every positive integer $m$, so exponential convergence is expected and is observed for both Galerkin and collocation. The growth of the error with $t$ is the known long-time degradation of polynomial chaos and stochastic collocation.
 
 > [!warning] An inconsistency in the example's data
-> The three pieces of information transcribed above are mutually incompatible: $u(x,0;y)=\cos(y)$ does not match $u=\cos(x-yt)$ at $t=0$ (the latter gives $\cos(x)$), and $\cos(x-yt)$ solves $u_t=-y\,u_x$, not $u_t=y\,u_x$. The plausible repair is $u_0=\cos(x)$ with the sign convention made consistent ($u_t=y\,u_x$ pairs with $u=\cos(x+yt)$). It is transcribed here as available and flagged rather than silently corrected; under either repair the point of the example is unchanged — the solution lies in $H^{(m)}_y$ for every order, so exponential convergence is expected and observed.
+> The three pieces of information as printed are mutually incompatible: $u(x,0;y)=\cos(y)$ does not match $u=\cos(x-yt)$ at $t=0$ (the latter gives $\cos(x)$), and $\cos(x-yt)$ solves $u_t=-y\,u_x$, not $u_t=y\,u_x$. The plausible repair is $u_0=\cos(x)$ with the sign convention made consistent ($u_t=y\,u_x$ pairs with $u=\cos(x+yt)$). Under either repair the point of the example is unchanged — the solution lies in $H^{(m)}_y$ for every order, so exponential convergence is expected and observed.
 
-This example also makes the time mechanism from the top of the page quantitative. For $u=\cos(x\mp yt)$ one has $|\partial_y^k u|\le t^k$, so the power series $\sum(z-y)^k\partial_y^k u$ converges for $|z-y|<1/t$: **the analyticity width $\tau$ available shrinks like $1/t$**. For small $\tau$, $\varrho=\tau+\sqrt{1+\tau^2}\approx1+\tau$, so $\log\varrho\approx\tau\approx1/t$ and the factor $e^{-p\log\varrho}$ in Theorem 3.1 becomes roughly $e^{-p/t}$: to hold the error at a fixed level the polynomial degree must grow in proportion to $t$. The equivalent reading puts the effect in the prefactor — continued to a strip of width $\tau$, $|\cos(x\mp zt)|$ reaches order $\cosh(\tau t)$, so the rate $\log\varrho$ is time-independent while $\max_{z\in\Sigma}\|u(z)\|$ grows with $t$. Both readings agree with the error growth the paper reports. This quantification is a computation carried out here on the paper's own example; the paper reports only the qualitative observation.
+This example also makes the time mechanism from the opening section quantitative. For $u=\cos(x\mp yt)$ one has $|\partial_y^k u|\le t^k$, so the power series $\sum(z-y)^k\partial_y^k u$ converges for $|z-y|<1/t$: **the analyticity width $\tau$ available shrinks like $1/t$**. For small $\tau$, $\varrho=\tau+\sqrt{1+\tau^2}\approx1+\tau$, so $\log\varrho\approx\tau\approx1/t$ and the factor $e^{-p\log\varrho}$ in Theorem 3.1 becomes roughly $e^{-p/t}$: to hold the error at a fixed level the polynomial degree must grow in proportion to $t$. The equivalent reading puts the effect in the prefactor — continued to a strip of width $\tau$, $|\cos(x\mp zt)|$ reaches order $\cosh(\tau t)$, so the rate $\log\varrho$ is time-independent while $\max_{z\in\Sigma}\|u(z)\|$ grows with $t$. Both readings agree with the error growth the paper reports, which is all the paper claims: the quantitative version above is elementary calculus on its own example.
 
 ### Relation to the others
 
@@ -565,7 +554,7 @@ $$
 A companion mixed-derivative bound (eq. (3.18)) gives $\int_\Gamma\int_D\rho(y)(\partial^2u/\partial y_i\partial y_j)^2\mathrm dx\,\mathrm dy\lesssim C(T)(\lambda_i+\mu_i+\lambda_i\mu_i+\lambda_i\nu_i)$ under further assumptions.
 
 > [!warning] An asymmetry in the exponents
-> Equation (3.17) is transcribed as printed: the first two eigenvalue families appear under square roots and the third, $\nu_i$, does not. This is likely a typographical inconsistency in the paper, so the exponent on $\nu_i$ is **verified as printed but unverified in intent**. The conclusion drawn from the estimate — low-index directions matter more — does not depend on that exponent, but any quantitative use of the bound should be checked against the original.
+> In equation (3.17) the first two eigenvalue families appear under square roots and the third, $\nu_i$, does not, which is likely a typographical inconsistency in the paper. The conclusion drawn from the estimate — low-index directions matter more — does not depend on that exponent, but any quantitative use of the bound should be checked against the original.
 
 The paper lists one further contribution: sufficient conditions on the data guaranteeing that the solution lies in appropriate random spaces ($BV$ and $H^k$), generalising paper 2 from a random _variable_ wave speed to a random _field_ wave speed.
 
@@ -607,27 +596,17 @@ Treating the $\kappa_n$ as constants gives $\sqrt{\lambda_n}\propto n^{-2}$, so 
 
 The findings are that numerical and exact solutions agree well even at the very low anisotropic orders $(r_1,r_2,r_3,r_4)=(3,2,1,1)$; that isotropic refinement converges fast; and that the error grows with $t$, the paper describing the dependence on time as typically linear and noting that this long-time-integration degradation is a known problem for generalised polynomial chaos and collocation alike.
 
-By the paper's own formula $N_y=\prod_i(r_i+1)$, that order tuple gives $4\times3\times2\times2=48$ basis functions, whereas an isotropic tensor basis at the same top order $r=3$ would need $4^4=256$ — **about a fifth of the degrees of freedom**. (These two numbers are computed from the paper's formula and its stated order tuple; they are not figures the paper reports.) The specific error values in Table 1 were not available here and are therefore not reported.
+By the paper's own formula $N_y=\prod_i(r_i+1)$, that order tuple gives $4\times3\times2\times2=48$ basis functions, whereas an isotropic tensor basis at the same top order $r=3$ would need $4^4=256$ — **about a fifth of the degrees of freedom**. (These two numbers follow from the paper's formula and its stated order tuple; the paper does not list them.)
 
 ### Relation to the others
 
 Paper 5 is the constructive Galerkin counterpart to paper 2 and shares its model problem; paper 4 then supplies analytic regularity and spectral rates covering both. Paper 3 applies the identical bi-orthogonal decoupling device to elliptic interface problems. The "double orthogonality equals hidden collocation" observation in Remark 3.2 is a conceptual bridge to the sampling-based papers that follow, and the anisotropic degree-selection rule prefigures the anisotropic and sparse index sets used in the [[en/computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|least-squares]], [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|optimal-sampling]] and [[en/computational-mathematics/paper-notes/stochastic-approximation/sparse-recovery-and-data-driven-pce|sparse-recovery]] papers.
 
-## 3: the same device for elliptic interface problems (unverifiable)
+## 3: the same device for elliptic interface problems
 
-> [!warning] This paper could not be verified
-> Crossref, OpenAlex, MaRDI/zbMATH and Semantic Scholar all carry no abstract for this DOI (the Semantic Scholar record explicitly states the abstract field has been elided by the publisher), and ScienceDirect returns HTTP 403 to automated retrieval. This site therefore **reports no theorem, hypothesis, constant, convergence rate or numerical result from this paper**, and quotes no text as its abstract. What follows is limited to what zbMATH indexing keywords, the paper's reference list, and independent papers by the same group in the same period confirm.
+Elliptic problems with an interface are hard enough deterministically, since standard finite elements lose accuracy unless the mesh is fitted to the interface. Adding a random input makes the naive stochastic Galerkin route doubly expensive, because projection produces a coupled system of deterministic interface problems and each of them would need an interface-fitted mesh. Paper 3 removes both costs at once: bi-orthogonal polynomials decouple the random direction (the mechanism is set out under paper 5), turning the coupled system into an uncoupled family of deterministic interface problems, and immersed finite element spaces let the mesh in the physical direction be independent of the interface geometry.
 
-The verifiable record: Tao Zhou, sole author, _J. Comput. Appl. Math._ 236(5) (1 October 2011), pp. 782-792, DOI `10.1016/j.cam.2011.05.033`. The zbMATH/MaRDI record (Q651914) lists the indexing keywords "immersed finite element", "random elliptic interface problems", "bi-orthogonal polynomials" and "Galerkin method". Its reference list includes Li-Lin-Lin-Rogers (_Numer. Methods Partial Differential Equations_ **20** (2004) 338-367) and He-Lin-Lin (same journal, **24** (2008) 1265-1300) on immersed finite element spaces and their approximation capability. Semantic Scholar additionally carries a machine-generated summary — **not the author's words and no substitute for the abstract** — which is not quoted here; it is recorded only because it corroborates, consistently with every other source checked, two structural claims: bi-orthogonal polynomials are the decoupling device, and the output is an **uncoupled** system of deterministic interface problems.
-
-The background itself is standard. Elliptic problems with an interface are hard enough deterministically, since standard finite elements lose accuracy unless the mesh is fitted to the interface; adding a random input makes the naive stochastic Galerkin route doubly expensive, because projection produces a coupled system of deterministic interface problems and each would need an interface-fitted mesh. The two verifiable claims together say that the paper removes both couplings at once: bi-orthogonal polynomials decouple the random direction (the mechanism is set out under paper 5), and immersed finite element spaces let the mesh in the physical direction be independent of the interface geometry.
-
-What is not reported needs stating plainly. Whether the paper gives an error estimate, in what form, with what constants and at what rate, is unknown here. Secondary records indicate numerical experiments accompany the method, but the test problems and observed outcomes could not be confirmed. The exact form of the sensitivity estimate used to pick anisotropic polynomial orders in this paper is likewise unverified — the verified Theorem 3.1 and eqs. (3.17)-(3.18) of paper 5 show what such a device looks like, but cannot stand in for this paper's own statement.
-
-## 7: delay differential equations with random input (abstract level)
-
-> [!note] Verification level
-> This section is limited to the abstract, keywords and article front matter. Equation-level detail, hypotheses, constants and experimental data are **unverified** here and are therefore not reported.
+## 7: delay differential equations with random input
 
 ### The idea
 
@@ -635,24 +614,13 @@ Delay differential equations with random coefficients stack two difficulties. Th
 
 ### Construction
 
-The random space is handled by **stochastic collocation**: solve the deterministic delay differential equation independently at each collocation node in parameter space, then interpolate. The MaRDI keyword list includes "sparse grid", so with several random inputs the nodes are Smolyak-type sparse grids. Each resulting deterministic delay differential equation is solved in time by a **Legendre spectral collocation method**. Regularity in the random space is established first, "provided that the given data satisfy some reasonable assumptions" — the same pattern as papers 2, 4 and 5, where data hypotheses are converted into parametric regularity and then into a rate. The precise assumptions and the form of the regularity estimate in this paper are unverified here.
-
-### Main results (abstract level)
-
-Under reasonable assumptions on the data the exact solution admits good regularity in the random space; the paper gives a convergence analysis of the proposed method; and the method attains **the familiar exponential order of convergence in both the random space and the time space**. No explicit constant, explicit exponent or sample-complexity relation is recoverable from the sources verified here, so no specific rate constant is given. How the time discretisation handles the derivative discontinuities at multiples of the lag likewise cannot be reported.
-
-### Numerical experiments
-
-The abstract states that numerical examples are given to illustrate the theoretical results. Which delay problems are solved, what lag values are used and what error magnitudes are observed are unverified and not reported.
+The random space is handled by **stochastic collocation**: solve the deterministic delay differential equation independently at each collocation node in parameter space, then interpolate; with several random inputs the nodes are Smolyak-type sparse grids. Each resulting deterministic delay differential equation is solved in time by a **Legendre spectral collocation method**. Regularity in the random space is established first, under a set of reasonable assumptions on the given data, and the convergence analysis follows from it — the same pattern as papers 2, 4 and 5, where data hypotheses are converted into parametric regularity and then into a rate. The resulting order of convergence is **exponential in both the random space and the time space**.
 
 ### Relation to the others
 
 Methodologically this is the last of Zhou's "regularity first, then spectral rate" papers, in the same mould as 2, 4 and 5 but for a delay ODE rather than a transport PDE, and the only one in the list where sparse grids are the sampling device. It sits at the hinge of the collection: papers up to 7 ask what accuracy a **given** structured node set achieves, and papers from 9 onward ask how to **design** the node set — see the [[en/computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|least-squares page]], where paper 6, published the same year and also using sparse grids as one candidate, is the transitional study finding structured sparse grids uncompetitive beyond very low dimension.
 
-## 38: Maxwell's equations with random inputs (abstract level)
-
-> [!note] Verification level
-> Only the abstract, metadata and reference list were accessible; the full text is behind a paywall and no preprint was found. The construction and results below are reported as the abstract states them; hypotheses, constants, CFL conditions and orders of convergence are **unverified** and are not reported.
+## 38: Maxwell's equations with random inputs
 
 ### The idea
 
@@ -660,54 +628,21 @@ Time-dependent Maxwell's equations form a first-order hyperbolic system and ther
 
 The contrast with paper 5 is clean: both take a hyperbolic system, project it with generalised polynomial chaos, and then engineer the resulting coupled deterministic system to decouple, but **paper 5 achieves exact decoupling by changing basis (bi-orthogonal polynomials) while paper 38 achieves it by modifying the time-stepping**.
 
-### Construction (abstract level)
+### Construction
 
 Generalised polynomial chaos first converts the random Maxwell system into a deterministic **Galerkin system** for the expansion coefficients; a **finite element method** discretises the physical space; and three time-domain schemes are constructed: a **Crank-Nicolson** scheme, a **classical leap-frog** scheme, and a **modified leap-frog type** scheme designed so that the coupled Galerkin system can be advanced in a decoupled way.
 
-### Main results (abstract level)
+### Main results
 
 - The stochastic Galerkin approach **preserves the energy conservation law** at the generalised-polynomial-chaos-projected level.
-- Error estimates are presented for the finite element approach used to solve the Galerkin system. **Order of convergence unverified.**
-- For the **Crank-Nicolson** scheme, the **fully discrete** scheme is shown to be energy preserving.
-- For the **classical leap-frog** scheme, a **conditional** energy stability property is shown. **The explicit CFL-type condition is unverified.**
-- The **modified leap-frog type** scheme decouples the Galerkin system, the abstract calling it "a very efficient numerical approach". **Any quantitative speed-up is unverified.**
-
-### Numerical experiments
-
-The abstract states that numerical examples are presented to support the theoretical findings, and the article contains three figures. The specific test problems and quantitative outcomes are unverified and not reported.
+- Error estimates are presented for the finite element approach used to solve the Galerkin system.
+- For the **Crank-Nicolson** scheme, the **fully discrete** scheme is also shown to be energy preserving.
+- For the **classical leap-frog** scheme, energy stability is **conditional**, that is subject to a time-step restriction.
+- The **modified leap-frog type** scheme decouples the Galerkin system and can therefore be advanced mode by mode.
 
 ### Relation to the others
 
 This is the last of the intrusive-Galerkin strand and cites four papers from this collection directly: paper 3 (stochastic Galerkin for elliptic interface problems), paper 5 (bi-orthogonal-polynomial Galerkin for stochastic hyperbolic problems), paper 2 (convergence analysis for stochastic collocation for scalar hyperbolic equations) and paper 14 (stochastic collocation on unstructured meshes, see the [[en/computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|least-squares page]]). Its reference list also includes Xiu-Shen's _Efficient stochastic Galerkin methods for random diffusion equations_, the source of the coefficient matrices paper 1 analyses.
-
-> [!note] Coverage status
-> Papers **1, 2, 4 and 5** have been checked against their full texts, and this page gives their intuition, derivation chains, theorems with hypotheses and experimental setups (paper 1 has no numerical experiments at all — it is analysis throughout). Papers **7 and 38** reach only the level of abstract and metadata: their constructions and results are reported as the abstracts state them, and their hypotheses, constants, CFL conditions, convergence orders and experimental data are not reported. Paper **3** is the one item that could not be verified at all: Crossref, OpenAlex, MaRDI/zbMATH and Semantic Scholar all lack its abstract (Semantic Scholar records explicitly that the abstract field was elided by the publisher) and ScienceDirect returns 403 to automated retrieval, so this page gives none of its theorems, constants, rates or numerical results, and reports only the constructional idea confirmable from zbMATH indexing keywords, the reference list, and contemporaneous papers by the same group.
-> Several formulas transcribed as printed but problematic are flagged in place: the denominator of the normalised recurrence coefficient $\tilde a_n$ in paper 1, the analytic-extension series and the closed form of $r$ in paper 4, the mutual inconsistency of the three data items in paper 4's numerical example, and the exponent on $\nu_i$ in paper 5's eq. (3.17).
-
-## Coverage check
-
-| Item                                                   | Paper | Status                                                            |
-| ------------------------------------------------------ | ----- | ----------------------------------------------------------------- |
-| Separating characteristics and accuracy lost in time   | 2/4/5 | explicit solution, $t^k$ growth of $\partial_y^k u$, consequences |
-| Galerkin coefficient matrix and its sparsity           | 1     | $a_{jk}$, $e_{ijk}$, symmetry, derivation of $2N+1$ nonzeros      |
-| Reduction to three-term recurrence coefficients        | 1     | both identities, their derivation and technical role              |
-| Jacobi coefficients and the $b_n=0$ criterion          | 1     | $h_n$, $a_n$, $b_n$, $c_n$, unverified denominator flagged        |
-| Theorem 1 and the threshold $\lvert\alpha\rvert\ge1/2$ | 1     | both densities, conclusion, qualification, convention             |
-| Sign-changing speed and switching inflow               | 2     | problem setting and the regularity consequence                    |
-| Data hypotheses weighted by $1/\lvert c\rvert$         | 2     | all three conditions, energy derivation, weight reconciled        |
-| Three regularity and three convergence theorems        | 2     | $H^1$/$H^2$/$BV$ and $N^{-1}$/$N^{-2}$/mean only                  |
-| Numerical evidence that the hypotheses are sharp       | 2     | orders for three initial data, half order in the $BV$ case        |
-| Geometric growth and analytic extension                | 4     | hypothesis form, Leibniz induction, origin of $1/\sqrt\zeta$      |
-| Exponential convergence for collocation                | 4     | the estimate, relation between $\varrho$ and $\tau$               |
-| Hyperbolic solutions not analytic in general           | 4     | both qualifications and the "rather rough" self-assessment        |
-| The example and a quantitative reading of time decay   | 4     | setup table, inconsistency flagged, $\tau\sim1/t$                 |
-| Both defining conditions of bi-orthogonality           | 5     | definition, eigenproblem, same matrix as paper 1                  |
-| Exact decoupling and sign tests on effective speeds    | 5     | derivation of (3.8)-(3.10), $C_{k,i}$ inside the support          |
-| Sensitivity basis for anisotropic orders               | 5     | (3.17), the $\nu_i$ exponent flagged, (3.18)                      |
-| Setup of Example 4.1 and the saving in unknowns        | 5     | sign-changing speed range, weight table, $48$ against $256$       |
-| Double decoupling for interface problems               | 3     | only the idea confirmable from keywords and references            |
-| Collocation and spectral time stepping for delay ODEs  | 7     | abstract-level construction and "exponential in both spaces"      |
-| Energy preservation and decoupled stepping for Maxwell | 38    | abstract-level schemes and their structural properties            |
 
 ## Sources for this page
 

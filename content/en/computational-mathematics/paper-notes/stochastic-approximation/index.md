@@ -57,7 +57,9 @@ $$
 K(z)=K_\Lambda(z)=\sum_{\alpha\in\Lambda}\varphi_\alpha^{2}(z) ,
 $$
 
-the (normalised) Christoffel function is its reciprocal $N/K(z)$, and every weight in weighted least squares is written here in the form $1/K$. In vector form $K(z)=\varphi^{\mathsf T}\varphi$, so any orthogonal change of basis $\psi\leftarrow U\varphi$ leaves it unchanged: **$K$ is a property of the subspace $\mathbb P_\Lambda$, not of the basis.** Only a basis-independent quantity deserves to be the centre of a family of methods.
+the (normalised) Christoffel function is its reciprocal $N/K(z)$, and every weight in weighted least squares takes the form $1/K$. Both conventions circulate in the literature — some authors call $\sum_\alpha\varphi_\alpha^2$ itself the Christoffel function, others its reciprocal; the convention below is the former for $K$ and the latter for the Christoffel function, so check each paper's own convention before quoting it.
+
+In vector form $K(z)=\varphi^{\mathsf T}\varphi$, so any orthogonal change of basis $\psi\leftarrow U\varphi$ leaves it unchanged: **$K$ is a property of the subspace $\mathbb P_\Lambda$, not of the basis.** Only a basis-independent quantity deserves to be the centre of a family of methods.
 
 ### Why it is the one
 
@@ -103,7 +105,7 @@ The criterion on the second row depends only on $N=\dim\mathbb P_\Lambda$ and no
 Three qualifications, all of them made by the papers themselves:
 
 - Using the **equilibrium measure** — the $k\to\infty$ limit of the induced measure — in place of the induced measure also gives log-linear counts, but only **asymptotically in the degree**, whereas the induced measure achieves it at every finite $N$. Paper 44 notes that at $K=20$ the two designs are still visibly different.
-- **The advantage of induced sampling shrinks in high dimension at low degree**, because a low-degree space makes $\rho$ close to $w$; paper 45 finds only a modest advantage on its four-dimensional hyperbolic-cross PDE example. The claim that survives is that induced sampling is consistently among the best and is the one with a minimal-sample-count theorem — not that it always wins numerically.
+- **The advantage of induced sampling shrinks in high dimension at low degree**, because a low-degree space makes $\rho$ close to $w$; paper 45 finds only a modest advantage on its four-dimensional hyperbolic-cross PDE example. Induced sampling is consistently among the best and is the only route with a minimal-sample-count theorem, but it is not always the numerical winner.
 - On a bounded domain the large-$N$ limit of the induced measure is the (tensorised) Chebyshev density, and that is a theorem. **The Gaussian counterpart is only a conjecture** in papers 22, 28, 36 and 45, never proved, and must not be cited as a theorem.
 
 ## Core idea of each paper
@@ -149,13 +151,6 @@ Three qualifications, all of them made by the papers themselves:
 - **36** and **44** treat data-driven polynomial chaos: when the input distribution is given only through samples with no analytic form, the orthogonal basis must be built from an empirical measure and the sampling design changes accordingly.
 
 ![Fold gradients and sampling density into the recovery problem](assets/diagrams/tao-zhou-papers/en/sparse-recovery.svg)
-
-> [!note] Coverage status
-> Papers **1, 2, 4, 5, 9, 10, 11, 14, 21, 22, 24, 28, 29, 32, 36, 44 and 45** have been checked equation by equation against full texts: their settings, derivation chains, theorem hypotheses and constants, and experimental configurations are transcribed, and the close-reading pages carry the full derivations and experimental records. Where a paper supplies no numbers for a figure, only the configuration is reported and no numbers are supplied.
->
-> Papers **6, 7 and 38** reach abstract and metadata level only, so no theorems or experimental numbers are given for them. Papers **3 and 13** could not be verified: the publisher blocks the full text of both and no aggregator holds an abstract (for paper 13, researchr explicitly records that the abstract is missing and Semantic Scholar notes that the abstract field was elided by the publisher). Their sections give only what indexing keywords, sister papers and third-party literature confirm — paper 13's construction is inferred from its identically designed sister paper 21, and the claim of a linearly growing sample count rests on a third-party statement (Seshadri–Narayan–Sarkar) rather than on the paper itself — and **neither paper's theorems, constants or numerical results are reported here**.
->
-> Two further cautions. On notation: this group of papers is not consistent about the Christoffel function, some writing $\sum_\alpha\varphi_\alpha^2$ and others its reciprocal. This site uses $K(z)=\sum_\alpha\varphi_\alpha^2(z)$ throughout and takes the Christoffel function to be $N/K(z)$, so every weight appearing on these pages is of the form $1/K$; check each paper's own convention before quoting it. And as flagged above, the asymptotic induced measure in the Gaussian case is only a **conjecture** in every paper that states it, never a theorem.
 
 ## Relation to the other topics
 

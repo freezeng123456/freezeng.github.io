@@ -9,12 +9,9 @@ tags:
   - optimal-sampling
 ---
 
-> [!note] Coverage of this page
-> Papers **22** (_Math. Comput._ 86, 2017), **24** (_SIAM J. Sci. Comput._ 39(3), 2017), **28** (_SIAM J. Sci. Comput._ 40(1), 2018), **45** (_SIAM Rev._ 62(2), 2020) and **54** (_J. Comput. Phys._ 430, 2021).
-
 ![One pipeline for collocation design](assets/diagrams/tao-zhou-papers/en/sampling-design.svg)
 
-## The one idea running through the whole page
+## The one idea running through all five papers
 
 Every paper here rests on a single sentence: **the density you sample from need not be the density that defines orthogonality.**
 
@@ -38,7 +35,7 @@ is the **stability factor**. When one samples from the orthogonality density $w$
 
 The five papers differ only in which side of the pair they apply it to. Papers 22, 24 and 28 sample from the equilibrium measure and weight by the Christoffel function, which is optimal in the limit of large degree. Paper 45 takes the inverse Christoffel function to be the sampling density itself, which is optimal at every finite $N$. Paper 28 goes further and replaces randomness altogether by greedy selection.
 
-### Notation used on this page
+### Notational convention
 
 Throughout,
 
@@ -149,8 +146,7 @@ $$
 
 **Theorem 4.3 (optimal measures, from Bos et al.).** If $\mu_k$ is an optimal measure for $\mathbb P_k$ on $D$ with weight $\rho=\exp(-Q)$, then (i) $\kappa_{k,\rho}=N$ $\mu_{D,Q}$-a.e., and (ii) $\mu_k\to\mu_{D,Q}$ weakly as $k\to\infty$. With Theorem 4.1 this gives **asymptotically simple log-linear scaling $S\log S\gtrsim N$, the best possible sample-count criterion**.
 
-> [!warning] Three limitations of Theorem 4.3, listed by the paper itself
-> First, the result gives **no optimality at fixed $k$**, so equilibrium sampling may be quite suboptimal when $k$ is small. Second, it is unclear how large $k$ must be relative to $d$ for the asymptotics to bite. Third, large $k$ is computationally infeasible in high dimension, since $\dim\mathbb P_k\sim k^d$. Those three gaps are exactly what paper 45's induced sampling removes.
+The paper itself lists three limitations of this asymptotic optimality. First, it gives **no optimality at fixed $k$**, so equilibrium sampling may be quite suboptimal when $k$ is small. Second, it is unclear how large $k$ must be relative to $d$ for the asymptotics to bite. Third, large $k$ is computationally infeasible in high dimension, since $\dim\mathbb P_k\sim k^d$. Those three gaps are exactly what paper 45's induced sampling removes.
 
 **Theorem 5.1 (CLS stability).** For compact $D$ and admissible $w$ with index set $\Lambda$, if
 
@@ -181,13 +177,13 @@ with $\varepsilon(S)=\frac{2-2\log2}{(1+r)\log S}\to0$ and $\kappa(R)=\lambda_{\
 Theorems 5.3 and 5.4 are the unbounded-domain analogues. The paper says the analysis presents no great difficulty but that **implementation does**, because no explicit formula for the weighted pluripotential equilibrium measure is known for the weights of interest. It therefore **conjectures** forms for them and reports simulations supporting the conjectures (Section 6, Table 2). Those forms are conjectures, not results.
 
 > [!warning] The paper's own reservations about its theory
-> This deserves recording faithfully, because it is easily lost in restatement. The last term $4\kappa^2(R)d^2(f)$ **does not vanish as $S\to\infty$**, so taken at face value this theory is **weaker** than the established standard Monte Carlo theory. The paper says plainly that it cannot yet prove the two comparable, and offers two weaker forms of support instead: an argument that its bound is of the same magnitude as the Monte Carlo bounds (Section 5.1.1), and numerical evidence that weighted least squares is **frequently**, not always, superior (Section 6). It also notes that in one dimension $\lambda_{\min}(R)$ and $\kappa(R)$ are numerically well behaved for general weights (Figure 3).
+> The last term $4\kappa^2(R)d^2(f)$ **does not vanish as $S\to\infty$**, so taken at face value this theory is **weaker** than the established standard Monte Carlo theory. The paper says plainly that it cannot yet prove the two comparable, and offers two weaker forms of support instead: an argument that its bound is of the same magnitude as the Monte Carlo bounds (Section 5.1.1), and numerical evidence that weighted least squares is **frequently**, not always, superior (Section 6). It also notes that in one dimension $\lambda_{\min}(R)$ and $\kappa(R)$ are numerically well behaved for general weights (Figure 3).
 >
 > In other words the case for this route rests here more on experiment than on theorem; it is paper 45's induced-sampling criterion below that turns the linear regime into a clean theorem.
 
 ### Numerical experiments
 
-What has been checked here is the **design of the experiments and the qualitative outcomes the paper states**. The numbers in the figures — sample counts, condition numbers, error magnitudes — have not been verified item by item, so none are quoted below.
+The experiments come in two groups: the first four measure matrix stability, the last three approximation accuracy.
 
 | Experiment | Setup                                                                                                                   | Outcome as stated                                                                       |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
@@ -199,7 +195,7 @@ What has been checked here is the **design of the experiments and the qualitativ
 | §6.2.2     | a heterogeneous diffusion equation in one spatial dimension                                                             | likewise                                                                                |
 | §6.2.3     | an electrical resistor network                                                                                          | likewise                                                                                |
 
-The overall finding, in the abstract's wording, is that CLS is superior to standard Monte Carlo in many situations of interest; elsewhere the paper adds "many (but not all)".
+The paper's overall finding is that CLS is superior to standard Monte Carlo in many situations of interest — with the paper itself adding "many (but not all)".
 
 **What the experiments establish.** First, Figure 1 confirms that the blow-up of the stability factor is real behaviour of the common weight families, not a worry on paper. Second, §6.1.3 shows the method reaches further than its theorem, since the theory is written for total-degree spaces and the $\ell_p$ spaces work too. Third, §6.1.2 is the **only** support the unbounded-domain conjectures have.
 
@@ -246,8 +242,7 @@ Multi-index spaces: $V(\Lambda):=\mathrm{span}\{x^\lambda:\lambda\in\Lambda\}$, 
 
 Design matrix: unbiased, $(A)_{m,n}=\frac{1}{\sqrt M}v_n(x_m)$ and $(f)_m=\frac{1}{\sqrt M}f(x_m)$, with normal equations $Gc=g$, $G=A^TA$, $g=A^Tf$. The paper advises solving the least-squares system by QR rather than forming the normal equations, which are used only for analysis.
 
-> [!note] A printing inconsistency
-> Example 2.2 prints the Gaussian weight as $w(x)=(2\pi)^{-d}\exp(-\|x\|_2^2)$, which is inconsistent with the $w=\exp(-\|x\|_2^2)/\pi^{d/2}$ actually used later in Example 8.1. The numerics use the latter, and so does this page; the discrepancy is flagged here.
+The survey's Gaussian weight carries an inconsistent normalisation: Example 2.2 prints $w(x)=(2\pi)^{-d}\exp(-\|x\|_2^2)$, while Example 8.1 uses $w=\exp(-\|x\|_2^2)/\pi^{d/2}$. Only the latter integrates to 1 over $\mathbb R^d$, and it is what the numerics and everything below use.
 
 ### Derivation
 
@@ -345,13 +340,13 @@ The paper is equally explicit about the gap between theory and practice: practit
 > [!warning] The Gaussian case is only a conjecture
 > For the Gaussian weight on $D=\mathbb R^d$, paper 22 **conjectures**
 > $$\lim_{k\to\infty}\rho\bigl(x/\sqrt k\bigr)=C\bigl(2-\|x\|_2^2\bigr)^{d/2},$$
-> with $C$ a normalising constant and the input scaled by $1/\sqrt k$. **This is a conjecture, not a theorem**, and it is treated as one everywhere it appears on this page. The survey itself is blunt about the multivariate case: "much more is unknown, and in many cases we currently have only conjectures", and the large-$k$ asymptotics of $\rho^{TP}$, $\rho^{ED}$, $\rho^{TD}$ and $\rho^{HC}$ are "largely understudied".
+> with $C$ a normalising constant and the input scaled by $1/\sqrt k$. **This is a conjecture, not a theorem**: every paper that states this asymptotic form offers it as a conjecture, and nobody has proved it. The survey itself is blunt about the multivariate case: "much more is unknown, and in many cases we currently have only conjectures", and the large-$k$ asymptotics of $\rho^{TP}$, $\rho^{ED}$, $\rho^{TD}$ and $\rho^{HC}$ are "largely understudied".
 
 **Sampling from $\rho$ is cheap (Section 8.1).** General multivariate densities are onerous to sample, but the induced density is "an additive mixture of tensor-product densities" and can be sampled with complexity **linear in the dimension $d$**. Implementation is referenced to Narayan's work on computing induced orthogonal polynomial distributions, with software at `https://github.com/akilnarayan/induced-distributions`.
 
 ### Numerical experiments
 
-All three experiments come with complete setups, and they are the firmest numerical evidence on this page.
+All three experiments come with complete setups.
 
 **Example 5.2 — the model failure of standard sampling.**
 
@@ -396,7 +391,7 @@ Two further figures: Figure 4 compares $w$, $\rho$ and $\rho_\infty$ at $N-1=19$
 
 **What the experiments establish.** Example 5.2 turns "standard sampling can be disastrous" from a warning into a reproducible fact. Example 8.1 confirms the theory's most important property, that induced sampling **does not degrade with dimension**. Figures 4 and 5 show that changing the density is not a tweak but a change of magnitude.
 
-**What they do not establish.** On the real PDE of Section 9 induced sampling is only slightly better. The paper does not dodge this and neither does this page: **the claim that survives is that induced sampling is consistently among the best and is the one with a minimal-sample-count theorem behind it, not that it always wins numerically.** Note also that Theorem 7.2 guarantees near-best accuracy for the **truncated** estimator in **expectation**, whereas the experiments report the distribution of $\eta_N$; neither implies the other directly.
+**What they do not establish.** On the real PDE of Section 9 induced sampling is only slightly better, which the paper does not dodge. **The strength of induced sampling is that it is consistently among the best and is the one with a minimal-sample-count theorem behind it, not that it always wins numerically.** Note also that Theorem 7.2 guarantees near-best accuracy for the **truncated** estimator in **expectation**, whereas the experiments report the distribution of $\eta_N$; neither implies the other directly.
 
 ### Relation to the others
 
@@ -408,7 +403,7 @@ Paper 45 is the pedagogical capstone of the thread. It presents paper 22 as the 
 
 Randomised designs give only with-high-probability guarantees, and classical **approximate Fekete points** — greedy maximisation of $|\det V|$ — are defined only for **compact** $\Gamma$, so they simply **do not exist** for Gaussian/Hermite problems. On top of that there are four objectives one might optimise — the global determinant, the global condition number, and the greedy version of each — with no a priori reason for them to agree.
 
-**Inserting the Christoffel weight into the determinant objective resolves both at once.** The mechanism can be made concrete: in the weighted space $Q$, every row of the Vandermonde matrix has norm exactly 1, since the squared norm of row $j$ is $\sum_\alpha\psi_\alpha^2(y_j)/K_\Lambda(y_j)=1$. For a matrix with unit-norm rows Hadamard's inequality gives $|\det V|\le1$, with equality precisely when the rows are mutually orthogonal, that is when $\kappa(V)=1$. **So "maximal determinant" and "minimal condition number" must coincide at the optimum** — a property of the weighted space with no unweighted counterpart. (This reading of Theorem 3.1 is this page's own; the paper's proof has not been checked line by line here.) Note how exactly it matches paper 22's remark about itself: Christoffel weighting is row normalisation of the design matrix.
+**Inserting the Christoffel weight into the determinant objective resolves both at once.** The mechanism can be made concrete: in the weighted space $Q$, every row of the Vandermonde matrix has norm exactly 1, since the squared norm of row $j$ is $\sum_\alpha\psi_\alpha^2(y_j)/K_\Lambda(y_j)=1$. For a matrix with unit-norm rows Hadamard's inequality gives $|\det V|\le1$, with equality precisely when the rows are mutually orthogonal, that is when $\kappa(V)=1$. **So "maximal determinant" and "minimal condition number" must coincide at the optimum** — a property of the weighted space with no unweighted counterpart. This row-norm reading matches paper 22's remark about itself exactly: Christoffel weighting is row normalisation of the design matrix.
 
 As for unbounded domains: $1/\sqrt{K_\Lambda}$ suppresses polynomial growth far out, so the weighted formulation is defined on non-compact $\Gamma$ where unweighted approximate Fekete points are not.
 
@@ -479,8 +474,7 @@ Three implementation details cannot be skipped:
 
 **Theorem 3.1 (determinant optimality $\Leftrightarrow$ condition-number optimality, and greedy attains the global optimum).** Let $\rho:\Gamma\to[0,\infty)$ be a probability density on $\mathbb R^d$ and $\Lambda$ an arbitrary multi-index set of size $N$ defining $Q$. A configuration $A_N$ satisfies $|\det V(A_N,Q)|=1$ **if and only if** $\kappa(V(A_N,Q))=1$, so the solutions of the two global problems attaining optimal objective values coincide. Moreover, if $A_N$ attains either (hence both), then the determinant-greedy iteration started at $y^{F*}_1\in A_N$ has a branch with $A^{F*}_N=A_N$, and the condition-number-greedy iteration started at $y^{C*}_1\in A_N$ has a branch with $A^{C*}_N=A_N$.
 
-> [!warning] The premise of Theorem 3.1
-> The theorem **presumes the existence** of a unit-condition-number configuration. The authors say plainly that in $d>1$ this existence is hard to verify, citing known nontrivial multidimensional examples. The multidimensional optimality conclusions are therefore **conditional**.
+The theorem **presumes the existence** of a unit-condition-number configuration. The authors say plainly that in $d>1$ this existence is hard to verify, citing known nontrivial multidimensional examples, so the multidimensional optimality conclusions are **conditional**.
 
 **Lemma 3.1 (the one-dimensional structure).** The five statements used in the derivation above: for $y\notin\phi_{N-1}^{-1}(0)$ a configuration $A_N=A_N(y)$ attaining the optimum exists; $A_N(y)$ is unique as a function of $y$; $A_N(y)=r_N^{-1}(r_N(y))$; $A_N(y)$ carries an $N$-point positive quadrature rule exact to degree $2N-2$ with Christoffel weights; and $A_N(y)$ is the Gauss rule when $y\in\phi_N^{-1}(0)$. The paper notes that $\rho$ must be regarded as a density on all of $\mathbb R$ even when its support is compact.
 
@@ -492,8 +486,8 @@ $$
 
 so the resulting Vandermonde matrix is **perfectly conditioned**. In one dimension the greedy choice is therefore not an approximation but attains the optimum. More importantly this holds for **any** univariate density, **including densities without compact support** — which is exactly the property approximate Fekete points lack, so it is also a positive answer to the unbounded-domain difficulty.
 
-> [!note] A misprint
-> The theorem's text prints the starting condition as $y\in\phi_{N-1}^{-1}(0)$, which contradicts the Lemma 3.1 and Corollary 3.1 it relies on, where $y$ must lie **outside** the zero set. It should read $y\notin\phi_{N-1}^{-1}(0)$. This page states the latter and flags the discrepancy here.
+> [!note] The starting condition is printed the wrong way round
+> Theorem 3.2's text prints the starting condition as $y\in\phi_{N-1}^{-1}(0)$, which contradicts the Lemma 3.1 and Corollary 3.1 it relies on: there $y$ must lie **outside** the zero set of $\phi_{N-1}$, or else $r_N=\phi_N/\phi_{N-1}$ is undefined at $y$. The correct condition is $y\notin\phi_{N-1}^{-1}(0)$.
 
 **Corollary 3.1.** For $y\notin\phi_{N-1}^{-1}(0)$ the greedy iteration started at $y^{F*}_1=y$ produces the unique positive $L^2_\rho$ quadrature abscissae with optimal polynomial accuracy; if $y\in\phi_N^{-1}(0)$ it produces the $\rho$-weighted Gauss abscissae.
 
@@ -516,7 +510,7 @@ $$
 C_d\Bigl(1-\tfrac{1}{2n}\sum_{k=1}^ds_k^2\Bigr)^{d/2},\qquad s\in\mathbb R^d,
 $$
 
-with $C_d$ a normalising constant. **This is the same functional form as the asymptotic Gaussian induced measure quoted in paper 45, and that form is only a conjecture**, so the candidate density here should likewise be read as a heuristic inspired by a conjecture. The authors note that weakly admissible meshes would be the natural candidates but that known constructions grow too fast in dimension.
+with $C_d$ a normalising constant. **This is the same functional form as the asymptotic Gaussian induced measure quoted in paper 45, and that form is only a conjecture**, so the candidate density here is likewise a heuristic inspired by a conjecture. The authors note that weakly admissible meshes would be the natural candidates but that known constructions grow too fast in dimension.
 
 | Experiment | Setup                                                                                                       | Result                                                                                                   |
 | ---------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
@@ -538,7 +532,7 @@ $$
 \kappa(x,y)=1+\sigma\sum_{k=1}^d\frac{1}{k^2\pi^2}\cos(2\pi kx)\,y_k,
 $$
 
-quantity of interest $u(0.5,y)$ and $\rho$ uniform on $[-1,1]^d$. (The value of $\sigma$ has not been verified here and is therefore not quoted.)
+quantity of interest $u(0.5,y)$ and $\rho$ uniform on $[-1,1]^d$.
 
 **What the experiments establish.** First, at only 5% oversampling — $M=1.05N$, extremely close to $N$ — CFP still yields usable condition numbers, which is precisely the regime paper 45 identifies as where practitioners live and theory cannot reach. Second, the unbounded row is itself a result, because unweighted AFP **is not even defined** there. Third, the two accuracy studies show that the weighting does not buy stability at the cost of accuracy.
 
@@ -578,8 +572,7 @@ $$
 
 In the univariate case with $\Lambda=\{0,1,\dots,n\}$ and $N=n+1$ this is written $\lambda_{n+1}(z)=1/\sum_{k=0}^n\varphi_k^2(z)$.
 
-> [!note] A printing inconsistency
-> The paper uses $\lambda$ for the Christoffel function itself and $N\lambda$ for its scaled version, but line 4 of Algorithm 1 as printed reads $(W)_{m,m}=N/\lambda_\Lambda(Z^{(m)})$, which contradicts the $N\lambda_\Lambda$ of eq. (9); one of the two is a typo. This page reproduces the source as printed and flags it here rather than correcting it silently.
+The paper uses $\lambda$ for the Christoffel function itself and $N\lambda$ for its scaled version, but line 4 of Algorithm 1 as printed reads $(W)_{m,m}=N/\lambda_\Lambda(Z^{(m)})$, which contradicts the $N\lambda_\Lambda$ of eq. (9). Eq. (9) is the one compatible with the uniform-boundedness cancellation behind Theorem 4.1, so the slash in that line of the algorithm is the typo.
 
 **Algorithm 1 (Christoffel Sparse Approximation, CSA)** has five steps: (1) generate $M$ i.i.d. samples $\{Z^{(m)}\}$ from the equilibrium density $v=\frac{\mathrm d\mu}{\mathrm dZ}$; (2) assemble $f$ with $f_m=f(Z^{(m)})$; (3) form the $M\times N(\Lambda)$ Vandermonde-like matrix $\Phi$ with $\Phi_{m,i}=\varphi_i(Z^{(m)})$; (4) compute the diagonal preconditioner from evaluations of the (scaled) Christoffel function; (5) solve the preconditioned basis-pursuit-denoising problem $\alpha^\star=\arg\min_\alpha\|\alpha\|_1$ subject to $\|\sqrt W\Phi\alpha-\sqrt Wf\|_2\le\varepsilon$.
 
@@ -649,23 +642,20 @@ $$
 \|\alpha-\alpha^\star\|_1\le D_1\sigma_s\bigl(R^{1/2}\alpha\bigr)_1\bigl\|R^{-1/2}\bigr\|_1+D_2\sqrt s\,\bigl\|R^{-1/2}\bigr\|_1\varepsilon .
 $$
 
-> [!note] An internal inconsistency
-> In CSA-c the $\max$ expression reads $\max\{1/(2\alpha),2/3\}$ while the branch expansion immediately below prints $Cn^{1/\alpha}$ rather than $Cn^{1/(2\alpha)}$. This page reproduces the source as printed and flags it here rather than correcting it silently.
+> [!note] The CSA-c branch is internally inconsistent
+> CSA-c's $L(n)$ reads $Cn^{\max\{1/(2\alpha),\,2/3\}}$, while the branch expansion immediately below prints $Cn^{1/\alpha}$ for $\tfrac12<\alpha<\tfrac34$, which does not match the $1/(2\alpha)$ inside the $\max$. The table above carries both forms as printed: which one holds changes how the sample requirement depends on degree for one-sided exponential weights.
 
 **The entire difference between bounded and unbounded sits in $L(n)$.** In the bounded, Chebyshev-like case $L(n)$ is uniform in $n$, so the requirement is just $M\gtrsim s\log^3(s)\log(N)$, near-linear in the sparsity $s$ and hence **optimal**; in the unbounded case it degrades to $M\gtrsim s\,n^{2/3}$, with an extra factor growing in the polynomial degree. Remark 4.2 states that within the bounded-orthonormal-system analysis used, the $n^{2/3}$ behaviour for $\alpha\ge\frac32$ and the $n^{1/\alpha}$ behaviour for $\alpha<\frac32$ are both **sharp**, with a similar statement for CSA-c.
 
 **Corollary 4.1 (the clean Legendre case).** In CSA-a with $\alpha=\beta=0$ ($Z$ uniform, Legendre basis), $R=I$ for all $n$, so under $M\ge Cs\log^3(s)\log(N)$ the **untransformed** problem $\alpha^\star=\arg\min\|\alpha\|_1$ subject to $\|\sqrt W\Phi\alpha-\sqrt Wf\|_2\le\varepsilon$ already satisfies $\|\alpha-\alpha^\star\|_2\le C_1\sigma_s(\alpha)_1/\sqrt s+C_2\varepsilon$ and $\|\alpha-\alpha^\star\|_1\le D_1\sigma_s(\alpha)_1+D_2\sqrt s\varepsilon$.
 
-> [!warning] Three gaps between the theorem and the implemented algorithm, stated by the paper
-> First, **the theory is univariate only**. Remark 4.3 says the results generalise to tensor-product domains and weights if one samples tensor-product-wise from the respective univariate densities, in which case the criterion keeps its form but $L(n)$ becomes a **product of $d$ univariate factors** — the dimensional dependence is exponential. Remark 4.1 expects the Beta/Jacobi case to extend to almost any bounded weight on a compact interval.
-> Second, the theorem recovers $R^{1/2}\alpha$ and **not** $\alpha$, because the PCE basis is orthonormal under $N\lambda_N(z)v_n(z)$ only after transformation by $R$ — whereas **the actual Algorithm 1 recovers $\alpha$ directly**, so the theorem does not literally analyse the implemented algorithm.
-> Third, in the unbounded regimes the sampling density depends on $n$, so implementation needs the family of expanded equilibrium measures — the same class of difficulty paper 22 met on unbounded domains.
+There are three gaps between the theorem and the implemented algorithm, all of which the paper states itself. First, **the theory is univariate only**. Remark 4.3 says the results generalise to tensor-product domains and weights if one samples tensor-product-wise from the respective univariate densities, in which case the criterion keeps its form but $L(n)$ becomes a **product of $d$ univariate factors** — the dimensional dependence is exponential. Remark 4.1 expects the Beta/Jacobi case to extend to almost any bounded weight on a compact interval. Second, the theorem recovers $R^{1/2}\alpha$ and **not** $\alpha$, because the PCE basis is orthonormal under $N\lambda_N(z)v_n(z)$ only after transformation by $R$ — whereas **the actual Algorithm 1 recovers $\alpha$ directly**, so the theorem does not literally analyse the implemented algorithm. Third, in the unbounded regimes the sampling density depends on $n$, so implementation needs the family of expanded equilibrium measures — the same class of difficulty paper 22 met on unbounded domains.
 
 The paper explicitly advertises the framework as covering "bounded or unbounded" domains, so it also answers the unbounded-domain difficulty that [[en/computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|paper 11]] met in the least-squares setting.
 
 ### Numerical experiments
 
-What has been checked here is the **subject of the four experiments and the qualitative outcomes the paper states**; the figures plot parameters against $N$, and the specific dimensions, sparsity levels, sample counts and error magnitudes have not been verified item by item, so no numbers are quoted.
+The four experiments take the three regimes in turn and then an application problem, with the figures plotting parameters against $N$.
 
 | Experiment | Setup                                                                    | Outcome as stated                                   |
 | ---------- | ------------------------------------------------------------------------ | --------------------------------------------------- |
@@ -674,7 +664,7 @@ What has been checked here is the **subject of the four experiments and the qual
 | §6.3       | manufactured sparse solutions                                            | a controlled check of recovery quality              |
 | §6.4       | an elliptic PDE with random inputs                                       | an application-level check                          |
 
-The abstract states two overall outcomes: CSA is superior to standard Monte Carlo in many situations of interest, and it gives **comparable or improved accuracy even against algorithms specialised to Legendre or Hermite bases** — a notable claim for a general-purpose scheme. The paper also notes that although its theory is univariate, the numerics show good performance in high-dimensional multivariate settings.
+The paper states two overall outcomes: CSA is superior to standard Monte Carlo in many situations of interest, and it gives **comparable or improved accuracy even against algorithms specialised to Legendre or Hermite bases** — a notable claim for a general-purpose scheme. The paper also notes that although its theory is univariate, the numerics show good performance in high-dimensional multivariate settings.
 
 **What the experiments establish.** The most important point is that **all the multivariate evidence lives in the experiments**, since the theorem covers only the univariate case. And §6.2 shows the scheme works where Chebyshev preconditioning does not apply at all, which is precisely its selling point over Rauhut-Ward.
 
@@ -688,7 +678,7 @@ Paper 24 is to $\ell_1$ what paper 22 is to least squares: the same authors, the
 
 ### The idea
 
-The four papers above all work in polynomial spaces, but looking back at the idea stated at the top of this page, polynomials never really entered: what does the work is only "how concentrated a finite-dimensional function space is at each point". Wherever there is a reproducing kernel that quantity exists, and the same design principle ought to apply. **That is the level of abstraction paper 54 reveals**: replacing the polynomial space by a reproducing kernel Hilbert space, the role of the Christoffel function passes to the diagonal of the kernel, while the design principle — put the points where the space concentrates — is unchanged.
+The four papers above all work in polynomial spaces, but looking back at the idea stated at the outset, polynomials never really entered: what does the work is only "how concentrated a finite-dimensional function space is at each point". Wherever there is a reproducing kernel that quantity exists, and the same design principle ought to apply. **That is the level of abstraction paper 54 reveals**: replacing the polynomial space by a reproducing kernel Hilbert space, the role of the Christoffel function passes to the diagonal of the kernel, while the design principle — put the points where the space concentrates — is unchanged.
 
 To make that concrete one has to say **which** diagonal, or the analogy comes out distorted. For a translation-invariant radial kernel $\mathbf A_{ii}=\Phi(0)$ for every $i$, so **the diagonal of the kernel itself is constant** and there is nothing to level out. What actually corresponds to the polynomial-space quantity $K_\Lambda=\sum_\alpha\psi_\alpha^2$ is the reproducing-kernel diagonal of **the subspace spanned by the points already chosen**, namely $k(z)^{T}\mathbf A_N^{-1}k(z)$, where $k(z)$ is the vector of kernel values between $z$ and the chosen points. Its complement
 
@@ -786,8 +776,7 @@ $$
 
 By the cardinal formula, at $\Xi^*$ the numerator of each $\ell_j$ is a determinant with one $z_j$ replaced by $Z$, so its modulus cannot exceed the denominator; hence $\lvert\ell_j(Z)\rvert\le1$ and $\Lambda_N\le N$. The paper adds that in practice the observed growth of the Lebesgue constant for Fekete points is frequently sublinear. The difficulty is that outside special polynomial cases there is no known way to characterise or compute these points explicitly, and solving the optimisation directly is "a daunting task". The standard relaxation is to go greedy, adding one point at a time so as to maximise the determinant.
 
-> [!note] A misprint in the greedy formula of §3.1
-> The paper prints the greedy iteration as $z_{N+1}=\arg\max_{z\in I_Z}\lvert\det\mathbf A(z_1,\dots,z_N)\rvert$, in which **$z$ does not occur in the maximand at all**, so read literally it is a constant in the optimisation variable. It should be $\det\mathbf A(z_1,\dots,z_N,z)$, the determinant after the new point is folded in — which is exactly the form of the corresponding expression written for $\mathbf B$ in §3.2. This page states it in the corrected form and flags it here. (A lighter one: the caption of Figure 4 reads "condition numbers with respect to shape parameters with respect to the number of sample points $N$", while the abscissa of that figure is $N$ and $\epsilon=3,5$ are the fixed parameters.)
+Section 3.1 prints this greedy iteration as $z_{N+1}=\arg\max_{z\in I_Z}\lvert\det\mathbf A(z_1,\dots,z_N)\rvert$, in which **$z$ does not occur in the maximand at all**, so read literally it is a constant in the optimisation variable. It should be $\det\mathbf A(z_1,\dots,z_N,z)$, the determinant after the new point is folded in — exactly the form of the corresponding expression written for $\mathbf B$ in §3.2.
 
 The paper says explicitly that the polynomial literature calls this the **approximate Fekete point** approach, and that **for kernel interpolation it is a power function maximisation approach** — the source of the equivalence stated above.
 
@@ -857,8 +846,7 @@ A step therefore consists of three things: (i) compute $\boldsymbol V(z_{N+1})$;
 
 This has to be said clearly, because "optimal design" in the title and "quasi-optimal" in the body both invite a quantitative reading. **They carry none.** The paper gives no comparison between the greedy set and the true maximiser, no bound on the condition number, no Lebesgue-constant bound for the selected points, and no convergence rate. "Quasi-optimal" is simply the name for a greedy relaxation of a combinatorial optimisation that cannot be solved directly. All the quantitative evidence lives in the figures.
 
-> [!note] This is where the contrast with paper 28 is sharpest
-> In the polynomial setting paper 28 proves two substantive results about a structurally identical greedy iteration: that determinant optimality and condition-number optimality coincide in the weighted space (Theorem 3.1, under an existence premise that is hard to verify for $d>1$), and that in one dimension the greedy iteration attains the optimum exactly (Theorem 3.2). Paper 54 carries the same strategy into kernel spaces **without bringing any theorem along**. Whether the kernel analogues hold is neither proved nor discussed.
+This is where the contrast with paper 28 is sharpest. In the polynomial setting paper 28 proves two substantive results about a structurally identical greedy iteration: that determinant optimality and condition-number optimality coincide in the weighted space (Theorem 3.1, under an existence premise that is hard to verify for $d>1$), and that in one dimension the greedy iteration attains the optimum exactly (Theorem 3.2). Paper 54 carries the same strategy into kernel spaces **without bringing any theorem along**, and whether the kernel analogues hold is neither proved nor discussed.
 
 ### Numerical experiments
 
@@ -873,8 +861,7 @@ This has to be said clearly, because "optimal design" in the title and "quasi-op
 | Trials         | 50 per configuration; mean reported with 20% and 80% quantiles                                                   |
 | Kernels        | Gaussian $\Phi(r)=e^{-r^2}$, IMQ $\Phi(r)=1/\sqrt{1+r^2}$, Wendland CS with $l=\lfloor d/2\rfloor+4$             |
 
-> [!warning] No condition numbers or errors can be quoted in this section
-> **Every numerical result in this paper is presented as a figure; there is not one data table.** Figures 1-14 are curves, and no condition number or error value appears as a number anywhere in the body. (The HTML rendering of the paper contains forty-odd table elements, but every one of them is a typesetting container for a displayed equation rather than a table of data.) What follows therefore reports the experimental setups and the paper's stated conclusions, both of which can be checked item by item, and quotes no condition-number magnitudes or error values.
+**Every numerical result in this paper is presented as a figure; there is not one data table.** Figures 1 to 14 are curves, and no condition number or error value appears as a number anywhere in the body, so what follows records the experimental setups and the paper's stated conclusions.
 
 **Condition-number experiments.** The first two figures establish the problem before the method is proposed; the last three test the method.
 
@@ -897,8 +884,7 @@ u(z)=&\tfrac34e^{-((9z^{(1)}-2)^2+(9z^{(2)}-2)^2)/4}+\tfrac34e^{-(9z^{(1)}+1)^2/
 \end{aligned}
 $$
 
-> [!note] The second exponent is misprinted
-> The paper prints that term as $-(9z^{(2)}+1)^2)/10$, with unmatched parentheses; moreover the standard Franke function is **linear** in this term, $-(9z^{(2)}+1)/10$, not squared. The display above transcribes the paper (with the parentheses balanced) and flags the discrepancy here.
+The second exponent is printed in the source as $-(9z^{(2)}+1)^2)/10$, with unmatched parentheses; the standard Franke function is **linear** in this term, $-(9z^{(2)}+1)/10$, not squared. The display above balances the parentheses and otherwise follows the source.
 
 The second is a stochastic elliptic equation in one spatial dimension — **the same benchmark used in §5.2(b) of paper 28**:
 
@@ -912,7 +898,7 @@ $$
 \kappa(x,z)=1+\sigma\sum_{k=1}^d\frac{1}{k^2\pi^2}\cos(2\pi kx)\,z^{(k)},
 $$
 
-with quantity of interest $u(z)=u(0.5,z)$ and $z^{(i)}\sim U[-1,1]$ i.i.d. (The value of $\sigma$ is not given in the paper, so none is quoted.)
+with quantity of interest $u(z)=u(0.5,z)$ and $z^{(i)}\sim U[-1,1]$ i.i.d.
 
 | Figure  | Test problem                 | Dimension | Baselines                                           | Notes                               |
 | ------- | ---------------------------- | --------- | --------------------------------------------------- | ----------------------------------- |
@@ -934,13 +920,13 @@ The paper draws two conclusions from Figure 6, the second more interesting than 
 
 (Figure 11 plots the Rastrigin function itself and carries no results.) The conclusion is that under the proposed algorithm the gradient-enhanced design matrix $\mathbf B$ can be well conditioned, and that accuracy again exceeds the other sampling methods.
 
-**What the sparse-grid comparison actually shows.** The abstract says the method "can outperform sparse grid methods in many interesting cases". Checked section by section, the comparison against sparse grids **occurs exactly once**: the stochastic elliptic equation of §4.1.2, at $d=3$ (Legendre, total order $k=8$) and $d=6$ ($k=4$), reported in Figures 9 and 10 with one panel per kernel. The paper's own sentence is that the RBF approximation methods are "notably superior to the sparse grids method". **Nowhere in the paper is a case reported in which the method loses to sparse grids, and nowhere is one reported in which it loses to random, Sobol' or Halton points either.**
+**What the sparse-grid comparison actually shows.** The paper claims the method "can outperform sparse grid methods in many interesting cases". In the whole text the comparison against sparse grids **occurs exactly once**: the stochastic elliptic equation of §4.1.2, at $d=3$ (Legendre, total order $k=8$) and $d=6$ ($k=4$), reported in Figures 9 and 10 with one panel per kernel. The paper's own sentence is that the RBF approximation methods are "notably superior to the sparse grids method". **Nowhere in the paper is a case reported in which the method loses to sparse grids, and nowhere is one reported in which it loses to random, Sobol' or Halton points either.**
 
 So the hedge means something different from what it sounds like. It is not "we tried many cases and won in many of them", with the implication that some were lost; it is "we ran one comparison, won it, and are careful not to promote that into a general claim". **The evidence behind it is one benchmark problem, two parameter dimensions and three kernels.** Nor does the paper put the two methods' **costs** side by side: the abscissa in Figures 9 and 10 is the number of points $N$, while the greedy selection itself must scan $M=10^4$ candidates at $\mathcal O(d^3N^2)$ per candidate per step, which is not counted; and sparse grids do not offer an arbitrary node count either, so the two curves are not really aligned on that axis.
 
 **What these experiments establish.** First, Figures 1 and 2 turn "ill-conditioning grows with the number of points" from a worry into a reproducible fact, and show that gradient enhancement makes it substantially worse — that is the paper's starting point and the reason the greedy iteration is run on $\mathbf B$ rather than $\mathbf A$. Second, Figures 3 and 4 show that at a fixed number of points the choice of points alone opens a visible gap in the condition number, and does so without any information about $u$. Third, Figures 5 and 7 show insensitivity to how the candidate pool is drawn, which is a necessary robustness check for a two-stage "pick candidates, then pick points" method. Fourth, the observation in Figure 6 that the other methods do not reliably improve as points are added is itself the empirical form of the stability argument.
 
-**What they do not establish.** The central one is stated above: there is no theorem, so "quasi-optimal" has no quantitative content and every conclusion is a curve in a figure. Next, the shape parameter is fixed at $\epsilon\in\{3,5\}$ everywhere except Figure 8, even though the paper itself calls the optimal $\epsilon$ an open problem, so LOOCV is tested in exactly one figure. Third, every test has $d\le6$ while the stated motivation is high-dimensional UQ; the candidate pool is fixed at $M=10^4$ without adjustment for $d$, which is thin coverage at $d=5$ or $6$, and beyond "random versus evenly spaced" the paper does not study the effect of $M$. Fourth, the largest point count appearing explicitly in the text is $N=300$ (Figures 1 and 3), and the figures with $N$ on the abscissa give no range in the body or the captions, so how far the claim of "postponing the instability" extends cannot be determined from the text.
+**What they do not establish.** The central one is stated above: there is no theorem, so "quasi-optimal" has no quantitative content and every conclusion is a curve in a figure. Next, the shape parameter is fixed at $\epsilon\in\{3,5\}$ everywhere except Figure 8, even though the paper itself calls the optimal $\epsilon$ an open problem, so LOOCV is tested in exactly one figure. Third, every test has $d\le6$ while the stated motivation is high-dimensional UQ; the candidate pool is fixed at $M=10^4$ without adjustment for $d$, which is thin coverage at $d=5$ or $6$, and beyond "random versus evenly spaced" the paper does not study the effect of $M$. Fourth, the largest point count appearing explicitly in the text is $N=300$ (Figures 1 and 3), so the claim of "postponing the instability" has evidence only at that scale.
 
 ### Relation to the others
 
@@ -963,40 +949,7 @@ The two even share a PDE benchmark: the one-dimensional stochastic elliptic equa
 
 **The gradient-enhanced side points to another page.** One adjoint solve delivers the function value together with all $d$ partial derivatives, multiplying the number of rows of the measurement matrix by $d+1$ at very little extra cost — the same fact exploited by papers 29 and 32 on [[en/computational-mathematics/paper-notes/stochastic-approximation/sparse-recovery-and-data-driven-pce|Sparse recovery and data-driven chaos]], except that there the extra information feeds $\ell_1$ sparse recovery while here it feeds a Gaussian process emulator. **The price paid is of the same kind on both routes.** Paper 32 finds that naively stacking gradient rows destroys mean isotropy and has to be repaired with row preconditioning and column normalisation; paper 54 meets the conditioning version of the same damage, its Figures 1 and 2 recording that the condition number of $\mathbf B$ grows much faster than that of $\mathbf A$. The two repairs sit at opposite ends: paper 32 fixes the **matrix** by preconditioning it, paper 54 fixes the **points** by choosing where they go.
 
-**Within this page it is the function-space generalisation of the thread.** Papers 22, 24 and 28 use the polynomial-space quantity $K_\Lambda=\sum_\alpha\psi_\alpha^2$, paper 45 uses the normalised reciprocal of that same quantity as a sampling density, and the kernel counterpart is the reproducing-kernel diagonal of the already-selected subspace together with its complement, the power function. All four are instances of one design principle in different spaces — **with the single difference that only paper 54 arrives without a theorem attached.**
-
-> [!note] Coverage status
-> Papers **22** and **45** are now developed in full from verified material: the construction, the chain of derivation (including paper 45's matrix Chernoff proof and the origin of the constant $C=2/\log(27/8e)$), the theorems with their hypotheses, and the experimental setups. Paper 45's three experiments (Example 5.2, Example 8.1 and the Section 9 thermal-diffusion PDE) have complete numerical setups and outcomes; paper **22**'s experiments have their design and qualitative outcomes only, since the numbers in its figures have not been verified here. Paper **28**'s Theorem 3.1, Lemma 3.1, Theorem 3.2 and Corollary 3.1, together with its full experimental protocol (a $10^4$ candidate pool, $M=1.05N$, 50 trials, three-way comparison), have been checked. Paper **24**'s main recovery theorem, the three cases of $L(n)$ and Corollary 4.1 have been checked, while its four experiments have their subject and qualitative outcomes only. Paper **54** has now been verified in full from its preprint (arXiv:2104.06291): the setting, the complete Schur-complement and pivoted-Cholesky derivation, and every experimental setup (candidate pool $M=10^4$, $Q=1000$ test points, 50 trials, three kernels, four classes of test problem) are taken from the source. But that paper **contains no theorems**, and all of its numerical results appear as figures with no data tables, so no condition numbers or error values are quoted here.
->
-> Six source-level problems are preserved on this page: paper 22's three limitations on Theorem 4.3 and the non-vanishing $4\kappa^2(R)d^2(f)$ term in its main theorem; the inconsistent Gaussian normalising constant between paper 45's Example 2.2 and Example 8.1; the misprinted starting condition in paper 28's Theorem 3.2; the mismatch between line 4 of paper 24's Algorithm 1 and its eq. (9); the internal inconsistency in paper 24's CSA-c branch expansion; and the missing new point $z$ in the greedy formula of paper 54's §3.1. The asymptotic Gaussian induced measure is treated as a **conjecture** everywhere it appears.
-
-## Coverage check
-
-| Item                                               | Paper | Status                                                                         |
-| -------------------------------------------------- | ----- | ------------------------------------------------------------------------------ |
-| Stability factor and its basis independence        | 22    | $K(z)=\varphi^T\varphi$, $\lVert K\rVert_\infty/N$, invariance                 |
-| Decoupling sampling from orthogonality             | 22    | the insight, the $\tilde K_k\equiv N$ cancellation, the definition             |
-| Five algorithm steps and row normalisation         | 22    | full steps and the equivalent reading                                          |
-| Christoffel asymptotics and equilibrium measure    | 22    | Theorem 4.2, Corollary 4.1, Theorem 4.3 and its three limitations              |
-| CLS stability and accuracy theorems                | 22    | Theorems 5.1 and 5.2, and the non-vanishing $4\kappa^2(R)d^2(f)$               |
-| Experimental design and qualitative outcomes       | 22    | Figure 1, §6.1.1-6.1.3, §6.2.1-6.2.3; numbers not verified                     |
-| Sample complexity for three sampling routes        | 45    | quadratic, $N^{\log3/\log2}$, deterministic quadratic                          |
-| Matrix Chernoff proof and origin of the constant   | 45    | the full argument for Theorem 6.1 and $C=2/\log(27/8e)$                        |
-| Induced distribution and the optimality argument   | 45    | Definition 7.1, attainment of the lower bound $N$, $M/\log M\ge C(r+1)N$       |
-| Accuracy with truncation                           | 45    | Theorem 7.2 and Lemma 5.1                                                      |
-| Three numerical experiments                        | 45    | full setups and outcomes for Example 5.2, Example 8.1, the Section 9 PDE       |
-| Asymptotic induced measures                        | 45    | univariate and multivariate Chebyshev limits; Gaussian as conjecture           |
-| Weighted approximate Fekete points, pivoted QR     | 28    | selection mechanism, meaning of weighting, enrichment and candidate pool       |
-| Row normalisation and equivalence of objectives    | 28    | Theorem 3.1, its existence premise, and this page's reading of it              |
-| Greedy is optimal in one dimension                 | 28    | Lemma 3.1, Theorem 3.2, Corollary 3.1 and the misprint                         |
-| Three-way comparison experiments                   | 28    | $\tilde M=10^4$, $M=1.05N$, 50 trials, four setups and outcomes                |
-| Sampling and preconditioning designed as a pair    | 24    | the reciprocal structure, Algorithm 1, three regimes, the Gramian $R$          |
-| Main recovery theorem, bounded versus unbounded    | 24    | Theorem 4.1, the three $L(n)$ cases, Corollary 4.1, two inconsistencies        |
-| Univariate theory against multivariate experiments | 24    | Remark 4.3's exponential dependence and four qualitative outcomes              |
-| From polynomial spaces to kernel spaces            | 54    | power function replaces Christoffel; Schur-complement greedy, pivoted Cholesky |
-| Structural identity with paper 28                  | 54    | both greedy over a candidate pool; QR pivots versus Cholesky pivots            |
-| Four experiment classes, the sparse-grid claim     | 54    | $M=10^4$, $Q=1000$, 50 trials; sparse grids compared exactly once              |
-| The source proves nothing                          | 54    | no theorem/lemma/proof environment; "quasi-optimal" carries no bound           |
+**Among these five papers it is the function-space generalisation of the thread.** Papers 22, 24 and 28 use the polynomial-space quantity $K_\Lambda=\sum_\alpha\psi_\alpha^2$, paper 45 uses the normalised reciprocal of that same quantity as a sampling density, and the kernel counterpart is the reproducing-kernel diagonal of the already-selected subspace together with its complement, the power function. All four are instances of one design principle in different spaces — **with the single difference that only paper 54 arrives without a theorem attached.**
 
 ## Sources for this page
 
