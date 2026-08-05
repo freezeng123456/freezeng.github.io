@@ -126,7 +126,7 @@ The two tables below place one representative measurement from each paper side b
 | 25    | $q=2$–$6$, CGL/GH sparse grids                             | high order retained in six dimensions, runtime polynomial in $q$; the three-step scheme in example 1 reaches only 2.632 in $E_Y$      |
 | 26    | $d=1$, $M=10^5$ samples, $\rho_i=1/\sqrt i$                | first order observed in all four examples; feedback control improves $J$ from 0.848 to 0.660                                          |
 | 50    | $d=1$, 500 particles, 1000 SGD steps                       | cost $9.5\times10^{-4}$ against $7.6\times10^{-3}$ for the finest-grid full solver, in 0.93 s against 1560 s                          |
-| 51    | rectifier circuit and a projected dynamical system         | both theoretical regimes observed                                                                                                    |
+| 51    | rectifier circuit and a projected dynamical system         | both theoretical regimes observed                                                                                                     |
 
 **Martingale deep learning.**
 

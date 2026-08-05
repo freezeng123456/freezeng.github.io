@@ -489,13 +489,13 @@ One judgement runs through all of them: **every advance on this route takes the 
 
 Ordering the five by how much roundoff the diagonalisation costs makes the economics of the whole thread visible:
 
-| Route                             | Time matrix                                 | Roundoff amplification of the diagonalisation       | Dependence on $N_t$              | Representative |
-| --------------------------------- | ------------------------------------------- | --------------------------------------------------- | -------------------------------- | -------------- |
-| ParaDiag-I, geometric steps       | variable-step backward Euler                | bound carries a factor $\varrho^{-(N_t-1)}$         | **exponential**                  | Maday-Rønquist |
-| ParaDiag-I, boundary value method | uniform-step BVM                            | $\mathcal O(n^2)$ (observed $\mathcal O(n^{1.75})$) | polynomial                       | Paper 59       |
-| ParaDiag-II, fixed $\alpha$       | $\alpha$-circulant                          | $\le1/\alpha$                                       | **none**                         | Paper 65       |
-| ParaDiag-II, forward-backward     | $\alpha$-circulant, $\alpha$ shrinking with $N_t$ | $\le1/\alpha$, growing with $N_t$                    | grows                            | Paper 71       |
-| ParaDiag-II, time spectral        | circulantised after factorisation           | the preconditioner must admit a well-conditioned diagonalisation | —                    | Paper 84       |
+| Route                             | Time matrix                                       | Roundoff amplification of the diagonalisation                    | Dependence on $N_t$ | Representative |
+| --------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------- | ------------------- | -------------- |
+| ParaDiag-I, geometric steps       | variable-step backward Euler                      | bound carries a factor $\varrho^{-(N_t-1)}$                      | **exponential**     | Maday-Rønquist |
+| ParaDiag-I, boundary value method | uniform-step BVM                                  | $\mathcal O(n^2)$ (observed $\mathcal O(n^{1.75})$)              | polynomial          | Paper 59       |
+| ParaDiag-II, fixed $\alpha$       | $\alpha$-circulant                                | $\le1/\alpha$                                                    | **none**            | Paper 65       |
+| ParaDiag-II, forward-backward     | $\alpha$-circulant, $\alpha$ shrinking with $N_t$ | $\le1/\alpha$, growing with $N_t$                                | grows               | Paper 71       |
+| ParaDiag-II, time spectral        | circulantised after factorisation                 | the preconditioner must admit a well-conditioned diagonalisation | —                   | Paper 84       |
 
 The third row is the centre of this table: **fixed-$\alpha$ $\alpha$-circulant preconditioning is the only member of the family whose roundoff cost does not grow with the time window at all**, the price being that it is only an approximation and needs an outer Krylov iteration. The other four rows all explain when that ideal cannot be reached, and how fast it degrades.
 

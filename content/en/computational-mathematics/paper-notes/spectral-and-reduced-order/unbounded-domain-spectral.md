@@ -649,11 +649,11 @@ The paper targets cost and accuracy uniform across the whole of $\alpha\in(0,1)$
 
 ## Side-by-side comparison
 
-| No. | Basis or representation           | Far-field decay                 | How the operator is handled                                    |
-| --- | --------------------------------- | ------------------------------- | -------------------------------------------------------------- |
-| 27  | Hermite and over-scaled functions | Gaussian                        | explicit physical-space differentiation matrices               |
-| 42  | modified mapped Gegenbauer        | $\lvert x\rvert^{-(\lambda+1)}$ | decomposition into two elementary rational shapes              |
-| 92  | no basis (a matrix function)      | not applicable                  | integral representation plus quadrature                        |
+| No. | Basis or representation           | Far-field decay                 | How the operator is handled                       |
+| --- | --------------------------------- | ------------------------------- | ------------------------------------------------- |
+| 27  | Hermite and over-scaled functions | Gaussian                        | explicit physical-space differentiation matrices  |
+| 42  | modified mapped Gegenbauer        | $\lvert x\rvert^{-(\lambda+1)}$ | decomposition into two elementary rational shapes |
+| 92  | no basis (a matrix function)      | not applicable                  | integral representation plus quadrature           |
 
 Paper 42 says explicitly that it works in the spirit of paper 27, and the two share one design pattern: derive closed forms for the fractional image of the basis, precompute the fractional differentiation matrices from them, and collocate directly in physical space. The multi-term and distributed-order application, the trick of filling the matrices cheaply through hypergeometric contiguous relations, and the idea of a scaling parameter are all inherited too. **The upgrade is only the basis**: $e^{-x^2/2}H_n$ becomes $(1+x^2)^{-(\lambda+1)/2}C^{\lambda}_n(x/\sqrt{1+x^2})$, an exponential tail becomes the power-law tail $\lvert x\rvert^{-(\lambda+1)}$, so that it can match the $\lvert x\rvert^{-\alpha-1}$ the fractional Laplacian actually produces.
 

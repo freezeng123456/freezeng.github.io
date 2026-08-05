@@ -2,7 +2,7 @@
 title: "Long-Sequence Modeling for Recommender Systems: Methods and Design Choices"
 description: An industrial design space spanning retrieval, compression, hierarchy, sparse interaction, and linear sequence models
 lang: en
-translation: 推荐系统理论/长序列建模
+translation: computational-mathematics/paper-notes/推荐系统/长序列建模
 tags:
   - Recommender-Systems
   - Long-Sequence-Modeling
