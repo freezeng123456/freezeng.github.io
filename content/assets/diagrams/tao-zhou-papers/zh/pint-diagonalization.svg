@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="710" viewBox="0 0 1400 710" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">把串行时间递推换成可对角化的时间矩阵</title>
+  <desc id="diagram-desc">代价是特征向量矩阵的条件数：步长比越激进，并行度越好而舍入放大越严重</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1384" height="694" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1384" height="694" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="201" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="154.5" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="154.5" dy="0">DIAGONALIZATION</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">把串行时间递推换成可对角化的时间矩阵</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">代价是特征向量矩阵的条件数：步长比越激进，并行度越好而舍入放大越严重</tspan></text>
+
+    <g filter="url(#shadow)">
+    <rect x="31" y="214" width="250" height="160" rx="22" fill="#edf2f7" stroke="#5e6b7f" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="31" y="214" width="8" height="160" rx="4" fill="#5e6b7f"/>
+    <circle cx="253" cy="242" r="17" fill="#5e6b7f"/>
+           <text x="253" y="247" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="253" dy="0">1</tspan></text>
+    <text x="59" y="257" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="59" dy="0">串行结构</tspan></text>
+    <text x="59" y="280.5" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="59" dy="0">下三角块 Toeplitz 系统</tspan><tspan x="59" dy="17">必须按时间顺序回代</tspan></text>
+  </g>
+      <g class="flow-connector" opacity="1">
+    <path d="M 288 294 L 295 294" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 288 294 L 295 294" fill="none" stroke="#5e6b7f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)" />
+  </g><g filter="url(#shadow)">
+    <rect x="303" y="214" width="250" height="160" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="303" y="214" width="8" height="160" rx="4" fill="#2563eb"/>
+    <circle cx="525" cy="242" r="17" fill="#2563eb"/>
+           <text x="525" y="247" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="525" dy="0">2</tspan></text>
+    <text x="331" y="257" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="331" dy="0">几何步长</tspan></text>
+    <text x="331" y="280.5" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="331" dy="0">τₙ = τ₁ γⁿ⁻¹，γ &gt; 1</tspan><tspan x="331" dy="17">时间矩阵特征值互不相同</tspan></text>
+  </g>
+      <g class="flow-connector" opacity="1">
+    <path d="M 560 294 L 567 294" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 560 294 L 567 294" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)" />
+  </g><g filter="url(#shadow)">
+    <rect x="575" y="214" width="250" height="160" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="575" y="214" width="8" height="160" rx="4" fill="#4f46e5"/>
+    <circle cx="797" cy="242" r="17" fill="#4f46e5"/>
+           <text x="797" y="247" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="797" dy="0">3</tspan></text>
+    <text x="603" y="257" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="603" dy="0">对角化</tspan></text>
+    <text x="603" y="280.5" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="603" dy="0">B = V D V⁻¹</tspan><tspan x="603" dy="17">D 的元素给出复移位</tspan></text>
+  </g>
+      <g class="flow-connector" opacity="1">
+    <path d="M 832 294 L 839 294" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 832 294 L 839 294" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g><g filter="url(#shadow)">
+    <rect x="847" y="214" width="250" height="160" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="847" y="214" width="8" height="160" rx="4" fill="#0f766e"/>
+    <circle cx="1069" cy="242" r="17" fill="#0f766e"/>
+           <text x="1069" y="247" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="1069" dy="0">4</tspan></text>
+    <text x="875" y="257" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="875" dy="0">并发空间求解</tspan></text>
+    <text x="875" y="280.5" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="875" dy="0">每个移位系统独立</tspan><tspan x="875" dy="17">可放在不同进程上</tspan></text>
+  </g>
+      <g class="flow-connector" opacity="1">
+    <path d="M 1104 294 L 1111 294" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 1104 294 L 1111 294" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)" />
+  </g><g filter="url(#shadow)">
+    <rect x="1119" y="214" width="250" height="160" rx="22" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="1119" y="214" width="8" height="160" rx="4" fill="#16865b"/>
+    <circle cx="1341" cy="242" r="17" fill="#16865b"/>
+           <text x="1341" y="247" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="800" fill="#ffffff" opacity="1"><tspan x="1341" dy="0">5</tspan></text>
+    <text x="1147" y="257" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="750" fill="#14213d" opacity="1"><tspan x="1147" dy="0">回到时间层</tspan></text>
+    <text x="1147" y="280.5" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="1147" dy="0">乘回 V 得到全部时间层</tspan><tspan x="1147" dy="17">整个过程无外层迭代</tspan></text>
+  </g>
+
+    <g filter="url(#shadow)">
+    <rect x="31" y="416" width="660" height="168" rx="22" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="31" y="416" width="8" height="168" rx="4" fill="#dc4c64"/>
+
+    <text x="361" y="459" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="18" font-weight="750" fill="#14213d" opacity="1"><tspan x="361" dy="0">条件数权衡</tspan></text>
+    <text x="361" y="481" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="361" dy="0">γ 越接近 1，cond(V) 越大</tspan><tspan x="361" dy="20">γ 越大，末端时间步越粗</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="709" y="416" width="660" height="168" rx="22" fill="#fff2d9" stroke="#d97706" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="709" y="416" width="8" height="168" rx="4" fill="#d97706"/>
+
+    <text x="1039" y="459" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="18" font-weight="750" fill="#14213d" opacity="1"><tspan x="1039" dy="0">另一条路线：α-循环预条件</tspan></text>
+    <text x="1039" y="481.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="1039" dy="0">等步长下用循环矩阵近似时间矩阵</tspan><tspan x="1039" dy="19">对角化由 FFT 完成，条件数受控</tspan></text>
+  </g>
+    <text x="700" y="626" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="800" fill="#14213d" opacity="1"><tspan x="700" dy="0">两种用法</tspan></text>
+    <g>
+    <rect x="200" y="646" width="440" height="40" rx="20" fill="#ffffff" stroke="#4f46e5" stroke-opacity=".28"/>
+    <text x="420" y="670.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#4f46e5" opacity="1"><tspan x="420" dy="0">直接求解：一次变换即得结果</tspan></text>
+  </g>
+    <g>
+    <rect x="680" y="646" width="440" height="40" rx="20" fill="#ffffff" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="900" y="670.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#0f766e" opacity="1"><tspan x="900" dy="0">预条件：放进 Krylov 迭代做加速</tspan></text>
+  </g>
+
+</svg>

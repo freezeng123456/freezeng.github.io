@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="710" viewBox="0 0 1400 710" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">变步长离散的能量论证由二次型正定性支撑</title>
+  <desc id="diagram-desc">步长比进入一个实二次型；该二次型正定，离散能量律与最大值原理才成立</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1384" height="694" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1384" height="694" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="289" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="198.5" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="198.5" dy="0">VARIABLE-STEP STABILITY</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">变步长离散的能量论证由二次型正定性支撑</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">步长比进入一个实二次型；该二次型正定，离散能量律与最大值原理才成立</tspan></text>
+
+    <g filter="url(#shadow)">
+    <rect x="40" y="196" width="420" height="176" rx="22" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="40" y="196" width="8" height="176" rx="4" fill="#dc4c64"/>
+
+    <text x="250" y="239" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="18" font-weight="750" fill="#14213d" opacity="1"><tspan x="250" dy="0">问题</tspan></text>
+    <text x="250" y="261.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="250" dy="0">自适应步长破坏常步长的求和技巧</tspan><tspan x="250" dy="19">旧的能量论证不再逐项成立</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="490" y="196" width="420" height="176" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="490" y="196" width="8" height="176" rx="4" fill="#4f46e5"/>
+
+    <text x="700" y="239" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="18" font-weight="750" fill="#14213d" opacity="1"><tspan x="700" dy="0">卷积核重排</tspan></text>
+    <text x="700" y="261.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="700" dy="0">用离散正交卷积核抵消历史项</tspan><tspan x="700" dy="19">把多步差分化成单步形式</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="940" y="196" width="420" height="176" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="940" y="196" width="8" height="176" rx="4" fill="#0f766e"/>
+
+    <text x="1150" y="239" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="18" font-weight="750" fill="#14213d" opacity="1"><tspan x="1150" dy="0">实二次型</tspan></text>
+    <text x="1150" y="261.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="1150" dy="0">历史项汇成 Σ 系数 vⱼ vₖ</tspan><tspan x="1150" dy="19">其正定性只依赖步长比序列</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 467 284 L 482 284" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 467 284 L 482 284" fill="none" stroke="#dc4c64" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowRose)" />
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 917 284 L 932 284" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 917 284 L 932 284" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g>
+    <text x="360" y="402" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="800" fill="#14213d" opacity="1"><tspan x="360" dy="0">由此得到的两条结论</tspan></text>
+    <text x="1053" y="402" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="800" fill="#14213d" opacity="1"><tspan x="1053" dy="0">文献中的三条步长比门槛</tspan></text>
+    <g filter="url(#shadow)">
+    <rect x="40" y="424" width="330" height="176" rx="22" fill="#e2f7ec" stroke="#16865b" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="40" y="424" width="8" height="176" rx="4" fill="#16865b"/>
+
+    <text x="205" y="467" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="750" fill="#14213d" opacity="1"><tspan x="205" dy="0">离散能量律</tspan></text>
+    <text x="205" y="490.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="205" dy="0">能量单调不增，无需步长上界</tspan><tspan x="205" dy="17">或仅需与界面宽度无关的上界</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="390" y="424" width="330" height="176" rx="22" fill="#e9f0ff" stroke="#2563eb" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="390" y="424" width="8" height="176" rx="4" fill="#2563eb"/>
+
+    <text x="555" y="467" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="750" fill="#14213d" opacity="1"><tspan x="555" dy="0">最大值原理</tspan></text>
+    <text x="555" y="490.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="555" dy="0">非线性项的单调性加正定性</tspan><tspan x="555" dy="17">给出逐层的界</tspan></text>
+  </g>
+    <g>
+    <rect x="740" y="432" width="250" height="48" rx="24" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="865" y="460.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#2563eb" opacity="1"><tspan x="865" dy="0">零稳定性</tspan></text>
+  </g>
+      <g>
+    <rect x="1006" y="432" width="360" height="48" rx="24" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="1186" y="460.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#2563eb" opacity="1"><tspan x="1186" dy="0">经典变步长 BDF2 的必要条件</tspan></text>
+  </g><g>
+    <rect x="740" y="494" width="250" height="48" rx="24" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="865" y="522.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#d97706" opacity="1"><tspan x="865" dy="0">能量稳定性</tspan></text>
+  </g>
+      <g>
+    <rect x="1006" y="494" width="360" height="48" rx="24" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="1186" y="522.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#d97706" opacity="1"><tspan x="1186" dy="0">离散能量论证给出的更强限制</tspan></text>
+  </g><g>
+    <rect x="740" y="556" width="250" height="48" rx="24" fill="#ffffff" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="865" y="584.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#16865b" opacity="1"><tspan x="865" dy="0">L² 稳定性</tspan></text>
+  </g>
+      <g>
+    <rect x="1006" y="556" width="360" height="48" rx="24" fill="#ffffff" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="1186" y="584.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#16865b" opacity="1"><tspan x="1186" dy="0">二次型分析给出的最宽门槛</tspan></text>
+  </g>
+    <g>
+    <rect x="300" y="638" width="800" height="40" rx="20" fill="#ffffff" stroke="#5e6b7f" stroke-opacity=".28"/>
+    <text x="700" y="662.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#5e6b7f" opacity="1"><tspan x="700" dy="0">同一套工具也用于三阶 BDF、时间滤波 Euler、分数阶 L1 逼近与 IMEX Runge-Kutta</tspan></text>
+  </g>
+
+</svg>

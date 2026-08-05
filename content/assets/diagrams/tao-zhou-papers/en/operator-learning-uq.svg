@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="730" viewBox="0 0 1400 730" role="img" aria-labelledby="diagram-title diagram-desc">
+  <title id="diagram-title">Three Places Uncertainty Enters Operator Learning</title>
+  <desc id="diagram-desc">How input functions are sampled, how the operator is approximated, and where queries fall</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fffdf8"/>
+      <stop offset=".55" stop-color="#f9fbff"/>
+      <stop offset="1" stop-color="#f3faf8"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#9fb0c2" opacity=".18"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#183153" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#b8c4d2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#0f766e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowIndigo" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowRose" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#dc4c64" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M 2 1.5 L 10 6 L 2 10.5" fill="none" stroke="#16865b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect x="8" y="8" width="1384" height="714" rx="34" fill="url(#paper)" stroke="#d9e2ec" stroke-width="1.5"/>
+  <rect x="8" y="8" width="1384" height="714" rx="34" fill="url(#dots)"/>
+  <g>
+    <rect x="54" y="42" width="278" height="32" rx="16" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="193" y="62.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0f766e" opacity="1"><tspan x="193" dy="0">OPERATOR LEARNING + UQ</tspan></text>
+  </g>
+  <text x="54" y="112" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="32" font-weight="800" fill="#14213d" opacity="1"><tspan x="54" dy="0">Three Places Uncertainty Enters Operator Learning</tspan></text>
+  <text x="54" y="146" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="16" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="54" dy="0">How input functions are sampled, how the operator is approximated, and where queries fall</tspan></text>
+
+    <g>
+    <rect x="40" y="196" width="340" height="232" rx="26" fill="#ffffff" stroke="#2563eb" stroke-opacity=".22" stroke-width="1.5"/>
+    <rect x="40" y="196" width="340" height="52" rx="26" fill="#2563eb" fill-opacity=".1"/>
+    <rect x="40" y="222" width="340" height="26" fill="#2563eb" fill-opacity=".1"/>
+    <text x="64" y="229" text-anchor="start" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="17" font-weight="800" fill="#2563eb" opacity="1"><tspan x="64" dy="0">Input function samples</tspan></text>
+
+  </g>
+    <path d="M 72 262 C 118 246, 168 280, 214 258 S 300 274, 340 254" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-opacity="0.35" stroke-linecap="round"/><path d="M 72 300 C 118 288, 168 313, 214 296 S 300 312, 340 292" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-opacity="0.5" stroke-linecap="round"/><path d="M 72 338 C 118 330, 168 346, 214 334 S 300 350, 340 330" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-opacity="0.6499999999999999" stroke-linecap="round"/><path d="M 72 376 C 118 372, 168 379, 214 372 S 300 388, 340 368" fill="none" stroke="#2563eb" stroke-width="2.6" stroke-opacity="0.7999999999999999" stroke-linecap="round"/>
+    <text x="210" y="408" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="600" fill="#5e6b7f" opacity="1"><tspan x="210" dy="0">sensor locations need not be fixed</tspan></text>
+    <g filter="url(#shadow)">
+    <rect x="420" y="214" width="290" height="196" rx="22" fill="#eeecff" stroke="#4f46e5" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="420" y="214" width="8" height="196" rx="4" fill="#4f46e5"/>
+
+    <text x="565" y="257" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="18" font-weight="750" fill="#14213d" opacity="1"><tspan x="565" dy="0">Encoder</tspan></text>
+    <text x="565" y="279.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="565" dy="0">permutation-invariant set encoding</tspan><tspan x="565" dy="19">or a fixed-grid branch network</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="750" y="214" width="290" height="196" rx="22" fill="#dff6f1" stroke="#0f766e" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="750" y="214" width="8" height="196" rx="4" fill="#0f766e"/>
+
+    <text x="895" y="257" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="18" font-weight="750" fill="#14213d" opacity="1"><tspan x="895" dy="0">Decoder</tspan></text>
+    <text x="895" y="279.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="895" dy="0">evaluates at query points</tspan><tspan x="895" dy="19">combined with coordinate embeddings</tspan></text>
+  </g>
+    <g filter="url(#shadow)">
+    <rect x="1080" y="214" width="280" height="196" rx="22" fill="#ffe9ed" stroke="#dc4c64" stroke-opacity=".28" stroke-width="1.5" />
+    <rect x="1080" y="214" width="8" height="196" rx="4" fill="#dc4c64"/>
+
+    <text x="1220" y="257" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="18" font-weight="750" fill="#14213d" opacity="1"><tspan x="1220" dy="0">Prediction</tspan></text>
+    <text x="1220" y="279.5" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="500" fill="#5e6b7f" opacity="1"><tspan x="1220" dy="0">a value at every query point</tspan><tspan x="1220" dy="19">together with a confidence band</tspan></text>
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 388 312 L 412 312" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 388 312 L 412 312" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowBlue)" />
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 718 312 L 742 312" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 718 312 L 742 312" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowIndigo)" />
+  </g>
+    <g class="flow-connector" opacity="1">
+    <path d="M 1048 312 L 1072 312" fill="none" stroke="#ffffff" stroke-opacity=".88" stroke-width="7.8" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 1048 312 L 1072 312" fill="none" stroke="#0f766e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrowTeal)" />
+  </g>
+    <text x="340" y="468" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="800" fill="#14213d" opacity="1"><tspan x="340" dy="0">Three routes to a calibrated confidence</tspan></text>
+    <text x="1050" y="468" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="15" font-weight="800" fill="#14213d" opacity="1"><tspan x="1050" dy="0">Sources of uncertainty</tspan></text>
+    <g>
+    <rect x="40" y="500" width="250" height="46" rx="23" fill="#ffffff" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="165" y="527.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#0f766e" opacity="1"><tspan x="165" dy="0">Information bottleneck</tspan></text>
+  </g>
+      <g>
+    <rect x="306" y="500" width="340" height="46" rx="23" fill="#ffffff" stroke="#0f766e" stroke-opacity=".28"/>
+    <text x="476" y="527.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#0f766e" opacity="1"><tspan x="476" dy="0">compress the input, bound the noise variationally</tspan></text>
+  </g><g>
+    <rect x="40" y="560" width="250" height="46" rx="23" fill="#ffffff" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="165" y="587.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#16865b" opacity="1"><tspan x="165" dy="0">Latent variable and GP</tspan></text>
+  </g>
+      <g>
+    <rect x="306" y="560" width="340" height="46" rx="23" fill="#ffffff" stroke="#16865b" stroke-opacity=".28"/>
+    <text x="476" y="587.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#16865b" opacity="1"><tspan x="476" dy="0">the latent gives a mean, the process a covariance</tspan></text>
+  </g><g>
+    <rect x="40" y="620" width="250" height="46" rx="23" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="165" y="647.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#d97706" opacity="1"><tspan x="165" dy="0">Ensembles or posteriors</tspan></text>
+  </g>
+      <g>
+    <rect x="306" y="620" width="340" height="46" rx="23" fill="#ffffff" stroke="#d97706" stroke-opacity=".28"/>
+    <text x="476" y="647.08" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="12" font-weight="700" fill="#d97706" opacity="1"><tspan x="476" dy="0">several parameter sets give a predictive spread</tspan></text>
+  </g>
+    <g>
+    <rect x="720" y="500" width="300" height="46" rx="23" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="870" y="527.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#2563eb" opacity="1"><tspan x="870" dy="0">Input sampling</tspan></text>
+  </g>
+      <g>
+    <rect x="1036" y="500" width="330" height="46" rx="23" fill="#ffffff" stroke="#2563eb" stroke-opacity=".28"/>
+    <text x="1201" y="527.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#2563eb" opacity="1"><tspan x="1201" dy="0">sensor count and placement</tspan></text>
+  </g><g>
+    <rect x="720" y="560" width="300" height="46" rx="23" fill="#ffffff" stroke="#4f46e5" stroke-opacity=".28"/>
+    <text x="870" y="587.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#4f46e5" opacity="1"><tspan x="870" dy="0">Operator approximation</tspan></text>
+  </g>
+      <g>
+    <rect x="1036" y="560" width="330" height="46" rx="23" fill="#ffffff" stroke="#4f46e5" stroke-opacity=".28"/>
+    <text x="1201" y="587.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#4f46e5" opacity="1"><tspan x="1201" dy="0">finite parameters, finite data</tspan></text>
+  </g><g>
+    <rect x="720" y="620" width="300" height="46" rx="23" fill="#ffffff" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="870" y="647.76" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="14" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="870" dy="0">Extrapolation</tspan></text>
+  </g>
+      <g>
+    <rect x="1036" y="620" width="330" height="46" rx="23" fill="#ffffff" stroke="#dc4c64" stroke-opacity=".28"/>
+    <text x="1201" y="647.42" text-anchor="middle" font-family="Inter, Noto Sans SC, PingFang SC, Microsoft YaHei, system-ui, sans-serif" font-size="13" font-weight="700" fill="#dc4c64" opacity="1"><tspan x="1201" dy="0">queries outside the training law</tspan></text>
+  </g>
+
+</svg>
