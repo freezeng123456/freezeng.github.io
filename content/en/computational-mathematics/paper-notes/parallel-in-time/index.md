@@ -80,7 +80,7 @@ Stacking the unknowns at all time levels, a one-step discretisation gives a bloc
 - **85 (the _Acta Numerica_ survey)** organises this work and the wider literature into two classes: methods that remain effective for propagative problems, and methods designed primarily for dissipative problems.
 
 > [!note] Coverage status
-> Papers 12, 20, 30, 31 and 39 have close-reading content checked equation by equation. The close readings for 46, 53, 59, 65, 71, 77 and 84 are still being filled in; the complete section-by-section reading of paper 85 is in the [[en/computational-mathematics/knowledge-notes/time-parallelization/index|time-parallelization topic]].
+> The formulas of papers 12, 39, 59 and 65 have been checked equation by equation. For papers 30, 31, 46, 53 and 84 the bibliographic record and abstract are verified, but the specific constants in their theorems could not be checked. The abstracts and full texts of papers 20 and 77 are unobtainable through public channels — SIAM does not deposit abstracts with Crossref and the other aggregators return nulls for those DOIs — and paper 71's abstract is rendered with all inline mathematics deleted in every public source, so this site reports no theorems or constants for those three. The complete section-by-section reading of paper 85 is in the [[en/computational-mathematics/knowledge-notes/time-parallelization/index|time-parallelization topic]].
 
 ## One trade-off that runs through everything
 
