@@ -59,7 +59,56 @@ B=\frac{1}{\Delta t}
 \end{bmatrix}.
 $$
 
-这个 $B$ 的特征向量矩阵条件数可证为 $\mathrm{Cond}_2(V)=\mathcal O(n^2)$，即随时间点数多项式增长而不是指数增长。这就把 $n\approx20$ 的天花板换成了一个温和的多项式代价。
+### 为什么 $V$ 的条件数是 $\mathcal O(n^2)$：Chebyshev 连接
+
+结论本身容易记，机制才是这篇的实质：**特征问题可以化归到 Chebyshev 多项式，于是 $V$ 与 $V^{-1}$ 都有显式表达式。** 取缩放后的 $\mathcal B:=\Delta t\,B$，并记第一类与第二类 Chebyshev 多项式
+
+$$
+T_n(x)=\cos(n\arccos x),
+\qquad
+U_n(x)=\frac{\sin\bigl[(n+1)\arccos x\bigr]}{\sin(\arccos x)} .
+$$
+
+则 $\mathcal B$ 的 $n$ 个特征值为 $\lambda_j=\mathrm ix_j$，其中 $\{x_j\}_{j=1}^n$ 是**特征方程**
+
+$$
+U_{n-1}(x)-\mathrm i\,T_n(x)=0
+$$
+
+的 $n$ 个根，对应特征向量的分量为
+
+$$
+p_{j,k}=\mathrm i^{\,k}\,U_k(x_j),\qquad k=0,1,\dots,n-1,\qquad p_{j,0}=1 .
+$$
+
+这些根的结构恰好提供了所需的三件事：全部根**单重**（因此 $\mathcal B$ 可对角化）、都是虚部为负的复数（因此特征值落在正确的半平面）、且模小于 $1+1/\sqrt{2n}$（这一条正是控制 $\mathrm{Cond}_2(V)$ 的关键）；此外 $x$ 是根则 $-\bar x$ 也是根。证明的做法是代入 $y=x+\sqrt{x^2-1}$，于是 $T_n=\tfrac12(y^n+y^{-n})$、$U_{n-1}=(y^n-y^{-n})/(y-y^{-1})$，特征方程化为
+
+$$
+y^{2n}=-\frac{(y-\mathrm i)^2}{(y+\mathrm i)^2},
+$$
+
+再用 $|y|>1$ 与 Chebyshev 的 Pythagoras 恒等式 $T_n^2(x)+(1-x^2)U_{n-1}^2(x)=1$。
+
+特征向量矩阵随之分解为一个**酉**对角因子乘一个 Chebyshev-Vandermonde 型矩阵：
+
+$$
+V=\underbrace{\mathrm{diag}\bigl(\mathrm i^0,\mathrm i^1,\dots,\mathrm i^{\,n-1}\bigr)}_{\text{酉}}\;
+\underbrace{\begin{bmatrix}
+U_0(x_1)&\cdots&U_0(x_n)\\
+\vdots&&\vdots\\
+U_{n-1}(x_1)&\cdots&U_{n-1}(x_n)
+\end{bmatrix}}_{=:\,\Phi},
+$$
+
+因此 $\mathrm{Cond}_2(V)=\mathrm{Cond}_2(\Phi)$——酉因子是免费的，条件数问题被完全归约到 $\Phi$。由此可证
+
+$$
+\mathrm{Cond}_2(V)=\mathcal O(n^2),
+$$
+
+即随时间点数**多项式**增长而不是指数增长。这就把 $n\approx20$ 的天花板换成了一个温和的多项式代价。论文另外设计了一个利用上述结构的快速算法来计算 $\mathcal B$ 的谱分解，并在并行机上报告 256 核下超过 60 倍的加速。
+
+还有一处结构上的便利值得记录：二阶（波型）方程对应的全时间矩阵是 $B^2$，而它与 $B$ **共用同一个** $V$，因此同一套条件数分析直接适用。这就是一篇论文能同时覆盖一阶与二阶问题的原因。
 
 **这一篇的方法论值得单独指出：** 前面的工作都在给定时间离散后设法处理 $V$ 的条件数，而这一篇反过来——**为了让 $V$ 条件良好而重新选择时间离散**。代价是必须放弃时间推进的解释，接受一个只在全时间意义下成立的格式。
 
@@ -128,7 +177,32 @@ $$
 $\mathcal P_\alpha^{-1}$ 的作用方式是 $C_\alpha=VDV^{-1}$，$V=\Gamma_\alpha^{-1}\mathbb F^*$，$\Gamma_\alpha=\mathrm{diag}(1,\alpha^{1/N_t},\dots,\alpha^{(N_t-1)/N_t})$，因此步骤 (a) 与 (c) 是（带缩放的）FFT，步骤 (b) 是 $N_t$ 个独立的复空间求解，而 $\mathrm{Cond}_2(V)\le1/\alpha$ 是小 $\alpha$ 的舍入代价。
 
 > [!warning] 界的方向
-> 综述中转述这条定理时把两个端点印反了（写成 $\frac{1}{1-\alpha}\le|\lambda|\le\frac{1}{1+\alpha}$），这对 $\alpha\in(0,1)$ 不可能成立，因为 $1/(1-\alpha)>1/(1+\alpha)$。上式给出的是正确方向；单通道的直接计算可以确认这一点。
+> 综述中转述这条定理时把两个端点印反了（写成 $\frac{1}{1-\alpha}\le|\lambda|\le\frac{1}{1+\alpha}$），这对 $\alpha\in(0,1)$ 不可能成立，因为 $1/(1-\alpha)>1/(1+\alpha)$。上式给出的是正确方向，理由见下面的直接计算。
+
+### 单通道的直接计算
+
+方向可以自己算出来，不必依赖转述。逐个取 $z\in\sigma(\Delta tA)$，记 $r:=r_1^{-1}(z)r_2(z)$，稳定性即 $|r|\le1$。在该标量通道内 $\mathcal K=I_t-rB$、$\mathcal P_\alpha=I_t-rC_\alpha$，而 $C_\alpha=B+\alpha e_1e_{N_t}^{\top}$，于是
+
+$$
+\mathcal K=\mathcal P_\alpha+\alpha r\,e_1e_{N_t}^{\top}
+\qquad\Longrightarrow\qquad
+\mathcal P_\alpha^{-1}\mathcal K=I_t+\alpha r\,\bigl(\mathcal P_\alpha^{-1}e_1\bigr)e_{N_t}^{\top},
+$$
+
+这是单位矩阵的**秩一修正**。因此它的特征值是重数 $N_t-1$ 的 $1$，加上唯一一个 $1+\alpha r\,e_{N_t}^{\top}\mathcal P_\alpha^{-1}e_1$。用 $\mathcal P_\alpha^{-1}=\sum_{j\ge0}r^jC_\alpha^{\,j}$ 以及 $C_\alpha^{\,j}e_1=e_{1+j}$（$j<N_t$）、$C_\alpha^{N_t}=\alpha I_t$，得
+
+$$
+e_{N_t}^{\top}\mathcal P_\alpha^{-1}e_1=\sum_{m\ge0}r^{\,N_t-1+mN_t}\alpha^m=\frac{r^{\,N_t-1}}{1-\alpha r^{\,N_t}},
+\qquad
+\lambda=1+\frac{\alpha r^{\,N_t}}{1-\alpha r^{\,N_t}}=\frac{1}{1-\alpha r^{\,N_t}} .
+$$
+
+由 $|r|\le1$ 得 $|\alpha r^{N_t}|\le\alpha$，故 $|1-\alpha r^{N_t}|\in[1-\alpha,1+\alpha]$，正好给出 $\frac1{1+\alpha}\le|\lambda|\le\frac1{1-\alpha}$；同一个计算还给出综述自己的推论 $\rho(\mathcal M)=\bigl|\alpha r^{N_t}/(1-\alpha r^{N_t})\bigr|\le\alpha/(1-\alpha)$。两个结论出自同一步，方向由此确定。
+
+这个计算顺带说明了两件事。其一，每个标量通道内除**一个**特征值外全部精确等于 $1$，所以整个系统最多有 $N_x$ 个特征值偏离 $1$——这正是 McDonald、Pestana 与 Wathen 在 $\alpha=1$ 情形下聚集性定理的对应物。其二，偏离量带因子 $r^{N_t}$，因此对**严格**压缩的通道（$|r|<1$，即有耗散）聚集性远好于最坏情形的界。**这解释了为什么该方法在抛物问题上的表现明显优于双曲问题**：双曲情形 $|r|\approx1$，$r^{N_t}$ 不衰减，最坏界几乎是紧的。
+
+> [!note] 关于这段计算的性质
+> 以上是本页为确定界的方向而做的推导，只覆盖标量通道，并非论文本身的证明。论文发表于 _SIAM J. Matrix Anal. Appl._，其定理可能以更精细的、依赖 $z$ 的端点形式给出；若要引用论文原始表述，仍应核对期刊正文。
 
 ## 71：前向-后向情形有多个 Toeplitz 块
 

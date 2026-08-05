@@ -59,7 +59,56 @@ B=\frac{1}{\Delta t}
 \end{bmatrix}.
 $$
 
-The eigenvector matrix of this $B$ provably satisfies $\mathrm{Cond}_2(V)=\mathcal O(n^2)$, polynomial rather than exponential growth in the number of time points. That replaces the $n\approx20$ ceiling with a mild polynomial cost.
+### Why $V$ is conditioned like $\mathcal O(n^2)$: the Chebyshev connection
+
+The result is easy to remember, but the mechanism is the substance of this paper: **the eigenproblem reduces to Chebyshev polynomials, which yields explicit formulas for both $V$ and $V^{-1}$.** Work with the rescaled $\mathcal B:=\Delta t\,B$ and write the Chebyshev polynomials of the first and second kind,
+
+$$
+T_n(x)=\cos(n\arccos x),
+\qquad
+U_n(x)=\frac{\sin\bigl[(n+1)\arccos x\bigr]}{\sin(\arccos x)} .
+$$
+
+The $n$ eigenvalues of $\mathcal B$ are then $\lambda_j=\mathrm ix_j$, where $\{x_j\}_{j=1}^n$ are the $n$ roots of the **characteristic equation**
+
+$$
+U_{n-1}(x)-\mathrm i\,T_n(x)=0,
+$$
+
+and the components of the corresponding eigenvector are
+
+$$
+p_{j,k}=\mathrm i^{\,k}\,U_k(x_j),\qquad k=0,1,\dots,n-1,\qquad p_{j,0}=1 .
+$$
+
+The structure of these roots supplies exactly the three things needed: all of them are **simple**, so $\mathcal B$ is diagonalisable; all are complex with negative imaginary part, so the eigenvalues sit in the correct half-plane; and all have modulus below $1+1/\sqrt{2n}$, which is what controls $\mathrm{Cond}_2(V)$. If $x$ is a root then so is $-\bar x$. The proof substitutes $y=x+\sqrt{x^2-1}$, so that $T_n=\tfrac12(y^n+y^{-n})$ and $U_{n-1}=(y^n-y^{-n})/(y-y^{-1})$, reducing the characteristic equation to
+
+$$
+y^{2n}=-\frac{(y-\mathrm i)^2}{(y+\mathrm i)^2},
+$$
+
+and then uses $|y|>1$ together with the Chebyshev Pythagorean identity $T_n^2(x)+(1-x^2)U_{n-1}^2(x)=1$.
+
+The eigenvector matrix accordingly factors into a **unitary** diagonal term times a Chebyshev-Vandermonde-like matrix,
+
+$$
+V=\underbrace{\mathrm{diag}\bigl(\mathrm i^0,\mathrm i^1,\dots,\mathrm i^{\,n-1}\bigr)}_{\text{unitary}}\;
+\underbrace{\begin{bmatrix}
+U_0(x_1)&\cdots&U_0(x_n)\\
+\vdots&&\vdots\\
+U_{n-1}(x_1)&\cdots&U_{n-1}(x_n)
+\end{bmatrix}}_{=:\,\Phi},
+$$
+
+so $\mathrm{Cond}_2(V)=\mathrm{Cond}_2(\Phi)$ — the unitary factor is free, and the conditioning question reduces entirely to $\Phi$. From this one proves
+
+$$
+\mathrm{Cond}_2(V)=\mathcal O(n^2),
+$$
+
+**polynomial** rather than exponential growth in the number of time points, which replaces the $n\approx20$ ceiling with a mild polynomial cost. The paper additionally designs a fast algorithm exploiting this structure to compute the spectral decomposition of $\mathcal B$, and reports over 60 times speedup on 256 cores.
+
+One structural convenience is worth recording as well: the all-at-once matrix for second-order (wave-type) equations is $B^2$, which shares **the same** $V$ as $B$, so the same conditioning analysis applies unchanged. That is why a single paper covers both the first- and second-order cases.
 
 **The methodology of this paper deserves separate emphasis.** Earlier work took the time discretisation as given and looked for ways to cope with the conditioning of $V$; this paper inverts that and **chooses the time discretisation so that $V$ is well conditioned**. The price is giving up the time-stepping interpretation and accepting a scheme that only makes sense all-at-once.
 
@@ -128,7 +177,32 @@ The value of this is the exchange of hypotheses: from "the time-stepping matrix 
 Applying $\mathcal P_\alpha^{-1}$ uses $C_\alpha=VDV^{-1}$ with $V=\Gamma_\alpha^{-1}\mathbb F^*$ and $\Gamma_\alpha=\mathrm{diag}(1,\alpha^{1/N_t},\dots,\alpha^{(N_t-1)/N_t})$, so steps (a) and (c) are scaled FFTs and step (b) is $N_t$ independent complex spatial solves, with $\mathrm{Cond}_2(V)\le1/\alpha$ the roundoff price of small $\alpha$.
 
 > [!warning] The direction of the bound
-> The survey restates this theorem with the endpoints transposed, printing $\frac{1}{1-\alpha}\le|\lambda|\le\frac{1}{1+\alpha}$, which is impossible for $\alpha\in(0,1)$ since $1/(1-\alpha)>1/(1+\alpha)$. The display above has the correct orientation, and a direct computation in a single scalar channel confirms it.
+> The survey restates this theorem with the endpoints transposed, printing $\frac{1}{1-\alpha}\le|\lambda|\le\frac{1}{1+\alpha}$, which is impossible for $\alpha\in(0,1)$ since $1/(1-\alpha)>1/(1+\alpha)$. The display above has the correct orientation, for the reason given by the direct computation below.
+
+### The direct computation in a single scalar channel
+
+The orientation can be settled by calculation rather than taken on trust. Take one $z\in\sigma(\Delta tA)$ at a time and write $r:=r_1^{-1}(z)r_2(z)$, so that stability means $|r|\le1$. In that scalar channel $\mathcal K=I_t-rB$ and $\mathcal P_\alpha=I_t-rC_\alpha$ with $C_\alpha=B+\alpha e_1e_{N_t}^{\top}$, hence
+
+$$
+\mathcal K=\mathcal P_\alpha+\alpha r\,e_1e_{N_t}^{\top}
+\qquad\Longrightarrow\qquad
+\mathcal P_\alpha^{-1}\mathcal K=I_t+\alpha r\,\bigl(\mathcal P_\alpha^{-1}e_1\bigr)e_{N_t}^{\top},
+$$
+
+a **rank-one update of the identity**. Its eigenvalues are therefore $1$ with multiplicity $N_t-1$ together with the single value $1+\alpha r\,e_{N_t}^{\top}\mathcal P_\alpha^{-1}e_1$. Expanding $\mathcal P_\alpha^{-1}=\sum_{j\ge0}r^jC_\alpha^{\,j}$ and using $C_\alpha^{\,j}e_1=e_{1+j}$ for $j<N_t$ together with $C_\alpha^{N_t}=\alpha I_t$,
+
+$$
+e_{N_t}^{\top}\mathcal P_\alpha^{-1}e_1=\sum_{m\ge0}r^{\,N_t-1+mN_t}\alpha^m=\frac{r^{\,N_t-1}}{1-\alpha r^{\,N_t}},
+\qquad
+\lambda=1+\frac{\alpha r^{\,N_t}}{1-\alpha r^{\,N_t}}=\frac{1}{1-\alpha r^{\,N_t}} .
+$$
+
+Since $|r|\le1$ gives $|\alpha r^{N_t}|\le\alpha$ and hence $|1-\alpha r^{N_t}|\in[1-\alpha,1+\alpha]$, this is exactly $\frac1{1+\alpha}\le|\lambda|\le\frac1{1-\alpha}$; the same computation also gives the survey's own corollary $\rho(\mathcal M)=\bigl|\alpha r^{N_t}/(1-\alpha r^{N_t})\bigr|\le\alpha/(1-\alpha)$. Both follow from one step, which fixes the orientation.
+
+The computation shows two further things in passing. First, in each scalar channel every eigenvalue but **one** equals $1$ exactly, so across the whole system at most $N_x$ eigenvalues differ from $1$ — the counterpart of McDonald, Pestana and Wathen's clustering theorem for $\alpha=1$. Second, the deviation carries the factor $r^{N_t}$, so for a **strictly** contractive channel ($|r|<1$, that is, with dissipation) the clustering is far tighter than the worst-case bound. **This explains why the method performs markedly better on parabolic than on hyperbolic problems**: in the hyperbolic case $|r|\approx1$, so $r^{N_t}$ does not decay and the worst-case bound is nearly attained.
+
+> [!note] What this computation is
+> The above is a derivation carried out for this page in order to settle the direction of the bound. It covers only the scalar channel and is not the paper's own proof. The paper appeared in _SIAM J. Matrix Anal. Appl._ and its theorem may be stated with sharper, $z$-dependent endpoints, so the journal text should still be consulted before quoting the paper's original formulation.
 
 ## 71: the forward-backward case has several Toeplitz blocks
 
