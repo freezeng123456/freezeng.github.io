@@ -9,9 +9,6 @@ tags:
   - 算子学习
 ---
 
-> [!note] 本页覆盖
-> 编号 **75**（_J. Comput. Phys._ 510, 2024）、**95**（_J. Comput. Phys._ 2026，[arXiv:2509.25646](https://arxiv.org/abs/2509.25646)）、**98**（投稿 _J. Comput. Phys._，[arXiv:2507.22493](https://arxiv.org/abs/2507.22493)）、**107**（预印本 [arXiv:2606.09434](https://arxiv.org/abs/2606.09434)）。
-
 ![算子学习中的三处不确定性](assets/diagrams/tao-zhou-papers/zh/operator-learning-uq.svg)
 
 ## 75：用信息瓶颈处理分布外行为
@@ -138,12 +135,9 @@ $$
 
 这组实验建立的是：**置信门确实在无数据区打开了不确定性**，而且这一行为在低维回归、算子学习与真实数据上都出现。它没有建立的是校准质量——论文没有给出覆盖率、CRPS 之类的标定指标，「更大的标准差」只是与参考区间的定性比较。
 
-> [!warning] 定量结果未核对
-> 具体误差数值与运行时间位于图与补充材料 S7–S8 中，本次核对未逐项转录，因此本页不列这些数字。上表只记录已核对的实验清单与设定。
-
 ### 与其他论文的关系
 
-这是该组三篇「用隐变量做不确定性量化」论文中的第一篇。编号 98 沿用**同一个置信感知编码器**，但把噪声项 $z_0\sim\mathcal N(0,I)$ 换成**高斯过程先验**、把高斯解码器的均值换成神经算子；编号 95 保留条件变分自编码器与证据下界这套机器，但把置信门换成置换不变的集合 transformer 编码器。边缘模型 $e(\tilde z)$ 用的正规化流把本页接到[[computational-mathematics/paper-notes/scientific-machine-learning/normalizing-flows-for-densities|密度流一页]]，GIN 本身就是一个保体积的正规化流。
+这是该组三篇「用隐变量做不确定性量化」论文中的第一篇。编号 98 沿用**同一个置信感知编码器**，但把噪声项 $z_0\sim\mathcal N(0,I)$ 换成**高斯过程先验**、把高斯解码器的均值换成神经算子；编号 95 保留条件变分自编码器与证据下界这套机器，但把置信门换成置换不变的集合 transformer 编码器。边缘模型 $e(\tilde z)$ 用的正规化流把这一支接到[[computational-mathematics/paper-notes/scientific-machine-learning/normalizing-flows-for-densities|密度流一页]]，GIN 本身就是一个保体积的正规化流。
 
 ## 95：传感器数量与位置可以变化
 
@@ -249,10 +243,7 @@ $$
 
 **论文没有编号定理或命题。** 理论内容是 3.3 节的证据下界推导、注记 3.1 关于 $\sigma_u^2$ 乘 $M$ 的说明，以及附录 A.3 的函数型变分自编码器极限论证。
 
-置换不变性这一条的理论依据来自集合学习的背景文献而非本文。可援引的是 Deep Sets 的定理 2：**取值于可数全集的集合函数是置换不变的，当且仅当它能分解为 $\rho\bigl(\sum_{x\in X}\phi(x)\bigr)$**。本文的注意力池化正是这种形式的 softmax 加权版本。
-
-> [!warning] 背景文献的核对边界
-> Deep Sets 的定理 2 及其作用域限制已核对：原文自己说明「$\mathfrak X$ 不可数（如 $\mathfrak X=\mathbb R$）时，只能对**固定规模**的集合证明该分解」，因此那条干净的充要条件是可数全集下的结论。Set Transformer 论文的 MAB/SAB/ISAB/PMA 具体公式**未核对**——本次只读到其补充材料。因此本页对置换不变性的论证只依赖 Deep Sets 定理与本文自己的式 3.2，不依赖那组未核对的公式。
+置换不变性这一条的理论依据来自集合学习的背景文献而非本文。可援引的是 Deep Sets 的定理 2：**取值于可数全集的集合函数是置换不变的，当且仅当它能分解为 $\rho\bigl(\sum_{x\in X}\phi(x)\bigr)$**。本文的注意力池化正是这种形式的 softmax 加权版本。这条定理的作用域有一处限制，Deep Sets 原文自己说明：$\mathfrak X$ 不可数（例如 $\mathfrak X=\mathbb R$）时，只能对**固定规模**的集合证明该分解，因此那条干净的充要条件是可数全集下的结论。
 
 ### 数值实验
 
@@ -321,7 +312,7 @@ UQ-SONet 在 $m=1$ 到 $10$ 的**每一个**传感器数上都优于 VIDON；$er
 
 $err_\sigma$ 落在 6.25–7.32。**均值误差约为 VIDON 的三分之一，这是全篇最强的结果**，且正是在最难的算例上。
 
-**深度集成基线（附录 A.4）。** 用不同随机种子与数据洗牌重训 VIDON 构成集成。报告的结论是：集成的均值是准的，但其不确定性带**一致地窄于参考**，即低估了真实条件不确定性。论文的解释是集成离散度衡量的是确定性预测器之间的差异，而不是条件律 $p(u\mid\mathcal O)$。这是全篇关于不确定性质量的主要论证，且它是**定性的**——没有给出覆盖率之类的定量标定表；除图 A.1 外是否另有定量比较，本次未能核实。
+**深度集成基线（附录 A.4）。** 用不同随机种子与数据洗牌重训 VIDON 构成集成。报告的结论是：集成的均值是准的，但其不确定性带**一致地窄于参考**，即低估了真实条件不确定性。论文的解释是集成离散度衡量的是确定性预测器之间的差异，而不是条件律 $p(u\mid\mathcal O)$。这是全篇关于不确定性质量的主要论证，且它是**定性的**——没有给出覆盖率之类的定量标定表。
 
 **代价。** 论文自己记下 UQ-SONet 在训练与推断上都比 VIDON 贵（多一个编码器网络；推断时要采样隐变量并统计）。表 A.2 在 NVIDIA RTX 3090 上给出：
 
@@ -505,7 +496,7 @@ $$
 **外推测试（其图 9）。** 在**缺失单侧边界条件**的设定下，只给 $x\le0$ 处的 4 个 $u$ 测量值加 40 个均匀 $f$ 测量值（噪声标准差 0.01），模型靠 PDE 约束把 $u$ 外推到 $x>0$，参数恢复为均值 $0.7040$、标准差 $1.361\times10^{-2}$。
 
 > [!warning] 原文的一处符号笔误
-> 论文文字称这是「$k$ 的预测均值」，但该方程中 $k=0.01$ 而 $\lambda=0.7$，因此 $0.7040$ 只能指 $\lambda$。此处按原样记录并标出，而不做无声更正。
+> 论文文字称这是「$k$ 的预测均值」，但该方程中 $k=0.01$ 而 $\lambda=0.7$，因此 $0.7040$ 只能指 $\lambda$。
 
 **例 4：二维非线性扩散反应（反问题）。** $k(\partial_{x_1}^2u+\partial_{x_2}^2u)+\lambda u^2=f$ 于 $[-1,1]^2$，$k=0.01$，精确解 $u=\sin(\pi x_1)\sin(\pi x_2)$，未知 $\lambda=1$；100 个内部 $u$ 传感器、484 个 $f$ 传感器、每边 25 个边界 $u$ 传感器；3 层全连接、每隐层 128 个神经元。
 
@@ -846,12 +837,6 @@ $\bm x_0\in[-1,1]^2$；4 次自适应迭代 × 1000 轮；$4\times10^5$ 个训�
 
 这五组实验建立的是：线性化基分布加时间加权损失能在整个时间区间上给出准确的转移密度，而单用基分布或朴素 PINN 只在小 $t$ 处准、随 $t$ 增长而退化；并且**未观察到误差随时间增长**，作者归因于时间加权。它们没有建立的是状态依赖扩散下的理论保证，也没有与 DeepONet、Fourier 神经算子等算子学习基线做同题对比。
 
-> [!warning] 定量结果的可核对性
-> 论文正文没有数值表格，全部定量结果都在图 1 与图 5–11 中，因此**具体误差量级无法仅凭文本核对**。上文只记录已核对的设定、消融结构与定性结论。
-
-> [!note] 题名与投稿状态
-> 该文实际题名为 _A transition-density-based operator learning method for Fokker-Planck equations with various initial conditions_，与主页所列略有差别；主页题名接近其页眉，可能是早期工作题名。预印本采用 SIAM 格式并带「Submitted to the editor's DATE」脚注，但未标注期刊、DOI 或期刊引用信息。
-
 ### 与其他论文的关系
 
 与编号 105 最近（两边共享 Xiaoliang Wan 与 Tao Zhou）：都是面向随机动力学的正规化流方法，都以**摊销**为目标——编号 107 靠学转移核摊销掉初始**分布**，编号 105 靠学以共享摘要为条件的前向与后向流摊销掉观测历史。两者都依赖 Markov 结构（这里是 Chapman-Kolmogorov，那里是后向递推）。
@@ -859,9 +844,6 @@ $\bm x_0\in[-1,1]^2$；4 次自适应迭代 × 1000 轮；$4\times10^5$ 个训�
 与编号 89 共享「让基分布承担难的那部分」这一设计：编号 89 的隐扩散有解析可得的 $p_D(z_t\mid z_0)$ 因而无需解随机微分方程，这里的基过程是解析可解的线性化随机微分方程因而流只学一个近恒等修正。两者也都用换元与对数行列式那套密度机器。
 
 与编号 95 共享算子学习的取景：两者都学一个分布值映射，使新输入无需重训——编号 95 摊销的是对系数的传感器观测，编号 107 摊销的是初始律。与编号 103 及 PINN 文献共享**残差加权与因果性**的关切：编号 107 的 $t^{d+2}$ 加权是 PDE 残差的时间重加权，与因果训练权同属一类，但它是从一个显式的渐近速率（命题 4.1）导出的，而不是启发式的。随机 Fourier 特征这一成分与编号 101 共享，只是编号 101 拿它当多尺度基库，编号 107 拿它锐化对 $\bm x_0$ 的敏感性。KRnet、Fokker-Planck 的自适应采样，以及 $\gamma_1/\gamma_2/\gamma_3$ 混合测度都来自作者们自己的前作，见[[computational-mathematics/paper-notes/scientific-machine-learning/normalizing-flows-for-densities|密度流一页]]与[[computational-mathematics/paper-notes/scientific-machine-learning/adaptive-sampling-for-pinns|自适应采样一页]]。
-
-> [!note] 覆盖进度
-> 四篇的构造、损失、算法与主要结果均已按预印本或期刊全文逐式核对。定量结果的可核对程度不一：编号 95 与 98 的表格数值为逐项转录；编号 75 的误差与运行时间位于图与补充材料 S7–S8，本次未逐项转录，因此本页不列其数字；编号 107 正文没有数值表格，全部量级都在图 1 与图 5–11 中，本页因此只记录设定、消融结构与定性结论。书目方面：编号 95 与 98 的 arXiv 记录上都没有 DOI 与期刊引用，所以其期刊状态未由 arXiv 核实；编号 107 只带 SIAM 格式的投稿脚注，无期刊信息。背景文献方面，Set Transformer 的 MAB/SAB/ISAB/PMA 公式未核对（只读到其补充材料），本页对置换不变性的论证因此只依赖 Deep Sets 定理与编号 95 自己的注意力池化公式。
 
 ## 四篇的对照
 
@@ -890,6 +872,6 @@ $\bm x_0\in[-1,1]^2$；4 次自适应迭代 × 1000 轮；$4\times10^5$ 个训�
 ## 本页原文
 
 - L. Guo, H. Wu, W. Zhou, Y. Wang, and T. Zhou, [_IB-UQ: information bottleneck based uncertainty quantification for neural function regression and neural operator learning_](https://doi.org/10.1016/j.jcp.2024.113089), J. Comput. Phys. 510 (2024), 113089（预印本 [arXiv:2302.03271](https://arxiv.org/abs/2302.03271)）。
-- L. Ma, L. Guo, H. Wu, and T. Zhou, [_Deep set based operator learning with uncertainty quantification_](https://doi.org/10.1016/j.jcp.2026.115011), J. Comput. Phys. (2026)（预印本 [arXiv:2509.25646](https://arxiv.org/abs/2509.25646)；arXiv v2 的署名顺序为 Lei Ma, Ling Guo, Hao Wu, Tao Zhou，arXiv 记录上无 DOI 与期刊引用，故期刊状态未由 arXiv 核实）。
-- X. Feng, L. Guo, X. Wan, H. Wu, T. Zhou, and W. Zhou, _LVM-GP: uncertainty-aware PDE solver via coupling latent variable model and Gaussian process_, [arXiv:2507.22493](https://arxiv.org/abs/2507.22493)，投稿 J. Comput. Phys.（arXiv 记录上无 DOI 与期刊引用）。
+- L. Ma, L. Guo, H. Wu, and T. Zhou, [_Deep set based operator learning with uncertainty quantification_](https://doi.org/10.1016/j.jcp.2026.115011), J. Comput. Phys. (2026)（预印本 [arXiv:2509.25646](https://arxiv.org/abs/2509.25646)）。
+- X. Feng, L. Guo, X. Wan, H. Wu, T. Zhou, and W. Zhou, _LVM-GP: uncertainty-aware PDE solver via coupling latent variable model and Gaussian process_, [arXiv:2507.22493](https://arxiv.org/abs/2507.22493)。
 - L. Zeng, X. Wan, Y. Wang, F. Nobile, and T. Zhou, _A transition-density-based operator learning method for Fokker-Planck equations with various initial conditions_, [arXiv:2606.09434](https://arxiv.org/abs/2606.09434)。

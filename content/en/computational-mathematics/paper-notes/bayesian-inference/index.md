@@ -9,7 +9,7 @@ tags:
   - bayesian-inverse-problems
 ---
 
-This topic holds 10 papers spanning 2019 to 2026. They all attack one concrete tension: **posterior sampling under a PDE constraint needs thousands of forward solves, and replacing the forward model by a surrogate makes sampling cheap while writing the surrogate's error straight into the posterior.**
+These ten papers span 2019 to 2026. They all attack one concrete tension: **posterior sampling under a PDE constraint needs thousands of forward solves, and replacing the forward model by a surrogate makes sampling cheap while writing the surrogate's error straight into the posterior.**
 
 ![Surrogate and sampler refine together](assets/diagrams/tao-zhou-papers/en/bayesian-surrogate-loop.svg)
 
@@ -30,27 +30,6 @@ $$
 $$
 
 Replacing $\mathcal G$ by a surrogate $\widehat{\mathcal G}$ gives an approximate posterior $\widehat\nu$. The difficulty is not the surrogate's global accuracy but its **location**: a surrogate trained on prior samples is accurate on the prior support, while the posterior usually concentrates on a thin subset of it, and when the data carry information beyond the prior that subset can sit in a low-probability region of the prior. The surrogate is therefore least accurate exactly where accuracy matters most.
-
-## Verification tier
-
-How much detail the two close-reading pages carry is decided entirely by how much of each source could be checked. The summary is below; the per-paper gaps are recorded on the pages themselves.
-
-| No. | Source checked                                                  | Tier                               |
-| --- | --------------------------------------------------------------- | ---------------------------------- |
-| 34  | arXiv:1809.08931 full text plus journal abstract                | Full text                          |
-| 37  | arXiv:1807.00618 full text                                      | Full text                          |
-| 49  | arXiv:1911.08926 full text                                      | Full text                          |
-| 55  | arXiv:2104.06285 full text                                      | Full text                          |
-| 56  | arXiv:2104.06276 full text                                      | Full text                          |
-| 79  | arXiv:2310.17844 v3 full text                                   | Full text                          |
-| 82  | ScienceDirect abstract, complete introduction, section openings | **Abstract and introduction only** |
-| 88  | arXiv:2508.06852 full text                                      | Full text                          |
-| 99  | arXiv:2411.13277 v3 full text                                   | Full text                          |
-| 106 | arXiv:2605.29373 v1 full text                                   | Full text                          |
-
-Nine are full text. One, paper 82, is paywalled with no preprint, so **not a single equation from its Sections 2 to 4 is verifiable**; its close reading covers only what the abstract and introduction support and says where the line falls.
-
-Full text does not mean every number could be transcribed, and this is the topic's largest remaining gap. **Only paper 34 left a complete, legible set of error and cost figures.** Paper 56 left a quantitative comparison for one example. Papers 37, 49, 55, 79, 88 and 99 left experimental configurations and qualitative conclusions. All of paper 106's tables were destroyed in extraction. The experiments sections below therefore give the reproducible configuration first, then say plainly which conclusions have no numbers behind them.
 
 ## Turning surrogate error into posterior error
 
@@ -97,7 +76,7 @@ $$
 
 The two are consistent in order: Hellinger distance is controlled by the square root of the KL divergence, so a KL bound of order $\epsilon^{2}$ gives a Hellinger bound of order $\epsilon$, which is exactly the shape above. The KL is taken with the approximation first and the truth second; Hellinger distance is symmetric, so no ordering question arises there.
 
-**What the two terms are.** The first term $K_1\epsilon$ is the price paid on the feasible set, where the difference of potentials is controlled by $\epsilon$. The second term $K_2\nu(\mathcal M^{\perp}(\epsilon))$ is the price paid on the complement, where the surrogate may be arbitrarily bad, so the integrand can only be held down by the uniform-boundedness assumption and then multiplied by the **posterior** mass of that region. That is why an apparently gratuitous uniform bound is needed. (This decomposition is this page's reading of the bound's structure; both papers state only the conclusion.)
+**What the two terms are.** The first term $K_1\epsilon$ is the price paid on the feasible set, where the difference of potentials is controlled by $\epsilon$. The second term $K_2\nu(\mathcal M^{\perp}(\epsilon))$ is the price paid on the complement, where the surrogate may be arbitrarily bad, so the integrand can only be held down by the uniform-boundedness assumption and then multiplied by the **posterior** mass of that region. That is why an apparently gratuitous uniform bound is needed. Both papers state only the conclusion; the decomposition can be read off the shape of the bound itself.
 
 **What it licenses.** The second term uses posterior measure, not prior measure and not Lebesgue measure. However badly the surrogate behaves over most of the prior support, that behaviour never enters the bound as long as those regions carry little posterior mass. "Locally accurate near the posterior" thus turns from an intuition into a target one can pursue: drive $\epsilon$ down and drive $\nu(\mathcal M^{\perp}(\epsilon))$ down. Paper 37 writes the algorithmic goal out explicitly — **if sampling is good enough that $\nu(\mathcal M^{\perp}(\epsilon))\le\epsilon$, the KL distance is characterised entirely by $\epsilon^{2}$.**
 

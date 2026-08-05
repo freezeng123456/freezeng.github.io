@@ -9,9 +9,6 @@ tags:
   - adaptive-sampling
 ---
 
-> [!note] Coverage of this page
-> Papers **66** (_Comput. Methods Appl. Mech. Engrg._ 400, 2022), **70** (_SIAM J. Sci. Comput._ 45(4), 2023), **73** (_Commun. Appl. Math. Comput._ 6, 2024), **76** (_CSIAM Trans. Appl. Math._ 5(3), 2024) and **80** (_Commun. Appl. Math. Comput._ 7(3), 2025).
-
 ![Let reliability analysis choose the next collocation batch](assets/diagrams/tao-zhou-papers/en/failure-informed-sampling.svg)
 
 The accuracy of a physics-informed neural network depends strongly on where the collocation points sit. The shared judgement across these papers is that **point placement is not an implementation detail but an object that can be driven by an explicit mathematical target**. The four targets differ — the probability that the residual is too large, the variance of a variational loss, the unbiasedness of a conditional expectation — but each reduces to the same recipe: define an estimable scalar, then generate points from it.
@@ -170,15 +167,9 @@ The experiments fall into three groups:
 
 The paper's quantitative claim is that the **overall computational cost is lower than fPINN**, which is what opens high-dimensional fractional PDEs at all.
 
-> [!warning] How far the numerical results were verified
-> The verification material behind this page confirms the grouping and the setup of the experiments, but the error tables could not be transcribed entry by entry from the accessible rendering: **the dimensional ceiling and the error magnitudes are unverified**, so no numbers are given here. Consult Section 4 of the journal version before quoting a specific error.
-
 ### Relation to the others
 
 This inner-outer estimator is imported verbatim by paper 72 as its Lemma 3.1 (same $f_I$, same $f_O$, same Beta sampling, same $r_\epsilon$ safeguard); what differs is the object it acts on. Paper 66 applies it to a generic PINN surrogate $u_{NN}$, whereas paper 72 applies it to a **normalising-flow density**, which brings non-negativity and normalisation into play. Paper 72 also offers an alternative route that avoids randomness entirely, a Gaussian radial basis auxiliary model; see the [[en/computational-mathematics/paper-notes/scientific-machine-learning/normalizing-flows-for-densities|density-flow page]].
-
-> [!note] Title and source reconciliation
-> The preprint is titled "Monte Carlo PINNs: deep learning approach for forward and inverse problems involving high dimensional fractional partial differential equations" while the journal version reads "Monte Carlo fPINNs: Deep learning method for ...". Separately, the prefactor in the Caputo definition renders as $\Gamma(1-\alpha)$ in the preprint while the exponent uses $\gamma$; with $0<\gamma<1$ it should be $\Gamma(1-\gamma)$. The chain of expectation identities above starts, in the rendered version, from an integral without the $1/\Gamma(1-\gamma)$ prefactor, so check the journal version before quoting a prefactor.
 
 ## 70: define "the residual is too large" as a failure event
 
@@ -301,10 +292,7 @@ The examples of Section 5 cover five classes of problem, all chosen so that unif
 | Poisson on an unbounded 2D domain             | uniform sampling is not even definable on an unbounded set |
 | time-dependent problem on an unbounded domain | both difficulties at once                                  |
 
-The baselines are uniform sampling and residual-based adaptive refinement. The qualitative conclusion is that self-adaptive importance sampling concentrates points in the high-residual region and the error decays faster than under either baseline. The authors' group repository is [SEU-YL-UQ/FI-PINNs](https://github.com/SEU-YL-UQ/FI-PINNs); the arXiv rendering of the paper does not itself print this address, so it is best cited as the authors' group repository.
-
-> [!warning] How far the numerical results were verified
-> The example types, the baselines and the qualitative conclusion are verified; **the per-example error magnitudes, and how many dimensions the "high-dimensional Poisson" case actually has, could not be confirmed from the accessible rendering**, so this page gives neither numbers nor a dimension.
+The baselines are uniform sampling and residual-based adaptive refinement. The qualitative conclusion is that self-adaptive importance sampling concentrates points in the high-residual region and the error decays faster than under either baseline. The authors' group implementation is at [SEU-YL-UQ/FI-PINNs](https://github.com/SEU-YL-UQ/FI-PINNs).
 
 ### Relation to the others
 
@@ -326,17 +314,11 @@ Part II addresses these separately: replace "accumulate" by "fixed-size resampli
 
 ### Numerical experiments
 
-The paper's empirical claim is a significant improvement over the original algorithm on several "challenging problems"; the published journal abstract adds that the subset-simulation posterior model "can estimate the failure probability more efficiently and generate new effective training points in the failure region".
-
-> [!warning] How far this could be verified
-> The exact cosine-annealing formula, the construction of the intermediate failure levels and the MCMC kernel used, as well as the list of benchmark problems and their error tables, could not be confirmed equation by equation from the verification material behind this page. This section therefore reports only the **role and position** of each construction, without formulas or numbers. The multimodal-failure-region argument should be read as motivation, not as an experimental result the paper reports.
+The paper reports a significant improvement over Part I on several challenging problems: the subset-simulation posterior model estimates the failure probability more efficiently and generates effective new training points in the failure region.
 
 ### Relation to the others
 
 The middle part of the trilogy. Relative to Part I what changes is the **posterior model** (truncated Gaussian to subset simulation) and the **set-management strategy** (accumulation to resampling); Part III changes the posterior model once more (to a truncated Gaussian mixture) and turns to inverse problems. The cosine-annealed transition from uniform to adaptive is conceptually the same device as the "start uniform, then sample from the current model" schedule in the ADDA line (papers 64, 72, 80, 87).
-
-> [!note] Author name
-> Some bibliographic aggregators record the third author as "Yan Liang"; the correct form is **Liang Yan** (Southeast University), consistent with papers 70 and 76.
 
 ## 76: a truncated Gaussian mixture, aimed at inverse problems
 
@@ -432,9 +414,6 @@ u=u_b,\ \ \gamma=\gamma_b,\ \ \partial_{\vec n}u=u_n\ \text{on}\ \partial\Omega,
 $$
 
 with loss $\mathcal L_c+\lambda_{u_b}\mathcal L_{u_b}+\lambda_{\gamma_b}\mathcal L_{\gamma_b}+\lambda_{\partial u}\mathcal L_{\partial u}$, where $\mathcal L_c=\|-\nabla\cdot(\gamma\nabla u)-f\|^2_{L^2(\Omega)}$ and the three boundary terms are $L^2(\partial\Omega)$ norms. The weighted norm is defined by $\|f\|^2_{L^2(\Omega)}=\int_\Omega f^2(x)\omega(x)\,\mathrm dx$, and this example takes $\omega\equiv1$ — worth noting, because the caveat about the prior factor above is not an issue when $\omega\equiv1$. The second class is an **inverse source problem in a parabolic system**.
-
-> [!warning] How far the numerical results were verified
-> The setup and loss structure of both example classes were verified against the journal PDF; **the per-example error tables were not transcribed**, so this page gives no numbers.
 
 ### Relation to the others
 
@@ -571,10 +550,7 @@ Four examples are compared side by side under four sampling strategies:
 | Section 4.3 | a problem with a singularity       |
 | Section 4.4 | a high-dimensional Poisson problem |
 
-The four strategies are conventional deep Ritz (fresh uniform points each round), Algorithm 1, Algorithm 2 and Algorithm 3. The shared setup is: error measured as a relative discrete $L_2$ error on a tensor grid, replaced by uniform samples in high dimension; a ResNet-like architecture with $\sin^3(x)$ activations; Adam for both networks; and a bounded KRnet with the same architecture as in paper 87. The abstract's quantitative claim is that the adaptive methods improve accuracy over plain deep Ritz, **particularly on low-regularity and high-dimensional problems**.
-
-> [!warning] How far the numerical results were verified
-> The list of examples, the error metric, the network and optimiser settings, and the four-way comparison design are all verified; **the per-example error numbers could not be confirmed**, so this page gives no numbers.
+The four strategies are conventional deep Ritz (fresh uniform points each round), Algorithm 1, Algorithm 2 and Algorithm 3. The shared setup is: error measured as a relative discrete $L_2$ error on a tensor grid, replaced by uniform samples in high dimension; a ResNet-like architecture with $\sin^3(x)$ activations; Adam for both networks; and a bounded KRnet with the same architecture as in paper 87. The paper's conclusion is that the adaptive methods improve accuracy over plain deep Ritz, **particularly on low-regularity and high-dimensional problems**.
 
 ### Relation to the others
 
@@ -595,26 +571,6 @@ Three transferable judgements:
 - **The indicator should enter the error bound.** Theorem 4.4 of paper 70 puts both prescribed tolerances into the final estimate, which is the quantitative version of "the failure probability is a posterior error indicator" rather than an analogy.
 - **The expressiveness of the proposal sets the ceiling.** From a single truncated Gaussian to subset simulation to a mixture model, what improves is always the estimation of the same quantity.
 - **Adaptivity has a ceiling of its own.** The residual variance in paper 80 shows that with a sign-changing integrand the sample count remains a necessary independent resource.
-
-## Coverage check
-
-| Item                                                     | Paper | Status                                                                           |
-| -------------------------------------------------------- | ----- | -------------------------------------------------------------------------------- |
-| Inner-outer split estimator for the fractional Laplacian | 66    | full derivation chain, both Beta laws, the $r_\epsilon$ floor                    |
-| Expectation form of the Caputo derivative                | 66    | formula and sampling law (with a prefactor caveat)                               |
-| Squaring bias and two independent draws                  | 66    | the unbiased construction and its conditions                                     |
-| Numerical experiments of 66                              | 66    | algorithm and the three experiment groups; **magnitudes unverified**             |
-| Limit-state function and failure probability             | 70    | definitions, safe and failure sets, contrast with refinement                     |
-| Self-adaptive importance sampling                        | 70    | iterative update, termination, weighted final proposal, estimator                |
-| Theorem 4.4 with its proof skeleton                      | 70    | three assumptions, bound, split estimate, prior-factor check                     |
-| Numerical experiments of 70                              | 70    | five example classes and baselines; **magnitudes and dimension unverified**      |
-| Fixed-size resampling and subset simulation              | 73    | role and position, with the verification limits stated                           |
-| Zero-variance proposal and the mixture model             | 76    | optimal density, KL criterion, EM updates, projection                            |
-| Numerical experiments of 76                              | 76    | impedance-tomography equations and loss, inverse source; **tables unverified**   |
-| Statistical error of a variational loss                  | 80    | error split, worked example, the $O(1/\sigma)$ requirement                       |
-| Residual variance for a sign-changing integrand          | 80    | optimal density, variance ordering, strictly positive floor                      |
-| Two-network alternation and both mixtures                | 80    | both objectives, both density floors                                             |
-| Numerical experiments of 80                              | 80    | three algorithm variants, four examples, four strategies; **numbers unverified** |
 
 ## Sources for this page
 

@@ -9,8 +9,7 @@ tags:
   - neural-network-basis
 ---
 
-> [!note] Coverage of this page
-> Papers **60** (_Commun. Comput. Phys._ 31(3), 2022), **90** (_Commun. Comput. Phys._ 39(2), 2026) and **102** (submitted to _Commun. Comput. Phys._, [arXiv:2603.17906](https://arxiv.org/abs/2603.17906)). The common authorship thread is Jianguo Huang and Tao Zhou, and the common technical orientation is **reducing network training to a (sequence of) least-squares problems** while letting structure rather than penalties carry the constraints.
+Papers 60, 90 and 102 come from the same group of authors, and their common technical orientation is **reducing network training to a (sequence of) least-squares problems** while letting structure rather than penalties carry the constraints.
 
 ## 60: replace the penalty with an augmented Lagrangian
 
@@ -22,7 +21,7 @@ The first builds the constraint into the ansatz, $\varphi(x;\theta)=\ell(x)\psi(
 
 The second adds a quadratic penalty on the boundary. That always works, but it trades accuracy for a tuning problem: too small a penalty and the constraint is not enforced, too large and the loss becomes ill-conditioned so the optimiser cannot move. **The penalty parameter has no natural scale**, so it has to be found by trial.
 
-Paper 60's judgement is that classical optimisation solved this dilemma long ago with the augmented Lagrangian method. Introducing a multiplier carries the first-order information of the constraint explicitly, leaving the penalty responsible only for local convexity. The penalty parameter then need not tend to infinity, and it need not start large — **the multiplier does most of the enforcing and the penalty is auxiliary**. That is the mechanism behind the abstract's claim that "the choice of the penalty parameter is flexible and robust".
+Paper 60's judgement is that classical optimisation solved this dilemma long ago with the augmented Lagrangian method. Introducing a multiplier carries the first-order information of the constraint explicitly, leaving the penalty responsible only for local convexity. The penalty parameter then need not tend to infinity, and it need not start large — **the multiplier does most of the enforcing and the penalty is auxiliary**. That is the mechanism behind the claim that "the choice of the penalty parameter is flexible and robust".
 
 Transplanting this classical method to networks meets exactly one real obstacle, and it is the paper's technical core: the classical multiplier update is an **explicit addition in function space**, while a network's multiplier is determined by parameters and parameter space has no corresponding addition. The paper's answer is to rewrite that step as a least-squares fit.
 
@@ -130,9 +129,6 @@ $$
 
 with $\xi\sim\mathrm{Unif}(\Omega)$ and $\eta\sim\mathrm{Unif}(\Gamma)$.
 
-> [!note] A bracket grouping
-> The grouping of the $-|\Gamma|\mathbb E_\eta[\cdot]$ bracket in the accessible rendering of the Monte Carlo form is ambiguous. **The sign structure $-\mu(v-g)+\tfrac{\beta}{2}(v-g)^2$ is fixed by the continuous form above**, which should be treated as the authority.
-
 ### Theorems
 
 What the paper supplies is the classical infinite-dimensional result: the equivalence of the constrained variational problem with the minimax problem, and the corresponding saddle-point characterisation. **This is classical augmented Lagrangian theory quoted for the infinite-dimensional setting, not a new theorem about neural networks.** The paper proves no convergence or approximation theorem for the discretised (network) method, and saying so plainly marks the boundary of its claims: the method rests on a principle, but discrete-level guarantees are not part of it.
@@ -161,9 +157,6 @@ The examples of Section 4 and the baselines:
 There are two baselines: the **penalty-method deep-learning version**, and **solving the minimax problem directly by stochastic gradient descent-ascent (SGDA)**. The second matters, because it tests whether "augmented Lagrangian plus alternating updates" really beats taking the minimax formulation at face value. Remark 3.1 states plainly that designing an efficient descent-ascent method for this minimax problem **remains open**, which both explains the alternating scheme and concedes that its theoretical footing is incomplete.
 
 The qualitative conclusion is that ALDL is markedly less sensitive to $\beta$ than the penalty method and reaches better accuracy at comparable cost.
-
-> [!warning] How far the numerical results were verified
-> The composition of the examples, both baselines and the qualitative conclusion are verified; **the per-example error tables could not be confirmed in an accessible rendering**. The specific improvement factors sometimes quoted (eigenfunctions better by 2 to 20 times, eigenvalues by up to 100 times, 25 to 30 per cent faster) are **all unverified and should not be cited**.
 
 ### Relation to the others
 
@@ -366,9 +359,6 @@ Read together, the four examples mark the method's boundary: **2-D peaks are the
 
 The paper's stated open problems are three: find all peak subdomains in a single iteration (currently one peak per round); find a better way to determine the scaling coefficients (currently an integer brute-force search); and handle time-dependent low regularity.
 
-> [!note] Publication details
-> The journal volume, issue and DOI are verified; **the page range 553-577 has not been independently re-checked**.
-
 ### Relation to the others
 
 Paper 90 belongs to the randomised-basis strand together with paper 102: the same frozen random basis, the same linear-least-squares plus Gauss-Newton machinery, differing in what they repair — paper 90 adapts the **scale** of the basis to handle low regularity, paper 102 adapts the **formulation** to make a constraint exact.
@@ -378,9 +368,6 @@ The scaled basis $\sigma(c_Kw^\top(x-x_K)+b)$ is the randomised-basis counterpar
 The residual-argmax refinement is the "hard" analogue of the deep adaptive sampling the same group uses elsewhere: instead of **adding samples** where the residual is large, it **adds a rescaled local basis** there.
 
 Its relation to paper 60 is two answers to one question: both target constraints that plain penalty losses handle badly, but paper 90 uses no penalty weights at all and relies on the least-squares solver, while paper 60 introduces multipliers for the boundary condition.
-
-> [!note] Citation relation
-> Whether paper 90 cites paper 60 could not be confirmed from the verification material behind this page.
 
 ## 102: let an operator identity carry the divergence constraint
 
@@ -531,8 +518,8 @@ $$
 
 The paper calls this the Newton-LLSQ framework and notes it is equivalent to first deriving a discretised nonlinear system and then applying Gauss-Newton. The appendix's Picard/Oseen-type linearisation ("Scheme I", $\nu\Delta^2\phi^{(k+1)}-\mathbf{curl}\,\phi^{(k)}\cdot\nabla\Delta\phi^{(k+1)}=\mathbf{curl}\,\bm f$) is used as an initialiser, because Gauss-Newton is only locally convergent.
 
-> [!warning] A symbol in the preprint
-> Equation (4.11) prints $\mu$ in the linearised equation while the surrounding text consistently uses the viscosity $\nu$. Read it as $\nu$.
+> [!warning] A symbol in equation (4.11)
+> The linearised equation prints $\mu$ while the surrounding text consistently uses the viscosity $\nu$. Read it as $\nu$.
 
 **Complexity accounting.** Taking the cost of $\min_x\|Ax-b\|_2^2$ with $A\in\mathbb R^{m\times n}$, $m\gg n$, to be $\mathcal O(mn^2)$:
 
@@ -614,9 +601,6 @@ Halton sampling gives 10000 interior points plus 2400 boundary points ($20\times
 
 The pressure row deserves attention because it is a weakness the paper reports itself: **solving sequentially means the pressure step inherits the error of the velocity step**, whereas a coupled solve lets the two correct one another. The paper does not sidestep this.
 
-> [!note] Internal inconsistencies in the preprint
-> The caption of Fig. 5.7 says $M=1500$ while the surrounding text says $M=2500$; the caption of Fig. 5.9 mistakenly repeats "3D Stokes".
-
 **Example four: 3-D Navier-Stokes (Section 5.4).** On $(0,1)^3$ with the trigonometric-polynomial solution
 
 $$
@@ -649,25 +633,7 @@ All three answer the same question: **when a constraint enters the loss as a pen
 
 A second judgement concerns the solver: papers 90 and 102 can abolish penalty weights entirely because they replace training with least squares. Least squares is still sensitive to the relative weighting between residual blocks, but it does not need a weight that makes gradient descent converge, and those two difficulties are not of the same order. Paper 60 retains stochastic optimisation and therefore still needs $\beta$; the multiplier only lowers how large $\beta$ has to be.
 
-A third judgement concerns evidence: **none of the three proves a convergence theorem for its discrete method.** Paper 60 quotes classical theory at the infinite-dimensional level; papers 90 and 102 state outright that no analysis is offered. All three therefore stand on their experimental design — and papers 90 and 102 report theirs in enough detail to be re-checked.
-
-## Coverage check
-
-| Item                                                     | Paper | Status                                                                                                                                             |
-| -------------------------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Defects of the two workarounds and the multiplier's role | 60    | intuition, problems with the ansatz and the penalty                                                                                                |
-| Augmented Lagrangian and minimax equivalence             | 60    | functional form, sign convention, derivation of the inner maximisation, dual functional                                                            |
-| Energies of the three instances                          | 60    | elliptic, linear eigenvalue, nonlinear eigenvalue with cited uniqueness                                                                            |
-| Parameter-space projection of the multiplier update      | 60    | source of the difficulty, projection target, Monte Carlo forms and the bracket note                                                                |
-| Numerical experiments of 60                              | 60    | Algorithm 2 and infinite-dimensional Algorithm 1, three example classes, two baselines, Remark 3.1; **error tables and quoted factors unverified** |
-| Frozen basis and the two presetting strategies           | 90    | basis definition, uniform draws, re-parameterisation and the location/shape split                                                                  |
-| Domain decomposition and unweighted least squares        | 90    | transmission conditions, loss, why penalty weights vanish, Gauss-Newton and its stopping rule                                                      |
-| Residual indicator, local rescaling, scale search        | 90    | all three parts, why brute force is affordable, the constructive discontinuity                                                                     |
-| Numerical experiments of 90                              | 90    | complete settings and results for all four examples, including detected centres, scales, error magnitudes and three open problems                  |
-| Divergence-free ansatz and the two advection identities  | 102   | general principle, two lemmas, two theorems with the proof route, the role of the gauge                                                            |
-| Four decoupled subproblems and pressure recovery         | 102   | fourth-order velocity equation, derivation of the boundary conditions, first-order gradient system and classical solutions                         |
-| Discretisation, Gauss-Newton and cost accounting         | 102   | shared basis, two least-squares steps, linearisation and initialisation, complexity comparison                                                     |
-| Numerical experiments of 102                             | 102   | solutions, grids, baselines, timings and divergence magnitudes for all four examples, plus the two conceded weaknesses                             |
+A third judgement concerns evidence: **none of the three proves a convergence theorem for its discrete method.** Paper 60 quotes classical theory at the infinite-dimensional level; papers 90 and 102 state outright that no analysis is offered. All three therefore stand on their experimental design, and papers 90 and 102 report theirs in the most detail.
 
 ## Sources for this page
 

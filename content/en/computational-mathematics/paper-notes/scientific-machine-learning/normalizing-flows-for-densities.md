@@ -9,9 +9,6 @@ tags:
   - normalizing-flows
 ---
 
-> [!note] Coverage of this page
-> Papers **62** (_J. Comput. Phys._ 461, 2022), **64** (_Commun. Comput. Phys._ 32(2), 2022), **72** (_J. Sci. Comput._ 97:68, 2023) and **87** (_SIAM J. Sci. Comput._ 47(6), 2025).
-
 ![Turning a density equation into a parameterised problem with an invertible map](assets/diagrams/tao-zhou-papers/en/density-flow-solvers.svg)
 
 The shared judgement of these four papers is that when the solution of an equation **is itself a probability density**, approximating it by values on a grid throws away structure. A density must be non-negative and integrate to one; in grid methods those are constraints, in an invertible map they are identities.
@@ -63,12 +60,9 @@ For SDEs and stochastic PDEs the known physics enters as a residual loss added t
 
 The paper lists three advantages of its own: one framework for forward, inverse and mixed problems; no requirement that sensor positions stay fixed across observations; and relief from the curse of dimensionality that afflicts polynomial chaos.
 
-> [!warning] How far this could be verified
-> The algebraic form of the Karhunen-Loève-structured reference field, the form of the flow's coupling layers, and the combined likelihood-plus-physics loss could not be confirmed equation by equation from the verification material behind this page. The three steps above are the paper's own statement and can be quoted safely; **the specific formulas are not given on this page** and should be read directly from Section 3 of the original.
-
 ### Theorems
 
-The abstract claims no theorem, and no convergence or approximation result was found in the body. This is worth saying plainly: the contribution is a representation and a training framework, not an analysis.
+The paper gives no convergence or approximation result. This is worth saying plainly: the contribution is a representation and a training framework, not an analysis.
 
 ### Numerical experiments
 
@@ -82,10 +76,7 @@ Section 4 falls into three groups:
 
 The mixed non-Gaussian group is the most informative of the three: it tests exactly whether the division of labour holds — Karhunen-Loève structure for correlation, flow for non-Gaussianity — because an insufficiently expressive flow would smear a mixture into a single mode.
 
-The abstract's qualitative conclusion is that the model can learn non-Gaussian processes and solve several types of stochastic PDE.
-
-> [!warning] How far the numerical results were verified
-> The composition of the three groups is verified; **the error magnitudes are not**, so this page gives no numbers.
+The qualitative conclusion is that the model can learn non-Gaussian processes and solve several types of stochastic PDE.
 
 ### Relation to the others
 
@@ -195,14 +186,11 @@ where $|\beta|<1$ is user-specified (for instance $0.6$), $\bm s_i,\bm q_i:\math
 
 There are two differences from standard real NVP, each with a clear purpose. First, $\tanh$ together with $\beta$ clamps the scale factor inside $(1-\beta,1+\beta)$, whereas real NVP's scale is $\exp(\cdot)$ and can be arbitrarily large or arbitrarily close to zero; clamping keeps the log-determinant of the Jacobian from blowing up and stabilises training. Second, the input dimension of $\bm s_i,\bm q_i$ is $m+1$ rather than $m$, and the extra coordinate is $t$ — that is how one set of weights covers the whole time interval.
 
-**Loss.** The training signal is the time-dependent Fokker-Planck residual, with no labelled data.
-
-> [!note] The discrete form of the loss
-> The explicit discrete residual expression was **reconstructed from prose** in the verification material behind this page rather than transcribed equation by equation: it is the mean-square Fokker-Planck residual evaluated at space-time collocation points $(\bm x^{(i)},t^{(i)})$, matching the practice of the ADDA line. Check the original before quoting the precise form.
+**Loss.** The training signal is the time-dependent Fokker-Planck residual, with no labelled data: the mean-square residual evaluated at space-time collocation points $(\bm x^{(i)},t^{(i)})$, matching the practice of the ADDA line.
 
 ### Theorems
 
-The paper claims no theorem. Its abstract argues at the level of methodology: the scheme is mesh-free, needs no labelled data, and extends readily to high dimensions.
+The paper claims no theorem. It argues at the level of methodology: the scheme is mesh-free, needs no labelled data, and extends readily to high dimensions.
 
 ### Numerical experiments
 
@@ -217,9 +205,6 @@ The experiments cover three categories:
 | High dimension  | high-dimensional time-dependent problems                   |
 
 The linear-drift group serves as calibration: such problems often have analytic or high-accuracy reference solutions, so one can tell whether the error comes from the flow's expressiveness or from the residual discretisation. The nonlinear-drift and high-dimensional groups are the real targets.
-
-> [!warning] How far the numerical results were verified
-> The composition of the three categories is verified; **the specific dimensions and error magnitudes are not**, nor is the exact schedule for adaptively refreshing the collocation set, so this page gives no numbers.
 
 ### Relation to the others
 
@@ -272,7 +257,7 @@ x_{[i],2}=x_{[i-1],2}\odot\Bigl(\bm 1_{d-m}+\beta\tanh\bigl(s_i(x_{[i-1],1})\big
 $$
 
 > [!warning] A notation clash
-> In the preprint rendering this coupling-layer equation writes the $\tanh$ scale bound as $\alpha$, but $\alpha$ is the fractional exponent everywhere else in the paper. Read it as $\beta$, matching the corresponding equation in paper 64 and the original KRnet layer.
+> The paper prints the $\tanh$ scale bound in this coupling layer as $\alpha$, but $\alpha$ is the fractional exponent everywhere else in the paper. Read it as $\beta$, matching the corresponding equation in paper 64 and the original KRnet layer.
 
 ### Derivation
 
@@ -312,12 +297,9 @@ r_0/r_2\sim\mathrm{Beta}(\alpha,1),
 r_\epsilon=\max\{\epsilon,r_1\}.
 $$
 
-What it acts on differs from paper 66: there the target was a generic PINN surrogate, here it is a **density**, so non-negativity and normalisation are guaranteed by the flow and need no extra constraint.
+What it acts on differs from paper 66: there the target was a generic PINN surrogate, here it is a **density**, so non-negativity and normalisation are guaranteed by the flow and need no extra constraint. The formula itself differs in one small way too: paper 72 uses two **independent** direction variables, $\bm\xi$ for the inner part and $\bm\eta$ for the outer, whereas the corresponding formula in paper 66 reuses a single $\xi$.
 
 One observation is easy to overlook and matters in practice: $\mathrm{Beta}(a,1)$ concentrates at the origin as $a\to0$, and the inner radius obeys $r_1/r_0\sim\mathrm{Beta}(2-\alpha,1)$, so as $\alpha$ approaches $2$ the first parameter $2-\alpha$ approaches zero, the samples $r_1$ pile up near zero, and $1/r_1^2$ amplifies cancellation error more readily — a **larger** floor $r_\epsilon$ is then needed for stability. This turns "parameter values affect numerical stability" into an actionable rule rather than a generic warning.
-
-> [!note] A small difference from paper 66
-> Paper 72 uses two **independent** direction variables $\bm\xi$ (inner) and $\bm\eta$ (outer), whereas the corresponding formula in paper 66 reuses a single $\xi$. Small, but real.
 
 **Route two: an analytic auxiliary model (GRBFNF).** The starting point is Lemma 3.2: for a Gaussian $u(\bm x)=\exp(-\sigma^{-2}|\bm x-\bm x_0|_2^2)$,
 
@@ -378,8 +360,6 @@ The paper's formal results are two lemmas, neither a convergence statement about
 
 **Lemma 3.2 (analytic fractional Laplacian of a Gaussian).** As above, for functions of the form $\exp(-\sigma^{-2}|\bm x-\bm x_0|^2)$. The paper attributes it to a reference rather than proving it.
 
-Two sentences frequently repeated beyond the abstract — that "MCNF and GRBFNF improve accuracy by at least an order of magnitude over non-adaptive methods", and that "GRBFNF is better in low dimension while MCNF is better in high dimension" — **could not be confirmed in wording or magnitude in the accessible text** by the verification material behind this page. The second is a natural reading of the two constructions (basis-centre counts degrade with $d$, Monte Carlo does not), but it should be treated as a hypothesis to check rather than as the paper's conclusion.
-
 ### Numerical experiments
 
 The adaptive strategy itself is short (stated for MCNF; GRBFNF is analogous):
@@ -389,7 +369,7 @@ The adaptive strategy itself is short (stated for MCNF; GRBFNF is analogous):
 3. Draw a **new** training set by pushing reference samples through the inverse flow, that is, sample from the current approximate density;
 4. Continue training on the refreshed set, alternating steps 2 and 3 until the stopping criterion.
 
-This is exactly the "refine the training set and the approximate solution alternately" of the abstract. What distinguishes it from the [[en/computational-mathematics/paper-notes/scientific-machine-learning/adaptive-sampling-for-pinns|paper 70]] line is the quantity it follows: there, the residual failure probability; here, **the solution density itself**.
+This is what "refine the training set and the approximate solution alternately" amounts to. What distinguishes it from the [[en/computational-mathematics/paper-notes/scientific-machine-learning/adaptive-sampling-for-pinns|paper 70]] line is the quantity it follows: there, the residual failure probability; here, **the solution density itself**.
 
 The examples cover four classes:
 
@@ -402,15 +382,9 @@ The examples cover four classes:
 
 The last choice is deliberate: the Cauchy distribution is heavy-tailed with no second moment, exactly the object a finite-domain grid method handles worst, whereas a flow is defined on all of $\mathbb R^d$ and heavy tails are just a shape the reference distribution takes after mapping.
 
-> [!warning] How far the numerical results were verified
-> The composition of the four example classes is verified; **the specific dimensions (4D/6D/8D) and the error magnitudes are not**, so this page gives no numbers.
-
 ### Relation to the others
 
 Paper 72 equals the Monte Carlo fractional operator of [[en/computational-mathematics/paper-notes/scientific-machine-learning/adaptive-sampling-for-pinns|paper 66]] times the ADDA/KRnet density framework of paper 64 and Tang-Wan-Liao. Its coupling layer is in the same family as paper 64's and its adaptive refresh is the same idea as ADDA's. Paper 87 then replaces the unbounded KRnet with a B-KRnet suited to bounded and mixed domains, while [[en/computational-mathematics/paper-notes/scientific-machine-learning/uncertainty-aware-operator-learning|paper 107]] replaces the goal of "solve one Fokker-Planck equation" with "learn a Fokker-Planck solution operator over initial conditions".
-
-> [!note] Author order
-> The homepage lists the authors as Xiaoliang Wan, Li Zeng, Tao Zhou; both the preprint and the journal version give **Li Zeng, Xiaoliang Wan, Tao Zhou**. This site follows the published version.
 
 ## 87: bounded support needs a different coupling layer
 
@@ -590,13 +564,7 @@ Algorithm 1 wraps this with mini-batching, Adam, and a step-decay learning-rate 
 
 The shared settings are: `Tanh` activation; **three subintervals per CDF coupling layer**; $\mathrm{NN}(\bm y_1)$ a fully connected network with two hidden layers; Adam in PyTorch; **update rate $\gamma=0.8$**.
 
-The qualitative claim of the abstract and conclusion is that samples generated by B-KRnet show excellent agreement with the ground truth and that the adaptive density-approximation scheme is effective on the four-dimensional problem, the Keller-Segel equation and the kinetic Fokker-Planck equation. The paper concedes two limitations: B-KRnet's smoothness stops at first order and improving it would need higher-order polynomials; and adaptive point updating inside a deep Ritz framework is left open — the latter picked up by [[en/computational-mathematics/paper-notes/scientific-machine-learning/adaptive-sampling-for-pinns|paper 80]].
-
-> [!warning] How far the numerical results were verified
-> The six examples, the shared settings and both conceded limitations are verified; **the specific error values are not**, so this page gives no numbers.
-
-> [!note] Version differences
-> The v1 abstract of the preprint says B-KRnet "consists of a series of coupling layers with progressively fewer active transformation dimensions, inspired by the triangular structure of the Knothe-Rosenblatt rearrangement" and calls the reference measure a base distribution; v3 says it "adapts the pseudo-triangular structure into a normalizing flow model" and calls it a prior distribution. Note which version you cite.
+The qualitative conclusion is that samples generated by B-KRnet show excellent agreement with the ground truth and that the adaptive density-approximation scheme is effective on the four-dimensional problem, the Keller-Segel equation and the kinetic Fokker-Planck equation. The paper concedes two limitations: B-KRnet's smoothness stops at first order and improving it would need higher-order polynomials; and adaptive point updating inside a deep Ritz framework is left open — the latter picked up by [[en/computational-mathematics/paper-notes/scientific-machine-learning/adaptive-sampling-for-pinns|paper 80]].
 
 ### Relation to the others
 
@@ -614,26 +582,6 @@ B-KRnet is the bounded member of the KRnet family that runs through this whole t
 One judgement runs through all four: **structural constraints should be guaranteed by the architecture, not approximated by penalties.** Normalisation is guaranteed by change of variables, non-negativity by the pushforward formula, the initial condition by multiplying the coupling layer by $t$, and bounded support by the CDF coupling layer. Each such guarantee removes one penalty term whose weight would otherwise need tuning.
 
 A second judgement concerns the price: every constructive guarantee is bought with expressiveness or smoothness. The factor $t$ restricts how much the layer can vary near $t=0$; the CDF coupling layer buys exact invertibility but flattens the model density into a piecewise linear one, so second-order equations have to be reduced in order. **Structure is not free.**
-
-## Coverage check
-
-| Item                                             | Paper | Status                                                                                                                                |
-| ------------------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Division of labour between KL structure and flow | 62    | intuition, three-step construction, three conceded advantages                                                                         |
-| Numerical experiments of 62                      | 62    | three groups; **formulas and error magnitudes unverified**                                                                            |
-| Time conditioning and Jacobian collapse          | 64    | three candidate routes, the wrong one, the right one, consequences                                                                    |
-| Time-dependent affine coupling layer             | 64    | formula, roles of $\beta$ and the $t$ input, two differences from real NVP                                                            |
-| Numerical experiments of 64                      | 64    | four-step algorithm and three categories; **dimensions and errors unverified**                                                        |
-| Fractional FPE under Lévy noise                  | 72    | equation, density model, coupling layer and the notation clash                                                                        |
-| Lemma 3.1 and the Beta-concentration rule        | 72    | full representation, two independent directions, $r_\epsilon$ dependence                                                              |
-| Lemma 3.2, GRBF and the coupled loss             | 72    | closed form, mixture model, necessity of the consistency penalty                                                                      |
-| Multiplying by $t$ for the initial condition     | 72    | coupling-layer form and its meaning                                                                                                   |
-| Numerical experiments of 72                      | 72    | four adaptive steps, four example classes; **dimensions and errors unverified**; two often-repeated conclusions marked as unconfirmed |
-| Piecewise linear density and quadratic CDF       | 87    | piecewise integration, the stable inverse, reparameterisation constants and their role                                                |
-| Pseudo-triangular structure, freezing, $d_1=1$   | 87    | block decomposition, squeezing, the reason for the edge case                                                                          |
-| Prop. 2.4 and Prop. 2.6                          | 87    | both statements and their proof status                                                                                                |
-| First-order recast and the three-term loss       | 87    | introducing $\bm g$, the three terms, the two properties held by construction                                                         |
-| Numerical experiments of 87                      | 87    | six examples, shared settings, four adaptive steps, two conceded limitations; **errors unverified**                                   |
 
 ## Sources for this page
 

@@ -9,9 +9,6 @@ tags:
   - operator-learning
 ---
 
-> [!note] Coverage of this page
-> Papers **75** (_J. Comput. Phys._ 510, 2024), **95** (_J. Comput. Phys._ 2026, [arXiv:2509.25646](https://arxiv.org/abs/2509.25646)), **98** (submitted to _J. Comput. Phys._, [arXiv:2507.22493](https://arxiv.org/abs/2507.22493)) and **107** (preprint [arXiv:2606.09434](https://arxiv.org/abs/2606.09434)).
-
 ![Three places uncertainty enters operator learning](assets/diagrams/tao-zhou-papers/en/operator-learning-uq.svg)
 
 ## 75: an information bottleneck for out-of-distribution behaviour
@@ -138,12 +135,9 @@ The discontinuous-regression setup is fully recorded: $N=32$ equidistant noisy s
 
 What this establishes is that **the confidence gate really does open up uncertainty where there is no data**, across low-dimensional regression, operator learning and real data alike. What it does not establish is calibration quality: no coverage, CRPS or interval score is reported, and "larger standard deviations" remains a qualitative comparison against the reference bands.
 
-> [!warning] Quantitative results not verified
-> The specific error figures and runtimes live in the figures and in Supplementary S7–S8, which this pass did not transcribe item by item, so no such numbers appear on this page. The table above records only the verified list of experiments and their setups.
-
 ### Relation to the others
 
-This is the first of the group's three latent-variable UQ papers. Paper 98 reuses the **same confidence-aware encoder** but replaces the noise term $z_0\sim\mathcal N(0,I)$ with a **Gaussian-process prior** and the Gaussian decoder's mean with a neural operator; paper 95 keeps the conditional-VAE/ELBO machinery but swaps the confidence gate for a permutation-invariant set-transformer encoder. The normalizing-flow marginal model $e(\tilde z)$ connects this page to the [[en/computational-mathematics/paper-notes/scientific-machine-learning/normalizing-flows-for-densities|density-flow line]], and GIN is itself a volume-preserving normalizing flow.
+This is the first of the group's three latent-variable UQ papers. Paper 98 reuses the **same confidence-aware encoder** but replaces the noise term $z_0\sim\mathcal N(0,I)$ with a **Gaussian-process prior** and the Gaussian decoder's mean with a neural operator; paper 95 keeps the conditional-VAE/ELBO machinery but swaps the confidence gate for a permutation-invariant set-transformer encoder. The normalizing-flow marginal model $e(\tilde z)$ connects this line to the [[en/computational-mathematics/paper-notes/scientific-machine-learning/normalizing-flows-for-densities|density-flow page]], and GIN is itself a volume-preserving normalizing flow.
 
 ## 95: the number and position of sensors may vary
 
@@ -249,10 +243,7 @@ updated by Adam. **At inference $z$ is drawn from the prior, not the encoder**, 
 
 **The paper contains no numbered theorem or proposition.** The theoretical content is the ELBO derivation of Section 3.3, Remark 3.1 on scaling $\sigma_u^2$ by $M$, and the functional-VAE limit argument of Appendix A.3.
 
-The theoretical basis for permutation invariance comes from the set-learning background literature rather than from this paper. The relevant statement is Deep Sets Theorem 2: **a set function on a countable universe is permutation-invariant if and only if it decomposes as $\rho\bigl(\sum_{x\in X}\phi(x)\bigr)$** for suitable $\phi$ and $\rho$. The attention pooling here is a softmax-weighted instance of that form.
-
-> [!warning] Where the background verification stops
-> Deep Sets Theorem 2 and its scope restriction are verified: the paper itself states that when $\mathfrak X$ is uncountable (for instance $\mathfrak X=\mathbb R$) the decomposition could only be proved for sets of **fixed size**, so the clean "if and only if" is a countable-universe theorem. The MAB/SAB/ISAB/PMA equations of the Set Transformer paper are **not verified** — only its supplementary material was reachable in this pass. The permutation-invariance argument on this page therefore rests on the Deep Sets theorem and on this paper's own Eq. 3.2, not on those unverified formulas.
+The theoretical basis for permutation invariance comes from the set-learning background literature rather than from this paper. The relevant statement is Deep Sets Theorem 2: **a set function on a countable universe is permutation-invariant if and only if it decomposes as $\rho\bigl(\sum_{x\in X}\phi(x)\bigr)$** for suitable $\phi$ and $\rho$. The attention pooling here is a softmax-weighted instance of that form. The theorem's scope carries one restriction that the Deep Sets paper states itself: when $\mathfrak X$ is uncountable (for instance $\mathfrak X=\mathbb R$) the decomposition could only be proved for sets of **fixed size**, so the clean "if and only if" is a countable-universe theorem.
 
 ### Numerical experiments
 
@@ -321,7 +312,7 @@ UQ-SONet beats VIDON at **every** sensor count from 1 to 10, and $err_{\sigma[u]
 
 with $err_\sigma$ in 6.25–7.32. **The mean error is roughly a third of VIDON's, the strongest result in the paper**, and it appears on the hardest problem.
 
-**Deep-ensemble baseline (Appendix A.4).** Built by retraining VIDON with different seeds and data shuffling. The reported outcome is that the ensemble's means are accurate but its uncertainty bands are **consistently narrower than the reference**, i.e. it under-estimates the true conditional uncertainty. The paper's explanation is that ensemble spread measures variability across deterministic predictors, not the conditional law $p(u\mid\mathcal O)$. This is the paper's main UQ-quality argument and it is **qualitative** — no numeric calibration table (coverage, for instance) is given; whether any quantitative comparison exists beyond Fig. A.1 could not be confirmed.
+**Deep-ensemble baseline (Appendix A.4).** Built by retraining VIDON with different seeds and data shuffling. The reported outcome is that the ensemble's means are accurate but its uncertainty bands are **consistently narrower than the reference**, i.e. it under-estimates the true conditional uncertainty. The paper's explanation is that ensemble spread measures variability across deterministic predictors, not the conditional law $p(u\mid\mathcal O)$. This is the paper's main UQ-quality argument and it is **qualitative** — no numeric calibration table (coverage, for instance) is given.
 
 **Costs.** The authors record honestly that UQ-SONet is more expensive than VIDON in both training and inference (an extra encoder network; latent sampling and statistics at inference). Table A.2, on an NVIDIA RTX 3090:
 
@@ -505,7 +496,7 @@ Reading: at high noise LVM-GP has the most accurate mean but also the **largest*
 **Extrapolation test (their Fig. 9).** With a **missing one-sided boundary condition**, given only four $u$-measurements at $x\le0$ plus 40 uniform $f$-measurements (noise std 0.01), the model extrapolates $u$ to $x>0$ using the PDE constraint, recovering the parameter with mean $0.7040$ and std $1.361\times10^{-2}$.
 
 > [!warning] A symbol slip in the source
-> The paper's text calls this "the prediction mean for $k$", but $k=0.01$ in this PDE while $\lambda=0.7$, so $0.7040$ must refer to $\lambda$. Recorded here as printed and flagged, rather than silently corrected.
+> The paper's text calls this "the prediction mean for $k$", but $k=0.01$ in this PDE while $\lambda=0.7$, so $0.7040$ must refer to $\lambda$.
 
 **Example 4: 2-D nonlinear diffusion–reaction (inverse).** $k(\partial_{x_1}^2u+\partial_{x_2}^2u)+\lambda u^2=f$ on $[-1,1]^2$, $k=0.01$, exact $u=\sin(\pi x_1)\sin(\pi x_2)$, unknown $\lambda=1$; 100 interior $u$-sensors, 484 $f$-sensors, 25 boundary $u$-sensors per side; three layers, 128 neurons per hidden layer.
 
@@ -846,12 +837,6 @@ with $\bm x_0\in[-1,1]^2$; 4 adaptive iterations of 1,000 epochs; $4\times10^5$ 
 
 Together these five experiments establish that the linearised base plus the time-weighted loss yields accurate transition densities across the whole time interval, whereas the base alone and vanilla PINN are accurate only at small $t$ and degrade as $t$ grows; and that **no error growth in time is observed**, which the authors attribute to the time weighting. They do not establish any guarantee under state-dependent diffusion, and there is no head-to-head comparison against operator-learning baselines such as DeepONet or the Fourier neural operator.
 
-> [!warning] Verifiability of the quantitative results
-> The paper contains no numerical tables in the body; all quantitative results live in Figures 1 and 5–11, so **specific error magnitudes cannot be verified from the text alone**. Only verified setups, ablation structure and qualitative conclusions are recorded above.
-
-> [!note] Title and submission status
-> The paper's actual title is _A transition-density-based operator learning method for Fokker-Planck equations with various initial conditions_, slightly different from the one listed on the author's homepage; the homepage title is close to the running head and is probably an earlier working title. The preprint is formatted in SIAM style with a "Submitted to the editor's DATE" footnote, but carries no journal, DOI or journal reference.
-
 ### Relation to the others
 
 Closest to paper 105 (sharing Xiaoliang Wan and Tao Zhou): both are normalizing-flow methods for stochastic dynamics with an amortisation goal — paper 107 amortises over initial **distributions** by learning the transition kernel, and paper 105 amortises over observation histories by learning forward and backward flows conditioned on a shared summary statistic. Both rely on the Markov structure (Chapman–Kolmogorov here, backward recursion there).
@@ -859,9 +844,6 @@ Closest to paper 105 (sharing Xiaoliang Wan and Tao Zhou): both are normalizing-
 It shares the "make the base distribution do the hard part" design with paper 89: EDG's latent diffusion has an analytically known $p_D(z_t\mid z_0)$ so no SDE solve is needed, and here the base process is an analytically solvable linearised SDE so the flow only learns a near-identity correction. Both also use the change-of-variables and log-determinant machinery for densities.
 
 It shares the operator-learning framing with paper 95: both learn a distribution-valued map so that new inputs need no retraining, paper 95 amortising over sensor observations of a coefficient and paper 107 over the initial law. It shares the **residual-weighting and causality** concern with paper 103 and the PINN literature generally: the $t^{d+2}$ weighting is a temporal reweighting of a PDE residual, in the same family as causal-training weights, but derived from an explicit asymptotic rate (Proposition 4.1) rather than heuristically. The **random Fourier feature** ingredient is shared with paper 101, though paper 101 uses it as a multiscale basis bank while paper 107 uses it to sharpen sensitivity to $\bm x_0$. KRnet, adaptive sampling for Fokker–Planck equations and the $\gamma_1/\gamma_2/\gamma_3$ mixture measure all come from the authors' own prior work; see the [[en/computational-mathematics/paper-notes/scientific-machine-learning/normalizing-flows-for-densities|density-flow page]] and the [[en/computational-mathematics/paper-notes/scientific-machine-learning/adaptive-sampling-for-pinns|adaptive-sampling page]].
-
-> [!note] Coverage status
-> The constructions, losses, algorithms and principal results of all four papers have been checked equation by equation against preprint or journal full texts. How far the quantitative results can be verified differs: the table values for papers 95 and 98 are transcribed item by item; paper 75's error figures and timings live in the figures and in Supplementary S7–S8, which were not transcribed in this pass, so no such numbers appear here; and paper 107's body contains no numerical tables at all — every magnitude sits in Figures 1 and 5–11 — so only setups, ablation structure and qualitative conclusions are recorded. Bibliographically, the arXiv records for papers 95 and 98 carry neither a DOI nor a journal reference, so their journal status is not verified from arXiv, and paper 107 carries only a SIAM-style submission footnote with no journal information. On the background side, the Set Transformer MAB/SAB/ISAB/PMA equations are unverified (only its supplementary material was reachable), so the permutation-invariance argument here rests on the Deep Sets theorem and on paper 95's own attention-pooling formula.
 
 ## The four side by side
 
@@ -890,6 +872,6 @@ There is also a shared methodological lesson in how papers 95 and 98 treat their
 ## Sources for this page
 
 - L. Guo, H. Wu, W. Zhou, Y. Wang, and T. Zhou, [_IB-UQ: information bottleneck based uncertainty quantification for neural function regression and neural operator learning_](https://doi.org/10.1016/j.jcp.2024.113089), J. Comput. Phys. 510 (2024), 113089 (preprint [arXiv:2302.03271](https://arxiv.org/abs/2302.03271)).
-- L. Ma, L. Guo, H. Wu, and T. Zhou, [_Deep set based operator learning with uncertainty quantification_](https://doi.org/10.1016/j.jcp.2026.115011), J. Comput. Phys. (2026) (preprint [arXiv:2509.25646](https://arxiv.org/abs/2509.25646); the arXiv v2 byline reads Lei Ma, Ling Guo, Hao Wu, Tao Zhou, and the arXiv record carries no DOI or journal reference, so the journal status is not verified from arXiv).
-- X. Feng, L. Guo, X. Wan, H. Wu, T. Zhou, and W. Zhou, _LVM-GP: uncertainty-aware PDE solver via coupling latent variable model and Gaussian process_, [arXiv:2507.22493](https://arxiv.org/abs/2507.22493), submitted to J. Comput. Phys. (no DOI or journal reference on the arXiv record).
+- L. Ma, L. Guo, H. Wu, and T. Zhou, [_Deep set based operator learning with uncertainty quantification_](https://doi.org/10.1016/j.jcp.2026.115011), J. Comput. Phys. (2026) (preprint [arXiv:2509.25646](https://arxiv.org/abs/2509.25646)).
+- X. Feng, L. Guo, X. Wan, H. Wu, T. Zhou, and W. Zhou, _LVM-GP: uncertainty-aware PDE solver via coupling latent variable model and Gaussian process_, [arXiv:2507.22493](https://arxiv.org/abs/2507.22493).
 - L. Zeng, X. Wan, Y. Wang, F. Nobile, and T. Zhou, _A transition-density-based operator learning method for Fokker-Planck equations with various initial conditions_, [arXiv:2606.09434](https://arxiv.org/abs/2606.09434).

@@ -9,7 +9,7 @@ tags:
   - scientific-machine-learning
 ---
 
-This is the largest of the seven topics, 22 papers concentrated after 2022. They do not evaluate neural networks as a monolith; they separate three design freedoms that can be controlled independently: **where the collocation points go, which frequencies the network can represent, and in what form constraints enter the loss.**
+These 22 papers are concentrated after 2022. They do not evaluate neural networks as a monolith; they separate three design freedoms that can be controlled independently: **where the collocation points go, which frequencies the network can represent, and in what form constraints enter the loss.**
 
 ![Three places uncertainty enters operator learning](assets/diagrams/tao-zhou-papers/en/operator-learning-uq.svg)
 
@@ -72,9 +72,6 @@ Three choices hide inside it, usually left at their defaults. Where the $x_i$ co
 - **89 (energy-based diffusion generator)** samples a Boltzmann distribution with known unnormalised energy, with no training data and no access to $Z$. The decoder need not be a bijection, and a forward diffusion in latent space has an analytic transition density, making training **entirely free of differential-equation solves**; it is a generative-model paper rather than a PDE solver, but it shares the stance of representing a distribution by an invertible or sampleable model.
 - **103 (PI-DOSnet)** writes the structure of operator splitting into the network: learnable convolutions play $e^{\tau\mathcal L}$ and the activation is the exact flow of the nonlinear subproblem, $e^{\tau\mathcal N}$. Replacing the linear part with a second-order Taylor expansion in $dt=t/K$ puts $t$ back into the input, so the solution can be evaluated at any time and trained without data, and at $t=0$ every block degenerates to the identity, making the initial condition exact automatically.
 - **105 (FLUID)** carries the random-field flow route of paper 62 into a unified inference framework for dynamics, replacing the Karhunen-Loève-structured reference field with conditional flows. The real move is **letting the filtering flow and the smoothing flow share one LSTM summary network**: the causal factorisation of smoothing makes the same summary reusable, and at one particular weight the two loss terms recombine into a single maximum likelihood.
-
-> [!note] Coverage status
-> The constructions, losses, algorithms and principal results of all twenty-two papers in this topic have been checked equation by equation against preprint or journal full texts, and all five close-reading pages give intuition, problem setup, derivation, theorems (or an explicit statement that there are none) and numerical experiments. The numerical results are verifiable to differing degrees: for most papers the table values are transcribed item by item, while paper 101 mainly reports curves and paper 81's per-example errors live in figures, so those two record only setups, ablation structure and headline orders of magnitude. What remains unchecked is only the analysis of high-frequency amplification in paper 101's Appendix A — the Fourier scaling argument in its main text has been checked — together with the journal status of papers 101, 103 and 105, none of which carries journal information on its arXiv record. Paper 105's prose also disagrees with its own Tables 6 and 9 on whether smoothing uniformly improves on filtering; the close-reading page records the table values and flags the disagreement.
 
 ## Four transferable judgements
 

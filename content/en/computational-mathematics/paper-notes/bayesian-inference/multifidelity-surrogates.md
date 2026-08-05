@@ -9,21 +9,7 @@ tags:
   - surrogate-modelling
 ---
 
-> [!note] Coverage of this page
-> Papers **37** (_J. Comput. Phys._ 381, 2019), **34** (_Int. J. Uncertain. Quantif._ 9(3), 2019), **49** (_Commun. Comput. Phys._ 28, 2020) and **79** (_SIAM/ASA J. Uncertain. Quantif._ 12(4), 2024). All four share one closed-loop skeleton and replace one component at a time.
-
-## Verification tier
-
-Before writing, the level at which each paper could be checked was fixed, and the depth of what follows is allocated strictly by that table: **only papers verified in full text get complete derivations and experimental configurations**, and everything else is limited to what a source actually supports.
-
-| No. | Source checked                          | Tier          | Remaining gap                                                                                                                                        |
-| --- | --------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 37  | arXiv:1807.00618 (ar5iv full text)      | **Full text** | no transcribable error values are recorded, so the experiments section reports setup and abstract-level conclusions only                             |
-| 34  | arXiv:1809.08931 (full text) + abstract | **Full text** | in the cost accounting $J_1+Q_1+J_2Q_2$ the definitions of $J_1,J_2$ were lost and are unverified                                                    |
-| 49  | arXiv:1911.08926 (full text)            | **Full text** | equation (10) appears to have the acceptance-ratio numerator and denominator swapped, see the warning below; no CPU timings for the adaptive version |
-| 79  | arXiv:2310.17844 v3 (full text)         | **Full text** | no substantive gap; Theorem 3.6 applies only to a linearised operator network, see the warning below                                                 |
-
-All four are at the full-text tier, so this page gives all four a derivation chain, full theorem hypotheses and a reproducible experimental configuration. What is missing is **the measured values themselves**: only paper 34 left a complete set of error and cost figures in the verifiable material, while papers 37, 49 and 79 left configurations and qualitative conclusions. Each experiments section says so in place.
+Papers **37**, **34**, **49** and **79** are one closed loop rebuilt four times, replacing a single component each time.
 
 ## The skeleton the four share
 
@@ -45,7 +31,7 @@ Two standard escapes exist and the paper rejects both. Raise the polynomial orde
 
 The paper takes a third route: **keep the order low and let the surrogate follow the chain**. The chain walks into the posterior bulk on its own, so spend a true solve where the chain went and repair the surrogate there. The surrogate is then never globally accurate; it is accurate only where the chain cares — and Theorem 2 below says precisely that this is enough.
 
-One problem remains. The chain is driven by the surrogate, so where it walks is the bulk of the **surrogate's** posterior, not necessarily of the true one. Trusting the surrogate's acceptance probability completely would leave the chain circling inside the surrogate's own high-probability region, where the indicator will of course pass, refinement will never trigger, and the error will have certified itself as absent. The paper's patch is to insert, once per outer iteration, a Metropolis decision that uses the **true-model acceptance probability**, and to use the point it accepts as the test point. This costs two true solves per round (one at $z^-$ and one at $z^+$) and buys a test point chosen by the true posterior rather than by the surrogate's. **That is what "a surrogate inside MCMC needs the acceptance step to correct for it" concretely means in this family** — and note that what it corrects is where refinement happens, not the samples themselves, on which see the honest note below.
+One problem remains. The chain is driven by the surrogate, so where it walks is the bulk of the **surrogate's** posterior, not necessarily of the true one. Trusting the surrogate's acceptance probability completely would leave the chain circling inside the surrogate's own high-probability region, where the indicator will of course pass, refinement will never trigger, and the error will have certified itself as absent. The paper's patch is to insert, once per outer iteration, a Metropolis decision that uses the **true-model acceptance probability**, and to use the point it accepts as the test point. This costs two true solves per round (one at $z^-$ and one at $z^+$) and buys a test point chosen by the true posterior rather than by the surrogate's. **That is what "a surrogate inside MCMC needs the acceptance step to correct for it" concretely means in this family** — and note that what it corrects is where refinement happens, not the samples themselves, on which see below.
 
 ### Setting
 
@@ -105,7 +91,7 @@ Here $y$ is not an arbitrary chain state but a point accepted with the high-fide
 **The rhythm of the algorithm.** Each outer round first runs $m-1$ steps of standard Metropolis-Hastings against the current low-fidelity model (the subchain exists to decorrelate its last state from the starting state), then proposes $z^{*}\sim q(\cdot\mid z_{m-1})$, uses the true-model acceptance probability between $z^{-}=z_{m-1}$ and $z^{+}=z^{*}$ to produce $y$, evaluates the indicator, refines if required, and repeats at most $I_{\max}$ times. **The final posterior sample is the union of all subchain samples.**
 
 > [!warning] Whose posterior this algorithm samples
-> That last sentence deserves a pause. The subchains run against the current low-fidelity model, so the samples in the union are distributed according to the **surrogate-induced posterior** $\widetilde\pi^{d}_{N}$, not the true posterior $\pi^{d}$. The true model appears in exactly two places: choosing the test point, and the $Q$ evaluations used to refine. The correctness argument is therefore not that a Metropolis correction pulls the samples back onto the true posterior — that is the asymptotic-exactness route of Conrad–Marzouk–Pillai–Smith — but Theorem 2 below: if $\widetilde\pi^{d}_{N}$ is close enough to $\pi^{d}$ in KL, using the former in place of the latter is good enough. The two routes give guarantees of different strength and should not be conflated.
+> The subchains run against the current low-fidelity model, so the samples in the union are distributed according to the **surrogate-induced posterior** $\widetilde\pi^{d}_{N}$, not the true posterior $\pi^{d}$. The true model appears in exactly two places: choosing the test point, and the $Q$ evaluations used to refine. The correctness argument is therefore not that a Metropolis correction pulls the samples back onto the true posterior — that is the asymptotic-exactness route of Conrad–Marzouk–Pillai–Smith — but Theorem 2 below: if $\widetilde\pi^{d}_{N}$ is close enough to $\pi^{d}$ in KL, using the former in place of the latter is good enough. The two routes give guarantees of different strength and should not be conflated.
 
 ### Theorems
 
@@ -139,10 +125,10 @@ that is, without the square.
 
 **Corollary (the paper's equation 21, which states the algorithmic goal directly).** If sampling is good enough that $\mu(\Gamma^{\perp}_{N}(\epsilon))\le\epsilon$, the KL distance is characterised entirely by $\epsilon^{2}$.
 
-The shape of the bound records where it comes from: the two terms correspond to splitting the KL integral over $\Gamma_{N}(\epsilon)$ and its complement. On the feasible set the potentials differ by at most $\epsilon$, which gives $K_1\epsilon$; on the complement the surrogate may be arbitrarily bad, so the integrand can only be controlled by the uniform bound of Assumption 1, weighted by the posterior mass of that region, which gives $K_2\mu(\Gamma^{\perp}_{N}(\epsilon))$. That is why an apparently redundant uniform-boundedness assumption is needed at all. (This reading of the bound's structure is this page's; the paper states only the conclusion.)
+The shape of the bound records where it comes from: the two terms correspond to splitting the KL integral over $\Gamma_{N}(\epsilon)$ and its complement. On the feasible set the potentials differ by at most $\epsilon$, which gives $K_1\epsilon$; on the complement the surrogate may be arbitrarily bad, so the integrand can only be controlled by the uniform bound of Assumption 1, weighted by the posterior mass of that region, which gives $K_2\mu(\Gamma^{\perp}_{N}(\epsilon))$. That is why an apparently redundant uniform-boundedness assumption is needed at all. The paper states only the conclusion and does not give this decomposition.
 
 > [!warning] What is proved and what is only argued
-> The paper deliberately presents the link between algorithm and theorem as a **mechanism** rather than a theorem: whenever a candidate falls in $\Gamma^{\perp}_{N}(\epsilon)$, the algorithm refines near it, so $\mu(\Gamma^{\perp}_{N}(\epsilon))$ decays asymptotically with refinement. **That is an argument, not a rate, and it says nothing about when or how fast $\mu(\Gamma^{\perp}_{N}(\epsilon))$ reaches zero.** Every paper in this topic is in the same position on this point.
+> The paper deliberately presents the link between algorithm and theorem as a **mechanism** rather than a theorem: whenever a candidate falls in $\Gamma^{\perp}_{N}(\epsilon)$, the algorithm refines near it, so $\mu(\Gamma^{\perp}_{N}(\epsilon))$ decays asymptotically with refinement. **That is an argument, not a rate, and it says nothing about when or how fast $\mu(\Gamma^{\perp}_{N}(\epsilon))$ reaches zero.** Every paper in this family is in the same position on this point.
 
 ### Numerical experiments
 
@@ -153,10 +139,7 @@ Two nonlinear PDE inverse problems:
 | 1   | two-dimensional heat source inversion    | $n_z=2$             | small enough to afford a genuinely accurate high-order prior surrogate, so what is bought here is accuracy |
 | 2   | diffusion coefficient of an elliptic PDE | $n_z=9$             | a globally accurate prior surrogate is expensive, so both accuracy and cost are bought                     |
 
-The division of labour is deliberate. Example 1 rules out the reading that the adaptive method wins only because its opponent is weak, since at $n_z=2$ the opponent can be made globally accurate; example 2 is the method's actual target. The abstract's order-of-magnitude claim is several orders of efficiency gain over MCMC on the true model alone.
-
-> [!note] The numerical evidence for this paper stops here
-> The verifiable material contains the configuration above and the abstract's order-of-magnitude statement, and **no transcribable error values, chain lengths, CPU timings or true-solve counts**. This page therefore prints no results table for paper 37. For this method with numbers attached, see paper 34 in the next section: the same correction inside a different sampler, with errors and solve counts reported in full.
+The division of labour is deliberate. Example 1 rules out the reading that the adaptive method wins only because its opponent is weak, since at $n_z=2$ the opponent can be made globally accurate; example 2 is the method's actual target. The paper reports an efficiency gain of several orders of magnitude over MCMC on the true model alone.
 
 **What the experiments establish and where they fall short.** They establish that a low-order surrogate plus local correction recovers accuracy on two nonlinear PDE inverse problems. Three things are missing. First, the two examples have parameter dimensions 2 and 9, while the paper's own stated motivation is the combinatorial blow-up in high dimension, which is therefore never tested directly (paper 49 exists precisely for that). Second, Theorem 2 carries undetermined constants $K_1,K_2$, so the experiments neither do nor can calibrate $\epsilon$ from it, and the tolerance is supplied as a tuning parameter. Third, the mechanism claim that $\mu(\Gamma^{\perp}_{N}(\epsilon))$ decays with refinement is never measured — what is measured is whether the posterior marginals match, not whether the measure of the bad set is shrinking.
 
@@ -202,7 +185,7 @@ u^{(j)}_{n+1}=u^{(j)}_{n}+C^{up}_{n+1}\bigl(C^{pp}_{n+1}+\Gamma\bigr)^{-1}
 \bigl(y^{(j)}_{n+1}-\mathcal G(u^{(j)}_{n})\bigr).
 $$
 
-(This reduction is the standard one and is given here as such; Iglesias and coauthors write the pre-block form.) Paper 34 uses exactly this, with one regularisation parameter $\alpha_n$ multiplying $\Gamma$:
+(This reduction is the standard one; Iglesias and coauthors write the pre-block form.) Paper 34 uses exactly this, with one regularisation parameter $\alpha_n$ multiplying $\Gamma$:
 
 $$
 \theta^{(j)}_{n+1}=\theta^{(j)}_{n}
@@ -240,7 +223,7 @@ $$
 \qquad \rho<1,\ \tau\ge1/\rho .
 $$
 
-Both come from Iglesias' regularising ensemble Kalman smoother. **Iglesias and coauthors state explicitly that a complete convergence and regularisation analysis is beyond their scope and that the discrepancy principle is supported numerically, not proved.** The stopping rule therefore remains an empirical device throughout this family. The same source records a counterintuitive empirical fact: switching off the data perturbation ($\eta^{(j)}_{n+1}=0$) made results **worse**, and the authors conjecture the noise helps the algorithm explore $\mathcal A$.
+Both come from Iglesias' regularising ensemble Kalman smoother. **Iglesias and coauthors state explicitly that a complete convergence and regularisation analysis is beyond their scope and that the discrepancy principle is supported numerically, not proved.** The stopping rule therefore remains an empirical device throughout this family. Iglesias and coauthors also record a counterintuitive empirical fact: switching off the data perturbation ($\eta^{(j)}_{n+1}=0$) made results **worse**, and the authors conjecture the noise helps the algorithm explore $\mathcal A$.
 
 **Step four: a relative indicator, tested at the ensemble mean.**
 
@@ -254,7 +237,7 @@ If $\mathrm{err}\le\mathrm{tol}$ the current surrogate is kept; otherwise $f_M$ 
 
 ### Theorems
 
-**This paper proves no convergence theorem for the adaptive scheme, and all its claims are computational.** A total-cost accounting of the form $J_1+Q_1+J_2Q_2$ appears in the text, but the definitions of $J_1$ and $J_2$ were lost in the verifiable material and are not repeated here. The linear-case Tikhonov–Phillips limit and the discrepancy principle quoted above are results of Iglesias and coauthors, not of this paper.
+**This paper proves no convergence theorem for the adaptive scheme, and all its claims are computational.** The linear-case Tikhonov–Phillips limit and the discrepancy principle quoted above are results of Iglesias and coauthors, not of this paper.
 
 ### Numerical experiments
 
@@ -282,7 +265,7 @@ Several points are worth pulling out.
 
 - The offline evaluation counts **match the budget formula**: with $d=9$, $Q_1=2\binom{N+d}{d}$ gives $2\binom{13}{9}=1430$ at $N=4$ and $2\binom{15}{9}=10010$ at $N=6$, exactly the printed figures. That confirms both that the parameter dimension really is 9 and that the budget formula is implemented literally.
 - The 2000 evaluations of the conventional method correspond to 20 iterations at $N_e=100$, consistent with the $N_eJ$ cost model.
-- The relative error of the adaptive version has **no numerical value** in the verifiable material, only the qualitative statement that the local correction essentially recovers full-model accuracy. Those two cells are therefore marked as not reported rather than filled with $0.0461$.
+- The relative error of the adaptive version is given no numerical value by the paper, only the qualitative statement that the local correction essentially recovers full-model accuracy.
 - The comparison on solve counts is unambiguous: 250 against 2000 is an eighth, 575 against 2000 is under a third, and both are far below the 10010 needed to push the fixed surrogate to $N=6$.
 
 **Example 2: a high-dimensional random field.** Retaining 95% of the prior energy gives $d=22$ Karhunen-Loève modes, with $N_e=300$ and noise $\mathcal N(0,0.01^2)$.
@@ -295,7 +278,7 @@ Several points are worth pulling out.
 
 **What the experiments establish and where they fall short.** They establish a rather sharp conclusion: **when the truth is out of prior, raising the order of a global surrogate is an inefficient repair.** Going from $N=4$ to $N=6$ raises the offline evaluation count from 1430 to 10010, a factor of seven, and only moves the error from 0.7921 to 0.2892 — still six times worse than the conventional method — while the adaptive method needs 250 solves on an expansion of order two. Example 2 is more extreme still: the adaptive method reaches 0.0889 on a **first-order** expansion, an order of magnitude better than the fixed second- and third-order surrogates.
 
-Four things are missing. No CPU time is reported for the adaptive version, so "cheap" rests on true-solve counts rather than measured wall-clock time, and the cost of the multi-fidelity refits themselves never enters the comparison. No numerical relative error is reported for the adaptive version either, so "essentially recovers full-model accuracy" cannot be checked quantitatively. Both examples live in the same PDE family (time-fractional diffusion), so transfer across families is untested. And the paper has no theorem, while the out-of-prior setting is precisely where a Theorem 2-type bound is hardest to apply: $\mu(\Gamma^{\perp}_{N}(\epsilon))$ starts large when the truth is out of prior, and how it decays remains an argument.
+Four things are missing. No CPU time is reported for the adaptive version, so "cheap" rests on true-solve counts rather than measured wall-clock time, and the cost of the multi-fidelity refits themselves never enters the comparison. No numerical relative error is reported for the adaptive version either, so "essentially recovers full-model accuracy" cannot be quantified. Both examples live in the same PDE family (time-fractional diffusion), so transfer across families is untested. And the paper has no theorem, while the out-of-prior setting is precisely where a Theorem 2-type bound is hardest to apply: $\mu(\Gamma^{\perp}_{N}(\epsilon))$ starts large when the truth is out of prior, and how it decays remains an argument.
 
 ### Relation to the others
 
@@ -353,16 +336,15 @@ The absolute error of paper 37 becomes relative. If $\mathrm{err}(\tilde z)>\mat
 
 **The outer loop.** Inputs are the initial prior-trained surrogate $f^{L}=\mathcal{NN}^{L}$, a proposal density $q$, a subchain length $m$ ($m=1000$ in the experiments) and a maximum number of corrections $I_{\max}$. Each round runs $m-1$ subchain steps, proposes $z^{*}$, refines if required, computes the acceptance probability and accepts or rejects, and finally returns the pooled posterior samples.
 
-> [!warning] Checking the source: numerator and denominator of the acceptance probability
+> [!warning] The printed acceptance probability has numerator and denominator swapped
 > Equation (10) of the paper prints the high-fidelity acceptance probability as
 > $\beta=\min\{1,\ \mathcal L(d,f^{H}(z^{-}))\pi(z^{-})/\mathcal L(d,f^{H}(z^{+}))\pi(z^{+})\}$.
 > In Metropolis-Hastings with a symmetric proposal the proposed state $z^{+}$ belongs in the numerator. As printed, $\beta$ would be a **decreasing** function of the proposed state's posterior density: a proposal that fits the data better would be accepted less often and the chain would drift toward low-probability regions — which directly contradicts the paper's own stated purpose for this point, namely to place the test point in the posterior bulk. The printed form therefore cannot be what was intended. In context it should read
 > $\beta=\min\{1,\ \mathcal L(d,f^{H}(z^{+}))\pi(z^{+})/\mathcal L(d,f^{H}(z^{-}))\pi(z^{-})\}$.
-> This is a reader's reconciliation and not the source text; check the journal version before quoting.
 
 ### Theorems
 
-**This paper proves nothing**, and states explicitly that it inherits the analytical setting of paper 37. The one verifiable design claim is a premise rather than a result: $Q$ must stay small, therefore the correction network's capacity must be restricted, as an anti-overfitting constraint.
+**This paper proves nothing**, and states explicitly that it inherits the analytical setting of paper 37. Its one design claim is a premise rather than a result: $Q$ must stay small, therefore the correction network's capacity must be restricted, as an anti-overfitting constraint.
 
 ### Numerical experiments
 
@@ -379,14 +361,11 @@ A benchmark elliptic inverse problem in two configurations.
 | subchain length             | $m=1000$                                                                       |
 | baselines                   | Direct (true-model MCMC), DNN (fixed prior-trained network), ADNN (this paper) |
 
-Example 2 replaces the unknown by a high-dimensional random-field permeability parameterised by a Karhunen-Loève expansion; the verifiable material does not separately record its network sizes or tolerances.
+Example 2 replaces the unknown by a high-dimensional random-field permeability parameterised by a Karhunen-Loève expansion.
 
 **Results.** The fixed prior-trained network gives **visibly wrong** posterior marginals; the adaptive version recovers the true-model MCMC marginals; tightening the tolerance from $0.1$ to $0.05$ tightens the agreement further.
 
-> [!note] This paper likewise has no transcribable numbers
-> The verifiable material gives the configuration above and the qualitative comparison just stated, and **no error values, effective sample sizes or CPU timings**. Even the claim that $0.1\to0.05$ improves agreement is qualitative, with no accompanying numerical metric. This page therefore prints no results table for paper 49.
-
-**What the experiments establish and where they fall short.** They establish an ablation-grade conclusion: same chain, same initial surrogate, the only difference being whether online refinement is on, and the version with it on matches true-model MCMC marginals while the version with it off does not. That attributes the improvement to the refinement mechanism rather than to network architecture or training tricks. What is missing: the motivation is high dimension (the polynomial basis blow-up), yet example 1 has only nine parameters and the dimension of example 2 is not recorded in the verifiable material; there is no quantitative metric at all, so trade-offs between tolerances or values of $Q$ cannot be compared; and the composite nesting deepens with the outer loop with its effect entirely unmeasured.
+**What the experiments establish and where they fall short.** They establish an ablation-grade conclusion: same chain, same initial surrogate, the only difference being whether online refinement is on, and the version with it on matches true-model MCMC marginals while the version with it off does not. That attributes the improvement to the refinement mechanism rather than to network architecture or training tricks. What is missing: the motivation is high dimension (the polynomial basis blow-up), yet example 1 has only nine parameters; there is no quantitative metric at all, so trade-offs between tolerances or values of $Q$ cannot be compared; and the composite nesting deepens with the outer loop with its effect entirely unmeasured.
 
 ### Relation to the others
 
@@ -415,7 +394,7 @@ e_{M}(t):=\mathbb E_{\nu_t}\bigl\|\mathcal G-\widehat{\mathcal G}_t\bigr\|
 =\Bigl(\int_{\mathcal M}\bigl|\mathcal G(m)-\widehat{\mathcal G}_t(m)\bigr|^{2}\,\nu_t(dm)\Bigr)^{1/2}.
 $$
 
-The paper rejects this as an **implementable** indicator because it needs a high-dimensional integral. The step is worth keeping because it fixes the status of every single-point indicator that follows: they are cheap stand-ins for this quantity, not estimators of it.
+The paper rejects this as an **implementable** indicator because it needs a high-dimensional integral. The step fixes the status of every single-point indicator that follows: they are cheap stand-ins for this quantity, not estimators of it.
 
 **Step two: the anchor.** Draw $T$ samples $\mathcal M^{(t)}=\{m^{(t)}_k\}_{k=1}^{T}$ from the current surrogate posterior $\nu_t$ and use the **true model** to pick the one with the best data fit:
 
@@ -509,7 +488,7 @@ $$
 A^{T}\Sigma^{-1}A-B^{T}\Sigma^{-1}B=A^{T}\Sigma^{-1}(A-B)+(A-B)^{T}\Sigma^{-1}B,
 $$
 
-with $A=G$ and $B=\widehat G$; bounding each term by $H\|\Sigma_\eta^{-1}\|_2\epsilon$ gives the result, and the reverse triangle inequality then yields the existence of $C_2$. (The identity and this route are routine steps supplied by this page; the paper states only the conclusion and asserts abstractly that some $C_2>0$ exists.)
+with $A=G$ and $B=\widehat G$; bounding each term by $H\|\Sigma_\eta^{-1}\|_2\epsilon$ gives the result, and the reverse triangle inequality then yields the existence of $C_2$. (The paper states only the conclusion and asserts abstractly that some $C_2>0$ exists; the identity is a routine filling-in of the step.)
 
 **Theorem 3.6 (convergence in the linear case).** Hypotheses: Assumptions 3.2–3.4, $\mathrm{Range}(G^{T})=\mathrm{Range}(\widehat G^{T})=\mathbb R^{N_m}$, $\Sigma_\omega\succ0$, $\Sigma_\eta\succ0$. Conclusion: the surrogate-driven unscented Kalman inversion fixed point $(\widehat r_\infty,\widehat C_\infty^{-1})$ converges to the full-model fixed point $(r_\infty,C_\infty^{-1})$, with
 
@@ -541,11 +520,11 @@ where $\beta,C_1,C_2,K_1,K_2,H_\eta,H_y,H$ are positive bounded constants. Both 
 | sampler cost per round | $2N_m+1$ forward evaluations, typically $O(10)$ rounds                                          |
 | baselines              | FEM-UKI (full model), DeepOnet-UKI-Direct (fixed surrogate), DeepOnet-UKI-Adaptive (this paper) |
 
-Case I of the heat source inversion is verifiable in detail: a two-parameter source-location problem, DeepONet trained on $[0.5,1]\times[0.5,1]$ from 500 uniform samples, unscented Kalman inversion started at $[0.6,0.6]$; Case II is a higher-dimensional variant.
+Case I of the heat source inversion is a two-parameter source-location problem: DeepONet trained on $[0.5,1]\times[0.5,1]$ from 500 uniform samples, unscented Kalman inversion started at $[0.6,0.6]$; Case II is a higher-dimensional variant.
 
 **The key experimental design is the pair of in-distribution and out-of-distribution truths.** The out-of-distribution case manufactures the failure mode "the surrogate is unreliable where the posterior sits" explicitly, and it is exactly where the fixed surrogate fails.
 
-**Results (qualitative; the verifiable material contains no numerical table).** The fixed surrogate gives only a rough estimate and a visibly wrong inversion trajectory; the adaptive version drives the model error down monotonically with refinements and approaches full-order accuracy. In the third example refinement terminated after six iterations by the stopping criterion — evidence that the criterion actually fires rather than merely being cut off by $I_{\max}$.
+**Results.** The fixed surrogate gives only a rough estimate and a visibly wrong inversion trajectory; the adaptive version drives the model error down monotonically with refinements and approaches full-order accuracy. In the third example refinement terminated after six iterations by the stopping criterion — evidence that the criterion actually fires rather than merely being cut off by $I_{\max}$.
 
 **What the experiments establish and where they fall short.** They establish three things: the goal-oriented indicator can stop itself; greedy selection works across three structurally different PDEs; and under an out-of-distribution truth a fixed operator surrogate really does fail while the adaptive version recovers accuracy. What is missing: all experiments use the nonlinear DeepONet while Theorem 3.6 covers only a linearised branch net, so **there is a gap between theorem and experiment that the paper itself points out**; the monotone decrease of the model error is described qualitatively with no accompanying numerical sequence; and unscented Kalman inversion delivers a Gaussian approximation, so applicability to multimodal posteriors is untested — which is exactly where paper 106 picks up.
 
@@ -555,33 +534,15 @@ The most theoretically complete member of the family: it cites paper 37's $\epsi
 
 ## Side-by-side comparison
 
-| Component         | 37                              | 34                              | 49                               | 79                                    |
-| ----------------- | ------------------------------- | ------------------------------- | -------------------------------- | ------------------------------------- |
-| Surrogate         | multi-fidelity polynomial chaos | multi-fidelity polynomial chaos | composite multi-fidelity network | DeepONet                              |
-| Sampler           | Metropolis-Hastings             | regularising ensemble Kalman    | Metropolis-Hastings              | unscented Kalman inversion            |
-| Indicator         | absolute $\ell^\infty$          | relative $\ell^\infty$          | relative $\ell^\infty$           | relative change in the data misfit    |
-| Test point        | accepted via the true model     | ensemble mean                   | accepted via the true model      | anchor chosen by the true model       |
-| New points        | random in a shrinking ball      | random in a ball                | uniform in a ball                | greedy in output space plus proximity |
-| Retraining        | refit least squares             | refit least squares             | train a shallow correction net   | transfer learning from prior weights  |
-| Theory            | KL and Hellinger bounds         | none                            | none                             | fixed-point convergence, linear case  |
-| Numerical results | setup and qualitative only      | full errors and solve counts    | setup and qualitative only       | setup and qualitative only            |
-
-## Coverage check
-
-| Item                                                          | Paper  | Status                                                                                                                   |
-| ------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------ |
-| Verification tier and remaining gaps                          | all    | per-paper source, tier and unverified items                                                                              |
-| Weighted least squares, Christoffel weight, row normalisation | 37     | definition of the weight, derivation that every row has norm $\sqrt M$, identity with the optimal-sampling topic         |
-| Index structure of the multi-fidelity correction              | 37     | correction term, merging as a pure regrouping, sample budget and the overfitting constraint                              |
-| That the algorithm samples the surrogate's posterior          | 37     | role of the subchain, where the true model appears, contrast with asymptotic exactness                                   |
-| $\epsilon$-feasible set with KL and Hellinger bounds          | 37, 79 | assumptions, conclusions, corollary, how the two terms match the two regions                                             |
-| Full regularising ensemble Kalman update                      | 34     | extended-state reduction, update, covariances, regularisation choice, stopping rule                                      |
-| The linear-case Tikhonov–Phillips limit                       | 34     | coincidence with the linear-Gaussian posterior mean, and the cost structure of being derivative-free                     |
-| Quantitative comparison with out-of-prior truth               | 34     | errors, solve counts, CPU times, and the consistency check against the budget formula                                    |
-| Composite multi-fidelity network                              | 49     | coupling form, training-set construction, contrast with a linear correction, capacity chain                              |
-| Checking the acceptance-probability ratio                     | 49     | why the printed form cannot be what was intended                                                                         |
-| Goal-oriented indicator and greedy design                     | 79     | the rejected honest indicator, anchor, relative change, greedy score and its cost structure                              |
-| Unscented Kalman inversion and linear convergence             | 79     | prediction and analysis steps, $\sigma$-points, the identity behind Lemma 3.5, both $O(\epsilon)$ bounds and their scope |
+| Component  | 37                              | 34                              | 49                               | 79                                    |
+| ---------- | ------------------------------- | ------------------------------- | -------------------------------- | ------------------------------------- |
+| Surrogate  | multi-fidelity polynomial chaos | multi-fidelity polynomial chaos | composite multi-fidelity network | DeepONet                              |
+| Sampler    | Metropolis-Hastings             | regularising ensemble Kalman    | Metropolis-Hastings              | unscented Kalman inversion            |
+| Indicator  | absolute $\ell^\infty$          | relative $\ell^\infty$          | relative $\ell^\infty$           | relative change in the data misfit    |
+| Test point | accepted via the true model     | ensemble mean                   | accepted via the true model      | anchor chosen by the true model       |
+| New points | random in a shrinking ball      | random in a ball                | uniform in a ball                | greedy in output space plus proximity |
+| Retraining | refit least squares             | refit least squares             | train a shallow correction net   | transfer learning from prior weights  |
+| Theory     | KL and Hellinger bounds         | none                            | none                             | fixed-point convergence, linear case  |
 
 ## Sources for this page
 

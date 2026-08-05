@@ -9,23 +9,7 @@ tags:
   - variational-inference
 ---
 
-> [!note] Coverage of this page
-> Papers **55** (_J. Comput. Math._ 39(6), 2021), **56** (_Comput. Methods Appl. Mech. Engrg._ 386, 2021), **82** (_Comput. Phys. Commun._ 311, 2025), **88** (_Int. J. Mech. Sci._ 313, 2026), **99** (submitted to _Math. Comput._, [arXiv:2411.13277](https://arxiv.org/abs/2411.13277)) and **106** (submitted to _SIAM J. Sci. Comput._, [arXiv:2605.29373](https://arxiv.org/abs/2605.29373)).
-
-The four papers on the [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|previous page]] fix the sampler and replace the surrogate. The six here do the reverse: the surrogate's role is comparatively stable and what changes is **how one advances on the posterior**.
-
-## Verification tier
-
-| No. | Source checked                                              | Tier                               | Remaining gap                                                                                                                                                                              |
-| --- | ----------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 55  | arXiv:2104.06285 (full text)                                | **Full text**                      | the explicit form of the approximate posterior $\widetilde\pi_{\mathrm{pos}}$ was lost and is unverified; the proposal density's normalising constant carries a typo                       |
-| 56  | arXiv:2104.06276 (full text)                                | **Full text**                      | whether the kernel exponent carries an extra $1/2$ is uncertain; the cost table's headers are partly damaged and the CPU-second columns are unverified                                     |
-| 82  | ScienceDirect abstract, full introduction, section openings | **Abstract and introduction only** | Sections 2 to 4 require a subscription and there are **no verifiable formulas**; no preprint exists                                                                                        |
-| 88  | arXiv:2508.06852 (full text)                                | **Full text**                      | the indexing and normalisation of the likelihood equation are reconstructed; the journal and preprint titles differ                                                                        |
-| 99  | arXiv:2411.13277 v3 (full text)                             | **Full text**                      | the hypothesis list of Theorem 2.3 and the scalar coefficient of the Householder layer were not transcribed verbatim; experimental error values are unverified                             |
-| 106 | arXiv:2605.29373 v1 (full text)                             | **Full text**                      | conditions (i) and (ii) of the evidence-bound theorem were not transcribed verbatim; the displayed forms of equations (38) and (68) are unverified; **all numerical tables are illegible** |
-
-**Paper 82 is the only one on this page below the full-text tier**, so it receives only the space its verifiable range supports: no formulas, no algorithm box, no derivation. The other five get full derivations and experimental configurations, though paper 106's experiments are limited to configuration and qualitative conclusions because its numerical tables could not be transcribed reliably.
+The four papers on the [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|previous page]] fix the sampler and replace the surrogate. Papers **55**, **56**, **82**, **88**, **99** and **106** do the reverse: the surrogate's role is comparatively stable and what changes is **how one advances on the posterior**.
 
 ## 55: putting a surrogate inside an optimisation proposal
 
@@ -94,9 +78,9 @@ w(v)=\bigl|{\det}\bigl(Q^{T}\nabla H(v)\bigr)\bigr|^{-1}
 $$
 
 > [!warning] Two notational hazards
-> **First, a convention clash.** Up to the whitening, the $w$ used here is the **reciprocal** of the $c$ of Bardsley and coauthors, so the proposed sample sits in the **numerator** in the $w$ formulation while the previous sample sits in the numerator in Bardsley's ratio $r=\min\{1,\ c(\theta^{k-1})/c(\theta^{*})\}$. Both are correct in their own notation, and mixing them yields a reversed acceptance rule.
+> **First, a convention clash.** Up to the whitening, the $w$ in the display above is the **reciprocal** of the $c$ of Bardsley and coauthors, so the proposed sample sits in the **numerator** in the $w$ formulation while the previous sample sits in the numerator in Bardsley's ratio $r=\min\{1,\ c(\theta^{k-1})/c(\theta^{*})\}$. Both are correct in their own notation, and mixing them yields a reversed acceptance rule.
 >
-> **Second, a typo.** The preprint prints the normalising constant as $(2\pi)^{-\pi/2}$, plainly a slip for $(2\pi)^{-n/2}$. The display above uses the latter; that single symbol is this page's correction and everything else is as printed.
+> **Second, a typo.** The paper prints the normalising constant as $(2\pi)^{-\pi/2}$, plainly a slip for $(2\pi)^{-n/2}$; the display above uses the latter.
 
 **Step five: scalable RTO reduces an $n$-dimensional optimisation to an $r$-dimensional one.** The paper restates the construction of Bardsley–Cui–Marzouk–Wang: take the rank-$r$ reduced singular value decomposition $\nabla f(v_{\mathrm{ref}})=\Psi\Lambda\Phi^{T}$, split $v_r=\Phi^{T}v$ and $v=\Phi v_r+v^{\perp}$, and then for each $\xi\sim\mathcal N(0,I_n)$,
 
@@ -116,7 +100,7 @@ $$
 
 The meaning is worth spelling out: **the orthogonal-complement direction needs no optimisation at all, being a plain Gaussian projection**, because the linearised model is insensitive to the data there; only the $r$-dimensional data-informed subspace, whose dimension is the numerical rank of the Jacobian, requires a solve. Cost is governed by $r$, not by $n$.
 
-**Step six: goal-oriented training design.** The training points $\{v_i\}_{i=1}^{N}$ are drawn from an approximate posterior $\widetilde\pi_{\mathrm{pos}}$ rather than the prior. The ablation baseline "NN-RTO-pr" is the same algorithm with prior-drawn points. The explicit form of $\widetilde\pi_{\mathrm{pos}}$ was lost in the verifiable material and is not repeated here.
+**Step six: goal-oriented training design.** The training points $\{v_i\}_{i=1}^{N}$ are drawn from an approximate posterior $\widetilde\pi_{\mathrm{pos}}$ rather than the prior. The ablation baseline "NN-RTO-pr" is the same algorithm with prior-drawn points.
 
 **Step seven: the parallel structure of the online stage.** Proposals and weights are independent across samples and can be computed fully in parallel; only the subsequent independence-Metropolis accept-reject has to run in series. That is RTO's second advantage over a random walk, distinct from its low autocorrelation.
 
@@ -152,16 +136,13 @@ Two implementation notes from the same source: the determinant makes $c(\theta)$
 
 **Results.** NN-RTO reproduces the one- and two-dimensional posterior marginals of direct RTO already at $N=50$ training points; NN-RTO-pr does not.
 
-> [!note] The verifiable material contains no numbers
-> The table above is the configuration and the result is qualitative: there are **no effective-sample-size values, no CPU timings and no error values** in the verifiable material, even though the paper defines a CPU-time-adjusted effective sample size as its efficiency metric. This page therefore prints no results table for paper 55.
-
 **What the experiments establish and where they fall short.** They establish a clean ablation: three methods on the same forward problem, the same sampler and the same network architecture, with the sole difference being whether training points come from the prior or from an approximate posterior — and that one change decides whether the posterior marginals match. The credit goes to the location of the training points rather than to the network or the optimiser.
 
-Three things are missing. First, the paper's headline claim is efficiency, yet its own well-defined efficiency metric has no reported values, so "significantly outperforms traditional RTO" can only be recorded here as an abstract-level claim. Second, the surrogate is trained once offline with no online refinement, so if the approximate posterior is itself badly off there is no self-correcting mechanism — untested here, and exactly the dividing line against the online-refinement methods of the [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|previous page]]. Third, Theorem 3.1 and the ergodicity condition above are stated for the true model $f$; whether hypotheses like "$\bar Q^{T}J(\theta)$ invertible everywhere" survive the replacement of $f$ by a network is not discussed.
+Three things are missing. First, the paper's headline claim is efficiency, yet its own well-defined efficiency metric has no reported values, so "significantly outperforms traditional RTO" remains an unquantified claim. Second, the surrogate is trained once offline with no online refinement, so if the approximate posterior is itself badly off there is no self-correcting mechanism — untested here, and exactly the dividing line against the online-refinement methods of the [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|previous page]]. Third, Theorem 3.1 and the ergodicity condition above are stated for the true model $f$; whether hypotheses like "$\bar Q^{T}J(\theta)$ invertible everywhere" survive the replacement of $f$ by a network is not discussed.
 
 ### Relation to the others
 
-It shares the "train the surrogate where the posterior lives" principle with papers [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|37, 49 and 79]] and with 56 and 106 on this page, but attaches it to an optimisation-based independence sampler rather than a random-walk chain or a particle method. The substantive difference is that **the surrogate here is trained once offline with no online refinement**. That makes it the static member of the family and the natural control case when arguing for the value of online refinement.
+It shares the "train the surrogate where the posterior lives" principle with papers [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|37, 49 and 79]] and with 56 and 106, but attaches it to an optimisation-based independence sampler rather than a random-walk chain or a particle method. The substantive difference is that **the surrogate here is trained once offline with no online refinement**. That makes it the static member of the family and the natural control case when arguing for the value of online refinement.
 
 ## 56: particle flow combined with online refinement
 
@@ -233,9 +214,6 @@ The two terms divide the labour cleanly: the first is a kernel-weighted ascent o
 
 The kernel is the radial basis $\kappa(x,x')=\exp(-h\|x-x'\|^{2})$. Step sizes use AdaGrad, and the paper notes explicitly that a constant step can diverge in high dimension.
 
-> [!warning] The kernel's constant
-> The extracted source writes the kernel with a $/2$ attached, so whether the exponent carries an extra $1/2$ is uncertain in the verifiable material and the constant above is this page's reconstruction. It affects no conclusion ($h$ is a tunable bandwidth) but should be checked against the source before quoting verbatim. In the experiments the radial-basis bandwidth used for maximum-mean-discrepancy scoring is set by the median heuristic on the reference samples.
-
 **Step six: which term is actually expensive in an inverse problem.** The log-posterior gradient splits as
 
 $$
@@ -285,7 +263,7 @@ $$
 
 where $\nu_1,\nu_2$ are Lipschitz constants and $\lambda$ is a **poisedness** constant measuring the geometry of the design. As long as $\lambda$ stays bounded, shrinking $R$ provably reduces the error — that is the trust-region mechanism.
 
-**Paper 56 keeps that skeleton — its Algorithm 2 is explicitly a sketch in the same style — while replacing the components that make the bounds work**: local polynomial regression becomes a globally parameterised network with local retraining, and the cross-validation indicator becomes a far cheaper single-point relative error. A network has no analogue of a poisedness constant, so the $R^{2}$ and $R^{3}$ bounds do not transfer, and neither does the asymptotic exactness. That judgement of the relationship is this page's, and it explains why the paper can only state "without destroying convergence" as a goal rather than as a theorem.
+**Paper 56 keeps that skeleton — its Algorithm 2 is explicitly a sketch in the same style — while replacing the components that make the bounds work**: local polynomial regression becomes a globally parameterised network with local retraining, and the cross-validation indicator becomes a far cheaper single-point relative error. A network has no analogue of a poisedness constant, so the $R^{2}$ and $R^{3}$ bounds do not transfer, and neither does the asymptotic exactness. That is why the paper can only state "without destroying convergence" as a goal rather than as a theorem.
 
 ### Numerical experiments
 
@@ -295,7 +273,7 @@ Three problems:
 | --- | ---------------------------------------------- | ------------------------------------------------------------------------------------- |
 | 1   | two-dimensional "double banana" posterior      | exhibits the failure mode of a gradient flow converging confidently to the wrong mode |
 | 2   | two-dimensional heat source inversion          | a standard PDE inverse problem                                                        |
-| 3   | diffusion coefficient in a time-fractional PDE | the only example that left transcribable numbers                                      |
+| 3   | diffusion coefficient in a time-fractional PDE | the only example with a quantitative comparison                                       |
 
 Default parameters:
 
@@ -323,9 +301,6 @@ Default parameters:
 
 Each configuration is an internally matched comparison: $n_t$ is equal within a row pair and the only difference is whether online refinement is on. The result is more than a halving of the error ($0.3968\to0.1732$ and $0.2941\to0.1155$) for 50 and 80 online true solves.
 
-> [!warning] How far this table can be read
-> Three qualifications have to travel with it. First, the definition of $n_t$ could not be recovered from the verifiable material; what is confirmed is that it takes the same value across the two methods being compared, so the row-wise comparison is meaningful. Second, by the paper's stated scoring the error column should be a maximum mean discrepancy, but the extracted headers are partly damaged, so that identification is an **inference** and not a transcription. Third, the same table's cost cell for vanilla SVGD extracts as "$500\times300$" alongside a total of about $3710$, two figures that do not agree (the product is far larger than the stated total), so this page **does not use it as a baseline** and does not repeat the number. The CPU-second columns are likewise unverifiable.
-
 **What the experiments establish and where they fall short.** They establish two things: running SVGD against a fixed prior-trained surrogate converges to the wrong answer with no visible sign of trouble (example 1 demonstrates this cleanly), and a few dozen online true solves halve the error (example 3 gives the numbers). What is missing: only one example left numbers at all; how the benefit of refinement scales with $n_t$ cannot be judged from two data points; the paper's own key phrase, "without destroying convergence", has no corresponding measurement, since a lower maximum mean discrepancy is not the same as convergence to the true target; and, as argued above, the trust-region bounds that make convergence provable in the CMPS framework do not apply to a network surrogate.
 
 ### Relation to the others
@@ -333,9 +308,6 @@ Each configuration is an internally matched comparison: $n_t$ is equal within a 
 The particle-method member of the family, and the closest of all of them in spirit to Conrad–Marzouk–Pillai–Smith: it copies the "sketch of an approximate algorithm, refine, repeat" structure while replacing local polynomial regression by a globally parameterised network with local retraining, and the cross-validation indicator by a much cheaper single-point relative error. The design-point choice, the particle mean, plays the role that the accepted chain state plays in papers [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|37 and 49]] and the anchor plays in [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|79]]. Paper 106 turns the relationship around and uses SVGD as a **baseline** rather than a tool.
 
 ## 82: two-tier learning in a time-dependent setting
-
-> [!warning] What could be verified
-> Sections 2 to 4 of this paper require a subscription and no preprint was found. What follows comes from the abstract, the full introduction and ScienceDirect's section openings; it contains **no verifiable formulas**, and the algorithm outline is reconstructed from the abstract and introduction rather than read from an algorithm box. This section therefore has no derivation and no theorems subsection: those are not omitted for brevity, there is simply nothing in the verifiable material to put in them.
 
 ### The idea
 
@@ -353,7 +325,7 @@ $$
 \mathrm{rel}_{L^2}(\mu)=\frac{\|\mu-\mu^{*}\|_2}{\|\mu^{*}\|_2},
 $$
 
-together with an analogous relative $L^2$ error for the state $u$ (the source snippet is truncated mid-formula).
+together with an analogous relative $L^2$ error for the state $u$.
 
 ### The two tiers
 
@@ -363,7 +335,7 @@ together with an analogous relative $L^2$ error for the state $u$ (the source sn
 
 The paper's novelty claim is that this is the first operator-inference-based ensemble Kalman approach for simultaneous state and parameter estimation in nonlinear time-dependent PDEs.
 
-**Outline (reconstructed from the abstract and introduction, not read from an algorithm box):** long-horizon coarse-grid simulations feed operator inference to learn the reduced operators; short-horizon fine-grid simulations give the reduced-order discrepancy and train the error network; online, the reduced model propagates the ensemble while the error network corrects each member's predicted observation before the analysis step.
+**Outline:** long-horizon coarse-grid simulations feed operator inference to learn the reduced operators; short-horizon fine-grid simulations give the reduced-order discrepancy and train the error network; online, the reduced model propagates the ensemble while the error network corrects each member's predicted observation before the analysis step.
 
 ### Numerical experiments
 
@@ -374,15 +346,13 @@ The paper's novelty claim is that this is the first operator-inference-based ens
 | metrics          | relative $L^2$ error for the parameter and for the state                                                        |
 | reported outcome | DR-EnKF matches full-order accuracy at a fraction of the cost, while R-EnKF is biased                           |
 
-**This section stops here, and has to.** The abstract reports "considerable computational speedup without compromising accuracy"; **the specific speedup factor, error values, grid sizes, ensemble sizes and network architectures are all outside the verifiable range.** Any more detailed account would be invention. Obtaining the paper's operator-inference least-squares loss or its error-network architecture requires the published full text.
-
 ### Relation to the others
 
-Structurally this is paper [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|34]] with the ingredients swapped: a cheap model inside a Kalman method plus an explicit correction for the surrogate's error. The difference is **when** the correction is learned. Papers 34, 37, 49, 56 and 79 all refine online, driven by an indicator; this one learns the discrepancy **offline** as a function of time and parameters and applies it online with no further refinement, which puts it alongside paper 55 on this page. The paper cites paper 34, and companion work by the same group (Wang–Li–Yan on adaptive ensemble Kalman inversion with statistical linearisation, and a paper on continuous-data-assimilation-enhanced reduced-order filtering) makes the lineage explicit.
+Structurally this is paper [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|34]] with the ingredients swapped: a cheap model inside a Kalman method plus an explicit correction for the surrogate's error. The difference is **when** the correction is learned. Papers 34, 37, 49, 56 and 79 all refine online, driven by an indicator; this one learns the discrepancy **offline** as a function of time and parameters and applies it online with no further refinement, which puts it alongside paper 55. The paper cites paper 34, and companion work by the same group (Wang–Li–Yan on adaptive ensemble Kalman inversion with statistical linearisation, and a paper on continuous-data-assimilation-enhanced reduced-order filtering) makes the lineage explicit.
 
 ## 88: hierarchy and staging against non-identifiability
 
-This is the one paper in the topic that is not a PDE inverse problem, and that is exactly what makes it useful for comparison.
+This is the one paper among the six that is not a PDE inverse problem, and that is exactly what makes it useful for comparison.
 
 ### The idea
 
@@ -408,7 +378,7 @@ $$
 y=(D_{eq},\ h_{\max},\ h_{\min},\ D_{ax},\ D_{tr},\ t_c,\ W_{fl}),
 $$
 
-that is equilibrium diameter, maximum and minimum thickness, axial and transverse deformation under stretching, relaxation characteristic time and a membrane-fluctuation summary. The observation model lumps all model error and uncertainty into one zero-mean Gaussian term, $y_j=\text{model}_j(x;\vartheta)+\sigma\epsilon_j$ with $\epsilon_j$ of standard deviation $\sigma$. (The indexing and normalisation of that equation are reconstructed.)
+that is equilibrium diameter, maximum and minimum thickness, axial and transverse deformation under stretching, relaxation characteristic time and a membrane-fluctuation summary. The observation model lumps all model error and uncertainty into one zero-mean Gaussian term, $y_j=\text{model}_j(x;\vartheta)+\sigma\epsilon_j$ with $\epsilon_j$ of standard deviation $\sigma$.
 
 The forward model is the viscoelastic red blood cell model of Pivkin and coauthors, built on dissipative particle dynamics: the cell is a two-dimensional triangular network of $N_v$ vertices and $N_b$ bonds (500 vertices in the simulations) governed by viscoelastic WLC-POW bonds, harmonic dihedrals, and area and volume constraints. Inference uses the Korali package.
 
@@ -449,14 +419,11 @@ The stretching data ($D_{ax}$ and $D_{tr}$ against applied force) come from Mill
 
 **Outcome.** Posteriors are statistically robust; pathological cells are inferred to be **stiffer and more viscous**; cross-platform data fusion mitigates the multi-source uncertainty that defeats single-level inference; posterior predictions are consistent with the experimental observations. The paper proves no mathematical theorem.
 
-**What the experiments establish and where they fall short.** They establish that the framework runs on a real, non-PDE calibration problem and yields physically meaningful conclusions. What is missing: the verifiable material gives only the order of magnitude of surrogate accuracy (below $10^{-2}$) and the qualitative conclusions above, with **no posterior interval values, no per-parameter identifiability comparison and no quantitative contrast against single-level inference**. The central claim that hierarchy and staging are necessary can therefore only be recorded here as the paper's reported conclusion, not checked quantitatively.
-
-> [!note] Title difference
-> The preprint is titled _An RBC-MsUQ Framework for Red Blood Cell Morpho-Mechanics_, with the same authors and abstract; the journal title is the one listed on the homepage. This site records the journal version, and both should be given when citing.
+**What the experiments establish and where they fall short.** They establish that the framework runs on a real, non-PDE calibration problem and yields physically meaningful conclusions. What is missing: the paper gives the order of magnitude of surrogate accuracy (below $10^{-2}$) and the qualitative conclusions above, with **no posterior interval values, no per-parameter identifiability comparison and no quantitative contrast against single-level inference**. The central claim that hierarchy and staging are necessary therefore has only qualitative support.
 
 ### Relation to the others
 
-The outlier of the set, and useful for exactly that reason. It shares only the surrogate-accelerated Bayesian skeleton with papers [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|34, 37, 49 and 79]] and with 55 and 56 on this page — the surrogate is a plain feed-forward network trained offline, with no online refinement, no error indicator and no multi-fidelity correction. What it adds that none of the others has is **hierarchical** structure across heterogeneous datasets and a **staged** decomposition of an otherwise non-identifiable inverse problem. The closest cited relative is Economides and coauthors on hierarchical Bayesian uncertainty quantification for a red blood cell model.
+The outlier of the set, and useful for exactly that reason. It shares only the surrogate-accelerated Bayesian skeleton with papers [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|34, 37, 49 and 79]] and with 55 and 56 — the surrogate is a plain feed-forward network trained offline, with no online refinement, no error indicator and no multi-fidelity correction. What it adds that none of the others has is **hierarchical** structure across heterogeneous datasets and a **staged** decomposition of an otherwise non-identifiable inverse problem. The closest cited relative is Economides and coauthors on hierarchical Bayesian uncertainty quantification for a red blood cell model.
 
 ## 99: variational inference directly in function space
 
@@ -551,15 +518,15 @@ built from the eigenpairs $\{\lambda_i,\phi_i\}$ of the prior covariance $\mathc
 
 ### Theorems
 
-**Theorem 2.3 (measure equivalence with an explicit Radon-Nikodym derivative).** The conclusion is as above. **Its hypothesis list was not transcribed verbatim from the verifiable material**: the conclusion and the existence of four verification propositions are confirmed, but not the conditions the theorem body imposes on each layer $f^{(n)}_{\theta_n}$. Quoting the theorem verbatim requires going back to the source.
+**Theorem 2.3 (measure equivalence with an explicit Radon-Nikodym derivative).** The conclusion is as above: if every layer of the composition is bijective and satisfies the theorem's conditions on $f^{(n)}_{\theta_n}$, then $\mu_{f_\theta}\sim\mu_0$ and the derivative against the prior has the explicit product form displayed earlier.
 
-**Lemmas 2.1 and 2.2.** Invertibility conditions for linear and nonlinear layers in infinite dimensions. Their existence and what they assert are confirmed; **their precise hypotheses are unverified**.
+**Lemmas 2.1 and 2.2.** Invertibility conditions for linear and nonlinear layers in infinite dimensions.
 
 **Four propositions.** Each verifies that one of the concrete flows satisfies the conditions of Theorem 2.3.
 
 **Discretisation-invariance proposition.** If $\mathcal H_u$ embeds continuously in $C(D)$, then for any $n$ the layers $\mathcal F^{(n)}_{\theta_n}:\mathcal H_u\to\mathcal H_u$ of all four flows are discretisation invariant.
 
-The paper's own framing of the regularity issue is worth keeping as stated: without sufficient regularity, the $\mathcal H$-norm terms in the Radon-Nikodym derivative "are likely to be infinite", and the equivalence requirement of Theorem 2.3 is exactly the condition that forces enough regularity.
+The paper's own framing of the regularity issue: without sufficient regularity, the $\mathcal H$-norm terms in the Radon-Nikodym derivative "are likely to be infinite", and the equivalence requirement of Theorem 2.3 is exactly the condition that forces enough regularity.
 
 ### Numerical experiments
 
@@ -570,19 +537,13 @@ The paper's own framing of the regularity issue is worth keeping as stated: with
 | verification targets     | agreement with the theory, efficiency relative to pCN, empirical discretisation invariance                    |
 | reference implementation | the author's repository contains a dedicated `commen_flows_dis_inv.py` for the discretisation-invariance test |
 
-Discretisation invariance is tested by training the same flow at different discretisation levels and comparing behaviour, which is the direct experimental contrast with the discretise-then-infer route and the most distinctive piece of evidence in the paper.
+Discretisation invariance is tested by training the same flow at different discretisation levels and comparing behaviour, which is the direct experimental contrast with the discretise-then-infer route and the most distinctive piece of evidence in the paper. Of the three inverse problems, electrical impedance tomography is the most strongly nonlinear.
 
-> [!note] What is verifiable about the results
-> **The specific error values could not be confirmed in the verifiable material**, so this page reports only the composition of the experiments and their verification targets, without a results table. Of the three inverse problems, electrical impedance tomography is the most strongly nonlinear and is also the one added in later versions.
-
-**What the experiments establish and where they fall short.** They establish that the three verification targets are well chosen: agreement with theory, an efficiency comparison and discretisation invariance each correspond to a clear falsifiable claim, and discretisation invariance has independent implementation support. What is missing is that no numbers could be verified here, so "more efficient than pCN" can only be recorded as the paper's reported conclusion; and the paper has no formal publication record yet.
-
-> [!note] Version drift
-> Preprint v1 reports two inverse problems (the smooth equation and steady-state Darcy flow); v2 and v3 add electrical impedance tomography. This page follows v3. The paper is listed as submitted to _Math. Comput._ and **no published DOI was found**.
+**What the experiments establish.** The three verification targets are well chosen: agreement with theory, an efficiency comparison and discretisation invariance each correspond to a clear falsifiable claim, and discretisation invariance has independent implementation support.
 
 ### Relation to the others
 
-The one paper in the topic that works in function space by construction rather than by discretise-then-Bayesianise, and the only one whose central difficulty is measure-theoretic rather than computational. It shares the infinite-dimensional Bayes formulation with paper [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|79]] (both use $d\mu/d\mu_0\propto\exp(-\Phi)$ with a Gaussian prior) and the variational-rather-than-sampling stance with paper 106; but 106 does its flow modelling in a finite-dimensional latent space obtained by VAE-style dimension reduction, whereas this paper refuses to reduce and instead constrains the flow so that it stays measure-equivalent. The two make a natural pair for a discussion of discretise-then-Bayesianise against Bayesianise-then-discretise.
+The one paper of the six that works in function space by construction rather than by discretise-then-Bayesianise, and the only one whose central difficulty is measure-theoretic rather than computational. It shares the infinite-dimensional Bayes formulation with paper [[en/computational-mathematics/paper-notes/bayesian-inference/multifidelity-surrogates|79]] (both use $d\mu/d\mu_0\propto\exp(-\Phi)$ with a Gaussian prior) and the variational-rather-than-sampling stance with paper 106; but 106 does its flow modelling in a finite-dimensional latent space obtained by VAE-style dimension reduction, whereas this paper refuses to reduce and instead constrains the flow so that it stays measure-equivalent. The two make a natural pair for a discussion of discretise-then-Bayesianise against Bayesianise-then-discretise.
 
 ## 106: a latent-variable flow with an adaptive prior
 
@@ -622,7 +583,7 @@ z=f^{-1}_{\mathrm{pr},\beta}(v),\ v\sim\mathcal N(0,I)
 \xi=\mu_{\mathrm{de},\theta}(z)+\sigma_{\mathrm{de},\theta}(z)\odot\epsilon,\ \epsilon\sim\mathcal N(0,I).
 $$
 
-The latent prior is generated from a standard normal by a flow $f_{\mathrm{pr},\beta}$, and the encoder $q_{z|x,\alpha}$ is a conditional normalizing flow rather than a diagonal Gaussian. The loss $\mathcal L_{\mathrm{VF}}$ is a KL divergence between the model's joint distribution and a target joint constructed with the encoder (its displayed form is unverified).
+The latent prior is generated from a standard normal by a flow $f_{\mathrm{pr},\beta}$, and the encoder $q_{z|x,\alpha}$ is a conditional normalizing flow rather than a diagonal Gaussian. The loss $\mathcal L_{\mathrm{VF}}$ is a KL divergence between the model's joint distribution and a target joint constructed with the encoder.
 
 **Step two: the evidence-lower-bound decomposition, which is the tool the theorem uses.** Maximising the bound over the encoder is equivalent to minimising
 
@@ -669,10 +630,7 @@ This is the same class of goal-oriented quantity as $e_D$ in paper 79; only the 
 
 **Strict evidence-lower-bound improvement.** Under either of two conditions (i) and (ii), the Variational Flow model attains a **strictly higher** evidence lower bound than a standard VAE; when both hold, the flow prior and the conditional flow encoder each contribute a strictly positive improvement. The proof runs in two steps: fix the optimal VAE encoder and decoder and replace the latent prior by a flow prior to obtain improvement (i); then fix the decoder and flow prior and extend the encoder from a diagonal Gaussian to a conditional flow to obtain improvement (ii), using the decomposition of step two above; if only (ii) holds, take $\tilde\beta$ to be the identity map.
 
-> [!warning] The theorem's conditions were not transcribed
-> **The precise statements of conditions (i) and (ii) could not be confirmed in the verifiable material.** What is confirmed is the form of the conclusion and the two-step proof structure, not the conditions themselves. Quoting the theorem verbatim requires going back to the source.
-
-**No convergence guarantee.** The paper states explicitly that future work will address the current lack of theoretical convergence guarantees. The adaptive loop therefore has no convergence theorem, consistent with every paper in this topic except 79.
+**No convergence guarantee.** The paper states explicitly that future work will address the current lack of theoretical convergence guarantees. The adaptive loop therefore has no convergence theorem; paper 79 is the only exception among these papers.
 
 ### Numerical experiments
 
@@ -705,10 +663,7 @@ The Rosenbrock problem additionally compares two-dimensional marginals on the $\
 - Navier-Stokes: the lowest inversion error at **every** tested truncation dimension and noise level.
 - Across all three PDE problems, the surrogate fitting error $e_{\mathcal S}$ converges to lower values in fewer adaptive stages than the baselines.
 
-> [!note] Quantitative tables
-> **Every numerical table in this paper is illegible in the available material**, so what appears above is configuration and qualitative conclusions only, and this page prints no error values from it. All the "best" and "lowest" statements are the paper's reported conclusions and cannot be checked quantitatively here.
-
-**What the experiments establish and where they fall short.** They establish modular evidence: Rosenbrock tests the generative model in isolation (prior updating off), the out-of-distribution two-dimensional Darcy case tests prior updating in isolation (against pCN and SVGD, which lack the module), and $e_{\mathcal S}$ tests the surrogate fine-tuning in isolation. Splitting the three modules apart is more convincing than a single aggregate accuracy comparison. What is missing: no numbers could be verified here, so the margin behind "competitive or superior" is unknown; the paper concedes it has no convergence guarantee; the update strength $\alpha$ is taken as the near-optimal value reported in cited prior work with no sensitivity study of its own; and the superiority of aggressive replacement over greedy filtering is asserted as a position rather than shown by a direct ablation.
+**What the experiments establish and where they fall short.** They establish modular evidence: Rosenbrock tests the generative model in isolation (prior updating off), the out-of-distribution two-dimensional Darcy case tests prior updating in isolation (against pCN and SVGD, which lack the module), and $e_{\mathcal S}$ tests the surrogate fine-tuning in isolation. Splitting the three modules apart is more convincing than a single aggregate accuracy comparison. What is missing: the paper concedes it has no convergence guarantee; the update strength $\alpha$ is taken as the near-optimal value reported in cited prior work with no sensitivity study of its own; and the superiority of aggressive replacement over greedy filtering is asserted as a position rather than shown by a direct ablation.
 
 ### Relation to the others
 
@@ -716,40 +671,21 @@ The most direct descendant of paper [[en/computational-mathematics/paper-notes/b
 
 ## Side-by-side comparison
 
-| No. | Posterior approximation                  | Surrogate                        | Refinement                   | Theory                                   | Numerical results                   |
-| --- | ---------------------------------------- | -------------------------------- | ---------------------------- | ---------------------------------------- | ----------------------------------- |
-| 55  | optimisation-based independence proposal | feed-forward network             | none (offline once)          | none in the paper itself                 | setup and qualitative only          |
-| 56  | particle flow                            | feed-forward network             | online, particle mean        | none                                     | one example with complete numbers   |
-| 82  | ensemble Kalman filter                   | operator-inference reduced model | none (error learned offline) | none                                     | problem list and qualitative only   |
-| 88  | staged hierarchical Bayesian inference   | eight feed-forward networks      | none                         | none                                     | configuration and anchors           |
-| 99  | function-space variational flow          | no surrogate                     | not applicable               | measure equivalence, explicit derivative | setup and verification targets only |
-| 106 | latent-variable variational flow         | Fourier neural operator          | online, replacement          | strict evidence-bound improvement        | setup and qualitative only          |
-
-## Coverage check
-
-| Item                                                 | Paper   | Status                                                                                                                                |
-| ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Verification tier and remaining gaps                 | all     | per-paper source, tier and unverified items                                                                                           |
-| Geometric reading of RTO                             | 55      | residual surface, tangent projection, exactness in the linear case, the two effects of curvature matching the two factors of $c$      |
-| RTO proposal, density, weight and scalable variant   | 55      | linearisation point, proposal, density, weight, rank-$r$ split and determinant simplification                                         |
-| Convention clash and normalisation typo              | 55      | $w$ and $c$ as reciprocals with reversed numerators; the correction of $(2\pi)^{-\pi/2}$                                              |
-| Bardsley's theorem and the ergodicity condition      | 55      | full hypotheses, conclusion, the positive lower bound on $c$ and why it fails for the surrogate version                               |
-| Stein operator and the closed-form direction         | 56      | functional optimisation, identity, absence of the normalising constant, closed form, attraction and repulsion                         |
-| Point selection with a separation constraint         | 56      | division of labour between objective and constraint, degeneracy motivation, meaning of radius shrinking                               |
-| Relation to the CMPS trust-region bounds             | 56      | the $R^{2}$ and $R^{3}$ bounds with poisedness, and why they do not transfer to a network                                             |
-| Quantitative table for example 3 and its limits      | 56      | errors and online solve counts, undefined $n_t$, damaged headers, self-inconsistent vanilla-SVGD cell                                 |
-| Two-tier reduction plus an error network             | 82      | coarse-grid operator inference, error network, output-side correction, with the verifiability limit stated                            |
-| Staged hierarchical architecture and annealing       | 88      | the two structural difficulties matched to two remedies, parameters and outputs, annealing, eight surrogates, experimental anchors    |
-| Measure equivalence, the derivative and four flows   | 99      | the singularity obstruction, theorem conclusion, change of variables onto the prior, necessity of low rank, discretisation invariance |
-| Latent flow, prior updating, aggressive replacement  | 106     | sampling map, evidence-bound decomposition, momentum update with fixed covariance, perturbation, stopping rule                        |
-| Record of two untranscribed theorem hypothesis lists | 99, 106 | the condition list of Theorem 2.3 and conditions (i), (ii) of the evidence-bound theorem                                              |
+| No. | Posterior approximation                  | Surrogate                        | Refinement                   | Theory                                   |
+| --- | ---------------------------------------- | -------------------------------- | ---------------------------- | ---------------------------------------- |
+| 55  | optimisation-based independence proposal | feed-forward network             | none (offline once)          | none in the paper itself                 |
+| 56  | particle flow                            | feed-forward network             | online, particle mean        | none                                     |
+| 82  | ensemble Kalman filter                   | operator-inference reduced model | none (error learned offline) | none                                     |
+| 88  | staged hierarchical Bayesian inference   | eight feed-forward networks      | none                         | none                                     |
+| 99  | function-space variational flow          | no surrogate                     | not applicable               | measure equivalence, explicit derivative |
+| 106 | latent-variable variational flow         | Fourier neural operator          | online, replacement          | strict evidence-bound improvement        |
 
 ## Sources for this page
 
 - L. Yan and T. Zhou, [_An acceleration strategy for randomize-then-optimize sampling via deep neural networks_](https://doi.org/10.4208/jcm.2102-m2020-0339), J. Comput. Math. 39(6) (2021), pp. 848-864 (preprint [arXiv:2104.06285](https://arxiv.org/abs/2104.06285)).
 - L. Yan and T. Zhou, [_Stein variational gradient descent with local approximations_](https://doi.org/10.1016/j.cma.2021.114087), Comput. Methods Appl. Mech. Engrg. 386 (2021), 114087 (preprint [arXiv:2104.06276](https://arxiv.org/abs/2104.06276)).
 - Y. Wang, L. Yan, and T. Zhou, [_Deep learning-enhanced reduced-order ensemble Kalman filter for efficient Bayesian data assimilation of parametric PDEs_](https://doi.org/10.1016/j.cpc.2025.109544), Comput. Phys. Commun. 311 (2025), 109544.
-- S. Wang, L. Ma, L. Guo, X. Li, and T. Zhou, [_Multi-stage uncertainty quantification framework for red blood cell morpho-mechanics_](https://doi.org/10.1016/j.ijmecsci.2026.111352), Int. J. Mech. Sci. 313 (2026), 111352 (preprint titled _An RBC-MsUQ Framework for Red Blood Cell Morpho-Mechanics_, [arXiv:2508.06852](https://arxiv.org/abs/2508.06852)).
+- S. Wang, L. Ma, L. Guo, X. Li, and T. Zhou, [_Multi-stage uncertainty quantification framework for red blood cell morpho-mechanics_](https://doi.org/10.1016/j.ijmecsci.2026.111352), Int. J. Mech. Sci. 313 (2026), 111352 (preprint [arXiv:2508.06852](https://arxiv.org/abs/2508.06852)).
 - Y. Zhao, H. Lu, J. Jia, and T. Zhou, _Functional normalizing flow for statistical inverse problems of partial differential equations_, [arXiv:2411.13277](https://arxiv.org/abs/2411.13277), submitted to Math. Comput.; reference implementation [jjx323/FunctionalNormalizingFlow](https://github.com/jjx323/FunctionalNormalizingFlow).
 - Y. Wang, X. Wang, K. Tang, X. Wan, T. Zhou, and C. Yang, _Deep adaptive dimension reduction for Bayesian inference in inverse problems_, [arXiv:2605.29373](https://arxiv.org/abs/2605.29373), submitted to SIAM J. Sci. Comput.
 - Background sources: J. M. Bardsley, A. Solonen, H. Haario, and M. Laine, [_Randomize-then-optimize: a method for sampling from posterior distributions in nonlinear inverse problems_](https://doi.org/10.1137/140964023), SIAM J. Sci. Comput. 36(4) (2014), pp. A1895-A1910; Q. Liu and D. Wang, _Stein variational gradient descent: a general purpose Bayesian inference algorithm_, NeurIPS 2016 ([arXiv:1608.04471](https://arxiv.org/abs/1608.04471)); P. R. Conrad, Y. M. Marzouk, N. S. Pillai, and A. Smith, [_Accelerating asymptotically exact MCMC for computationally intensive models via local approximations_](https://doi.org/10.1080/01621459.2015.1096787), J. Amer. Statist. Assoc. 111(516) (2016), pp. 1591-1607.

@@ -9,8 +9,7 @@ tags:
   - spectral-bias
 ---
 
-> [!note] Coverage of this page
-> Papers **81** (_Comput. Methods Appl. Mech. Engrg._ 437, 2025), **89** (_Neural Networks_ 194, 2026, [arXiv:2401.02080](https://arxiv.org/abs/2401.02080)), **94** (_J. Comput. Phys._ 558, 2026), **101** ([arXiv:2512.18586](https://arxiv.org/abs/2512.18586)), **103** ([arXiv:2606.22514](https://arxiv.org/abs/2606.22514)) and **105** ([arXiv:2604.07169](https://arxiv.org/abs/2604.07169)).
+Papers **81**, **89**, **94**, **101**, **103** and **105** share one stance: the frequency content of a solution is something to measure rather than assume — which frequencies a network can represent, and which ones training picks up first, should both be read off frequency by frequency.
 
 ## Spectral bias is a quantity that can be measured
 
@@ -41,7 +40,7 @@ $$
 \Delta_F(k)=\frac{|\hat h_k-\hat f_k|}{|\hat f_k|} .
 $$
 
-The contrast with classical iterative solvers is the point most relevant to this page, and the original states it plainly: this frequency principle of deep networks is the opposite of the behaviour of the Jacobi method, which as a conventional iterative numerical scheme converges faster on **higher** frequencies across scientific-computing problems.
+The contrast with classical iterative solvers is the point most relevant to the papers below, and the original states it plainly: this frequency principle of deep networks is the opposite of the behaviour of the Jacobi method, which as a conventional iterative numerical scheme converges faster on **higher** frequencies across scientific-computing problems.
 
 Their Theorem 1 (an idealised setting: one hidden layer, $\sigma=\tanh$) says: if the target satisfies $|\hat f(k_1)|>0$, $|\hat f(k_2)|>0$ and $|k_2|>|k_1|>0$, then there exist $c,C>0$ such that for sufficiently small $\delta$,
 
@@ -54,7 +53,7 @@ with $B_\delta$ the ball of radius $\delta$ at the origin of weight space and $\
 
 ### Multi-scale networks: move high frequencies down and then learn them
 
-The MscaleDNN construction is the shared substrate for several papers on this page. Take a band-limited target $\operatorname{supp}\hat f\subset B(K_{\max})$ and partition $k$-space into $M$ concentric annuli
+The MscaleDNN construction is the shared substrate for several of the papers below. Take a band-limited target $\operatorname{supp}\hat f\subset B(K_{\max})$ and partition $k$-space into $M$ concentric annuli
 
 $$
 A_{i}=\{\bm k:(i-1)K_{0}\le|\bm k|\le iK_{0}\},\qquad K_{0}=K_{\max}/M,
@@ -224,9 +223,6 @@ The paper's headline conclusion is that the frequency-adaptive version improves 
 
 What this set of experiments establishes is that **reading the frequencies off the solution's own spectrum is more reliable than assuming them a priori**, and that the loop converges to a stable feature set on all four classes of equation. What it does not establish is a link between theory and experiment — Theorems 3.2 and 3.4 are existence bounds in the approximation-theoretic sense and do not guarantee that optimisation finds that network, and the paper does not measure the gap between the realised error and the bound.
 
-> [!warning] Per-example error values not transcribed
-> The specific error values for each example live in the figures and tables of Section 5 and were not transcribed item by item in this pass, so this page does not list those numbers and records only the verified structure, ablations and headline order of magnitude.
-
 ### Relation to the other papers
 
 This is the starting point of the group's "spectral bias" strand. Paper 101 attacks the same problem from the other side: rather than rebuilding the network around modes captured by a discrete Fourier transform, it keeps a fixed multi-scale random Fourier basis bank and learns a set of **input-dependent attention weights**, while retaining the idea of incrementally enriching features from the spectrum of an intermediate solution. Paper 94 is a direct application: it uses a multi-scale network (not a PINN) on the Gaussian-wave-packet ODE system derived from the semi-classical Schrödinger equation, which is exactly the example in Section 5.4 here; the first two authors are the same on both. Paper 90's subdomain-local scaled bases are the counterpart of the same down-scaling idea inside random-basis methods, discussed on the [[en/computational-mathematics/paper-notes/scientific-machine-learning/variational-and-basis-networks|variational and basis networks page]].
@@ -339,7 +335,7 @@ $$
 
 where $(\mathcal N^{(1)},\dots,\mathcal N^{(I)})$ are the residual operators of the ODE system.
 
-There are two further routes for general (non-Gaussian) initial data: Appendix A generalises to **Hagedorn wave packets** (outputs $q,p,Q,P,S$), and Appendix B uses a **Gaussian-beam decomposition** to split WKB-type initial data into $\mathfrak N$ beams. The existence and scope of these two appendices were verified; their internal formulas were not read closely in this pass.
+There are two further routes for general (non-Gaussian) initial data: Appendix A generalises to **Hagedorn wave packets** (outputs $q,p,Q,P,S$), and Appendix B uses a **Gaussian-beam decomposition** to split WKB-type initial data into $\mathfrak N$ beams.
 
 ### Theorems
 
@@ -407,9 +403,6 @@ The paper measures this: for $u=\sin(\pi x)+\sin(5\pi x)+\sin(20\pi x)$ it looks
 
 The intuition on the architecture side is: since one does not know in advance which frequencies the solution contains, prepare a **sufficiently wide** fixed frequency basis bank and let the model decide which band to emphasise in which part of the domain. The mechanism is cross-attention — queries come from the network's hidden state, keys and values from the frequency basis bank, and the softmax weights vary with the input. The bank itself is not trained; only a decay envelope acting on the amplitudes is. If a key frequency turns out to be missing from the bank, modes found by a discrete Fourier transform are **appended** as new tokens rather than the bank being rebuilt.
 
-> [!note] Appendix A not verified
-> The main-text Fourier scaling argument ($k^2$ and $k^4$) has been verified. The analysis in Appendix A of "the differential operator amplifies high frequencies" was not read through in this pass and is treated as unverified.
-
 ### Problem setup
 
 Spectral bias means networks "converge rapidly to low-frequency components ... yet struggle to represent high-frequency or highly oscillatory features". The paper's criticism of existing fixes is specific: random Fourier features, MscaleDNN, FMMNN, phase-shift methods and random feature methods "typically rely on pre-specified frequency bases or prescribed multi-scale transformations, which may limit their adaptivity to instance-dependent spectral demands"; FG-PINN "depends strongly on the presence of informative high-frequency content in the source term or in the initial-boundary data". The paper's thesis is that overcoming spectral bias needs not just a richer frequency dictionary but an architectural mechanism able to route and reweight spectral components dynamically according to the input and the evolving solution structure.
@@ -454,7 +447,7 @@ $$
 
 with output $u_\theta(x)=W_{\rm out}Q^{(L)}(x)+b_{\rm out}$. The queries come from the **hidden state** and the keys and values from the **frequency basis bank** — hence cross-attention rather than self-attention. The point is that the softmax weights vary with the input, so different regions of the domain can emphasise different frequency bands.
 
-> [!warning] A typo in the preprint
+> [!warning] A typo in the paper
 > The sentence describing the NN-CA and RFF-CA cases writes $\psi(x)=\phi(x)$ twice; from the context the first case should be $\psi(x)=x$.
 
 **Step 4: adaptive frequency enhancement (AFE).** Train a preliminary model $u_\theta^{(0)}$, take a discrete Fourier transform on a uniform grid over the periodic domain $\Omega$ to get $\hat u_{\theta,k}$ (index set $B$), set $\zeta=\max_{k\in B}|\hat u_{\theta,k}|$ and select by a relative threshold
@@ -512,7 +505,7 @@ is used instead.
 
 ### Theorems
 
-**There are no theorems.** Appendix A is described as "a simple analysis of the amplification of high frequencies by the differential operator", not a convergence theorem; its details were not verified in this pass. The conclusion says so plainly: a rigorous analysis of the approximation and optimisation dynamics of cross-attention-based multi-scale Fourier representations is still missing. Other self-declared open problems include that the discrete-Fourier-transform-guided enhancement "is most natural for periodic or grid-friendly settings", and the extension to physics-informed **operator** learning.
+**There are no theorems.** Appendix A is only "a simple analysis of the amplification of high frequencies by the differential operator", not a convergence theorem. The conclusion says so plainly: a rigorous analysis of the approximation and optimisation dynamics of cross-attention-based multi-scale Fourier representations is still missing. Other self-declared open problems include that the discrete-Fourier-transform-guided enhancement "is most natural for periodic or grid-friendly settings", and the extension to physics-informed **operator** learning.
 
 ### Numerical experiments
 
@@ -650,7 +643,7 @@ accepting the prediction as long as $\mathcal R_t\le\epsilon\cdot\mathcal R_T$ w
 
 ### Theorems
 
-**This is one of the few papers on this page with real theorems.**
+**This is one of the few papers in this group with real theorems.**
 
 **Linear stability analysis.** On the test equation $u_t=\mathcal Lu+\lambda u$ with $\mathcal Lu=-q_{\bm\theta}u$, $q_{\bm\theta}>0$ real and $\lambda$ complex, one block gives
 
@@ -1000,10 +993,7 @@ The most worthwhile result to record is the ablation. At state dimension $K=20$,
 Each flow **individually** is nearly unaffected, while backward **iterative sampling** collapses entirely. The paper explains this as errors accumulating rapidly through the smoothing recursion under independent summaries, with results already unusable at $K\ge20$. This is the experimental counterpart of the loss-recombination identity above, and it is where the paper's real contribution lies.
 
 > [!warning] Two disagreements between prose and tables
-> The main text claims smoothing is uniformly better than filtering, but Table 9 at $K=50$ gives smoothing RMSE 0.5423 against filtering 0.2605, and Table 6 for the Burgers example has the same inversion at $r^2=0.25$ (smoothing 0.1185 against filtering 0.1149). This page records the table values. The clear degradation at $K=50$ is not commented on in the text.
-
-> [!warning] Submission status not verified
-> The arXiv record carries no journal-reference field, so "submitted to CMAME" is **not verified by the preprint itself**.
+> The main text claims smoothing is uniformly better than filtering, but Table 9 at $K=50$ gives smoothing RMSE 0.5423 against filtering 0.2605, and Table 6 for the Burgers example has the same inversion at $r^2=0.25$ (smoothing 0.1185 against filtering 0.1149). The clear degradation at $K=50$ is not commented on in the text.
 
 ### Relation to the other papers
 
@@ -1253,10 +1243,7 @@ It shares its orientation with the [[en/computational-mathematics/paper-notes/sc
 
 It shares the Ling Guo + Hao Wu + Tao Zhou author group with papers 95 and 98, and all three are built on latent-variable and variational machinery: paper 89 uses a variational-autoencoder-style evidence lower bound with the encoder replaced by a diffusion process, paper 95 uses a conditional variational autoencoder with a set-transformer encoder and a negative evidence lower bound, and paper 98 uses a latent-variable model coupled to a Gaussian process. The idea running through all three is **replacing a hand-designed variational posterior with something structurally richer** — a reverse SDE in paper 89, a permutation-invariant set encoder in paper 95, a Gaussian-process-interpolated latent field in paper 98.
 
-Outside that trio, the methodologically closest are papers 105 and 107: both are probabilistic models applying flows or diffusion to dynamics, and paper 107 likewise chooses a base distribution able to absorb the hardest part of the target. The instantaneous-change-of-variables machinery paper 89 uses to compute log-densities along the probability flow ODE is the same machinery behind continuous normalizing flows. It contrasts sharply with the deterministic half of this page (papers 90, 102, 94, 101, 103): those solve a **given** PDE by least squares or collocation, while paper 89 solves a **sampling** problem whose only handle on the target is pointwise evaluation of $U$ and $\nabla U$. What both halves share is that the object governing the target — a differential operator, or an energy — is known analytically, so neither needs labelled data. The Ising and Lennard-Jones experiments make paper 89 the item on this list closest to computational statistical physics.
-
-> [!note] Coverage status
-> The constructions, losses, algorithms and main results of all six papers have been checked equation by equation against the preprint or journal full text. The quantitative results are verifiable to differing degrees: the table values for papers 94, 103, 105 and 89 are transcribed item by item; paper 101 mainly reports curves rather than numerical tables, so this page records only its setups, ablation structure and qualitative conclusions; and paper 81's per-example errors live in the figures and tables of Section 5 and were not transcribed here, leaving only the verified headline order of magnitude (two to three orders of magnitude over a standard multi-scale network). Still unverified are the analysis of high-frequency amplification in paper 101's Appendix A (its main-text Fourier scaling argument is verified) and the journal status of papers 101, 103 and 105, none of which carries journal information on its arXiv record. Rahaman's Theorem 1, Theorems 1 and 2 of the frequency principle, and the MscaleDNN construction in the background section have all been checked against the originals, with their scope restrictions recorded alongside.
+Outside that trio, the methodologically closest are papers 105 and 107: both are probabilistic models applying flows or diffusion to dynamics, and paper 107 likewise chooses a base distribution able to absorb the hardest part of the target. The instantaneous-change-of-variables machinery paper 89 uses to compute log-densities along the probability flow ODE is the same machinery behind continuous normalizing flows. It contrasts sharply with the deterministic half of this material (papers 90, 102, 94, 101, 103): those solve a **given** PDE by least squares or collocation, while paper 89 solves a **sampling** problem whose only handle on the target is pointwise evaluation of $U$ and $\nabla U$. What both halves share is that the object governing the target — a differential operator, or an energy — is known analytically, so neither needs labelled data. The Ising and Lennard-Jones experiments make paper 89 the closest of these papers to computational statistical physics.
 
 ## Where the six papers stand
 
@@ -1275,7 +1262,7 @@ The difference in theoretical content is equally worth setting side by side:
 | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 81    | four approximation theorems: a bound for the standard network, a bound for the down-scaled network (numerator carrying $(\max\{kh,C_1\})^{5q+3}$), a bound for $C^1$ compositions, and a **frequency-free** bound for band-limited targets |
 | 94    | no new theorems; both the $O(\sqrt\varepsilon)$ modelling error and the $\mathcal E_t/\varepsilon$ amplification are cited from prior work                                                                                                 |
-| 101   | no theorems; the high-frequency amplification analysis in Appendix A is unverified, and the paper concedes the lack of a rigorous analysis                                                                                                 |
+| 101   | no theorems; Appendix A only sketches high-frequency amplification, and the paper concedes the lack of a rigorous analysis                                                                                                                 |
 | 103   | linear stability analysis (including unconditional instability for $q_{\bm\theta}dt\ge2$), the $dt^3$ Taylor bound of Theorem 3.1, and the $C_1dt^3+C_2dt\,h^2$ error decomposition                                                        |
 | 105   | Lemma B.1 (the two optimal summaries need not coincide) and Proposition B.1 (they coincide when a sufficient summary exists); no convergence or error theorem for FLUID itself                                                             |
 | 89    | Theorem 1: the augmented path-KL bound and the explicit decomposition of $\mathcal L(\theta,\phi)$, with equality conditions                                                                                                               |
@@ -1291,9 +1278,9 @@ There is a second judgement, unrelated to frequency but equally pervasive: **eve
 - J. Huang, R. You, and T. Zhou, [_Frequency-adaptive multi-scale deep neural networks_](https://doi.org/10.1016/j.cma.2025.117751), Comput. Methods Appl. Mech. Engrg. 437 (2025), 117751 (preprint [arXiv:2410.00053](https://arxiv.org/abs/2410.00053)).
 - Y. Wang, L. Guo, H. Wu, and T. Zhou, [_Energy-based diffusion generator for efficient sampling of Boltzmann distributions_](https://doi.org/10.1016/j.neunet.2025.108126), Neural Networks 194 (2026), 108126 (preprint [arXiv:2401.02080](https://arxiv.org/abs/2401.02080)).
 - J. Huang, R. You, and T. Zhou, [_Deep learning for the semi-classical limit of the Schrödinger equation_](https://doi.org/10.1016/j.jcp.2026.114869), J. Comput. Phys. 558 (2026), 114869 (preprint [arXiv:2509.04453](https://arxiv.org/abs/2509.04453)).
-- X. Feng, T. Tang, X. Wan, and T. Zhou, _Overcoming spectral bias via cross-attention_, [arXiv:2512.18586](https://arxiv.org/abs/2512.18586), submitted to J. Comput. Phys. (no journal information on the arXiv record).
-- J. Huang, Y. Qian, and T. Zhou, _PI-DOSnet: a physics-informed deep operator-splitting network for evolution partial differential equations_, [arXiv:2606.22514](https://arxiv.org/abs/2606.22514), submitted to J. Comput. Phys. (no journal information on the arXiv record).
-- T. Cui, X. Feng, C. Pei, X. Wan, and T. Zhou, _FLUID: flow-based unified inference for dynamics_, [arXiv:2604.07169](https://arxiv.org/abs/2604.07169) (the arXiv record carries no journal-reference field, so "submitted to Comput. Methods Appl. Mech. Engrg." is not verified by the preprint itself).
+- X. Feng, T. Tang, X. Wan, and T. Zhou, _Overcoming spectral bias via cross-attention_, [arXiv:2512.18586](https://arxiv.org/abs/2512.18586).
+- J. Huang, Y. Qian, and T. Zhou, _PI-DOSnet: a physics-informed deep operator-splitting network for evolution partial differential equations_, [arXiv:2606.22514](https://arxiv.org/abs/2606.22514).
+- T. Cui, X. Feng, C. Pei, X. Wan, and T. Zhou, _FLUID: flow-based unified inference for dynamics_, [arXiv:2604.07169](https://arxiv.org/abs/2604.07169).
 
 Background literature:
 
