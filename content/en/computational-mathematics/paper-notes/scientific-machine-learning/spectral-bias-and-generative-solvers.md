@@ -211,12 +211,12 @@ $$
 
 Section 5 covers four classes of equation:
 
-| Subsection | Equation | Recorded adaptive trajectory |
-| --- | --- | --- |
-| 5.1 | Poisson equation | captured feature set $\{2\pi,4\pi,200\pi,202\pi\}$, rebuilt as four subnetworks by criterion A |
-| 5.2 | heat equation | rebuilt by criterion B |
-| 5.3 | wave equation | — |
-| 5.4 | Schrödinger equation near the semi-classical limit | rebuilt by criterion B |
+| Subsection | Equation                                           | Recorded adaptive trajectory                                                                   |
+| ---------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| 5.1        | Poisson equation                                   | captured feature set $\{2\pi,4\pi,200\pi,202\pi\}$, rebuilt as four subnetworks by criterion A |
+| 5.2        | heat equation                                      | rebuilt by criterion B                                                                         |
+| 5.3        | wave equation                                      | —                                                                                              |
+| 5.4        | Schrödinger equation near the semi-classical limit | rebuilt by criterion B                                                                         |
 
 Section 5.1 additionally reports one ablation: **fixing** $W$ and $b$ in the last layer beats making them learnable, on both accuracy and cost.
 
@@ -353,12 +353,12 @@ Reference solutions: a fourth-order scheme for non-harmonic potentials, RK4 on t
 
 **Example 1: the free-particle ODE system.** $V\equiv0$, $\varepsilon=0.01$, with exact solution $q=1+2t$, $p=2$, $\alpha=(2t+\mathrm i)/(4t^2+1)$ and $\gamma=2t-0.005\arctan(2t)+\tfrac14(\log(4t^2+1)-\log(200/\pi))\mathrm i$. The PINN is $[1,100,400,400,400,400,6]$ and the multi-scale network is $[100,400,400,400,400,6]$ with 100 linear scales.
 
-| Component | PINN | MscaleDNN |
-| --- | --- | --- |
-| $q$ | $3.287\times10^{-5}$ | $2.928\times10^{-7}$ |
-| $p$ | $2.585\times10^{-4}$ | $4.141\times10^{-6}$ |
-| $\alpha$ | $3.105\times10^{-3}$ | $1.941\times10^{-5}$ |
-| $\gamma$ | $2.864\times10^{-4}$ | $4.161\times10^{-6}$ |
+| Component | PINN                 | MscaleDNN            |
+| --------- | -------------------- | -------------------- |
+| $q$       | $3.287\times10^{-5}$ | $2.928\times10^{-7}$ |
+| $p$       | $2.585\times10^{-4}$ | $4.141\times10^{-6}$ |
+| $\alpha$  | $3.105\times10^{-3}$ | $1.941\times10^{-5}$ |
+| $\gamma$  | $2.864\times10^{-4}$ | $4.161\times10^{-6}$ |
 
 The diagnostic is clear too: the discrete Fourier transform of $q(t)$ has a long-tailed spectrum, the PINN's **error spectrum has the same shape**, and the multi-scale network's error spectrum is far more uniform. Accuracy keeps improving as the number of embeddings grows from 10 to 100.
 
@@ -368,20 +368,20 @@ The diagnostic is clear too: the discrete Fourier transform of $q(t)$ has a long
 
 **Example 4: two and four dimensions.** In two dimensions $q$ and $p$ become vectors and $\alpha$ becomes a complex symmetric matrix $A$, for output dimension 12. In four dimensions $V(\bm x)=\tfrac12\bm x^{T}A_p\bm x$ with $A_p$ having diagonal $(1.0,2.0,2.0,3.0)$ and all off-diagonal entries $0.2$, $\bm q(0)=(1.3,0,-1,0)^T$ and $\bm p(0)=(0,1.3,0,1)^T$; $A$ needs 20 output components, so four independent networks handle $(\bm q,\bm p)$, $A$, $\gamma_{\rm re}$ and $\gamma_{\rm im}$ separately.
 
-| $\varepsilon$ (4D) | PINN | MscaleDNN |
-| --- | --- | --- |
-| $0.01$ | $2.08\times10^{-4}$ | $7.48\times10^{-5}$ |
-| $0.001$ | $2.07\times10^{-3}$ | $6.47\times10^{-4}$ |
+| $\varepsilon$ (4D) | PINN                | MscaleDNN           |
+| ------------------ | ------------------- | ------------------- |
+| $0.01$             | $2.08\times10^{-4}$ | $7.48\times10^{-5}$ |
+| $0.001$            | $2.07\times10^{-3}$ | $6.47\times10^{-4}$ |
 
 **Example 5: DeepONet on the 1D torsional potential.** $\varepsilon=0.01$, $T=1$; $q(0)\sim\mathcal U[0.8,1.8]$, $p(0),\alpha_{\rm re}(0)\sim\mathcal U[-0.5,0.5]$, $\alpha_{\rm im}(0)\sim\mathcal U[0.5,1.5]$, $\gamma_{\rm re}(0)=0$, and $\gamma_{\rm im}(0)$ fixed by normalisation; $I=6$ and $J_1=\dots=J_I=100$; branch $[6,100,100,100,100,600]$ and trunk $[1,100,100,100,100,100]$; $N=2000$ initial functions, $Q=500$ time points, 200,000 iterations. The errors at $q(0)=\pi/2,1,1.5$ are $2.69\times10^{-2}$, $2.39\times10^{-2}$ and $1.67\times10^{-2}$; over $N_{\rm test}=100$ the mean is $2.44\times10^{-2}$ with standard deviation $1.54\times10^{-2}$.
 
 **Example 6: timing DeepONet against RK4.** In the harmonic case:
 
-| $N_{\rm test}$ | RK4 | DeepONet |
-| --- | --- | --- |
-| 10000 | 11.36 s | 4.15 s |
-| 20000 | 22.61 s | 4.72 s |
-| 40000 | 45.63 s | 5.44 s |
+| $N_{\rm test}$ | RK4     | DeepONet |
+| -------------- | ------- | -------- |
+| 10000          | 11.36 s | 4.15 s   |
+| 20000          | 22.61 s | 4.72 s   |
+| 40000          | 45.63 s | 5.44 s   |
 
 **DeepONet's inference cost barely grows with $N_{\rm test}$.** In a further run generating 100 grid points for each of 10,000 cases, DeepONet takes 4.58 s against 67.85 s for RK4 at $\Delta t=0.01$. The timing comparison is honestly calibrated — RK4's $\Delta t=0.1$ was chosen so that its error matches DeepONet's. The mean component errors (harmonic, 1D) are $5.33\times10^{-5}$ for $q$, $6.95\times10^{-5}$ for $p$, $4.04\times10^{-4}$ for $\alpha$ and $1.85\times10^{-4}$ for $\gamma$, while **$\psi$ is $1.93\times10^{-2}$** — that two-order jump from ODE parameters to $\psi$ is exactly the $1/\varepsilon=100$ amplification.
 
@@ -707,14 +707,14 @@ The metrics are relative $L^2$ error at a given time and cumulative relative $L^
 
 **Taylor order ablation** (first against second order):
 
-| $t$ | first order | second order |
-| --- | --- | --- |
-| 3 | $1.640\times10^{-2}$ | $5.318\times10^{-3}$ |
-| 6 | $3.283\times10^{-2}$ | $1.062\times10^{-2}$ |
-| 9 | $4.927\times10^{-2}$ | $1.592\times10^{-2}$ |
-| 15 | $8.220\times10^{-2}$ | $2.650\times10^{-2}$ |
-| 21 | $1.151\times10^{-1}$ | $3.704\times10^{-2}$ |
-| 30 | $2.350\times10^{-1}$ | $5.278\times10^{-2}$ |
+| $t$ | first order          | second order         |
+| --- | -------------------- | -------------------- |
+| 3   | $1.640\times10^{-2}$ | $5.318\times10^{-3}$ |
+| 6   | $3.283\times10^{-2}$ | $1.062\times10^{-2}$ |
+| 9   | $4.927\times10^{-2}$ | $1.592\times10^{-2}$ |
+| 15  | $8.220\times10^{-2}$ | $2.650\times10^{-2}$ |
+| 21  | $1.151\times10^{-1}$ | $3.704\times10^{-2}$ |
+| 30  | $2.350\times10^{-1}$ | $5.278\times10^{-2}$ |
 
 Roughly a factor of 3 to 4, widening with time. **This is the experimental justification for the second-order expansion.**
 
@@ -725,10 +725,10 @@ Roughly a factor of 3 to 4, widening with time. **This is the experimental justi
 **Mesh refinement and stability — the strongest result in the paper:**
 
 | $N_x$ | PI-DOSnet (learned convolution) | second-order central-difference kernel | fourth-order central-difference kernel |
-| --- | --- | --- | --- |
-| 200 | 4 blocks, 0.07 s | 8 blocks, 0.08 s | 11 blocks, 0.10 s |
-| 400 | 4 blocks, 0.07 s | 32 blocks, 0.26 s | 42 blocks, 0.34 s |
-| 800 | 4 blocks, 0.07 s | 128 blocks, 1.00 s | 170 blocks, 1.35 s |
+| ----- | ------------------------------- | -------------------------------------- | -------------------------------------- |
+| 200   | 4 blocks, 0.07 s                | 8 blocks, 0.08 s                       | 11 blocks, 0.10 s                      |
+| 400   | 4 blocks, 0.07 s                | 32 blocks, 0.26 s                      | 42 blocks, 0.34 s                      |
+| 800   | 4 blocks, 0.07 s                | 128 blocks, 1.00 s                     | 170 blocks, 1.35 s                     |
 
 PI-DOSnet uses **4 blocks** on all three meshes, with $L^2$ error at $t=1$ of $1.81\times10^{-3}$, $1.97\times10^{-3}$ and $1.11\times10^{-3}$, and at $t=10$ of $9.86\times10^{-3}$, $1.19\times10^{-2}$ and $9.57\times10^{-3}$. The mechanism is confirmed by the spectral radius: that of $-\mathcal L_{\bm\theta}$ grows "only slowly" with $N_x$, while that of the second-order central-difference $-\mathcal L$ grows "quadratically", imposing a CFL restriction. In 2D: $T=1$, $T_{\rm end}=10$, 20 time instants, a $200\times200$ grid, 4 blocks, 4 channels, $15\times15$ kernels, 400 initial functions; inference again stops at $t=3$, with 40 predictions at $t=2$ appended and then predictions at $t=5$ appended.
 
@@ -931,10 +931,10 @@ Shared configuration: both flows are one conditional scale-bias layer plus **6 c
 
 Case 1 (pure advection with $a=-1$, $\kappa=0$, upwind $M_{\delta t}=I-\nu A$ with $\nu=\delta t/\Delta x$, $Q=qI_n$, $H$ subsampling every other point so $n_y=n/2$, $R=rI$): $\Delta t=0.05$, $q=0.01$, $r=0.1$, $\sigma=0.05$, all **held fixed** as $n$ grows, so the problem genuinely gets harder; $n=10,20,30,40,50$; $N_{\rm train}=2000$ trajectories of length $T_{\rm train}=500$, $N_{\rm test}=200$.
 
-| $n$ | filtering KL | backward-kernel KL | filtering RMSE | smoothing RMSE | MMD | CRPS |
-| --- | --- | --- | --- | --- | --- | --- |
-| 10 | 0.0191 | 0.0146 | 0.1457 | 0.1284 | 0.0514 | 0.0822 |
-| 50 | 0.0597 | 0.0534 | 0.1228 | 0.1134 | 0.1710 | 0.0693 |
+| $n$ | filtering KL | backward-kernel KL | filtering RMSE | smoothing RMSE | MMD    | CRPS   |
+| --- | ------------ | ------------------ | -------------- | -------------- | ------ | ------ |
+| 10  | 0.0191       | 0.0146             | 0.1457         | 0.1284         | 0.0514 | 0.0822 |
+| 50  | 0.0597       | 0.0534             | 0.1228         | 0.1134         | 0.1710 | 0.0693 |
 
 Note that filtering RMSE and CRPS actually **decrease** as $n$ grows, with only MMD rising; the paper flags the MMD growth itself and argues the remaining metrics stay stable. The $n=50$ case is run to $T=1000$ (physical time $t=50$), **twice the training horizon**, and consistency is maintained beyond the dashed line.
 
@@ -942,23 +942,23 @@ Case 2 (the discretisation-consistent regime with $a=1$, $\kappa=0.01$, a Lax–
 
 **Example 2: a two-factor stochastic volatility model** (the only example touching real data). $\bm u_t=\bm\alpha+A(\bm u_{t-1}-\bm\alpha)+D_\sigma\epsilon_{u,t}$, $\bm y_t=\beta\exp(\tfrac12\bm u_t)\odot\epsilon_{y,t}$, $\bm u_0\sim\mathcal N(0,\operatorname{diag}(\tau_1^2,\tau_2^2))$, with $\bm\alpha=0$, $\gamma_1=\gamma_2=0.97$, $\sigma_1=\sigma_2=0.3$, $\beta=0.835$ (MAP estimates for the S&P 500 taken from the literature) and $\tau_i^2=\sigma_i^2/(1-\gamma_i^2)$. $N=2000$ trajectories of length $T_{\rm train}=1000$, $N_{\rm test}=200$.
 
-| Method | RMSE | MMD | CRPS |
-| --- | --- | --- | --- |
-| FLUID | 0.6117 | 0.1571 | 0.3435 |
+| Method                     | RMSE   | MMD    | CRPS   |
+| -------------------------- | ------ | ------ | ------ |
+| FLUID                      | 0.6117 | 0.1571 | 0.3435 |
 | flow-based particle filter | 0.6163 | 0.1591 | 0.3462 |
-| FBF | 0.7481 | 0.2163 | 0.4188 |
+| FBF                        | 0.7481 | 0.2163 | 0.4188 |
 
 The backward kernel gives $0.2746/0.0363/0.1551$ and smoothing gives $0.4805/0.1038/0.2710$, both large improvements over filtering. The test trajectories run to $T=2000$, twice the training horizon. **Real-data application**: the trained particle filter is applied to daily S&P 500 returns from 31 December 2018 to 29 December 2022 (the bivariate series is the processed S&P 500 returns paired with a synthetic single-factor trajectory), and the recovered latent volatility has a peak near $k\approx300$ with a simultaneously widening 90% credible interval (the early-2020 pandemic shock), and stays persistently elevated from $k\approx800$ onward (the turbulence of 2022). This is an **interpretive** rather than a quantitative conclusion.
 
 **Example 3: the stochastic Burgers equation.** $du+(u\partial_xu-\nu\partial^2_{xx}u)dt=\sigma\,dW(t)$ with $x\in[-1,1]$, $t\in[0,1]$, $u(0,x)=-\sin(\pi x)$, $u(t,\pm1)=0$, $\sigma=1.0$ and $\nu=0.05$ (Appendix E.1 repeats it at $\nu=0.01$). A mixed finite-difference scheme on a $201\times50$ grid; the state is 50 spatial values, observations subsample every other point ($n_y=25$) with $\mathcal N(0,r^2I)$ noise, $\Delta t=0.005$; $N=3000$ training trajectories of length $T_{\rm train}=200$, $N_{\rm test}=200$.
 
 | $r^2$ | FLUID filtering RMSE | FBF filtering RMSE |
-| --- | --- | --- |
-| 0.01 | 0.0751 | 0.0752 |
-| 0.04 | 0.0898 | 0.0917 |
-| 0.09 | 0.1003 | 0.1015 |
-| 0.16 | 0.1084 | 0.1113 |
-| 0.25 | 0.1149 | 0.1179 |
+| ----- | -------------------- | ------------------ |
+| 0.01  | 0.0751               | 0.0752             |
+| 0.04  | 0.0898               | 0.0917             |
+| 0.09  | 0.1003               | 0.1015             |
+| 0.16  | 0.1084               | 0.1113             |
+| 0.25  | 0.1149               | 0.1179             |
 
 The paper's own reading is that the two are "extremely close" with a "small but consistent" advantage to FLUID, and that both are near the accuracy ceiling for this problem. The backward kernel is far sharper than filtering (RMSE $0.0584$ against $0.1149$ at $r^2=0.25$). Appendix E.1 repeats the same sweep at $\nu=0.01$ with the ordering unchanged (for example FLUID $0.1546$ against FBF $0.1640$ at $r^2=0.25$).
 
@@ -967,22 +967,22 @@ The paper's own reading is that the two are "extremely close" with a "small but 
 Single-scale ($c=0$, $\sigma_u=1$, $F=8$, all indices observed, $u_{0,j}=\sin(2\pi j/n)$, $\Delta t=0.05$, $K=10,\dots,50$):
 
 | $K$ | FLUID filtering RMSE | FBF filtering RMSE |
-| --- | --- | --- |
-| 10 | 0.1632 | 0.2044 |
-| 20 | 0.1945 | 0.2439 |
-| 30 | 0.2081 | 0.2604 |
-| 40 | 0.2255 | 0.2742 |
-| 50 | 0.2605 | 0.3106 |
+| --- | -------------------- | ------------------ |
+| 10  | 0.1632               | 0.2044             |
+| 20  | 0.1945               | 0.2439             |
+| 30  | 0.2081               | 0.2604             |
+| 40  | 0.2255               | 0.2742             |
+| 50  | 0.2605               | 0.3106             |
 
 FLUID is better at every dimension, and the MMD gap widens ($0.5508$ against $0.6918$ at $K=50$).
 
 Two-scale ($K=16$, $J=32$, only odd indices observed, $u_{0,i}=F+\sigma_u\epsilon_u$, $v_{0,j}=\sigma_v\epsilon_v$): here **marginalising out the fast variables makes the effective transition density of the slow variables intractable**, so the model violates the standard form FBF requires.
 
 | $F$ | FLUID filtering RMSE | FBF filtering RMSE | smoothing RMSE |
-| --- | --- | --- | --- |
-| 5 | 0.4544 | 0.5817 | 0.4063 |
-| 8 | 0.4397 | 0.8301 | 0.3795 |
-| 16 | 0.5218 | **3.7536** | 0.4837 |
+| --- | -------------------- | ------------------ | -------------- |
+| 5   | 0.4544               | 0.5817             | 0.4063         |
+| 8   | 0.4397               | 0.8301             | 0.3795         |
+| 16  | 0.5218               | **3.7536**         | 0.4837         |
 
 FBF's failure at $F=16$ (CRPS $1.3578$ against $0.2350$) is the strongest comparative evidence in the paper.
 
@@ -990,12 +990,12 @@ FBF's failure at $F=16$ (CRPS $1.3578$ against $0.2350$) is the strongest compar
 
 The most worthwhile result to record is the ablation. At state dimension $K=20$, shared against independent summaries gives:
 
-| Metric | shared summary | independent summaries |
-| ------------------- | -------- | ----------- |
-| filtering RMSE | 0.1945 | 0.1958 |
-| backward-kernel RMSE | 0.1240 | 0.1596 |
-| smoothing RMSE | 0.1525 | **60.3744** |
-| smoothing CRPS | 0.0742 | **33.2893** |
+| Metric               | shared summary | independent summaries |
+| -------------------- | -------------- | --------------------- |
+| filtering RMSE       | 0.1945         | 0.1958                |
+| backward-kernel RMSE | 0.1240         | 0.1596                |
+| smoothing RMSE       | 0.1525         | **60.3744**           |
+| smoothing CRPS       | 0.0742         | **33.2893**           |
 
 Each flow **individually** is nearly unaffected, while backward **iterative sampling** collapses entirely. The paper explains this as errors accumulating rapidly through the smoothing recursion under independent summaries, with results already unusable at $K\ge20$. This is the experimental counterpart of the loss-recombination identity above, and it is where the paper's real contribution lies.
 
@@ -1190,14 +1190,14 @@ $$
 
 **Example 1: 2D synthetic energies.** MoG2 (two isotropic Gaussians, $\sigma^2=0.5$, centres 10 apart), MoG2(i) (unequal variances, $\sigma_1^2=1.5$, $\sigma_2^2=0.3$, centres 10 apart), MoG6 ($\sigma^2=0.1$), MoG9 ($\sigma^2=0.3$), Ring and Ring5. The metric is MMD against reference samples, with 500,000 samples per method.
 
-| Target | EDG | BG | PIS | V-HMC | L2HMC |
-| --- | --- | --- | --- | --- | --- |
-| MoG2 | 0.01 | 1.90 | — | — | — |
-| MoG2(i) | **0.50** | 1.63 | — | 1.56 | 0.94 |
-| MoG6 | 0.01 | 2.64 | — | — | — |
-| MoG9 | 0.02 | 0.07 | 0.42 | — | — |
-| Ring | 0.01 | 0.05 | — | — | — |
-| Ring5 | 0.02 | 0.18 | 0.78 | — | — |
+| Target  | EDG      | BG   | PIS  | V-HMC | L2HMC |
+| ------- | -------- | ---- | ---- | ----- | ----- |
+| MoG2    | 0.01     | 1.90 | —    | —     | —     |
+| MoG2(i) | **0.50** | 1.63 | —    | 1.56  | 0.94  |
+| MoG6    | 0.01     | 2.64 | —    | —     | —     |
+| MoG9    | 0.02     | 0.07 | 0.42 | —     | —     |
+| Ring    | 0.01     | 0.05 | —    | —     | —     |
+| Ring5   | 0.02     | 0.18 | 0.78 | —     | —     |
 
 **The unequal-variance bimodal MoG2(i) is the discriminating case**: every baseline is $\ge0.94$, and only EDG reaches 0.50. BG is poor across the multimodal cases, PIS collapses on MoG9 and Ring5, and V-HMC and L2HMC are competitive except on MoG2(i).
 
@@ -1213,10 +1213,10 @@ EDG reaches accuracy $70.13\pm2.13$ while all four baselines land between $49.88
 
 **Example 4: Lennard-Jones systems.** LJ13 ($d=39$) and LJ55 ($d=165$), non-periodic boundaries, with reference MCMC data taken from the literature. Qualitatively, EDG's interatomic-distance histograms match the test data while L2HMC and PIS deviate enough to be relegated to a separate appendix figure. Quantitatively (relative effective sample size over 256 samples and 10 random seeds):
 
-| System | EDG | BG | PIS |
-| --- | --- | --- | --- |
-| LJ13 | $0.132\pm0.048$ | $0.006\pm0.002$ | $0.005\pm0.001$ |
-| LJ55 | $0.098\pm0.014$ | $0.004\pm0.000$ | $0.004\pm0.000$ |
+| System | EDG             | BG              | PIS             |
+| ------ | --------------- | --------------- | --------------- |
+| LJ13   | $0.132\pm0.048$ | $0.006\pm0.002$ | $0.005\pm0.001$ |
+| LJ55   | $0.098\pm0.014$ | $0.004\pm0.000$ | $0.004\pm0.000$ |
 
 About a twentyfold improvement in effective sample size, **but still far below 1**. The paper says explicitly that it does not handle equivariance, leaving it for future work.
 
@@ -1236,12 +1236,12 @@ Lower-bound estimates of $\log Z_{\rm Ising}$ are reported at $T=2.0,\dots,2.7$ 
 
 **Example 6: ablation (MMD over 5000 samples).**
 
-| Variant | MoG2 | MoG2(i) | MoG6 | MoG9 | Ring | Ring5 |
-| --- | --- | --- | --- | --- | --- | --- |
-| VAE without GHD | 1.86 | 1.62 | 2.57 | 2.10 | 0.12 | 0.23 |
-| VAE with GHD | 0.01 | 2.43 | — | — | 1.68 | — |
-| EDG without GHD | 0.06 | 1.01 | 0.04 | 0.05 | 0.02 | 0.04 |
-| Full EDG | 0.01 | 0.50 | 0.01 | 0.02 | 0.01 | 0.02 |
+| Variant         | MoG2 | MoG2(i) | MoG6 | MoG9 | Ring | Ring5 |
+| --------------- | ---- | ------- | ---- | ---- | ---- | ----- |
+| VAE without GHD | 1.86 | 1.62    | 2.57 | 2.10 | 0.12 | 0.23  |
+| VAE with GHD    | 0.01 | 2.43    | —    | —    | 1.68 | —     |
+| EDG without GHD | 0.06 | 1.01    | 0.04 | 0.05 | 0.02 | 0.04  |
+| Full EDG        | 0.01 | 0.50    | 0.01 | 0.02 | 0.01 | 0.02  |
 
 The reading: **the diffusion encoder carries most of the gain, and GHD adds a further consistent improvement — neither component suffices on its own.**
 
@@ -1260,25 +1260,25 @@ Outside that trio, the methodologically closest are papers 105 and 107: both are
 
 ## Where the six papers stand
 
-| Paper | How frequency content is handled | Does the structure change |
-| ---- | -------------------------------- | -------------------- |
-| 81 | posterior capture of dominant modes from the current solution's DFT | rebuilt (two criteria) |
-| 94 | absorbed analytically into the Gaussian wave-packet ansatz | not applicable |
-| 101 | fixed bank + learnable envelope + cross-attention | tokens augmented only, backbone untouched |
-| 103 | not addressed (splitting structure + $t$ in the input) | unchanged |
-| 105 | not addressed (conditional flows + shared summary) | unchanged |
-| 89 | not addressed (Boltzmann sampling) | unchanged |
+| Paper | How frequency content is handled                                    | Does the structure change                 |
+| ----- | ------------------------------------------------------------------- | ----------------------------------------- |
+| 81    | posterior capture of dominant modes from the current solution's DFT | rebuilt (two criteria)                    |
+| 94    | absorbed analytically into the Gaussian wave-packet ansatz          | not applicable                            |
+| 101   | fixed bank + learnable envelope + cross-attention                   | tokens augmented only, backbone untouched |
+| 103   | not addressed (splitting structure + $t$ in the input)              | unchanged                                 |
+| 105   | not addressed (conditional flows + shared summary)                  | unchanged                                 |
+| 89    | not addressed (Boltzmann sampling)                                  | unchanged                                 |
 
 The difference in theoretical content is equally worth setting side by side:
 
-| Paper | Theoretical content |
-| ---- | -------- |
-| 81 | four approximation theorems: a bound for the standard network, a bound for the down-scaled network (numerator carrying $(\max\{kh,C_1\})^{5q+3}$), a bound for $C^1$ compositions, and a **frequency-free** bound for band-limited targets |
-| 94 | no new theorems; both the $O(\sqrt\varepsilon)$ modelling error and the $\mathcal E_t/\varepsilon$ amplification are cited from prior work |
-| 101 | no theorems; the high-frequency amplification analysis in Appendix A is unverified, and the paper concedes the lack of a rigorous analysis |
-| 103 | linear stability analysis (including unconditional instability for $q_{\bm\theta}dt\ge2$), the $dt^3$ Taylor bound of Theorem 3.1, and the $C_1dt^3+C_2dt\,h^2$ error decomposition |
-| 105 | Lemma B.1 (the two optimal summaries need not coincide) and Proposition B.1 (they coincide when a sufficient summary exists); no convergence or error theorem for FLUID itself |
-| 89 | Theorem 1: the augmented path-KL bound and the explicit decomposition of $\mathcal L(\theta,\phi)$, with equality conditions |
+| Paper | Theoretical content                                                                                                                                                                                                                        |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 81    | four approximation theorems: a bound for the standard network, a bound for the down-scaled network (numerator carrying $(\max\{kh,C_1\})^{5q+3}$), a bound for $C^1$ compositions, and a **frequency-free** bound for band-limited targets |
+| 94    | no new theorems; both the $O(\sqrt\varepsilon)$ modelling error and the $\mathcal E_t/\varepsilon$ amplification are cited from prior work                                                                                                 |
+| 101   | no theorems; the high-frequency amplification analysis in Appendix A is unverified, and the paper concedes the lack of a rigorous analysis                                                                                                 |
+| 103   | linear stability analysis (including unconditional instability for $q_{\bm\theta}dt\ge2$), the $dt^3$ Taylor bound of Theorem 3.1, and the $C_1dt^3+C_2dt\,h^2$ error decomposition                                                        |
+| 105   | Lemma B.1 (the two optimal summaries need not coincide) and Proposition B.1 (they coincide when a sufficient summary exists); no convergence or error theorem for FLUID itself                                                             |
+| 89    | Theorem 1: the augmented path-KL bound and the explicit decomposition of $\mathcal L(\theta,\phi)$, with equality conditions                                                                                                               |
 
 One judgement runs through all of them: **frequency content is either measured (paper 81's DFT capture, paper 101's posterior threshold), or eliminated analytically (paper 94's wave-packet ansatz), or left to the model to weight over a sufficiently wide fixed bank (paper 101's cross-attention). Any approach that fixes frequency content a priori pays the price of frequency mismatch — and paper 81 turned that price into a concrete quantity through $\|F\|_{C^1[-1,1]}=\infty$.**
 

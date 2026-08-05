@@ -64,7 +64,7 @@ $$
 and weight by $1/q^2=w/\rho$. Then the stability factor is **identically** $N$ — the row norms have been flattened by construction. That $\rho$ really is a probability density follows from $\int_D\frac1N\sum_n\varphi_n^2\,w\,\mathrm dx=\frac1N\sum_n\|\varphi_n\|^2=1$. This is induced sampling, the content of the other branch of the topic (papers 22 and 45).
 
 > [!warning] Convention
-> This site uses $K(z)=\sum_\alpha\varphi_\alpha^2(z)$ throughout, takes the (normalised) Christoffel function to be $N/K(z)$, and therefore writes every weight on this page in the form $1/K$. The $\lambda_\Lambda(z)$ of the sources is $1/K_\Lambda(z)$. The papers themselves are not consistent: papers 22 and 28 write $K$ for $\sum_\alpha\varphi_\alpha^2$, the *reciprocal* of the Christoffel function; paper 24 writes $\lambda_\Lambda$ for $1/\sum\varphi_i^2$, the Christoffel function itself; paper 36 writes $K(\xi)$ for $N/\sum_j\Phi_j^2$; papers 44 and 45 write $\kappa$ and $q^2$ for the normalised reciprocal. **Check each paper's own convention before quoting it**, or the weight comes out inverted.
+> This site uses $K(z)=\sum_\alpha\varphi_\alpha^2(z)$ throughout, takes the (normalised) Christoffel function to be $N/K(z)$, and therefore writes every weight on this page in the form $1/K$. The $\lambda_\Lambda(z)$ of the sources is $1/K_\Lambda(z)$. The papers themselves are not consistent: papers 22 and 28 write $K$ for $\sum_\alpha\varphi_\alpha^2$, the _reciprocal_ of the Christoffel function; paper 24 writes $\lambda_\Lambda$ for $1/\sum\varphi_i^2$, the Christoffel function itself; paper 36 writes $K(\xi)$ for $N/\sum_j\Phi_j^2$; papers 44 and 45 write $\kappa$ and $q^2$ for the normalised reciprocal. **Check each paper's own convention before quoting it**, or the weight comes out inverted.
 
 ### Gauss weights are Christoffel function values
 
@@ -81,11 +81,11 @@ with the Gauss abscissae the special case $y\in\phi_N^{-1}(0)$. **So "randomly s
 
 Substituting particular bases into the criterion $M/\log M\gtrsim\lVert K\rVert_\infty$ produces the three budgets that recur throughout the topic:
 
-| Sampling scheme                             | Growth of the stability factor            | Sample requirement            |
-| ------------------------------------------- | ----------------------------------------- | ----------------------------- |
-| uniform measure, tensor Legendre, unweighted | $\lVert K\rVert_\infty\sim N^2$           | $M\sim N^2$                   |
-| Chebyshev measure, unweighted               | $\lVert K\rVert_\infty\sim N^{\ln3/\ln2}$ | $M\sim N^{1.585}$             |
-| Christoffel-weighted (induced) sampling     | identically $N$                           | $M\gtrsim N\log N$, non-asymptotic |
+| Sampling scheme                              | Growth of the stability factor            | Sample requirement                 |
+| -------------------------------------------- | ----------------------------------------- | ---------------------------------- |
+| uniform measure, tensor Legendre, unweighted | $\lVert K\rVert_\infty\sim N^2$           | $M\sim N^2$                        |
+| Chebyshev measure, unweighted                | $\lVert K\rVert_\infty\sim N^{\ln3/\ln2}$ | $M\sim N^{1.585}$                  |
+| Christoffel-weighted (induced) sampling      | identically $N$                           | $M\gtrsim N\log N$, non-asymptotic |
 
 The criterion on the third row depends only on $N=\dim\mathbb P_\Lambda$ and is independent of the dimension $d$, the domain $D$, the weight $w$, and which $N$-dimensional subspace is chosen; the price is that one must be able to sample from $\rho=q^2w$, which does depend on $(V,w,D)$. Greedy deterministic selection (approximate Fekete points) is a fourth route that pushes $M$ further towards $N$, and belongs to [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|Optimal sampling and preconditioning]].
 
@@ -108,11 +108,11 @@ Discrete least squares on polynomial spaces, with three candidate families of de
 
 The tests are several classical high-dimensional test functions together with a random ODE model. Three findings:
 
-| Points | Convergence                                                                       | Stability                                     |
-| ------ | --------------------------------------------------------------------------------- | --------------------------------------------- |
+| Points | Convergence                                                                             | Stability                                     |
+| ------ | --------------------------------------------------------------------------------------- | --------------------------------------------- |
 | MC     | introduces no low convergence rate; high order holds given regularity and enough points | —                                             |
-| QMC    | the same, and a good choice in higher dimension                                   | deterministic, and better on conditioning too |
-| SG     | better convergence only in very low dimension (the paper says $d\le2$)            | —                                             |
+| QMC    | the same, and a good choice in higher dimension                                         | deterministic, and better on conditioning too |
+| SG     | better convergence only in very low dimension (the paper says $d\le2$)                  | —                                             |
 
 The qualifier "enough points" stays qualitative: no relation between $M$ and $N$ is given anywhere — **exactly the gap that papers 9, 11, 13, 22, 28 and 45 later close**. One more thing is worth noting: of the three criteria the paper sets out, the third (robustness to noise in the function values) has no matching entry among the three findings the abstract reports, so what it concluded there is not known here.
 
@@ -199,6 +199,7 @@ which for the uniform density $\rho\equiv2^{-d}$ becomes $w_i=(\pi/2)^d\prod_{q=
   $$
 
   The factor $1+4/(d^2N)$ tends to $1$ as $N$ grows, so the discrete projection is asymptotically as good as the best $L^\infty$ approximation. **The estimate is deterministic, with no "with high probability".** That is what the quadratic sample count buys.
+
 - **Definition 3.5 and Corollary 3.6 (other measures).** Say $\rho$ is bounded by the Chebyshev density if there is a constant $C$ independent of $Y$ with $0<\rho(Y)\le C\rho_c(Y)$ for all $Y\in\Gamma$. Then for any $f\in L^2_{\rho_c}$,
 
   $$
@@ -206,15 +207,16 @@ which for the uniform density $\rho\equiv2^{-d}$ becomes $w_i=(\pi/2)^d\prod_{q=
   $$
 
   again for prime $M\ge4^{d+1}d^2N^2$. Remark 3.8 notes this covers the uniform measure and every measure with $0<\rho_{\min}\le\rho\le\rho_{\max}$; Remark 3.7 notes the use for **epistemic** uncertainty: when the density of $Y$ is unknown, Chebyshev-based approximation stays efficient provided the unknown density satisfies the domination condition.
+
 - **Theorem 4.3 (asymptotic equidistribution).** Let $M_K$ be the $K$th prime, $m_K=\lfloor M_K/2\rfloor+1$, and let $\nu_K:=\frac{1}{m_K}\sum_{j=1}^{m_K}\delta(y_{j,K})$ be the empirical measure, $\nu_c$ the normalised Chebyshev measure with density $\rho_c(y)=\pi^{-d}\prod_q(1-y_q^2)^{-1/2}$. Then $\nu_K\to\nu_c$ weakly. The proof runs Weil's formula through **Weyl's equidistribution criterion** (Theorem 4.1, Corollary 4.2). **This result is the licence for the weight formula**: without it the derivation of $w_i=\rho/\rho_c$ has no basis.
 
 ### Numerical experiments
 
 Section 5 compares $\Theta_M$ against Monte Carlo grids in both TP and TD spaces, plotting deterministic results as dots and Monte Carlo results as squares.
 
-| Figure    | Setup                                                       | Comparison                                                                       | Observation                                                            |
-| --------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Fig. 1    | $d=2$ point distributions at $M=997$                        | one Monte Carlo realisation from the Chebyshev measure                           | both cluster near the boundary, as Theorem 4.3 predicts                |
+| Figure     | Setup                                                              | Comparison                                                                         | Observation                                                                   |
+| ---------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Fig. 1     | $d=2$ point distributions at $M=997$                               | one Monte Carlo realisation from the Chebyshev measure                             | both cluster near the boundary, as Theorem 4.3 predicts                       |
 | Figs. 2, 3 | two-dimensional TD and TP spaces, plus a three-dimensional TD case | linear rule $m=c(\#\Lambda)$ versus quadratic rule $m=c(\#\Lambda)^2$, several $c$ | design-matrix condition numbers; deterministic points behave like random ones |
 
 The paper's own qualitative conclusion, stated in the abstract, is that the deterministic points perform similarly to randomly generated points — **the gain is not accuracy but the removal of probabilistic qualifiers**. It is also candid that its choices of $d$, $q$ and test functions are not special and that other choices behave similarly.
@@ -339,18 +341,18 @@ Condition numbers are measured as $\mathrm{cond}(A)=\sigma_{\max}(A)/\sigma_{\mi
 
 **Stability.**
 
-| Figure | Basis and sampling                     | Dimension and sampling rule                                             | Observation                                                      |
-| ------ | -------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| Fig. 1 | Hermite polynomial chaos, Gaussian samples | one dimension, $m=c(\#\Lambda)$ and $m=c(\#\Lambda)^2$                  | condition number grows exponentially with polynomial order — the negative result |
-| Fig. 4 | Laguerre functions, mapped uniform points | 1D with $m=30(\#\Lambda)$; 2D with $m=6(\#\Lambda)^2$, in TD and TP spaces | mapping parameters $L=8$ and $L=64$ compared                     |
+| Figure | Basis and sampling                         | Dimension and sampling rule                                                | Observation                                                                      |
+| ------ | ------------------------------------------ | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| Fig. 1 | Hermite polynomial chaos, Gaussian samples | one dimension, $m=c(\#\Lambda)$ and $m=c(\#\Lambda)^2$                     | condition number grows exponentially with polynomial order — the negative result |
+| Fig. 4 | Laguerre functions, mapped uniform points  | 1D with $m=30(\#\Lambda)$; 2D with $m=6(\#\Lambda)^2$, in TD and TP spaces | mapping parameters $L=8$ and $L=64$ compared                                     |
 
 **Convergence.**
 
-| Case          | Target function                                | Key parameters                                                                                    | Result                                                                                  |
-| ------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Fig. 6        | $f(y)=2^{-6y^2}$ (fast decay)                  | $L=8$ fixed for stability                                                                          | $\alpha=1$ (no scaling) converges very slowly but stably; scaling accelerates markedly, best in that test around $\alpha=2.8$ |
-| second 1D test | $\tilde f(y)=2^{-0.2y^2}$                      | $M=16$                                                                                             | —                                                                                        |
-| 2D test       | $\tilde f(y)=e^{-4(y_1^2+y_2^2)}\sin(y_1+y_2)$ | $M=2.5$, TD space; $m=10(\#\Lambda)$ versus $m=2(\#\Lambda)^2$; no scaling / $\mu=0.985$ / $\mu=0.980$ | the trimmed scaling (3.33) converges fast, while the plain maximum (3.32) behaves almost like no scaling |
+| Case           | Target function                                | Key parameters                                                                                         | Result                                                                                                                        |
+| -------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| Fig. 6         | $f(y)=2^{-6y^2}$ (fast decay)                  | $L=8$ fixed for stability                                                                              | $\alpha=1$ (no scaling) converges very slowly but stably; scaling accelerates markedly, best in that test around $\alpha=2.8$ |
+| second 1D test | $\tilde f(y)=2^{-0.2y^2}$                      | $M=16$                                                                                                 | —                                                                                                                             |
+| 2D test        | $\tilde f(y)=e^{-4(y_1^2+y_2^2)}\sin(y_1+y_2)$ | $M=2.5$, TD space; $m=10(\#\Lambda)$ versus $m=2(\#\Lambda)^2$; no scaling / $\mu=0.985$ / $\mu=0.980$ | the trimmed scaling (3.33) converges fast, while the plain maximum (3.32) behaves almost like no scaling                      |
 
 The consistent finding is that **what decides the outcome is discarding the bad points, not the scaling as such**. The parametric UQ applications use a random ODE model and an elliptic problem with lognormal random input. One further optimal scaling of about $\alpha=0.82$ is reported (which test it belongs to is unverified here).
 
@@ -425,14 +427,14 @@ the least orthogonal polynomial space for interpolation. It is computed in pract
 
 There is no single derivation running through the paper. Its move is to convert mutually incomparable results into one unit — $M$ against $N$, or against $s$ in the sparse case — and line them up:
 
-| Reconstruction mode and sampling                | Sample requirement                     | Source                            |
-| ----------------------------------------------- | -------------------------------------- | --------------------------------- |
-| least squares, i.i.d. from the uniform (orthogonality) measure | $M/\log M\ge C_rN^2$                   | Theorem 1 (CDL)                   |
-| least squares, Chebyshev Monte Carlo            | $M\sim N^{\log3/\log2}$                | the paper's contrast              |
-| least squares, Hermite functions and mapped points | $M/\log M\gtrsim rN$, $L\gtrsim\sqrt N$ | Theorem 2 (from paper 11)         |
-| least squares, deterministic Weil points        | $M\ge C(d)N^2$                         | Theorems 5, 6 (from paper 9)      |
-| $\ell_1$, Chebyshev samples with preconditioner | $M>C\delta^{-2}L^2s\log^3(s)\log(N)$   | Theorems 8, 9                     |
-| what practitioners actually do                  | $M\simeq cN$ with $c$ between 2 and 3  | the paper's account of practice   |
+| Reconstruction mode and sampling                               | Sample requirement                      | Source                          |
+| -------------------------------------------------------------- | --------------------------------------- | ------------------------------- |
+| least squares, i.i.d. from the uniform (orthogonality) measure | $M/\log M\ge C_rN^2$                    | Theorem 1 (CDL)                 |
+| least squares, Chebyshev Monte Carlo                           | $M\sim N^{\log3/\log2}$                 | the paper's contrast            |
+| least squares, Hermite functions and mapped points             | $M/\log M\gtrsim rN$, $L\gtrsim\sqrt N$ | Theorem 2 (from paper 11)       |
+| least squares, deterministic Weil points                       | $M\ge C(d)N^2$                          | Theorems 5, 6 (from paper 9)    |
+| $\ell_1$, Chebyshev samples with preconditioner                | $M>C\delta^{-2}L^2s\log^3(s)\log(N)$    | Theorems 8, 9                   |
+| what practitioners actually do                                 | $M\simeq cN$ with $c$ between 2 and 3   | the paper's account of practice |
 
 The last row is the point of the table: **practice runs in the linear regime, and by the paper's own statement the theory for that regime "is not yet definitively available".** The organisation of the whole paper is built around that gap.
 
@@ -454,11 +456,11 @@ The last row is the point of the table: **practice runs in the linear regime, an
 
 ### Numerical experiments
 
-| Section | Reconstruction mode | Point sets compared                                        | Sampling rules                   |
-| ------- | ------------------- | ----------------------------------------------------------- | -------------------------------- |
-| 3.4     | least squares       | subsampled Gauss grid, i.i.d. random points, Weil points    | $M=2.5N$ and $M=1.5N\log N$      |
-| 4.3     | compressive sampling | Monte Carlo versus deterministic sampling strategies        | —                                |
-| 5       | interpolation       | the least orthogonal interpolant                            | —                                |
+| Section | Reconstruction mode  | Point sets compared                                      | Sampling rules              |
+| ------- | -------------------- | -------------------------------------------------------- | --------------------------- |
+| 3.4     | least squares        | subsampled Gauss grid, i.i.d. random points, Weil points | $M=2.5N$ and $M=1.5N\log N$ |
+| 4.3     | compressive sampling | Monte Carlo versus deterministic sampling strategies     | —                           |
+| 5       | interpolation        | the least orthogonal interpolant                         | —                           |
 
 Section 3.4 plots design-matrix condition numbers against polynomial order $k$; Figure 2 shows two-dimensional Weil grids from the prime seeds $M=359$ (179 points) and $M=751$ (375 points).
 
@@ -470,13 +472,13 @@ This is the hub of the whole list. It restates and unifies paper 9 (Theorems 4, 
 
 ## Sample complexity across the five papers
 
-| No. | Point set or density                                | Sample requirement                                                              | Type of result                     |
-| --- | --------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------- |
-| 6   | SG, MC and QMC candidate designs                    | no relation between $M$ and $N$ given                                            | empirical                          |
-| 9   | Weil-sum deterministic point set                    | $M\ge4^{d+1}d^2N^2$ with $M$ prime                                               | deterministic, no probabilistic qualifier |
-| 11  | mapped uniform density with Hermite/Laguerre functions | $K\le\kappa m/\log m$, i.e. $m\gtrsim K\log K$; $L>\max\{3\tau,5\sqrt K\}$      | probabilistic, $\Pr\le2m^{-r}$     |
-| 13  | random subset of a tensor Gauss grid                | linear (third-party statement only; unverified from the paper)                   | not verifiable                     |
-| 14  | all of the above plus $\ell_1$ and interpolation    | $N^2\log N$ / $N^{1.585}$ / $N\log N$ / $s\log^3 s\log N$                        | survey and unification             |
+| No. | Point set or density                                   | Sample requirement                                                         | Type of result                            |
+| --- | ------------------------------------------------------ | -------------------------------------------------------------------------- | ----------------------------------------- |
+| 6   | SG, MC and QMC candidate designs                       | no relation between $M$ and $N$ given                                      | empirical                                 |
+| 9   | Weil-sum deterministic point set                       | $M\ge4^{d+1}d^2N^2$ with $M$ prime                                         | deterministic, no probabilistic qualifier |
+| 11  | mapped uniform density with Hermite/Laguerre functions | $K\le\kappa m/\log m$, i.e. $m\gtrsim K\log K$; $L>\max\{3\tau,5\sqrt K\}$ | probabilistic, $\Pr\le2m^{-r}$            |
+| 13  | random subset of a tensor Gauss grid                   | linear (third-party statement only; unverified from the paper)             | not verifiable                            |
+| 14  | all of the above plus $\ell_1$ and interpolation       | $N^2\log N$ / $N^{1.585}$ / $N\log N$ / $s\log^3 s\log N$                  | survey and unification                    |
 
 One judgement runs through all five: **the right form of the question "which points" is "how many points, drawn from which density".** Paper 6 asks the former; from paper 9 onward it is replaced by the latter, and the latter admits theorems. Taken together the five go one step further, because the choice of density itself reduces to a single question — **how to flatten the row norms of the design matrix** — and the quantity that flattens them is the Christoffel function. The Gauss weights of paper 13 and the decaying basis of paper 11 are two faces of that same requirement in two different settings.
 

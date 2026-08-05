@@ -183,9 +183,11 @@ with $\{a_j\}$ the roots of the degree-$L$ Hermite polynomial $H_L$ and truncati
   $$
 - **Error balancing.** To keep the temporal and spatial contributions of the same size the paper takes $h=(\Delta t)^{(k+1)/(r+1)}$.
 - **Zero stability sets the order ceiling.** The window $1\le k\le6$ is not a vague empirical observation but a check anyone can redo. Applying the same weights to the deterministic ODE $\mathrm dY/\mathrm dt=f(t,Y)$ gives $\alpha_{k,0}Y^n+\sum_{j=1}^k\alpha_{k,j}Y^{n+j}=f(t_n,Y^n)$, with characteristic polynomial
+
   $$
   P(\lambda)=\alpha_{k,0}\lambda^{k}+\sum_{j=1}^{k}\lambda^{k-j}=0,
   $$
+
   subject to the root condition $|\lambda_{k,j}|\le1$, simple where equality holds. The maximum root moduli the paper reports, excluding the common root $1.0$, are
 
   | $k$              | 2      | 3      | 4      | 5      | 6      | 7          | 8          |
@@ -203,10 +205,10 @@ Common setup: $T=1.0$, uniform partitions, 8 Gauss-Hermite nodes (so quadrature 
 
 **Example 1 (decoupled, analytic solution).** Exact solution $Y_t=\dfrac{e^{t+X_t}}{1+e^{t+X_t}}$, $Z_t=\dfrac{(e^{t+X_t})^2}{(1+e^{t+X_t})^3}$, with $x=1.0$ and $N=16,\dots,256$:
 
-| $k$        | 1     | 2     | 3     | 4     | 5     | 6             | 7     | 8        |
-| ---------- | ----- | ----- | ----- | ----- | ----- | ------------- | ----- | -------- |
-| $Y$ rate   | 1.000 | 1.973 | 3.002 | 3.922 | 5.196 | 5.116 (6.273) | 4.382 | $-5.487$ |
-| $Z$ rate   | 1.000 | 2.021 | 2.893 | 3.919 | 5.017 | 5.687 (6.256) | 4.759 | $-7.170$ |
+| $k$      | 1     | 2     | 3     | 4     | 5     | 6             | 7     | 8        |
+| -------- | ----- | ----- | ----- | ----- | ----- | ------------- | ----- | -------- |
+| $Y$ rate | 1.000 | 1.973 | 3.002 | 3.922 | 5.196 | 5.116 (6.273) | 4.382 | $-5.487$ |
+| $Z$ rate | 1.000 | 2.021 | 2.893 | 3.919 | 5.017 | 5.687 (6.256) | 4.759 | $-7.170$ |
 
 The bracketed figures are the rates over $N=16,\dots,128$, that is, before double-precision round-off takes over — **the nominal order at $k=6$ is only visible on the coarser meshes; on the finer ones round-off has already eaten it**. At $k=7$ the rate degrades to between $4$ and $5$ rather than approaching $7$, and at $k=8$ it goes negative (divergence). This matches the root-condition computation above.
 
@@ -501,14 +503,14 @@ A direct successor to papers 8 and 47, both of which it cites. It also cites pap
 
 ## How the seven relate
 
-| No. | Route to higher order             | Problem class           | Basis of stability                          | Verification here      |
-| --- | --------------------------------- | ----------------------- | ------------------------------------------- | ---------------------- |
-| 8   | differentiate into reference ODEs | coupled FBSDE           | root-condition window $k\le6$               | full text, equations   |
-| 18  | multistep plus jump handling      | FBSDE with jumps        | unverified                                  | abstract and reference list |
-| 23  | deferred correction               | FBSDE                   | numerical assertion, no barrier             | full text, equations   |
-| 33  | explicit $\theta$-schemes         | mean-field BSDE         | proved in the paper (unverified here)       | abstract               |
-| 35  | explicit deferred correction      | second-order FBSDE      | unverified                                  | abstract and reference list |
-| 61  | explicit multistep                | mean-field FBSDE        | unverified                                  | abstract and reference list |
+| No. | Route to higher order             | Problem class           | Basis of stability                          | Verification here            |
+| --- | --------------------------------- | ----------------------- | ------------------------------------------- | ---------------------------- |
+| 8   | differentiate into reference ODEs | coupled FBSDE           | root-condition window $k\le6$               | full text, equations         |
+| 18  | multistep plus jump handling      | FBSDE with jumps        | unverified                                  | abstract and reference list  |
+| 23  | deferred correction               | FBSDE                   | numerical assertion, no barrier             | full text, equations         |
+| 33  | explicit $\theta$-schemes         | mean-field BSDE         | proved in the paper (unverified here)       | abstract                     |
+| 35  | explicit deferred correction      | second-order FBSDE      | unverified                                  | abstract and reference list  |
+| 61  | explicit multistep                | mean-field FBSDE        | unverified                                  | abstract and reference list  |
 | 68  | design backwards from stability   | general multistep FBSDE | new sufficient conditions plus optimisation | abstract and appendix titles |
 
 The shape of the thread is worth summarising: **construct schemes first (papers 8 through 35), then unify the analysis (paper 47), then design backwards from the analysis (paper 68).** Paper 68 is possible precisely because paper 47 had established stability as the necessary and sufficient other half of convergence, which turns "design a stable scheme" into an optimisation problem with a clear target rather than trial and error.
@@ -517,19 +519,19 @@ The other shape is the division of labour between the two order-raising mechanis
 
 ## Coverage check
 
-| Item                                                              | Paper      | Status                                                       |
-| ----------------------------------------------------------------- | ---------- | ------------------------------------------------------------ |
-| Coupled FBSDE, prior state of the art and the question posed      | 8          | complete                                                     |
-| Generator theorem, derivative weights, two reference ODEs, five schemes | 8    | complete derivation                                          |
-| Truncation-error split, error balancing, root-condition window    | 8          | complete, with the missing convergence theorem flagged       |
-| Three experiment groups and their limitations                     | 8          | rate tables for Examples 1 through 3; Example 4 not transcribed |
-| System with jumps and the three abstract claims                   | 18         | only what the abstract supports                              |
-| Deferred correction: residual equation, low-order scheme, corrector | 23       | complete derivation with both generator identities           |
-| Two experiment groups and $K=12$                                  | 23         | Test 1 decoupled complete; coupled and Test 2 partly transcribed |
-| Mean-field BSDE form, "first high order" and the second-order claim | 33       | only what the abstract supports                              |
-| Four abstract claims for explicit deferred correction and the dimension caveat | 35 | only what the abstract supports                          |
-| Mean-field FBSDE form, error-estimate claim and reference composition | 61     | only what the abstract and reference list support; includes a page-number correction |
-| Strong-stability design idea, template and existence of the coefficient table | 68 | only what the abstract and appendix titles support        |
+| Item                                                                           | Paper | Status                                                                               |
+| ------------------------------------------------------------------------------ | ----- | ------------------------------------------------------------------------------------ |
+| Coupled FBSDE, prior state of the art and the question posed                   | 8     | complete                                                                             |
+| Generator theorem, derivative weights, two reference ODEs, five schemes        | 8     | complete derivation                                                                  |
+| Truncation-error split, error balancing, root-condition window                 | 8     | complete, with the missing convergence theorem flagged                               |
+| Three experiment groups and their limitations                                  | 8     | rate tables for Examples 1 through 3; Example 4 not transcribed                      |
+| System with jumps and the three abstract claims                                | 18    | only what the abstract supports                                                      |
+| Deferred correction: residual equation, low-order scheme, corrector            | 23    | complete derivation with both generator identities                                   |
+| Two experiment groups and $K=12$                                               | 23    | Test 1 decoupled complete; coupled and Test 2 partly transcribed                     |
+| Mean-field BSDE form, "first high order" and the second-order claim            | 33    | only what the abstract supports                                                      |
+| Four abstract claims for explicit deferred correction and the dimension caveat | 35    | only what the abstract supports                                                      |
+| Mean-field FBSDE form, error-estimate claim and reference composition          | 61    | only what the abstract and reference list support; includes a page-number correction |
+| Strong-stability design idea, template and existence of the coefficient table  | 68    | only what the abstract and appendix titles support                                   |
 
 ## Sources for this page
 

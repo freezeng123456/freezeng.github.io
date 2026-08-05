@@ -54,12 +54,12 @@ with parameters $\theta_1\in[0,1]$, $\theta_2\in(0,1]$ and terminal values $Y^\p
 
 **One notational point is easy to read backwards: $\theta_1$ multiplies the generator at the current level $t_k$, and in a backward recursion the current level is the unknown one.** Hence:
 
-| $(\theta_1,\theta_2)$ | Name and character                                                                     |
-| --------------------- | -------------------------------------------------------------------------------------- |
-| $\theta_1=1$          | left-endpoint rectangle rule, generator implicit (backward-Euler-like)                 |
+| $(\theta_1,\theta_2)$ | Name and character                                                                                       |
+| --------------------- | -------------------------------------------------------------------------------------------------------- |
+| $\theta_1=1$          | left-endpoint rectangle rule, generator implicit (backward-Euler-like)                                   |
 | $(1,1)$               | as above, with the $Z$ recursion collapsing to the single term $\mathbb E_n[Y_{n+1}\Delta W_n]/\Delta_n$ |
-| $\theta_1=0$          | right-endpoint rule, fully explicit                                                    |
-| $(1/2,1/2)$           | the Crank-Nicolson member, the only second-order one                                   |
+| $\theta_1=0$          | right-endpoint rule, fully explicit                                                                      |
+| $(1/2,1/2)$           | the Crank-Nicolson member, the only second-order one                                                     |
 
 The $(1,1)$ member is exactly the scheme paper 26 applies to its adjoint BSDE (see the [[en/computational-mathematics/paper-notes/fbsde-and-control/second-order-fbsdes-and-control|second-order FBSDEs and control page]]); it is nominally implicit yet needs no iteration, because the adjoint generator there is linear in $p$. The other family is the multistep scheme of paper 8, whose form is on the [[en/computational-mathematics/paper-notes/fbsde-and-control/multistep-schemes-for-fbsdes|multistep schemes page]].
 
@@ -225,10 +225,10 @@ It cites paper 47 and inherits its "stability first" architecture, and it also c
 
 ## How the two relate
 
-| No. | Error sources covered | Main result                                                | Effect on the other papers                                                          | Verification here                |
-| --- | --------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------- |
-| 47  | temporal              | mean-square Lax equivalence                                | gives paper 8's empirical window a theory; makes paper 68's reverse design possible | abstract + independent survey      |
-| 63  | temporal and spatial  | first fully discrete analysis (order two plus exponential) | a second route of spatial improvement alongside paper 25                            | abstract + components verified     |
+| No. | Error sources covered | Main result                                                | Effect on the other papers                                                          | Verification here              |
+| --- | --------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------ |
+| 47  | temporal              | mean-square Lax equivalence                                | gives paper 8's empirical window a theory; makes paper 68's reverse design possible | abstract + independent survey  |
+| 63  | temporal and spatial  | first fully discrete analysis (order two plus exponential) | a second route of spatial improvement alongside paper 25                            | abstract + components verified |
 
 One general judgement: **when a family of methods has scheme-by-scheme convergence proofs, it is worth stopping to define stability properly.** After paper 47, "design a convergent scheme" becomes "design a stable scheme", and the latter is an objective one can optimise — which is exactly what [[en/computational-mathematics/paper-notes/fbsde-and-control/multistep-schemes-for-fbsdes|paper 68]] does.
 
@@ -236,20 +236,20 @@ A second judgement, about paper 63: **what it changes is not the accuracy but th
 
 ## Coverage checklist
 
-| Item                                                                | Paper | Coverage status                                    |
-| ------------------------------------------------------------------- | ----- | -------------------------------------------------- |
-| The two $\theta$-scheme recursions and four named members           | 47    | transcribed from a third-party survey              |
-| The shape of the unified scheme                                     | 47    | inferred here, flagged as such                     |
-| Mean-square definitions of consistency, stability, convergence      | 47    | reconstructed here, flagged as such                |
-| The mean-square Lax equivalence theorem and the coverage claim      | 47    | verbatim from the abstract, corroborated by survey |
-| Three external corroborations of "stable" (root condition, Tang-Xiong, Chassagneux) | 47 | each independently verified              |
-| No numerical experiments                                            | 47    | not mentioned in the abstract; noted               |
-| The order of the $\theta$-scheme and the roles of the two DCDS-B papers | 63 | independently verified                             |
-| Definition of Sinc quadrature, its error theorem, Gaussian form     | 63    | transcribed from the group's CSIAM-AM article      |
-| The "uniform nodes plus free parameter, hence no interpolation" mechanism | 63 | verbatim from Remark 4.2 and the sequel's abstract |
-| The shape of the fully discrete estimate and the stability analysis | 63    | two rates verifiable; shape assembled here, flagged |
-| The sequel's $1\le K\le6$ and its $b=0$ condition                   | 63    | independently verified                             |
-| Numerical experiments                                               | 63    | existence stated in the abstract; data unverified, no table |
+| Item                                                                                | Paper | Coverage status                                             |
+| ----------------------------------------------------------------------------------- | ----- | ----------------------------------------------------------- |
+| The two $\theta$-scheme recursions and four named members                           | 47    | transcribed from a third-party survey                       |
+| The shape of the unified scheme                                                     | 47    | inferred here, flagged as such                              |
+| Mean-square definitions of consistency, stability, convergence                      | 47    | reconstructed here, flagged as such                         |
+| The mean-square Lax equivalence theorem and the coverage claim                      | 47    | verbatim from the abstract, corroborated by survey          |
+| Three external corroborations of "stable" (root condition, Tang-Xiong, Chassagneux) | 47    | each independently verified                                 |
+| No numerical experiments                                                            | 47    | not mentioned in the abstract; noted                        |
+| The order of the $\theta$-scheme and the roles of the two DCDS-B papers             | 63    | independently verified                                      |
+| Definition of Sinc quadrature, its error theorem, Gaussian form                     | 63    | transcribed from the group's CSIAM-AM article               |
+| The "uniform nodes plus free parameter, hence no interpolation" mechanism           | 63    | verbatim from Remark 4.2 and the sequel's abstract          |
+| The shape of the fully discrete estimate and the stability analysis                 | 63    | two rates verifiable; shape assembled here, flagged         |
+| The sequel's $1\le K\le6$ and its $b=0$ condition                                   | 63    | independently verified                                      |
+| Numerical experiments                                                               | 63    | existence stated in the abstract; data unverified, no table |
 
 ## Sources for this page
 

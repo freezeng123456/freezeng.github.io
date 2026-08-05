@@ -16,14 +16,14 @@ The four papers on the [[en/computational-mathematics/paper-notes/bayesian-infer
 
 ## Verification tier
 
-| No. | Source checked                                       | Tier                       | Remaining gap                                                                                        |
-| --- | ---------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 55  | arXiv:2104.06285 (full text)                         | **Full text**              | the explicit form of the approximate posterior $\widetilde\pi_{\mathrm{pos}}$ was lost and is unverified; the proposal density's normalising constant carries a typo |
-| 56  | arXiv:2104.06276 (full text)                         | **Full text**              | whether the kernel exponent carries an extra $1/2$ is uncertain; the cost table's headers are partly damaged and the CPU-second columns are unverified |
-| 82  | ScienceDirect abstract, full introduction, section openings | **Abstract and introduction only** | Sections 2 to 4 require a subscription and there are **no verifiable formulas**; no preprint exists |
-| 88  | arXiv:2508.06852 (full text)                         | **Full text**              | the indexing and normalisation of the likelihood equation are reconstructed; the journal and preprint titles differ |
-| 99  | arXiv:2411.13277 v3 (full text)                      | **Full text**              | the hypothesis list of Theorem 2.3 and the scalar coefficient of the Householder layer were not transcribed verbatim; experimental error values are unverified |
-| 106 | arXiv:2605.29373 v1 (full text)                      | **Full text**              | conditions (i) and (ii) of the evidence-bound theorem were not transcribed verbatim; the displayed forms of equations (38) and (68) are unverified; **all numerical tables are illegible** |
+| No. | Source checked                                              | Tier                               | Remaining gap                                                                                                                                                                              |
+| --- | ----------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 55  | arXiv:2104.06285 (full text)                                | **Full text**                      | the explicit form of the approximate posterior $\widetilde\pi_{\mathrm{pos}}$ was lost and is unverified; the proposal density's normalising constant carries a typo                       |
+| 56  | arXiv:2104.06276 (full text)                                | **Full text**                      | whether the kernel exponent carries an extra $1/2$ is uncertain; the cost table's headers are partly damaged and the CPU-second columns are unverified                                     |
+| 82  | ScienceDirect abstract, full introduction, section openings | **Abstract and introduction only** | Sections 2 to 4 require a subscription and there are **no verifiable formulas**; no preprint exists                                                                                        |
+| 88  | arXiv:2508.06852 (full text)                                | **Full text**                      | the indexing and normalisation of the likelihood equation are reconstructed; the journal and preprint titles differ                                                                        |
+| 99  | arXiv:2411.13277 v3 (full text)                             | **Full text**                      | the hypothesis list of Theorem 2.3 and the scalar coefficient of the Householder layer were not transcribed verbatim; experimental error values are unverified                             |
+| 106 | arXiv:2605.29373 v1 (full text)                             | **Full text**                      | conditions (i) and (ii) of the evidence-bound theorem were not transcribed verbatim; the displayed forms of equations (38) and (68) are unverified; **all numerical tables are illegible** |
 
 **Paper 82 is the only one on this page below the full-text tier**, so it receives only the space its verifiable range supports: no formulas, no algorithm box, no derivation. The other five get full derivations and experimental configurations, though paper 106's experiments are limited to configuration and qualitative conclusions because its numerical tables could not be transcribed reliably.
 
@@ -138,17 +138,17 @@ Two implementation notes from the same source: the determinant makes $c(\theta)$
 
 ### Numerical experiments
 
-| Item              | Setting                                                                     |
-| ----------------- | --------------------------------------------------------------------------- |
-| forward problem   | Darcy-type elliptic inversion, recovering $\kappa(x)$ from noisy pointwise pressure |
-| source            | $f(x)=100\sin(\pi x_1)\sin(\pi x_2)$                                        |
-| discretisation    | bilinear Galerkin finite elements on a uniform $40\times40$ grid            |
-| surrogate         | 3 hidden layers × 40 neurons                                                |
-| training          | Adam, learning rate $5\times10^{-4}$                                        |
-| training points   | $N\in\{50,100\}$                                                            |
-| inner optimiser   | MATLAB `lsqnonlin` (trust-region-reflective Newton)                         |
+| Item              | Setting                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| forward problem   | Darcy-type elliptic inversion, recovering $\kappa(x)$ from noisy pointwise pressure        |
+| source            | $f(x)=100\sin(\pi x_1)\sin(\pi x_2)$                                                       |
+| discretisation    | bilinear Galerkin finite elements on a uniform $40\times40$ grid                           |
+| surrogate         | 3 hidden layers × 40 neurons                                                               |
+| training          | Adam, learning rate $5\times10^{-4}$                                                       |
+| training points   | $N\in\{50,100\}$                                                                           |
+| inner optimiser   | MATLAB `lsqnonlin` (trust-region-reflective Newton)                                        |
 | methods compared  | direct RTO (true model), NN-RTO-pr (prior-trained), NN-RTO (posterior-trained, this paper) |
-| efficiency metric | CPU-time-adjusted effective sample size                                     |
+| efficiency metric | CPU-time-adjusted effective sample size                                                    |
 
 **Results.** NN-RTO reproduces the one- and two-dimensional posterior marginals of direct RTO already at $N=50$ training points; NN-RTO-pr does not.
 
@@ -291,35 +291,35 @@ where $\nu_1,\nu_2$ are Lipschitz constants and $\lambda$ is a **poisedness** co
 
 Three problems:
 
-| Ex. | Problem                                          | Role                                                                    |
-| --- | ------------------------------------------------ | ------------------------------------------------------------------------- |
-| 1   | two-dimensional "double banana" posterior        | exhibits the failure mode of a gradient flow converging confidently to the wrong mode |
-| 2   | two-dimensional heat source inversion            | a standard PDE inverse problem                                          |
-| 3   | diffusion coefficient in a time-fractional PDE   | the only example that left transcribable numbers                        |
+| Ex. | Problem                                        | Role                                                                                  |
+| --- | ---------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 1   | two-dimensional "double banana" posterior      | exhibits the failure mode of a gradient flow converging confidently to the wrong mode |
+| 2   | two-dimensional heat source inversion          | a standard PDE inverse problem                                                        |
+| 3   | diffusion coefficient in a time-fractional PDE | the only example that left transcribable numbers                                      |
 
 Default parameters:
 
-| Parameter              | Value                                                                        |
-| ---------------------- | ---------------------------------------------------------------------------- |
-| refinement points per round | $Q=5$                                                                   |
-| initial radius         | $R=0.2$                                                                      |
-| tolerance              | $10^{-2}$                                                                    |
-| radius shrink factor   | $\rho=0.8$                                                                   |
-| outer iteration cap    | $I_{\max}=30$                                                                |
-| inner iterations       | $T=10$                                                                       |
-| momentum               | $0.9$                                                                        |
-| sample quality score   | maximum mean discrepancy, radial-basis bandwidth by median heuristic, shared across methods |
+| Parameter                   | Value                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------- |
+| refinement points per round | $Q=5$                                                                                       |
+| initial radius              | $R=0.2$                                                                                     |
+| tolerance                   | $10^{-2}$                                                                                   |
+| radius shrink factor        | $\rho=0.8$                                                                                  |
+| outer iteration cap         | $I_{\max}=30$                                                                               |
+| inner iterations            | $T=10$                                                                                      |
+| momentum                    | $0.9$                                                                                       |
+| sample quality score        | maximum mean discrepancy, radial-basis bandwidth by median heuristic, shared across methods |
 
 **Configuration and outcome of example 1.** The fixed prior-trained network uses 10 training points and 3 hidden layers of 20 neurons; it drives the particles into the **wrong** high-probability region, while the locally refined version spreads them over the true support after 100 iterations and matches at the last iteration.
 
 **Quantitative comparison in example 3.**
 
-| Configuration | Method                       | Online true solves | Error  |
-| ------------- | ---------------------------- | ------------------ | ------ |
-| $n_t=100$     | fixed prior-trained network  | 0                  | 0.3968 |
-| $n_t=100$     | local refinement (this paper) | 50                | 0.1732 |
-| $n_t=500$     | fixed prior-trained network  | 0                  | 0.2941 |
-| $n_t=500$     | local refinement (this paper) | 80                | 0.1155 |
+| Configuration | Method                        | Online true solves | Error  |
+| ------------- | ----------------------------- | ------------------ | ------ |
+| $n_t=100$     | fixed prior-trained network   | 0                  | 0.3968 |
+| $n_t=100$     | local refinement (this paper) | 50                 | 0.1732 |
+| $n_t=500$     | fixed prior-trained network   | 0                  | 0.2941 |
+| $n_t=500$     | local refinement (this paper) | 80                 | 0.1155 |
 
 Each configuration is an internally matched comparison: $n_t$ is equal within a row pair and the only difference is whether online refinement is on. The result is more than a halving of the error ($0.3968\to0.1732$ and $0.2941\to0.1155$) for 50 and 80 online true solves.
 
@@ -367,12 +367,12 @@ The paper's novelty claim is that this is the first operator-inference-based ens
 
 ### Numerical experiments
 
-| Item             | Content                                                                                       |
-| ---------------- | ----------------------------------------------------------------------------------------------- |
-| benchmarks       | Burgers' equation, the FitzHugh-Nagumo model, advection-diffusion-reaction systems             |
+| Item             | Content                                                                                                         |
+| ---------------- | --------------------------------------------------------------------------------------------------------------- |
+| benchmarks       | Burgers' equation, the FitzHugh-Nagumo model, advection-diffusion-reaction systems                              |
 | comparison       | DR-EnKF (this paper), R-EnKF (uncorrected operator-inference reduced filter), full-order ensemble Kalman filter |
-| metrics          | relative $L^2$ error for the parameter and for the state                                       |
-| reported outcome | DR-EnKF matches full-order accuracy at a fraction of the cost, while R-EnKF is biased          |
+| metrics          | relative $L^2$ error for the parameter and for the state                                                        |
+| reported outcome | DR-EnKF matches full-order accuracy at a fraction of the cost, while R-EnKF is biased                           |
 
 **This section stops here, and has to.** The abstract reports "considerable computational speedup without compromising accuracy"; **the specific speedup factor, error values, grid sizes, ensemble sizes and network architectures are all outside the verifiable range.** Any more detailed account would be invention. Obtaining the paper's operator-inference least-squares loss or its error-network architecture requires the published full text.
 
@@ -428,22 +428,22 @@ Four experiments: the stress-free equilibrium shape, membrane fluctuation on an 
 
 **Surrogate configuration:**
 
-| Item              | Setting                                        |
-| ----------------- | ---------------------------------------------- |
-| number of networks | 8 (4 experiments × 2 cell types)              |
-| architecture      | three hidden layers, `tanh`, mean-squared-error loss |
-| optimiser         | Adam with a step learning-rate schedule        |
-| training data     | 10,000 simulation results per network          |
-| width selection   | per experiment, guided by sensitivity analysis |
-| reported accuracy | prediction errors below $10^{-2}$              |
+| Item               | Setting                                              |
+| ------------------ | ---------------------------------------------------- |
+| number of networks | 8 (4 experiments × 2 cell types)                     |
+| architecture       | three hidden layers, `tanh`, mean-squared-error loss |
+| optimiser          | Adam with a step learning-rate schedule              |
+| training data      | 10,000 simulation results per network                |
+| width selection    | per experiment, guided by sensitivity analysis       |
+| reported accuracy  | prediction errors below $10^{-2}$                    |
 
 **Experimental anchors (from the published literature):**
 
-| Quantity   | Healthy cells (Evans & Fung)  | Infected cells (from surface-area and volume measurements) |
-| ---------- | ----------------------------- | ---------------------------------------------------------- |
-| $D_{eq}$   | $7.82\pm0.62\ \mu\mathrm m$   | $6.9\ \mu\mathrm m$                                        |
-| $h_{\max}$ | $2.58\pm0.27\ \mu\mathrm m$   | $3.2\ \mu\mathrm m$                                        |
-| $h_{\min}$ | $0.81\pm0.35\ \mu\mathrm m$   | $3.2\ \mu\mathrm m$                                        |
+| Quantity   | Healthy cells (Evans & Fung) | Infected cells (from surface-area and volume measurements) |
+| ---------- | ---------------------------- | ---------------------------------------------------------- |
+| $D_{eq}$   | $7.82\pm0.62\ \mu\mathrm m$  | $6.9\ \mu\mathrm m$                                        |
+| $h_{\max}$ | $2.58\pm0.27\ \mu\mathrm m$  | $3.2\ \mu\mathrm m$                                        |
+| $h_{\min}$ | $0.81\pm0.35\ \mu\mathrm m$  | $3.2\ \mu\mathrm m$                                        |
 
 The stretching data ($D_{ax}$ and $D_{tr}$ against applied force) come from Mills and coauthors. That $h_{\max}=h_{\min}$ for the infected cells is itself a morphological statement: the cell moves from a biconcave disc toward a sphere.
 
@@ -528,12 +528,12 @@ The experiments use Adam, with RMSprop and AdaGrad named as alternatives.
 
 **Step five: four flow layers that satisfy the conditions.**
 
-| Flow layer                       | Type      | Image dimension | Note                                                       |
-| -------------------------------- | --------- | --------------- | ------------------------------------------------------------ |
-| functional Householder flow      | linear    | one             | a reflection with parameters $v_n\in\mathcal H_u$ and $b_n\in\mathbb R$ |
-| functional projected transformation flow | linear | $M$        | hence more expressive than Householder                     |
-| functional planar flow           | nonlinear | —               | low-rank parameterisation, below                           |
-| functional Sylvester flow        | nonlinear | —               | —                                                            |
+| Flow layer                               | Type      | Image dimension | Note                                                                    |
+| ---------------------------------------- | --------- | --------------- | ----------------------------------------------------------------------- |
+| functional Householder flow              | linear    | one             | a reflection with parameters $v_n\in\mathcal H_u$ and $b_n\in\mathbb R$ |
+| functional projected transformation flow | linear    | $M$             | hence more expressive than Householder                                  |
+| functional planar flow                   | nonlinear | —               | low-rank parameterisation, below                                        |
+| functional Sylvester flow                | nonlinear | —               | —                                                                       |
 
 Invertibility of the linear and nonlinear families is guaranteed by Lemma 2.1 and Lemma 2.2 respectively.
 
@@ -563,11 +563,11 @@ The paper's own framing of the regularity issue is worth keeping as stated: with
 
 ### Numerical experiments
 
-| Item                 | Content                                                                             |
-| -------------------- | ------------------------------------------------------------------------------------- |
-| inverse problems     | a one-dimensional smooth equation, two-dimensional steady-state Darcy flow, electrical impedance tomography |
-| baseline             | pCN (MCMC)                                                                          |
-| verification targets | agreement with the theory, efficiency relative to pCN, empirical discretisation invariance |
+| Item                     | Content                                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| inverse problems         | a one-dimensional smooth equation, two-dimensional steady-state Darcy flow, electrical impedance tomography   |
+| baseline                 | pCN (MCMC)                                                                                                    |
+| verification targets     | agreement with the theory, efficiency relative to pCN, empirical discretisation invariance                    |
 | reference implementation | the author's repository contains a dedicated `commen_flows_dis_inv.py` for the discretisation-invariance test |
 
 Discretisation invariance is tested by training the same flow at different discretisation levels and comparing behaviour, which is the direct experimental contrast with the discretise-then-infer route and the most distinctive piece of evidence in the paper.
@@ -678,22 +678,22 @@ This is the same class of goal-oriented quantity as $e_D$ in paper 79; only the 
 
 Four problems:
 
-| Problem                        | Configuration                                                              |
-| ------------------------------ | ---------------------------------------------------------------------------- |
-| 100-dimensional Rosenbrock     | tests posterior approximation quality alone, so prior updating is **deliberately switched off** |
-| one-dimensional Darcy flow     | $\Omega=[0,1]$                                                              |
-| two-dimensional Darcy flow     | $[0,1]^2$                                                                   |
-| two-dimensional Navier-Stokes  | recover the initial vorticity $\omega_0$ from the vorticity field $\omega(\cdot,T)$ at $T=1$ |
+| Problem                       | Configuration                                                                                   |
+| ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| 100-dimensional Rosenbrock    | tests posterior approximation quality alone, so prior updating is **deliberately switched off** |
+| one-dimensional Darcy flow    | $\Omega=[0,1]$                                                                                  |
+| two-dimensional Darcy flow    | $[0,1]^2$                                                                                       |
+| two-dimensional Navier-Stokes | recover the initial vorticity $\omega_0$ from the vorticity field $\omega(\cdot,T)$ at $T=1$    |
 
 Shared settings for the three PDE problems:
 
-| Item             | Setting                                                            |
-| ---------------- | -------------------------------------------------------------------- |
-| truncation       | $d\in\{32,64\}$                                                     |
-| noise levels     | $\delta\in\{1\%,5\%,10\%\}$                                         |
-| repetitions      | averaged over 3 runs                                                |
-| baselines        | pCN, SVGD, UKI-FDM (full order), UKI-FNO (operator surrogate)      |
-| metrics          | relative inversion error $e_{\mathcal I}$, relative surrogate fitting error $e_{\mathcal S}$ |
+| Item         | Setting                                                                                      |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| truncation   | $d\in\{32,64\}$                                                                              |
+| noise levels | $\delta\in\{1\%,5\%,10\%\}$                                                                  |
+| repetitions  | averaged over 3 runs                                                                         |
+| baselines    | pCN, SVGD, UKI-FDM (full order), UKI-FNO (operator surrogate)                                |
+| metrics      | relative inversion error $e_{\mathcal I}$, relative surrogate fitting error $e_{\mathcal S}$ |
 
 The Rosenbrock problem additionally compares two-dimensional marginals on the $\xi_1$–$\xi_2$ plane against a known ground-truth density, with a VAE, MCMC, SVGD and unscented Kalman inversion.
 
@@ -716,33 +716,33 @@ The most direct descendant of paper [[en/computational-mathematics/paper-notes/b
 
 ## Side-by-side comparison
 
-| No. | Posterior approximation                  | Surrogate                        | Refinement                   | Theory                                   | Numerical results                  |
-| --- | ---------------------------------------- | -------------------------------- | ---------------------------- | ---------------------------------------- | ---------------------------------- |
-| 55  | optimisation-based independence proposal | feed-forward network             | none (offline once)          | none in the paper itself                 | setup and qualitative only         |
-| 56  | particle flow                            | feed-forward network             | online, particle mean        | none                                     | one example with complete numbers  |
-| 82  | ensemble Kalman filter                   | operator-inference reduced model | none (error learned offline) | none                                     | problem list and qualitative only  |
-| 88  | staged hierarchical Bayesian inference   | eight feed-forward networks      | none                         | none                                     | configuration and anchors          |
+| No. | Posterior approximation                  | Surrogate                        | Refinement                   | Theory                                   | Numerical results                   |
+| --- | ---------------------------------------- | -------------------------------- | ---------------------------- | ---------------------------------------- | ----------------------------------- |
+| 55  | optimisation-based independence proposal | feed-forward network             | none (offline once)          | none in the paper itself                 | setup and qualitative only          |
+| 56  | particle flow                            | feed-forward network             | online, particle mean        | none                                     | one example with complete numbers   |
+| 82  | ensemble Kalman filter                   | operator-inference reduced model | none (error learned offline) | none                                     | problem list and qualitative only   |
+| 88  | staged hierarchical Bayesian inference   | eight feed-forward networks      | none                         | none                                     | configuration and anchors           |
 | 99  | function-space variational flow          | no surrogate                     | not applicable               | measure equivalence, explicit derivative | setup and verification targets only |
-| 106 | latent-variable variational flow         | Fourier neural operator          | online, replacement          | strict evidence-bound improvement        | setup and qualitative only         |
+| 106 | latent-variable variational flow         | Fourier neural operator          | online, replacement          | strict evidence-bound improvement        | setup and qualitative only          |
 
 ## Coverage check
 
-| Item                                              | Paper    | Status                                                                                   |
-| ------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
-| Verification tier and remaining gaps              | all      | per-paper source, tier and unverified items                                              |
-| Geometric reading of RTO                          | 55       | residual surface, tangent projection, exactness in the linear case, the two effects of curvature matching the two factors of $c$ |
-| RTO proposal, density, weight and scalable variant | 55      | linearisation point, proposal, density, weight, rank-$r$ split and determinant simplification |
-| Convention clash and normalisation typo           | 55       | $w$ and $c$ as reciprocals with reversed numerators; the correction of $(2\pi)^{-\pi/2}$ |
-| Bardsley's theorem and the ergodicity condition   | 55       | full hypotheses, conclusion, the positive lower bound on $c$ and why it fails for the surrogate version |
-| Stein operator and the closed-form direction      | 56       | functional optimisation, identity, absence of the normalising constant, closed form, attraction and repulsion |
-| Point selection with a separation constraint      | 56       | division of labour between objective and constraint, degeneracy motivation, meaning of radius shrinking |
-| Relation to the CMPS trust-region bounds          | 56       | the $R^{2}$ and $R^{3}$ bounds with poisedness, and why they do not transfer to a network |
-| Quantitative table for example 3 and its limits   | 56       | errors and online solve counts, undefined $n_t$, damaged headers, self-inconsistent vanilla-SVGD cell |
-| Two-tier reduction plus an error network          | 82       | coarse-grid operator inference, error network, output-side correction, with the verifiability limit stated |
-| Staged hierarchical architecture and annealing    | 88       | the two structural difficulties matched to two remedies, parameters and outputs, annealing, eight surrogates, experimental anchors |
-| Measure equivalence, the derivative and four flows | 99      | the singularity obstruction, theorem conclusion, change of variables onto the prior, necessity of low rank, discretisation invariance |
-| Latent flow, prior updating, aggressive replacement | 106    | sampling map, evidence-bound decomposition, momentum update with fixed covariance, perturbation, stopping rule |
-| Record of two untranscribed theorem hypothesis lists | 99, 106 | the condition list of Theorem 2.3 and conditions (i), (ii) of the evidence-bound theorem |
+| Item                                                 | Paper   | Status                                                                                                                                |
+| ---------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Verification tier and remaining gaps                 | all     | per-paper source, tier and unverified items                                                                                           |
+| Geometric reading of RTO                             | 55      | residual surface, tangent projection, exactness in the linear case, the two effects of curvature matching the two factors of $c$      |
+| RTO proposal, density, weight and scalable variant   | 55      | linearisation point, proposal, density, weight, rank-$r$ split and determinant simplification                                         |
+| Convention clash and normalisation typo              | 55      | $w$ and $c$ as reciprocals with reversed numerators; the correction of $(2\pi)^{-\pi/2}$                                              |
+| Bardsley's theorem and the ergodicity condition      | 55      | full hypotheses, conclusion, the positive lower bound on $c$ and why it fails for the surrogate version                               |
+| Stein operator and the closed-form direction         | 56      | functional optimisation, identity, absence of the normalising constant, closed form, attraction and repulsion                         |
+| Point selection with a separation constraint         | 56      | division of labour between objective and constraint, degeneracy motivation, meaning of radius shrinking                               |
+| Relation to the CMPS trust-region bounds             | 56      | the $R^{2}$ and $R^{3}$ bounds with poisedness, and why they do not transfer to a network                                             |
+| Quantitative table for example 3 and its limits      | 56      | errors and online solve counts, undefined $n_t$, damaged headers, self-inconsistent vanilla-SVGD cell                                 |
+| Two-tier reduction plus an error network             | 82      | coarse-grid operator inference, error network, output-side correction, with the verifiability limit stated                            |
+| Staged hierarchical architecture and annealing       | 88      | the two structural difficulties matched to two remedies, parameters and outputs, annealing, eight surrogates, experimental anchors    |
+| Measure equivalence, the derivative and four flows   | 99      | the singularity obstruction, theorem conclusion, change of variables onto the prior, necessity of low rank, discretisation invariance |
+| Latent flow, prior updating, aggressive replacement  | 106     | sampling map, evidence-bound decomposition, momentum update with fixed covariance, perturbation, stopping rule                        |
+| Record of two untranscribed theorem hypothesis lists | 99, 106 | the condition list of Theorem 2.3 and conditions (i), (ii) of the evidence-bound theorem                                              |
 
 ## Sources for this page
 

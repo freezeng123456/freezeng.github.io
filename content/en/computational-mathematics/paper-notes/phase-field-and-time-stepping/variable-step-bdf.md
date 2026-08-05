@@ -353,11 +353,11 @@ where **$C_u$ is independent of both the step sizes and the step ratios**. The n
 
 Three examples.
 
-| Example | Setup | What it tests |
-| ------- | ----- | ------------- |
-| 1 | Forced Allen-Cahn $\partial_tu=\frac{1}{8\pi^2}\Delta u-f(u)+g$ on $(0,1)^2\times(0,1)$, manufactured solution $u=\sin(2\pi x)\sin(2\pi y)\sin t$, **random grid** $\tau_k=T\epsilon_k/S$ with $\epsilon_k\in(0,1)$ random and $S=\sum_k\epsilon_k$ | second-order accuracy in time and robustness to step ratios |
-| 2 | Four merging bubbles: $\varepsilon=0.02$, $\Omega=(-1,1)^2$, $128$ grid points per direction, initial data the product of four $\tanh$ profiles of radius $0.2$ centred at $(\pm0.3,0)$ and $(0,\pm0.3)$ | qualitative correctness of the interface evolution |
-| 3 | Coarsening dynamics: $\varepsilon=0.01$, $\Omega=(0,1)^2$, $128\times128$ uniform spatial grid, random initial data | max norm and energy across several values of $\tau$ |
+| Example | Setup                                                                                                                                                                                                                                               | What it tests                                               |
+| ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| 1       | Forced Allen-Cahn $\partial_tu=\frac{1}{8\pi^2}\Delta u-f(u)+g$ on $(0,1)^2\times(0,1)$, manufactured solution $u=\sin(2\pi x)\sin(2\pi y)\sin t$, **random grid** $\tau_k=T\epsilon_k/S$ with $\epsilon_k\in(0,1)$ random and $S=\sum_k\epsilon_k$ | second-order accuracy in time and robustness to step ratios |
+| 2       | Four merging bubbles: $\varepsilon=0.02$, $\Omega=(-1,1)^2$, $128$ grid points per direction, initial data the product of four $\tanh$ profiles of radius $0.2$ centred at $(\pm0.3,0)$ and $(0,\pm0.3)$                                            | qualitative correctness of the interface evolution          |
+| 3       | Coarsening dynamics: $\varepsilon=0.01$, $\Omega=(0,1)^2$, $128\times128$ uniform spatial grid, random initial data                                                                                                                                 | max norm and energy across several values of $\tau$         |
 
 The adaptive strategy is $\tau_{\mathrm{ada}}(e,\tau)=\rho\bigl(\frac{tol}{e}\bigr)^{1/2}\tau_{\mathrm{cur}}$ with defaults $\rho=0.6$, $tol=10^{-4}$, $\tau_{\max}=0.1$, $\tau_{\min}=10^{-3}$; the first/second-order pair is backward Euler and adaptive BDF2.
 
@@ -594,11 +594,11 @@ $$
 
 **Example 1 (random time grid).** Forced MBE, $\varepsilon=0.1$, $\Omega=(0,2\pi)^2$, manufactured solution $\Phi(x,t)=\cos(t)\sin(x)\sin(y)$, $T=1$, $3000$ spatial grid points, time steps $\tau_k:=T\sigma_k/S$ with $\sigma_k\in(0,1)$ uniformly random. Alongside the $L^2$ errors and rates, the paper's table records $\max r_k$ and $N_1$ — **the number of time levels whose step ratio reaches or exceeds $(3+\sqrt{17})/2$**. Under successive refinement:
 
-| Quantity | Values under successive refinement |
-| -------- | ---------------------------------- |
-| $\max_k r_k$ | $2.94,\ 11.98,\ 34.82,\ 37.72,\ 71.89,\ 850.80$ |
-| $N_1$ (levels with $r_k\ge3.561$) | $0,\ 3,\ 7,\ 13,\ 24,\ 49$ |
-| observed temporal order (between consecutive rows) | $1.84,\ 2.29,\ 2.35,\ 2.42,\ 2.00$ |
+| Quantity                                           | Values under successive refinement              |
+| -------------------------------------------------- | ----------------------------------------------- |
+| $\max_k r_k$                                       | $2.94,\ 11.98,\ 34.82,\ 37.72,\ 71.89,\ 850.80$ |
+| $N_1$ (levels with $r_k\ge3.561$)                  | $0,\ 3,\ 7,\ 13,\ 24,\ 49$                      |
+| observed temporal order (between consecutive rows) | $1.84,\ 2.29,\ 2.35,\ 2.42,\ 2.00$              |
 
 **This table is the most convincing theory-versus-experiment record on this page.** The conclusion is direct: even with dozens of time levels violating $3.561$ **by a wide margin** (up to $850.80$, over two hundred times the threshold), second-order convergence persists. So **S1 is sufficient and far from necessary**; variable-step BDF2 is empirically much more robust than the theory guarantees. The paper itself calls $r_s=3.561$ an artificial constant that is due to the condition S1, and this table is the evidence behind that self-assessment.
 
@@ -946,11 +946,11 @@ The value $\gamma=7/10$ arises as follows. The discrete gradient decomposition n
 
 **Step three: the sharpness of the threshold is quantified.** Positive definiteness of $\{\tau_nd^{(n)}_{n-k}\}$ is governed by the pentadiagonal symmetric matrix $B_3=B_L+B_L^T$ ($B_L$ the lower triangular matrix with entries $\tau_nd^{(n)}_j$). For the step-rescaled $\widetilde B_3=\Lambda_\tau^{-1}(B_L+B_L^T)\Lambda_\tau^{-1}$ with $\Lambda_\tau=\mathrm{diag}(\sqrt{\tau_3},\dots,\sqrt{\tau_n})$, taking the minimum over $200$ runs on random grids with $r_k\sim U(0,R_e)$ gives these smallest eigenvalues:
 
-| $n$   | $R_e=1.20$ | $R_e=1.50$ | $R_e=1.69$   | $R_e=1.70$    |
-| ----- | ---------- | ---------- | ------------ | ------------- |
-| $50$  | $1.12$     | $5.08$e-01 | $6.12$e-02   | $-4.55$e-02   |
-| $100$ | $1.07$     | $4.35$e-01 | $4.58$e-02   | $-5.29$e-02   |
-| $200$ | $1.08$     | $4.18$e-01 | $-2.06$e-02  | $-8.49$e-02   |
+| $n$   | $R_e=1.20$ | $R_e=1.50$ | $R_e=1.69$  | $R_e=1.70$  |
+| ----- | ---------- | ---------- | ----------- | ----------- |
+| $50$  | $1.12$     | $5.08$e-01 | $6.12$e-02  | $-4.55$e-02 |
+| $100$ | $1.07$     | $4.35$e-01 | $4.58$e-02  | $-5.29$e-02 |
+| $200$ | $1.08$     | $4.18$e-01 | $-2.06$e-02 | $-8.49$e-02 |
 
 **So numerically $R_e<1.69$ is necessary while the theory delivers $R_e<1.4877$ as sufficient, and the gap between them is small.** That contrasts instructively with paper 52's self-assessment of $3.561$ as an artificial constant due to condition S1 — both constants are chosen for convenience, but here the distance to necessity has been measured. Note that the $n=200$, $R_e=1.69$ entry has already gone negative, so the necessary value itself drifts slowly downward with $n$.
 
@@ -1058,10 +1058,10 @@ where **$K_3$ and $K_u$ are independent of $t_n$, of the step sizes $\tau_n$ and
 
 The heat equation $\partial_t u-\varepsilon\Delta u=f$ on $\Omega=(0,2\pi)^2$ with periodic boundary conditions, $\varepsilon=0.1$, manufactured solution $u=\cos(t)\sin(x)\sin(y)$, $T=1$; the error is $e(N)=\max_{1\le n\le N}\|v(t_n)-v^n\|$. Two families of grids: (a) periodic steps $\{\tau_1,\mu\tau_1,\tau_1,\mu\tau_1,\dots\}$ with $\tau_1=2/(N(1+\mu))$ and $r_{\max}=\mu$; (b) random steps $\tau_k=\epsilon_k/\sum\epsilon_k$ with $\epsilon_k\sim U(0,1)$. Starting values come from a two-stage third-order SDIRK method or from variable-step BDF2.
 
-| Grid and starting procedure | observed order for $N=160,\dots,1280$ | levels violating $R_e$ |
-| --------------------------- | ------------------------------------- | ---------------------- |
-| $\mu=2R_e$, Runge-Kutta start | $2.98,\ 2.99,\ 3.00,\ 3.00$ | about $N_1=N/2$ |
-| $\mu=4R_e$, BDF2 start | $2.98,\ 2.99,\ 3.00,\ 2.99$ | about $N_1=N/2$ |
+| Grid and starting procedure   | observed order for $N=160,\dots,1280$ | levels violating $R_e$ |
+| ----------------------------- | ------------------------------------- | ---------------------- |
+| $\mu=2R_e$, Runge-Kutta start | $2.98,\ 2.99,\ 3.00,\ 3.00$           | about $N_1=N/2$        |
+| $\mu=4R_e$, BDF2 start        | $2.98,\ 2.99,\ 3.00,\ 2.99$           | about $N_1=N/2$        |
 
 Three conclusions. First, **roughly half the time levels exceed the theoretical ratio limit and the scheme remains stable and third order** — the threshold is sufficient but conservative. Second, both third-order SDIRK and second-order BDF2 suffice as starting procedures to reach third-order accuracy, matching the convergence theorem's prediction (starting values enter only through $\|\tilde u^2\|$, $\tau\|\partial_\tau\tilde u^1\|$ and $\tau\|\partial_\tau\tilde u^2\|$, so a second-order start is enough). Third, on random grids the method is likewise mesh robust and third order, even with many step ratios far above $R_e$.
 
@@ -1401,51 +1401,51 @@ It is the **general theory underneath** the fractional half of this collection. 
 
 ## How the six relate
 
-| No. | Object | Mesh | Threshold | Core tool | Numerical experiments |
-| --- | ------ | ---- | --------- | --------- | --------------------- |
-| 48 | Allen-Cahn, BDF2 | variable | S1 $3.561$; S0 $1+\sqrt2$ | modified energy; KRC; DCC | second order on random grids; bubble merging; coarsening |
-| 52 | MBE without slope selection, BDF2 | variable | $3.561$ (same for energy and $L^2$) | DOC kernels; $\mathcal M_r$ | random grid: still second order at $\max r_k=850$ |
-| 58 | linear reaction-diffusion, BDF-$k$ | uniform | none ($3\le k\le5$) | DOC kernels; Grenander-Szegő | none; only figures illustrating the lemmas |
-| 67 | diffusion, BDF3 | variable | $1.4877$ (sufficient) / $1.69$ (necessary) | discrete gradient structure $G$; variable-step DOC | third order; stable with half the levels violating the threshold |
-| 69 | linear parabolic, filtered Euler | variable | $[1/2,2]$ (two-sided, heuristic) | one-leg reformulation; two new DOC classes (definitions unverified) | present, but setup and results unverified |
-| 74 | the quadratic form itself | arbitrary | none (supplies algebraic criteria C1-C4) | general theory of DOC and DCC | none |
+| No. | Object                             | Mesh      | Threshold                                  | Core tool                                                           | Numerical experiments                                            |
+| --- | ---------------------------------- | --------- | ------------------------------------------ | ------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 48  | Allen-Cahn, BDF2                   | variable  | S1 $3.561$; S0 $1+\sqrt2$                  | modified energy; KRC; DCC                                           | second order on random grids; bubble merging; coarsening         |
+| 52  | MBE without slope selection, BDF2  | variable  | $3.561$ (same for energy and $L^2$)        | DOC kernels; $\mathcal M_r$                                         | random grid: still second order at $\max r_k=850$                |
+| 58  | linear reaction-diffusion, BDF-$k$ | uniform   | none ($3\le k\le5$)                        | DOC kernels; Grenander-Szegő                                        | none; only figures illustrating the lemmas                       |
+| 67  | diffusion, BDF3                    | variable  | $1.4877$ (sufficient) / $1.69$ (necessary) | discrete gradient structure $G$; variable-step DOC                  | third order; stable with half the levels violating the threshold |
+| 69  | linear parabolic, filtered Euler   | variable  | $[1/2,2]$ (two-sided, heuristic)           | one-leg reformulation; two new DOC classes (definitions unverified) | present, but setup and results unverified                        |
+| 74  | the quadratic form itself          | arbitrary | none (supplies algebraic criteria C1-C4)   | general theory of DOC and DCC                                       | none                                                             |
 
 **How to read this table**: the numbers in the threshold column cannot be compared across rows, since each is a condition for a different scheme and a different conclusion. What is genuinely comparable is the last column: **wherever a paper ran random-grid experiments, the observed robust range was far wider than the theorems guarantee** (paper 52's $850.80$, paper 67's half the levels in violation). That is the most consistent empirical fact on this page. None of the six papers on this page reports a test that breaks its own conclusion; the one experiment that does break the maximum bound is in [[en/computational-mathematics/paper-notes/phase-field-and-time-stepping/time-fractional-phase-field|paper 43]], and what it violates there is the **step-size-to-mesh coupling condition**, not a step-ratio condition. The contrast is the point: the coupling condition comes far closer to being necessary than the step-ratio conditions do.
 
 ## Coverage check
 
-| Item | Paper | Status |
-| ---- | ----- | ------ |
-| Why sign-indefinite kernels block both energy and maximum principle | whole page | opening mechanism section: DOC inverts / DCC complements / KRC rebases |
-| Variable-step BDF2 formula and kernel signs | 48 | formula, convolution kernels, meaning of $b^{(n)}_1<0$ |
-| Conditions S0 and S1 with their respective properties | 48 | both constants, both properties, agreement with Grigorieff |
-| Modified energy and the look-ahead term | 48 | form, $O(\tau)$, why $r_{k+1}$ appears |
-| Exact derivation of $3.561$ and the three step-size regimes | 48 | lower-bound inequality, positive root, monotonicity of $h(x)$ |
-| Kernel recombination, optimal $\eta$ and $1+\sqrt2$ | 48 | the $\eta$ transform, closed-form kernels, $K(\eta)$, cases $r_s=1,2$ |
-| The full maximum-principle argument | 48 | non-negativity of $Q^{(n)}_j$, cubic lemma, auxiliary claim $\le1-\eta$ |
-| DCC kernels and a new Grönwall inequality | 48 | definition, complementarity identity, practical bounds, one-line proof |
-| Five theorems and three examples | 48 | solvability, energy, maximum principle, Grönwall, max-norm convergence; contradictory initial data flagged |
-| Attribution of $4.8645$ | 48 | not part of this topic; source, printed variants, governs something different from $1+\sqrt2$ |
-| The model without slope selection and why it is harder | 52 | logarithmic energy, no maximum principle, fourth order, contrast with paper 78 |
-| DOC definition, orthogonality identity and matrix reading | 52 | recursion, $\equiv\delta_{nk}$, $\mathbf\Theta_2=\mathbf B_2^{-1}$ |
-| Closed form and three properties of the DOC kernels | 52 | product formula, link to $1+\sqrt2$, $\sum\theta=\tau_n$ |
-| Positive definiteness of the quadratic form and $\mathcal M_r$ | 52 | level-wise inequality, $\mathcal M_r<39$ and $\le4$ |
-| Four theorems | 52 | solvability, energy, $L^2$ stability, $L^2$ convergence with damped starting error |
-| Random-grid experiment and non-necessity of the threshold | 52 | $\max r_k$, $N_1$, observed order; second order at $850.80$ |
-| Replacing the multiplier technique with a reversible transform | 58 | cost of Nevanlinna-Odeh, the DOC transform, classical energy inequality |
-| Generating function, Grenander-Szegő and $\sigma_k$ | 58 | $\mathrm g^{(3,4,5)}$, completed square, three explicit constants and minimisers |
-| Geometric decay of the DOC kernels and the starting term | 58 | $\rho_k$, ratio $k/7$, $7/(7-k)$, $c_{\mathrm I,3}=11/7$ |
-| Three theorems and the absence of numerical experiments | 58 | two stability results, order-$k$ convergence; only two lemma figures |
-| Non-robustness of the Calvo-Grigorieff prefactor | 67 | alternating-mesh counterexample and divergence of $\Gamma_M$ |
-| Variable-step BDF3 and its DOC kernels | 67 | $d_0,d_1,d_2$, DOC recursion, both orthogonalities, equivalent convolution form |
-| Origin and sharpness of $1.4877$ | 67 | the $\gamma=7/10$ trade-off, $0.6924/1.4965$, smallest-eigenvalue table |
-| Discrete gradient structure | 67 | $d_*,p,q,G,F$ and the constant $1/50$ |
-| Four theorems and third-order experiments | 67 | energy, two $L^2$ stability results, third-order convergence; observed orders on two grid families |
-| The filtered scheme (reconstructed) and the one-leg reformulation | 69 | DGLL original form, Liao notation, $r_n=1$ check, BDF2 left-hand side of the OLM |
-| The verified/unverified boundary | 69 | types of the three results verified; modified energy, kernel definitions, order and experiments unverified |
-| Why $[1/2,2]$ is a different kind of object | 69 | two-sided, empirical safeguard interval, loss of A-stability |
-| Criteria C1-C4 and the general theory of both kernel families | 74 | meaning of the four conditions, DOC/DCC definitions, both identities, closed forms |
-| Four applications and sharpness | 74 | L1, time-fractional Allen-Cahn, RL integral, Volterra; the L1$^{+}$ counterexample |
+| Item                                                                | Paper      | Status                                                                                                     |
+| ------------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------- |
+| Why sign-indefinite kernels block both energy and maximum principle | whole page | opening mechanism section: DOC inverts / DCC complements / KRC rebases                                     |
+| Variable-step BDF2 formula and kernel signs                         | 48         | formula, convolution kernels, meaning of $b^{(n)}_1<0$                                                     |
+| Conditions S0 and S1 with their respective properties               | 48         | both constants, both properties, agreement with Grigorieff                                                 |
+| Modified energy and the look-ahead term                             | 48         | form, $O(\tau)$, why $r_{k+1}$ appears                                                                     |
+| Exact derivation of $3.561$ and the three step-size regimes         | 48         | lower-bound inequality, positive root, monotonicity of $h(x)$                                              |
+| Kernel recombination, optimal $\eta$ and $1+\sqrt2$                 | 48         | the $\eta$ transform, closed-form kernels, $K(\eta)$, cases $r_s=1,2$                                      |
+| The full maximum-principle argument                                 | 48         | non-negativity of $Q^{(n)}_j$, cubic lemma, auxiliary claim $\le1-\eta$                                    |
+| DCC kernels and a new Grönwall inequality                           | 48         | definition, complementarity identity, practical bounds, one-line proof                                     |
+| Five theorems and three examples                                    | 48         | solvability, energy, maximum principle, Grönwall, max-norm convergence; contradictory initial data flagged |
+| Attribution of $4.8645$                                             | 48         | not part of this topic; source, printed variants, governs something different from $1+\sqrt2$              |
+| The model without slope selection and why it is harder              | 52         | logarithmic energy, no maximum principle, fourth order, contrast with paper 78                             |
+| DOC definition, orthogonality identity and matrix reading           | 52         | recursion, $\equiv\delta_{nk}$, $\mathbf\Theta_2=\mathbf B_2^{-1}$                                         |
+| Closed form and three properties of the DOC kernels                 | 52         | product formula, link to $1+\sqrt2$, $\sum\theta=\tau_n$                                                   |
+| Positive definiteness of the quadratic form and $\mathcal M_r$      | 52         | level-wise inequality, $\mathcal M_r<39$ and $\le4$                                                        |
+| Four theorems                                                       | 52         | solvability, energy, $L^2$ stability, $L^2$ convergence with damped starting error                         |
+| Random-grid experiment and non-necessity of the threshold           | 52         | $\max r_k$, $N_1$, observed order; second order at $850.80$                                                |
+| Replacing the multiplier technique with a reversible transform      | 58         | cost of Nevanlinna-Odeh, the DOC transform, classical energy inequality                                    |
+| Generating function, Grenander-Szegő and $\sigma_k$                 | 58         | $\mathrm g^{(3,4,5)}$, completed square, three explicit constants and minimisers                           |
+| Geometric decay of the DOC kernels and the starting term            | 58         | $\rho_k$, ratio $k/7$, $7/(7-k)$, $c_{\mathrm I,3}=11/7$                                                   |
+| Three theorems and the absence of numerical experiments             | 58         | two stability results, order-$k$ convergence; only two lemma figures                                       |
+| Non-robustness of the Calvo-Grigorieff prefactor                    | 67         | alternating-mesh counterexample and divergence of $\Gamma_M$                                               |
+| Variable-step BDF3 and its DOC kernels                              | 67         | $d_0,d_1,d_2$, DOC recursion, both orthogonalities, equivalent convolution form                            |
+| Origin and sharpness of $1.4877$                                    | 67         | the $\gamma=7/10$ trade-off, $0.6924/1.4965$, smallest-eigenvalue table                                    |
+| Discrete gradient structure                                         | 67         | $d_*,p,q,G,F$ and the constant $1/50$                                                                      |
+| Four theorems and third-order experiments                           | 67         | energy, two $L^2$ stability results, third-order convergence; observed orders on two grid families         |
+| The filtered scheme (reconstructed) and the one-leg reformulation   | 69         | DGLL original form, Liao notation, $r_n=1$ check, BDF2 left-hand side of the OLM                           |
+| The verified/unverified boundary                                    | 69         | types of the three results verified; modified energy, kernel definitions, order and experiments unverified |
+| Why $[1/2,2]$ is a different kind of object                         | 69         | two-sided, empirical safeguard interval, loss of A-stability                                               |
+| Criteria C1-C4 and the general theory of both kernel families       | 74         | meaning of the four conditions, DOC/DCC definitions, both identities, closed forms                         |
+| Four applications and sharpness                                     | 74         | L1, time-fractional Allen-Cahn, RL integral, Volterra; the L1$^{+}$ counterexample                         |
 
 ## Sources for this page
 

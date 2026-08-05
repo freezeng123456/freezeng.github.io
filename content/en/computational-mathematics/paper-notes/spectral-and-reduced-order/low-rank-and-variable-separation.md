@@ -52,12 +52,12 @@ Time-dependent random PDEs are usually expanded in a **fixed** basis: generalise
 
 The dynamically orthogonal approximation of Sapsis and Lermusiaux evolves the spatial basis and the stochastic coefficients **together**, which sidesteps the growth but had essentially no error theory: existing results covered the closely related multiconfiguration time-dependent Hartree method and the dynamical low-rank matrix setting, not random PDEs. The paper's first goal is therefore to **establish a precise correspondence between the dynamically orthogonal and dynamical low-rank approximations**, so the matrix theory can be imported wholesale. The correspondence reads as a dictionary:
 
-| Dynamical low rank (Koch-Lubich, matrices)              | Dynamically orthogonal (random fields)                                        |
-| ------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| $Y=USV^{T}\in\mathcal M_r$                              | $u_S=\bar u_S+\mathbf U^{T}\mathbf Y\in\mathcal M_S$                          |
-| left factor $U$, orthonormal columns                    | spatial basis $\{U_i(\cdot,t)\}$, $\langle U_i,U_j\rangle=\delta_{ij}$        |
-| right factor $V$ and core $S$                           | stochastic coefficients $\{Y_i(t,\cdot)\}$, $\mathbb E[Y_i]=0$                |
-| gauge $U^{T}\dot U=0$                                   | gauge $\langle\partial_t U_i,U_j\rangle=0$                                    |
+| Dynamical low rank (Koch-Lubich, matrices)              | Dynamically orthogonal (random fields)                                           |
+| ------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| $Y=USV^{T}\in\mathcal M_r$                              | $u_S=\bar u_S+\mathbf U^{T}\mathbf Y\in\mathcal M_S$                             |
+| left factor $U$, orthonormal columns                    | spatial basis $\{U_i(\cdot,t)\}$, $\langle U_i,U_j\rangle=\delta_{ij}$           |
+| right factor $V$ and core $S$                           | stochastic coefficients $\{Y_i(t,\cdot)\}$, $\mathbb E[Y_i]=0$                   |
+| gauge $U^{T}\dot U=0$                                   | gauge $\langle\partial_t U_i,U_j\rangle=0$                                       |
 | $S^{-1}$ appears in the $\dot U$ and $\dot V$ equations | $C^{-1}$ appears in the tangent projection, $\sigma(u_S)=\sqrt{\mathrm{eig}(C)}$ |
 
 The last row is the hinge of the whole paper: the $S^{-1}$ that stiffens the matrix flow as $\sigma_r\to0$ is, in the random-field setting, precisely $C^{-1}$.
@@ -258,11 +258,11 @@ The reading is direct: the dynamically orthogonal error decays at the rate set b
 
 The paper reports three test problems, covering three different sources of randomness.
 
-| Test                                     | Equation and domain                            | Randomness and initial datum                 | Purpose                                                                                          |
-| ---------------------------------------- | ---------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| §6.2 linear parabolic equation           | one-dimensional interval                        | random initial condition                      | compare the dynamically orthogonal modes $U_i$ with the Karhunen-Loève modes $Z_i$, track coefficient variances |
-| §6.3 linear parabolic equation           | $x\in[0,1]$, homogeneous Dirichlet              | random diffusion coefficient, deterministic initial datum | zero initial covariance, so it stresses the $C^{\dagger}$ treatment                              |
-| §6.4 nonlinear reaction-diffusion equation | $D=[0,1]^2$, homogeneous Neumann              | random threshold potential, deterministic step initial datum | travelling wave whose speed is proportional to the excitation rate $\beta$                       |
+| Test                                       | Equation and domain                | Randomness and initial datum                                 | Purpose                                                                                                         |
+| ------------------------------------------ | ---------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| §6.2 linear parabolic equation             | one-dimensional interval           | random initial condition                                     | compare the dynamically orthogonal modes $U_i$ with the Karhunen-Loève modes $Z_i$, track coefficient variances |
+| §6.3 linear parabolic equation             | $x\in[0,1]$, homogeneous Dirichlet | random diffusion coefficient, deterministic initial datum    | zero initial covariance, so it stresses the $C^{\dagger}$ treatment                                             |
+| §6.4 nonlinear reaction-diffusion equation | $D=[0,1]^2$, homogeneous Neumann   | random threshold potential, deterministic step initial datum | travelling wave whose speed is proportional to the excitation rate $\beta$                                      |
 
 The first test also includes a run with a regularisation threshold of order $10^{-16}$. The second is specified by
 
@@ -568,34 +568,34 @@ $$
 
 with $T=1$, $\xi\in[1,3]^4$, mesh $h=0.02$, $\tau=10^{-3}$, training set $|\Xi|=11$ and $M=10^3$ test samples. Two greedy strategies are compared, selecting $\xi_k$ by the true error $e$ and by the estimator $\delta_k$. The competitor is the time-dependent reduced-basis model order reduction of Billaud-Friess and Nouy (MTD below).
 
-| $N$ | MTD $\epsilon$        | This method $\epsilon$ |
-| --- | --------------------- | ---------------------- |
-| 2   | $2.48\times10^{-4}$   | $3.43\times10^{-4}$    |
-| 4   | $9.19\times10^{-6}$   | $1.46\times10^{-4}$    |
-| 7   | $2.80\times10^{-5}$   | $4.66\times10^{-5}$    |
+| $N$ | MTD $\epsilon$      | This method $\epsilon$ |
+| --- | ------------------- | ---------------------- |
+| 2   | $2.48\times10^{-4}$ | $3.43\times10^{-4}$    |
+| 4   | $9.19\times10^{-6}$ | $1.46\times10^{-4}$    |
+| 7   | $2.80\times10^{-5}$ | $4.66\times10^{-5}$    |
 
-| $N$ | Method      | Offline (s) | Online (s) | Total (s)  | Online per sample (s) |
-| --- | ----------- | ----------- | ---------- | ---------- | --------------------- |
-| 2   | MTD         | $8.43$      | $19.93$    | $28.36$    | $1.99\times10^{-2}$   |
-| 2   | This method | $8.01$      | $1.98$     | $9.99$     | $1.98\times10^{-3}$   |
-| 4   | MTD         | $18.78$     | $22.48$    | $41.26$    | $2.25\times10^{-2}$   |
-| 4   | This method | $16.51$     | $3.96$     | $20.47$    | $3.96\times10^{-3}$   |
-| 7   | MTD         | $39.92$     | $118.52$   | $158.44$   | $1.19\times10^{-1}$   |
-| 7   | This method | $29.86$     | $7.20$     | $37.06$    | $7.20\times10^{-3}$   |
-| —   | FEM-BE      | —           | —          | $3752.14$  | $3.75$                |
+| $N$ | Method      | Offline (s) | Online (s) | Total (s) | Online per sample (s) |
+| --- | ----------- | ----------- | ---------- | --------- | --------------------- |
+| 2   | MTD         | $8.43$      | $19.93$    | $28.36$   | $1.99\times10^{-2}$   |
+| 2   | This method | $8.01$      | $1.98$     | $9.99$    | $1.98\times10^{-3}$   |
+| 4   | MTD         | $18.78$     | $22.48$    | $41.26$   | $2.25\times10^{-2}$   |
+| 4   | This method | $16.51$     | $3.96$     | $20.47$   | $3.96\times10^{-3}$   |
+| 7   | MTD         | $39.92$     | $118.52$   | $158.44$  | $1.19\times10^{-1}$   |
+| 7   | This method | $29.86$     | $7.20$     | $37.06$   | $7.20\times10^{-3}$   |
+| —   | FEM-BE      | —           | —          | $3752.14$ | $3.75$                |
 
 These numbers give a frank trade-off. **MTD's error falls faster**: at $N=4$ it is $15.9$ times more accurate than this method. The paper's own explanation is that MTD updates all parametric coefficients at every iteration while this method never modifies the time-parameter basis functions computed at earlier steps. But MTD bottoms out at $N=4$ ($9.19\times10^{-6}$) and is already back up to $2.80\times10^{-5}$ at $N=7$, where its advantage is down to a factor of $1.7$; the paper reports that beyond $N=7$ its error rises quickly, attributed to ill-conditioning of its linear systems for the parametric coefficients. This method's error decreases monotonically across the three values of $N$, and its online time is more than an order of magnitude smaller ($7.20\times10^{-3}$ s per sample at $N=7$ against $1.19\times10^{-1}$ s). The paper's summary: the competitor gives higher accuracy under certain conditions, and this method does better on efficiency and error stability.
 
 **Example 2: two-dimensional heat equation with a parameter-dependent source** ($D=[0,\pi]^2$, $\partial_tu=\kappa(\xi)\Delta u+f$, $\kappa(\xi)=\xi_1$, $T=1$, $u(x,0;\xi)=\sin x_1\sin x_2+1$, $u|_{\partial D}=1$), compared against the **static-basis** variable-separation method $u\approx\sum_i\zeta_i(\xi)g_i(x,t)$. The table is at $t=1$ with $M=10^3$; the time columns are the timings the paper reports.
 
-| $N$ | This method $\epsilon$ | Time (s) | Static basis $\epsilon$ | Time (s) |
-| --- | ---------------------- | -------- | ----------------------- | -------- |
-| 2   | $9.81\times10^{-4}$    | $0.71$   | $1.24\times10^{-1}$     | $0.47$   |
-| 4   | $3.66\times10^{-4}$    | $2.37$   | $4.91\times10^{-2}$     | $1.52$   |
-| 6   | $1.77\times10^{-4}$    | $4.98$   | $6.37\times10^{-2}$     | $3.12$   |
-| 8   | $4.52\times10^{-5}$    | $8.52$   | $2.18$                  | $5.28$   |
-| 10  | $4.27\times10^{-5}$    | $13.01$  | $9.64\times10^{-1}$     | $8.00$   |
-| —   | FEM-BE                 | $7.06\times10^{2}$ | —             | —        |
+| $N$ | This method $\epsilon$ | Time (s)           | Static basis $\epsilon$ | Time (s) |
+| --- | ---------------------- | ------------------ | ----------------------- | -------- |
+| 2   | $9.81\times10^{-4}$    | $0.71$             | $1.24\times10^{-1}$     | $0.47$   |
+| 4   | $3.66\times10^{-4}$    | $2.37$             | $4.91\times10^{-2}$     | $1.52$   |
+| 6   | $1.77\times10^{-4}$    | $4.98$             | $6.37\times10^{-2}$     | $3.12$   |
+| 8   | $4.52\times10^{-5}$    | $8.52$             | $2.18$                  | $5.28$   |
+| 10  | $4.27\times10^{-5}$    | $13.01$            | $9.64\times10^{-1}$     | $8.00$   |
+| —   | FEM-BE                 | $7.06\times10^{2}$ | —                       | —        |
 
 **This is the cleanest piece of evidence in the paper.** The static-basis method reaches its best at $N=4$ ($4.91\times10^{-2}$) and then turns around; by $N=8$ its average relative error of $2.18$ exceeds $1$, meaning the approximation carries no information at all. This method decreases monotonically to $4.27\times10^{-5}$. The paper reads that as demonstrating the necessity of time-dependent basis functions for both the parametric and the spatial variable — which is exactly the content of the word "dynamical" discussed above.
 
@@ -611,20 +611,20 @@ $$
 
 with $\xi\in[1,3]^2$, $h=0.01$, $\tau=10^{-4}$, $|\Xi|=12$ and $M=10^3$.
 
-| $N$ | $\epsilon$ at $t=1$   | Online (s)            | $\epsilon$ at $t=2$   | Online (s)            |
-| --- | --------------------- | --------------------- | --------------------- | --------------------- |
-| 2   | $1.17\times10^{-2}$   | $1.63\times10^{-2}$   | $0.87\times10^{-2}$   | $2.92\times10^{-2}$   |
-| 4   | $1.09\times10^{-3}$   | $5.48\times10^{-2}$   | $2.62\times10^{-3}$   | $9.87\times10^{-2}$   |
-| 6   | $2.17\times10^{-4}$   | $1.23\times10^{-1}$   | $4.10\times10^{-4}$   | $2.17\times10^{-1}$   |
-| 8   | $5.68\times10^{-5}$   | $2.18\times10^{-1}$   | $1.07\times10^{-4}$   | $3.82\times10^{-1}$   |
-| 10  | $2.76\times10^{-5}$   | $3.44\times10^{-1}$   | $7.12\times10^{-5}$   | $5.92\times10^{-1}$   |
-| —   | FEM-BE                | $10.72$               | FEM-BE                | $21.47$               |
+| $N$ | $\epsilon$ at $t=1$ | Online (s)          | $\epsilon$ at $t=2$ | Online (s)          |
+| --- | ------------------- | ------------------- | ------------------- | ------------------- |
+| 2   | $1.17\times10^{-2}$ | $1.63\times10^{-2}$ | $0.87\times10^{-2}$ | $2.92\times10^{-2}$ |
+| 4   | $1.09\times10^{-3}$ | $5.48\times10^{-2}$ | $2.62\times10^{-3}$ | $9.87\times10^{-2}$ |
+| 6   | $2.17\times10^{-4}$ | $1.23\times10^{-1}$ | $4.10\times10^{-4}$ | $2.17\times10^{-1}$ |
+| 8   | $5.68\times10^{-5}$ | $2.18\times10^{-1}$ | $1.07\times10^{-4}$ | $3.82\times10^{-1}$ |
+| 10  | $2.76\times10^{-5}$ | $3.44\times10^{-1}$ | $7.12\times10^{-5}$ | $5.92\times10^{-1}$ |
+| —   | FEM-BE              | $10.72$             | FEM-BE              | $21.47$             |
 
 The error decreases monotonically in $N$ at both times. Only at $N=2$ is the $t=2$ error smaller than the $t=1$ error; from $N=4$ on, the $t=2$ error is uniformly larger, so the accumulation over the longer horizon only becomes visible once enough terms are used. The basis fields show a clear amplitude hierarchy:
 
-| Field     | $g_1$                | $g_2$              | $g_3$              | $g_5$              | $g_7$                | $g_9$              |
-| --------- | -------------------- | ------------------ | ------------------ | ------------------ | -------------------- | ------------------ |
-| Amplitude | $3.5\times10^{-1}$   | $2\times10^{-2}$   | $6\times10^{-3}$   | $1\times10^{-3}$   | $1.2\times10^{-4}$   | $3\times10^{-5}$   |
+| Field     | $g_1$              | $g_2$            | $g_3$            | $g_5$            | $g_7$              | $g_9$            |
+| --------- | ------------------ | ---------------- | ---------------- | ---------------- | ------------------ | ---------------- |
+| Amplitude | $3.5\times10^{-1}$ | $2\times10^{-2}$ | $6\times10^{-3}$ | $1\times10^{-3}$ | $1.2\times10^{-4}$ | $3\times10^{-5}$ |
 
 so the first field carries the core information of the solution and the last few carry the fine scales.
 
@@ -657,33 +657,33 @@ There is a secondary link between papers 83 and 17: both replace a large coupled
 
 ## Coverage check
 
-| Item                                                              | Paper   | Status                                                                |
-| ----------------------------------------------------------------- | ------- | --------------------------------------------------------------------- |
-| Why a low-rank manifold is a reduction, not a truncation          | general | manifold state space, tangent condition, cost and curvature           |
-| Dictionary between dynamical low rank and dynamical orthogonality | 15      | five rows, including $S^{-1}\leftrightarrow C^{-1}$                   |
-| Model, parabolic specialisation and ansatz                        | 15      | operator form, three gauge conditions, boundary and initial data      |
-| Three evolution equations and their roles                         | 15      | mean, basis, coefficient equations, projector                         |
+| Item                                                              | Paper   | Status                                                                                 |
+| ----------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------- |
+| Why a low-rank manifold is a reduction, not a truncation          | general | manifold state space, tangent condition, cost and curvature                            |
+| Dictionary between dynamical low rank and dynamical orthogonality | 15      | five rows, including $S^{-1}\leftrightarrow C^{-1}$                                    |
+| Model, parabolic specialisation and ansatz                        | 15      | operator form, three gauge conditions, boundary and initial data                       |
+| Three evolution equations and their roles                         | 15      | mean, basis, coefficient equations, projector                                          |
 | Tangent projection and the origin of $C^{-1}$                     | 15      | tangent space, projection formula, $\sigma=\sqrt{\mathrm{eig}(C)}$, Dirac-Frenkel form |
-| Curvature lemma                                                   | 15      | both inequalities, constants $8\rho^{-1}$ and $4\rho^{-1}$            |
-| Theorem 4.1 and the $e^{C/\rho}$ constant                         | 15      | assumptions, conclusion, both readings, where each hypothesis enters  |
-| Closed-form eigenvalue-crossing failure mode                      | 15      | both closed-form rates, the $e^{6t}$ ratio, relation to the hypothesis |
-| Three test problems                                               | 15      | setups complete; error values unverified and flagged as such          |
-| Handling a singular covariance                                    | 15      | the pseudoinverse trap, reformulation, per-step diagonalisation       |
-| Structural difference of the Fredholm problem                     | 17      | compactness, spectral accumulation, dense matrix                      |
-| Multilevel correction step and integral iterations                | 17      | the two generic steps, dimension argument, quadrature versus solve    |
-| Rayleigh-quotient identity and error recursion of the framework   | 17      | explicitly marked as framework results, not theorems of this paper    |
-| The five unreported items                                         | 17      | correction step, constants, complexity details, kernels and dimensions, speedups |
-| What each of the three reductions freezes                         | 83      | polynomial chaos, proper orthogonal decomposition, Kolmogorov barrier |
-| What "dynamical" adds over static separation                      | 83      | time dependence of the parametric coefficients and its numerical consequence |
-| Model, affine assumption and ansatz                               | 83      | structural split, affinity, dropping mean field and gauge             |
-| Greedy rule and the two decoupled subproblems                     | 83      | selection rule, stopping, both equations in full                      |
-| Initial conditions and the Gram-Schmidt-like correction           | 83      | all three formulas and their relation to the gauge                    |
-| Residual driving and the carried $\langle(g_k)_t,g_k\rangle$ term | 83      | both equations in the linear case, where the difference lands         |
-| Closed-form recursion with a scalar divisor                       | 83      | recursion, $c_{n+1}$, $l_{n+1}$, full $s_{n+1}$                       |
-| Offline-online split and the online cost                          | 83      | the seven stored scalar families, scalar online equation, mesh independence |
-| A posteriori bound and the logarithmic Lipschitz constant         | 83      | definition, $\delta_k$, possible negativity and its effect            |
-| Absence of a convergence theorem, stated limitation               | 83      | the conclusion's wording and the storage dependence                   |
-| Four numerical examples                                           | 83      | three result tables, amplitude hierarchy, the Allen-Cahn floor        |
+| Curvature lemma                                                   | 15      | both inequalities, constants $8\rho^{-1}$ and $4\rho^{-1}$                             |
+| Theorem 4.1 and the $e^{C/\rho}$ constant                         | 15      | assumptions, conclusion, both readings, where each hypothesis enters                   |
+| Closed-form eigenvalue-crossing failure mode                      | 15      | both closed-form rates, the $e^{6t}$ ratio, relation to the hypothesis                 |
+| Three test problems                                               | 15      | setups complete; error values unverified and flagged as such                           |
+| Handling a singular covariance                                    | 15      | the pseudoinverse trap, reformulation, per-step diagonalisation                        |
+| Structural difference of the Fredholm problem                     | 17      | compactness, spectral accumulation, dense matrix                                       |
+| Multilevel correction step and integral iterations                | 17      | the two generic steps, dimension argument, quadrature versus solve                     |
+| Rayleigh-quotient identity and error recursion of the framework   | 17      | explicitly marked as framework results, not theorems of this paper                     |
+| The five unreported items                                         | 17      | correction step, constants, complexity details, kernels and dimensions, speedups       |
+| What each of the three reductions freezes                         | 83      | polynomial chaos, proper orthogonal decomposition, Kolmogorov barrier                  |
+| What "dynamical" adds over static separation                      | 83      | time dependence of the parametric coefficients and its numerical consequence           |
+| Model, affine assumption and ansatz                               | 83      | structural split, affinity, dropping mean field and gauge                              |
+| Greedy rule and the two decoupled subproblems                     | 83      | selection rule, stopping, both equations in full                                       |
+| Initial conditions and the Gram-Schmidt-like correction           | 83      | all three formulas and their relation to the gauge                                     |
+| Residual driving and the carried $\langle(g_k)_t,g_k\rangle$ term | 83      | both equations in the linear case, where the difference lands                          |
+| Closed-form recursion with a scalar divisor                       | 83      | recursion, $c_{n+1}$, $l_{n+1}$, full $s_{n+1}$                                        |
+| Offline-online split and the online cost                          | 83      | the seven stored scalar families, scalar online equation, mesh independence            |
+| A posteriori bound and the logarithmic Lipschitz constant         | 83      | definition, $\delta_k$, possible negativity and its effect                             |
+| Absence of a convergence theorem, stated limitation               | 83      | the conclusion's wording and the storage dependence                                    |
+| Four numerical examples                                           | 83      | three result tables, amplitude hierarchy, the Allen-Cahn floor                         |
 
 ## Sources for this page
 

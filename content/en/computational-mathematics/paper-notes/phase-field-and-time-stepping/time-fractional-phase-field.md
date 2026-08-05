@@ -285,10 +285,10 @@ this is a **mild but genuine step-size restriction**, not an unconditional concl
 
 The spatial discretisation is a periodic Fourier-Galerkin method on $\Omega=[0,L_x]\times[0,L_y]$. Evaluating the history term directly would require all $n$ previous values at level $n$, at total cost $O(N^2)$; the paper instead uses the **sum-of-exponentials (SOE) fast algorithm** of Jiang et al. for the history part of the fractional derivative, which is the implementation prerequisite that makes long-time coarsening runs feasible.
 
-| Test | Model                             | Fractional parameters  | Initial data and observable            |
-| ---- | --------------------------------- | ---------------------- | -------------------------------------- |
-| 1    | time-fractional Allen-Cahn        | $\alpha=1,\,0.5,\,0.3$ | random data; snapshots, discrete energy |
-| 2    | time-fractional Cahn-Hilliard     | $\alpha=1,\,0.5,\,0.3$ | random data; discrete energy, coarsening rate |
+| Test | Model                                      | Fractional parameters  | Initial data and observable                   |
+| ---- | ------------------------------------------ | ---------------------- | --------------------------------------------- |
+| 1    | time-fractional Allen-Cahn                 | $\alpha=1,\,0.5,\,0.3$ | random data; snapshots, discrete energy       |
+| 2    | time-fractional Cahn-Hilliard              | $\alpha=1,\,0.5,\,0.3$ | random data; discrete energy, coarsening rate |
 | 3    | time-fractional MBE (with slope selection) | $\alpha=1,\,0.7,\,0.4$ | random data; discrete energy, coarsening rate |
 
 Two conclusions. First, the computed energies decay **monotonically** in all three models, in agreement with the discrete theorems above. Second — and this is what the numerical section really produces — in the coarsening stage the energy dissipation rate obeys a power law with asymptotic exponent
@@ -801,12 +801,12 @@ then $\|u^{0}\|_{\infty}\le1$ implies $\|u^{k}\|_{\infty}\le1$. **Note that $r_n
 
 The implementation again uses a fast L1$_R$ algorithm based on a sum-of-exponentials approximation (absolute tolerance $\epsilon=10^{-12}$, cut-off time $\Delta t=10^{-12}$).
 
-| Test | Setup                                                                                     | What is checked                |
-| ---- | ----------------------------------------------------------------------------------------- | ------------------------------ |
-| 1    | forced model $\partial_tu=-{}^{R}\!\partial_t^{1-\alpha}(\delta E/\delta u)+g$ on $(0,1)^2\times(0,1]$, $\varepsilon=0.1$, manufactured solution $u=\omega_{1+\sigma}(t)\sin(2\pi x)\sin(2\pi y)$, e.g. $\alpha=0.6,\sigma=0.4$ | temporal order (expected $1+\alpha$) |
-| 2    | maximum bound principle: $\alpha=0.7,\,0.9$ at $\tau=0.1,\,0.8,\,1.0$                       | whether the discrete maximum norm stays $\le1$ |
-| 3    | coarsening: $(0,2\pi)^2$, $\varepsilon=0.05$, $128\times128$ spatial mesh, random data uniform on $[-0.001,0.001]$ | initial layer $u_t=\mathcal O(t^{\alpha-1})$ and graded meshes |
-| 4    | adaptive time stepping                                                                      | $E(t)$ against $\mathcal E_\alpha(t)$ |
+| Test | Setup                                                                                                                                                                                                                           | What is checked                                                |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| 1    | forced model $\partial_tu=-{}^{R}\!\partial_t^{1-\alpha}(\delta E/\delta u)+g$ on $(0,1)^2\times(0,1]$, $\varepsilon=0.1$, manufactured solution $u=\omega_{1+\sigma}(t)\sin(2\pi x)\sin(2\pi y)$, e.g. $\alpha=0.6,\sigma=0.4$ | temporal order (expected $1+\alpha$)                           |
+| 2    | maximum bound principle: $\alpha=0.7,\,0.9$ at $\tau=0.1,\,0.8,\,1.0$                                                                                                                                                           | whether the discrete maximum norm stays $\le1$                 |
+| 3    | coarsening: $(0,2\pi)^2$, $\varepsilon=0.05$, $128\times128$ spatial mesh, random data uniform on $[-0.001,0.001]$                                                                                                              | initial layer $u_t=\mathcal O(t^{\alpha-1})$ and graded meshes |
+| 4    | adaptive time stepping                                                                                                                                                                                                          | $E(t)$ against $\mathcal E_\alpha(t)$                          |
 
 The expected rate in test one is $1+\alpha$, the order of the L1$_R$ formula itself; in the presence of a $t^{\sigma}$ initial singularity, graded meshes recover it. The steps $\tau=0.8$ and $\tau=1.0$ used in test two are **large**, and the maximum norm still does not exceed $1$, matching how permissive the step condition in the theorem is.
 
@@ -820,37 +820,37 @@ This is the direct sequel to papers 40 and 43 on the fractional side, and the an
 
 ## The progression across the three papers
 
-| No. | Form of the energy law              | Step restriction                                | Main analytical device                         | Main numerical output                         |
-| --- | ----------------------------------- | ----------------------------------------------- | ---------------------------------------------- | --------------------------------------------- |
-| 40  | integral, accumulated over $[0,T]$  | none at the continuous level; stabilisation condition discretely | positivity of the fractional convolution kernel | $-\alpha/3$ coarsening power law (empirical)  |
-| 43  | not proved; only the maximum principle | M1: $\rho=7/4$, plus a $\tau$-$h$ coupling      | Alikhanov kernel estimates, DCC kernels, Grönwall | the order $\min\{\gamma\sigma,2\}$ verified on graded meshes |
-| 57  | differential, for a variational energy | none for the energy law; a $\tau$ bound for the maximum principle | rewriting, L1$_R$ kernel positivity, DOC transformation | $\mathcal E_\alpha$ monotone while $E$ need not be |
+| No. | Form of the energy law                 | Step restriction                                                  | Main analytical device                                  | Main numerical output                                        |
+| --- | -------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
+| 40  | integral, accumulated over $[0,T]$     | none at the continuous level; stabilisation condition discretely  | positivity of the fractional convolution kernel         | $-\alpha/3$ coarsening power law (empirical)                 |
+| 43  | not proved; only the maximum principle | M1: $\rho=7/4$, plus a $\tau$-$h$ coupling                        | Alikhanov kernel estimates, DCC kernels, Grönwall       | the order $\min\{\gamma\sigma,2\}$ verified on graded meshes |
+| 57  | differential, for a variational energy | none for the energy law; a $\tau$ bound for the maximum principle | rewriting, L1$_R$ kernel positivity, DOC transformation | $\mathcal E_\alpha$ monotone while $E$ need not be           |
 
 The move from paper 40 to paper 57 deserves its own summary: **when a law comes out in the wrong form, do not weaken the conclusion, change the object.** Paper 40 obtains an integral inequality for the original energy; paper 57 does not try to strengthen it but constructs a new energy $\mathcal E_\alpha$ satisfying a differential law that degenerates to the classical one as $\alpha\to1$. The price is that this energy contains a fractional integral term and is therefore not the original energy — and test four of paper 57 shows exactly that the original energy really can fail to be monotone, so the price is unavoidable.
 
 ## Coverage check
 
-| Item                                                    | Paper | Status                                                                    |
-| ------------------------------------------------------- | ----- | ------------------------------------------------------------------------- |
-| Three fractional phase-field models and their energies  | 40    | Allen-Cahn, Cahn-Hilliard, both MBE variants                              |
-| Full proof route for continuous kernel positivity       | 40    | symmetrisation, Liouville semigroup, Fourier transform, origin of the $\cos/\sin$ constants |
-| Integral rather than differential, and not strengthenable | 40  | form of the conclusion, the paper's own warning, consequence for paper 57 |
-| L1 kernels, rearrangement identity, discrete positivity  | 40   | kernel formula, complete monotonicity, $M$-matrix comparison, $s_n$       |
-| Continuous and discrete energy theorems with conditions  | 40   | three models, stabilisation conditions, $\lambda_{\max}\le1/8$, $S\ge\gamma/(16\varepsilon)$ |
-| Discrete maximum principle and its step condition        | 40   | the $(b_0-b_1)/\tau+S$ condition and why it is not unconditional          |
-| Numerical experiments and the $-\alpha/3$ power law      | 40   | Fourier-Galerkin, SOE, three tests, flagged as empirical                  |
-| Reciprocal step-ratio conventions                        | 43   | $\rho_k=1/r_{k+1}$ and the citation hazard                                |
-| Alikhanov formula, two-index kernels, three estimates    | 43   | definitions of $a,b,A$, $\pi_A=11/4$, misprints flagged                   |
-| DCC kernels, complementarity, fractional Grönwall        | 43   | definitions, $\equiv1$, power-type estimate, full Grönwall statement      |
-| Solvability, maximum principle, sharp convergence        | 43   | all three theorems with hypotheses                                        |
-| Convolution structure of the error and superconvergence  | 43   | $G_{\mathrm{loc}}$, $G_{\mathrm{his}}$, the $n=1$ comparison              |
-| Adaptive strategy and three tests                        | 43   | SOE tolerance, guard, order table, negative test                          |
-| Rewriting and relocating the nonlocality                 | 57   | semigroup identity, rewritten equation, why the test function works       |
-| Variational energy and differential law                  | 57   | Riemann-Liouville inequality, $\mathcal E_\alpha$, the $\alpha\to1$ limit |
-| L1$_R$ kernels and their positivity                      | 57   | definitions, sign pattern, discrete positivity, no step-ratio bound       |
-| Constructive design of the nonlinear term                | 57   | form of $H$ and $H(a,b)(a-b)\ge F(a)-F(b)$                                |
-| DOC kernels and the reversible transformation            | 57   | orthogonality, complementarity, monotonicity (citing paper 74), equivalent Caputo form |
-| Four theorems and four tests                             | 57   | unconditional energy law, asymptotic preservation, solvability, maximum bound; the figure where $E$ is not monotone |
+| Item                                                      | Paper | Status                                                                                                              |
+| --------------------------------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------- |
+| Three fractional phase-field models and their energies    | 40    | Allen-Cahn, Cahn-Hilliard, both MBE variants                                                                        |
+| Full proof route for continuous kernel positivity         | 40    | symmetrisation, Liouville semigroup, Fourier transform, origin of the $\cos/\sin$ constants                         |
+| Integral rather than differential, and not strengthenable | 40    | form of the conclusion, the paper's own warning, consequence for paper 57                                           |
+| L1 kernels, rearrangement identity, discrete positivity   | 40    | kernel formula, complete monotonicity, $M$-matrix comparison, $s_n$                                                 |
+| Continuous and discrete energy theorems with conditions   | 40    | three models, stabilisation conditions, $\lambda_{\max}\le1/8$, $S\ge\gamma/(16\varepsilon)$                        |
+| Discrete maximum principle and its step condition         | 40    | the $(b_0-b_1)/\tau+S$ condition and why it is not unconditional                                                    |
+| Numerical experiments and the $-\alpha/3$ power law       | 40    | Fourier-Galerkin, SOE, three tests, flagged as empirical                                                            |
+| Reciprocal step-ratio conventions                         | 43    | $\rho_k=1/r_{k+1}$ and the citation hazard                                                                          |
+| Alikhanov formula, two-index kernels, three estimates     | 43    | definitions of $a,b,A$, $\pi_A=11/4$, misprints flagged                                                             |
+| DCC kernels, complementarity, fractional Grönwall         | 43    | definitions, $\equiv1$, power-type estimate, full Grönwall statement                                                |
+| Solvability, maximum principle, sharp convergence         | 43    | all three theorems with hypotheses                                                                                  |
+| Convolution structure of the error and superconvergence   | 43    | $G_{\mathrm{loc}}$, $G_{\mathrm{his}}$, the $n=1$ comparison                                                        |
+| Adaptive strategy and three tests                         | 43    | SOE tolerance, guard, order table, negative test                                                                    |
+| Rewriting and relocating the nonlocality                  | 57    | semigroup identity, rewritten equation, why the test function works                                                 |
+| Variational energy and differential law                   | 57    | Riemann-Liouville inequality, $\mathcal E_\alpha$, the $\alpha\to1$ limit                                           |
+| L1$_R$ kernels and their positivity                       | 57    | definitions, sign pattern, discrete positivity, no step-ratio bound                                                 |
+| Constructive design of the nonlinear term                 | 57    | form of $H$ and $H(a,b)(a-b)\ge F(a)-F(b)$                                                                          |
+| DOC kernels and the reversible transformation             | 57    | orthogonality, complementarity, monotonicity (citing paper 74), equivalent Caputo form                              |
+| Four theorems and four tests                              | 57    | unconditional energy law, asymptotic preservation, solvability, maximum bound; the figure where $E$ is not monotone |
 
 ## Sources for this page
 

@@ -220,6 +220,7 @@ Y_t=\sin(t+X_t),\quad
 Z_t=c\cos^2(t+X_t),\quad
 \Gamma_t=-2c^2\sin(t+X_t)\cos^2(t+X_t),
 $$
+
 $$
 A_t=-c\sin(2t+2X_t)\bigl(1+\sin(t+X_t)\bigr)-c^3\cos(2t+2X_t)\cos^2(t+X_t).
 $$
@@ -331,10 +332,10 @@ whose coefficients solve $f(x_{\mathbf j})=\sum_{\mathbf k\in I^p_q}b_{\mathbf k
 
 **Step five: the full algorithm.** Inputs are $Y^{N-i}(x),Z^{N-i}(x)$ on $C^{p_i}_q[a_i,b_i]$ for $i=0,\dots,k-1$; each time level runs `FastTran` to obtain spectral coefficients $\{\beta^{N-i}_{\mathbf j}\},\{\gamma^{N-i}_{\mathbf j}\}$, then evaluates the multistep formulas with sparse-grid GH quadrature. The paper contrasts the two approaches in a table:
 
-| Method               | Meshes                    | Conditional expectations | Approximation and interpolation |
-| -------------------- | ------------------------- | ------------------------ | ------------------------------- |
-| SSG (this paper)     | sparse grid               | sparse-grid GH quadrature | sparse-grid interpolation       |
-| LTG (= paper 8)      | tensor-product uniform    | tensor-product GH quadrature | Lagrangian                  |
+| Method           | Meshes                 | Conditional expectations     | Approximation and interpolation |
+| ---------------- | ---------------------- | ---------------------------- | ------------------------------- |
+| SSG (this paper) | sparse grid            | sparse-grid GH quadrature    | sparse-grid interpolation       |
+| LTG (= paper 8)  | tensor-product uniform | tensor-product GH quadrature | Lagrangian                      |
 
 ### Theorems
 
@@ -680,10 +681,10 @@ The overall algorithm (PF-SGD) is structured as follows: initialise the particle
 
 **Example 2 — a one-dimensional nonlinear, non-quadratic control problem, used for the efficiency study.** $\mathrm dX_t=\arctan(X_t+u_t)\mathrm dt+\sigma X_t\mathrm dW_t$ with $\sigma=0.05$; cost $J^\ast(u^M)=\mathbb E\bigl[\frac12\int_0^T\sin^2(X_t+u^M_t)\mathrm dt\bigr]$; observation $M_t=X_t+\eta_t$ with noise standard deviation $0.05$. The benchmark is a "full solution method" (Zakai-equation filter plus a fully solved FBSDE with grid interpolation) on three meshes. $T=1$; PF-SGD uses $\Delta t=0.02$ ($N_T=50$), 500 particles and 1000 SGD iterations; the full-solution meshes are $\Delta t=0.1/\Delta x=0.1$, $\Delta t=0.05/\Delta x=\frac{\sqrt2}{2}\cdot0.1$ and $\Delta t=0.025/\Delta x=0.05$ over $[3,6]$.
 
-| Method              | Coarse mesh | Finer mesh | Finest mesh | PF-SGD      |
-| ------------------- | ----------- | ---------- | ----------- | ----------- |
-| Overall cost $J^\ast$ | 0.0481    | 0.0318     | 0.0076      | **0.00095** |
-| CPU time (s)        | 29.78       | 220.47     | 1560.15     | **0.93**    |
+| Method                | Coarse mesh | Finer mesh | Finest mesh | PF-SGD      |
+| --------------------- | ----------- | ---------- | ----------- | ----------- |
+| Overall cost $J^\ast$ | 0.0481      | 0.0318     | 0.0076      | **0.00095** |
+| CPU time (s)          | 29.78       | 220.47     | 1560.15     | **0.93**    |
 
 **This table is the strongest evidence in the paper**: PF-SGD reaches a cost an order of magnitude below the finest-mesh full solution in about $1/1700$ of the time. A repeated-experiment average cost $\hat J^\ast_t(\hat u)=\frac{1}{M_{\rm rept}}\sum_m\frac12\int_0^t\sin^2(\hat X^{(m)}_s+\hat u^{(m)}_s)\mathrm ds$ over $M_{\rm rept}=50$ runs confirms the same ordering over time.
 
@@ -820,37 +821,37 @@ The reported conclusion is that the method is superior to existing methods in ro
 
 ## How the seven fit together
 
-| No. | What it treats                                | Position relative to the others         | Verification here      |
-| --- | --------------------------------------------- | --------------------------------------- | ---------------------- |
-| 16  | fully nonlinear parabolic PDEs                | start of the second-order setting, PDE-first framing | abstract and reference list |
-| 19  | second-order FBSDEs and stochastic control    | attaches the second-order setting to control | full text, equations |
-| 25  | cost of evaluating multi-dimensional conditional expectations | improvement on the spatial side | full text, equations |
-| 26  | constrained stochastic optimal control        | outer iteration (gradient projection), first order | full text, equations |
-| 41  | high-accuracy schemes for stochastic control  | inner solve (high-order FBSDE), second order | abstract and reference list |
-| 50  | data-driven feedback control                  | partial observation, filtering coupled to control | full text, equations |
-| 51  | dynamic nonlinear complementarity problems    | block iteration under nonsmooth constraints | full text, equations |
+| No. | What it treats                                                | Position relative to the others                      | Verification here           |
+| --- | ------------------------------------------------------------- | ---------------------------------------------------- | --------------------------- |
+| 16  | fully nonlinear parabolic PDEs                                | start of the second-order setting, PDE-first framing | abstract and reference list |
+| 19  | second-order FBSDEs and stochastic control                    | attaches the second-order setting to control         | full text, equations        |
+| 25  | cost of evaluating multi-dimensional conditional expectations | improvement on the spatial side                      | full text, equations        |
+| 26  | constrained stochastic optimal control                        | outer iteration (gradient projection), first order   | full text, equations        |
+| 41  | high-accuracy schemes for stochastic control                  | inner solve (high-order FBSDE), second order         | abstract and reference list |
+| 50  | data-driven feedback control                                  | partial observation, filtering coupled to control    | full text, equations        |
+| 51  | dynamic nonlinear complementarity problems                    | block iteration under nonsmooth constraints          | full text, equations        |
 
 The page has two shapes. The first is **two attacks on the same control problem**: paper 19 goes through dynamic programming (HJB, then 2FBSDE, with $\inf_\alpha$ solved analytically), while papers 26 and 41 go through Pontryagin (adjoint BSDE, then gradient, then projection or quasi-Newton). The former needs $\inf_\alpha$ to be available in closed form, the latter needs a computable gradient; the difficulties sit in completely different places. The second shape is **where the cost is saved**: paper 25 saves it inside the grid (sparse grids compress exponential into polynomial), while paper 50 discards the grid entirely (one-sample stochastic gradients) and gives up accuracy guarantees in exchange.
 
 ## Coverage check
 
-| Item                                                             | Paper | Status                                              |
-| ---------------------------------------------------------------- | ----- | --------------------------------------------------- |
-| CSTV second-order setting, the role of $\Gamma$, two notation differences | background | complete                                  |
-| The design freedom to choose the forward SDE                     | 16    | only what the abstract supports; equations inferred from paper 19 |
-| Representation theorem, four reference ODEs, five schemes, Newton iteration | 19 | complete derivation                             |
-| Truncation errors, the twelve-term split, the $k\le6$ range      | 19    | complete, with the missing convergence theorem flagged |
-| Four-component rate table and the efficiency comparison          | 19    | Table 5.4 and Example 5.1 complete; the control example's table not transcribed |
-| Sparse grids, hierarchical bases, fast transform, sparse quadrature | 25 | complete derivation                                 |
-| Two-dimensional and $q$-dimensional experiments, polynomial growth | 25  | Example 1 complete; Examples 2 and 3 setup and conclusions only |
-| Fixed-point characterisation, adjoint BSDE, left-point rectangle scheme | 26 | complete derivation, including the Remark 1 criticism |
-| Theorem 1, Corollary 1, Theorem 2 and error balancing            | 26    | complete, with hypotheses                           |
-| Feedback comparison table and first-order convergence            | 26    | Example 3 complete; Examples 1, 2 and 4 partly transcribed |
-| Second-order solver and quasi-Newton optimiser                   | 41    | only what the abstract and reference list support   |
-| Partially observed setting, adjoint system, the PF-SGD single-realisation trick | 50 | complete derivation, including the paper's own caveat |
-| Efficiency comparison table and three examples                   | 50    | Example 2 complete; Examples 1 and 3 setup and qualitative conclusions only |
-| Gauss-Seidel iteration, parallel multipoint version, four theorems | 51  | complete                                            |
-| Two numerical examples                                           | 51    | setup and conclusions only; data tables not transcribed |
+| Item                                                                            | Paper      | Status                                                                          |
+| ------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------- |
+| CSTV second-order setting, the role of $\Gamma$, two notation differences       | background | complete                                                                        |
+| The design freedom to choose the forward SDE                                    | 16         | only what the abstract supports; equations inferred from paper 19               |
+| Representation theorem, four reference ODEs, five schemes, Newton iteration     | 19         | complete derivation                                                             |
+| Truncation errors, the twelve-term split, the $k\le6$ range                     | 19         | complete, with the missing convergence theorem flagged                          |
+| Four-component rate table and the efficiency comparison                         | 19         | Table 5.4 and Example 5.1 complete; the control example's table not transcribed |
+| Sparse grids, hierarchical bases, fast transform, sparse quadrature             | 25         | complete derivation                                                             |
+| Two-dimensional and $q$-dimensional experiments, polynomial growth              | 25         | Example 1 complete; Examples 2 and 3 setup and conclusions only                 |
+| Fixed-point characterisation, adjoint BSDE, left-point rectangle scheme         | 26         | complete derivation, including the Remark 1 criticism                           |
+| Theorem 1, Corollary 1, Theorem 2 and error balancing                           | 26         | complete, with hypotheses                                                       |
+| Feedback comparison table and first-order convergence                           | 26         | Example 3 complete; Examples 1, 2 and 4 partly transcribed                      |
+| Second-order solver and quasi-Newton optimiser                                  | 41         | only what the abstract and reference list support                               |
+| Partially observed setting, adjoint system, the PF-SGD single-realisation trick | 50         | complete derivation, including the paper's own caveat                           |
+| Efficiency comparison table and three examples                                  | 50         | Example 2 complete; Examples 1 and 3 setup and qualitative conclusions only     |
+| Gauss-Seidel iteration, parallel multipoint version, four theorems              | 51         | complete                                                                        |
+| Two numerical examples                                                          | 51         | setup and conclusions only; data tables not transcribed                         |
 
 ## Sources for this page
 

@@ -43,14 +43,14 @@ so **every difficulty of a method lands in two mutually independent directions**
 
 The algorithm chosen for the conditional expectation decides how many dimensions a paper can actually reach. The table below reorders the whole topic by that algorithm; the last column records **the highest experimental dimension transcribed here from the primary text**, not a theoretical ceiling.
 
-| How the conditional expectation is computed | Papers              | Highest tested dimension |
-| ------------------------------------------- | ------------------- | ------------------------ |
-| Gauss-Hermite quadrature + Lagrange interpolation | 8, 19, 23, 26 | 1                        |
-| Sparse grids (CGL space + GH quadrature)    | 25                  | 6                        |
-| Sinc quadrature (uniform nodes, no interpolation) | 63            | body not verified        |
-| Particle filter + single-sample stochastic gradient | 50          | 3                        |
-| Small particle ensemble + local linear regression | 100           | $10^4$                   |
-| Neural network + adversarial test functions | 86, 93, 96, 97, 108 | $10^5$                   |
+| How the conditional expectation is computed         | Papers              | Highest tested dimension |
+| --------------------------------------------------- | ------------------- | ------------------------ |
+| Gauss-Hermite quadrature + Lagrange interpolation   | 8, 19, 23, 26       | 1                        |
+| Sparse grids (CGL space + GH quadrature)            | 25                  | 6                        |
+| Sinc quadrature (uniform nodes, no interpolation)   | 63                  | body not verified        |
+| Particle filter + single-sample stochastic gradient | 50                  | 3                        |
+| Small particle ensemble + local linear regression   | 100                 | $10^4$                   |
+| Neural network + adversarial test functions         | 86, 93, 96, 97, 108 | $10^5$                   |
 
 Papers 16, 18, 33, 35, 41, 47, 61 and 68 are absent from the table: their bodies could not be obtained, so their experimental dimensions cannot be established. **This table is the shortest possible summary of the topic** — from the first row to the last, the reachable dimension grows by five orders of magnitude, paid for by retreating from "sixth order with a proof" to "first order with numerical evidence".
 
@@ -118,26 +118,26 @@ The two tables below place one representative measurement from each paper side b
 
 **Classical schemes.**
 
-| Paper | Setup                                          | Measured result                                                       |
-| ----- | ---------------------------------------------- | --------------------------------------------------------------------- |
-| 8     | $d=1$, $N=16$–$256$, 8 GH nodes, double precision | orders $k$ observed for $k=1$–$5$ (1.000/1.973/3.002/3.922/5.196); $k=6$ polluted by rounding, $k=8$ diverges |
+| Paper | Setup                                                      | Measured result                                                                                                                       |
+| ----- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 8     | $d=1$, $N=16$–$256$, 8 GH nodes, double precision          | orders $k$ observed for $k=1$–$5$ (1.000/1.973/3.002/3.922/5.196); $k=6$ polluted by rounding, $k=8$ diverges                         |
 | 19    | $d=1$, 10 GH points per dimension, **quadruple precision** | all four of $Y,Z,\Gamma,A$ attain order $k$; at equal error $k=2$ beats $k=1$ by more than an order of magnitude (10.82 s vs 135.0 s) |
-| 23    | $d=1$, $N=4$–$12$ large steps                  | order $K$ up to $K=12$, **no $k\le6$ barrier**                        |
-| 25    | $q=2$–$6$, CGL/GH sparse grids                 | high order retained in six dimensions, runtime polynomial in $q$; the three-step scheme in example 1 reaches only 2.632 in $E_Y$ |
-| 26    | $d=1$, $M=10^5$ samples, $\rho_i=1/\sqrt i$    | first order observed in all four examples; feedback control improves $J$ from 0.848 to 0.660 |
-| 50    | $d=1$, 500 particles, 1000 SGD steps           | cost $9.5\times10^{-4}$ against $7.6\times10^{-3}$ for the finest-grid full solver, in 0.93 s against 1560 s |
-| 51    | rectifier circuit and a projected dynamical system | both theoretical regimes observed; **the data tables are not transcribed here** |
+| 23    | $d=1$, $N=4$–$12$ large steps                              | order $K$ up to $K=12$, **no $k\le6$ barrier**                                                                                        |
+| 25    | $q=2$–$6$, CGL/GH sparse grids                             | high order retained in six dimensions, runtime polynomial in $q$; the three-step scheme in example 1 reaches only 2.632 in $E_Y$      |
+| 26    | $d=1$, $M=10^5$ samples, $\rho_i=1/\sqrt i$                | first order observed in all four examples; feedback control improves $J$ from 0.848 to 0.660                                          |
+| 50    | $d=1$, 500 particles, 1000 SGD steps                       | cost $9.5\times10^{-4}$ against $7.6\times10^{-3}$ for the finest-grid full solver, in 0.93 s against 1560 s                          |
+| 51    | rectifier circuit and a projected dynamical system         | both theoretical regimes observed; **the data tables are not transcribed here**                                                       |
 
 **Martingale deep learning.**
 
-| Paper | Highest dimension and hardware        | Measured result                                                   |
-| ----- | ------------------------------------- | ----------------------------------------------------------------- |
-| 86    | $d=10^4$ (HJB), 8 A100 GPUs           | first order in time, $\mathcal O(N^{-1.01})$; accuracy comparable to deep BSDE at about half the wall clock; eight GPUs cut 5032 s to 773 s at $d=2000$ |
-| 93    | $d=10^5$                              | QLP-1 relative $L^1$ error $1.29\times10^{-2}$ in 3761 s; at $d=10^5$, 13.26 min and 16.8 GB against RS-PINN's 720 min and 45.6 GB, with PINN infeasible |
-| 96    | $d=10^4$                              | relative error $5.5\times10^{-3}$ in 295 s; Allen-Cahn at $d=100$ reaches $3.2\times10^{-3}$ in **under 6.8 s** |
-| 97    | $d=8$ (porous medium)                 | handles Barenblatt weak solutions, a singular Keller-Segel kernel and Lévy-driven fractional equations; **no order is reported anywhere in the paper** |
-| 100   | $d=10^4$ (Burgers), MacBook Pro M1 Pro | first order in time on all three equation classes; Allen-Cahn at $d=100$ reaches absolute error $1.2\times10^{-5}$ |
-| 108   | $d=10^4$ (LQ-1), 8 RTX 4090 GPUs      | going from $d=1$ to $d=1000$ inflates the three error measures by only 1.4–4.1 times; the $d=10^4$ run takes 5258 s |
+| Paper | Highest dimension and hardware         | Measured result                                                                                                                                          |
+| ----- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 86    | $d=10^4$ (HJB), 8 A100 GPUs            | first order in time, $\mathcal O(N^{-1.01})$; accuracy comparable to deep BSDE at about half the wall clock; eight GPUs cut 5032 s to 773 s at $d=2000$  |
+| 93    | $d=10^5$                               | QLP-1 relative $L^1$ error $1.29\times10^{-2}$ in 3761 s; at $d=10^5$, 13.26 min and 16.8 GB against RS-PINN's 720 min and 45.6 GB, with PINN infeasible |
+| 96    | $d=10^4$                               | relative error $5.5\times10^{-3}$ in 295 s; Allen-Cahn at $d=100$ reaches $3.2\times10^{-3}$ in **under 6.8 s**                                          |
+| 97    | $d=8$ (porous medium)                  | handles Barenblatt weak solutions, a singular Keller-Segel kernel and Lévy-driven fractional equations; **no order is reported anywhere in the paper**   |
+| 100   | $d=10^4$ (Burgers), MacBook Pro M1 Pro | first order in time on all three equation classes; Allen-Cahn at $d=100$ reaches absolute error $1.2\times10^{-5}$                                       |
+| 108   | $d=10^4$ (LQ-1), 8 RTX 4090 GPUs       | going from $d=1$ to $d=1000$ inflates the three error measures by only 1.4–4.1 times; the $d=10^4$ run takes 5258 s                                      |
 
 > [!warning] What limits all of these numbers
 > Every convergence rate in the classical table comes from **smooth examples in one to at most six dimensions** with conditional expectations evaluated by tensor or sparse quadrature, so none of them says anything about behaviour as the dimension grows. Every error in the deep-learning table is measured **inside the region the pilot process or sampling ensemble actually explored** — remark 1 of paper 96 says so outright, paper 93 encodes it in a weighted norm, and paper 108 displays it directly in its $d=1$ visualisation. **"Accurate" in this family is always a statement with a domain attached.**

@@ -148,12 +148,12 @@ The $\gamma=7/10$ here is a tractable stand-in for the $0.6924$ that the constan
 
 Eight of the twelve papers have experiments that can be reported item by item. Papers 58, 74 and 104 are purely analytical, their sources containing only plots of kernels or generating functions; paper 69's abstract says numerical tests are presented, but the specific examples cannot be verified. Taken together, the eight that can be reported deliver one and the same judgement: **the theoretical thresholds are sufficient conditions, and fairly conservative ones.**
 
-| Paper | What the experiment tests directly | Outcome                                                                                                   |
-| ----- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 48    | random time meshes                 | second order in time observed; random steps stress step-ratio robustness head-on                          |
-| 52    | random time meshes                 | second order survives $\max r_k=850.80$ and $N_1=49$ levels violating $3.5616$                            |
-| 67    | periodic and random meshes         | third order ($2.98$–$3.00$) with about half the levels at $r_k\ge R_e$                                    |
-| 91    | adaptive stepping                  | at $T=450$, fixed $\tau=10^{-4}$ costs $6724.63$ s against $2.62$ s adaptively ($\tau_{\max}=0.5$)        |
+| Paper | What the experiment tests directly | Outcome                                                                                            |
+| ----- | ---------------------------------- | -------------------------------------------------------------------------------------------------- |
+| 48    | random time meshes                 | second order in time observed; random steps stress step-ratio robustness head-on                   |
+| 52    | random time meshes                 | second order survives $\max r_k=850.80$ and $N_1=49$ levels violating $3.5616$                     |
+| 67    | periodic and random meshes         | third order ($2.98$–$3.00$) with about half the levels at $r_k\ge R_e$                             |
+| 91    | adaptive stepping                  | at $T=450$, fixed $\tau=10^{-4}$ costs $6724.63$ s against $2.62$ s adaptively ($\tau_{\max}=0.5$) |
 
 Paper 52's table is the most explicit of these: it deliberately reports $\max r_k$ and $N_1$, the number of levels violating the threshold, which amounts to the authors themselves showing that $3.5616$ is far from necessary. Paper 67 is the finer case — numerically $R_e<1.69$ is necessary, so there the gap is small and known. That contrast is itself one of the topic's conclusions: the BDF2 threshold barely constrains practice, while the BDF3 one is close to the truth.
 

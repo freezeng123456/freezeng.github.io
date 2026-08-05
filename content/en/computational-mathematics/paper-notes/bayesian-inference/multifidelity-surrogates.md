@@ -16,12 +16,12 @@ tags:
 
 Before writing, the level at which each paper could be checked was fixed, and the depth of what follows is allocated strictly by that table: **only papers verified in full text get complete derivations and experimental configurations**, and everything else is limited to what a source actually supports.
 
-| No. | Source checked                          | Tier          | Remaining gap                                                                                       |
-| --- | --------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------- |
-| 37  | arXiv:1807.00618 (ar5iv full text)      | **Full text** | no transcribable error values are recorded, so the experiments section reports setup and abstract-level conclusions only |
-| 34  | arXiv:1809.08931 (full text) + abstract | **Full text** | in the cost accounting $J_1+Q_1+J_2Q_2$ the definitions of $J_1,J_2$ were lost and are unverified   |
+| No. | Source checked                          | Tier          | Remaining gap                                                                                                                                        |
+| --- | --------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 37  | arXiv:1807.00618 (ar5iv full text)      | **Full text** | no transcribable error values are recorded, so the experiments section reports setup and abstract-level conclusions only                             |
+| 34  | arXiv:1809.08931 (full text) + abstract | **Full text** | in the cost accounting $J_1+Q_1+J_2Q_2$ the definitions of $J_1,J_2$ were lost and are unverified                                                    |
 | 49  | arXiv:1911.08926 (full text)            | **Full text** | equation (10) appears to have the acceptance-ratio numerator and denominator swapped, see the warning below; no CPU timings for the adaptive version |
-| 79  | arXiv:2310.17844 v3 (full text)         | **Full text** | no substantive gap; Theorem 3.6 applies only to a linearised operator network, see the warning below |
+| 79  | arXiv:2310.17844 v3 (full text)         | **Full text** | no substantive gap; Theorem 3.6 applies only to a linearised operator network, see the warning below                                                 |
 
 All four are at the full-text tier, so this page gives all four a derivation chain, full theorem hypotheses and a reproducible experimental configuration. What is missing is **the measured values themselves**: only paper 34 left a complete set of error and cost figures in the verifiable material, while papers 37, 49 and 79 left configurations and qualitative conclusions. Each experiments section says so in place.
 
@@ -148,10 +148,10 @@ The shape of the bound records where it comes from: the two terms correspond to 
 
 Two nonlinear PDE inverse problems:
 
-| Ex. | Problem                                    | Parameter dimension | Design intent                                                                     |
-| --- | ------------------------------------------ | ------------------- | --------------------------------------------------------------------------------- |
-| 1   | two-dimensional heat source inversion      | $n_z=2$             | small enough to afford a genuinely accurate high-order prior surrogate, so what is bought here is accuracy |
-| 2   | diffusion coefficient of an elliptic PDE   | $n_z=9$             | a globally accurate prior surrogate is expensive, so both accuracy and cost are bought |
+| Ex. | Problem                                  | Parameter dimension | Design intent                                                                                              |
+| --- | ---------------------------------------- | ------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 1   | two-dimensional heat source inversion    | $n_z=2$             | small enough to afford a genuinely accurate high-order prior surrogate, so what is bought here is accuracy |
+| 2   | diffusion coefficient of an elliptic PDE | $n_z=9$             | a globally accurate prior surrogate is expensive, so both accuracy and cost are bought                     |
 
 The division of labour is deliberate. Example 1 rules out the reading that the adaptive method wins only because its opponent is weak, since at $n_z=2$ the opponent can be made globally accurate; example 2 is the method's actual target. The abstract's order-of-magnitude claim is several orders of efficiency gain over MCMC on the true model alone.
 
@@ -260,18 +260,18 @@ If $\mathrm{err}\le\mathrm{tol}$ the current surrogate is kept; otherwise $f_M$ 
 
 The forward problem is a two-dimensional **time-fractional** inverse diffusion problem (Caputo derivative of order $0<\alpha<1$).
 
-| Item                    | Setting                                              |
-| ----------------------- | ---------------------------------------------------- |
-| time discretisation     | finite differences, $\Delta t=0.01$                  |
-| space discretisation    | spectral, polynomial degree $P=6$                    |
-| data generation         | $P=10$, to avoid an inverse crime                    |
-| example 1 unknown       | nine radial-basis weights in the permeability ($d=9$) |
-| example 2 unknown       | a Karhunen-Loève parameterised log-permeability field |
+| Item                 | Setting                                               |
+| -------------------- | ----------------------------------------------------- |
+| time discretisation  | finite differences, $\Delta t=0.01$                   |
+| space discretisation | spectral, polynomial degree $P=6$                     |
+| data generation      | $P=10$, to avoid an inverse crime                     |
+| example 1 unknown    | nine radial-basis weights in the permeability ($d=9$) |
+| example 2 unknown    | a Karhunen-Loève parameterised log-permeability field |
 
 **Example 1: the truth is deliberately placed outside the prior.** The prior is $\log\theta_i\sim\mathcal N(0,1)$ while the truth is drawn from $\log\theta_i\sim U(-4,4)$; $N_e=100$ and the noise level is $\sigma=10^{-3}$.
 
-| Method                                  | PC order | Relative error | True-model evaluations | CPU time     |
-| --------------------------------------- | -------- | -------------- | ---------------------- | ------------ |
+| Method                                  | PC order | Relative error | True-model evaluations | CPU time      |
+| --------------------------------------- | -------- | -------------- | ---------------------- | ------------- |
 | conventional ensemble Kalman inversion  | —        | 0.0461         | 2000 (online)          | about 56.71 s |
 | fixed prior polynomial chaos surrogate  | $N=4$    | 0.7921         | 1430 (offline)         | about 0.82 s  |
 | fixed prior polynomial chaos surrogate  | $N=6$    | 0.2892         | 10010 (offline)        | not reported  |
@@ -368,16 +368,16 @@ The absolute error of paper 37 becomes relative. If $\mathrm{err}(\tilde z)>\mat
 
 A benchmark elliptic inverse problem in two configurations.
 
-| Item                       | Example 1                                                              |
-| -------------------------- | ---------------------------------------------------------------------- |
-| unknown                    | nine-parameter permeability                                            |
-| prior surrogate            | 4 hidden layers of 40 neurons, 50 training points                      |
-| correction network         | one hidden layer of 50 neurons                                         |
-| refinement points per round | $Q=10$                                                                 |
-| tolerance                  | $\mathrm{tol}\in\{0.1,\ 0.05\}$                                        |
-| regularisation             | $\lambda=0$                                                            |
-| subchain length            | $m=1000$                                                               |
-| baselines                  | Direct (true-model MCMC), DNN (fixed prior-trained network), ADNN (this paper) |
+| Item                        | Example 1                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| unknown                     | nine-parameter permeability                                                    |
+| prior surrogate             | 4 hidden layers of 40 neurons, 50 training points                              |
+| correction network          | one hidden layer of 50 neurons                                                 |
+| refinement points per round | $Q=10$                                                                         |
+| tolerance                   | $\mathrm{tol}\in\{0.1,\ 0.05\}$                                                |
+| regularisation              | $\lambda=0$                                                                    |
+| subchain length             | $m=1000$                                                                       |
+| baselines                   | Direct (true-model MCMC), DNN (fixed prior-trained network), ADNN (this paper) |
 
 Example 2 replaces the unknown by a high-dimensional random-field permeability parameterised by a Karhunen-Loève expansion; the verifiable material does not separately record its network sizes or tolerances.
 
@@ -398,7 +398,7 @@ A direct successor to paper 37: the same outer MCMC skeleton and the same "retra
 
 The first three papers all ask the same question of their indicators: is the surrogate accurate at this point? That question has a hidden defect — **an inaccurate surrogate need not matter.** What inversion actually cares about is whether the data can be fitted. If the surrogate errs in a direction that does not move the data misfit, correcting it is wasted effort; conversely, a small error in a direction that dominates the misfit does matter. The first three papers align these two things indirectly, by putting the test point near the posterior bulk. This paper changes what is measured instead: **it measures the data misfit itself.**
 
-Two consequences follow. On the good side, the indicator now shares units and scale with the inversion objective, so a threshold can be set on the relative change of the misfit without guessing the magnitude of the surrogate's error. On the cost side, a misfit is a scalar and does not say *in which direction* the surrogate is wrong, so the point-selection rule has to supply that information itself. That is what the greedy design does: it picks points that are far apart in the **surrogate's output space**, that is, points the surrogate itself treats as most different and is therefore most likely to be wrong about.
+Two consequences follow. On the good side, the indicator now shares units and scale with the inversion objective, so a threshold can be set on the relative change of the misfit without guessing the magnitude of the surrogate's error. On the cost side, a misfit is a scalar and does not say _in which direction_ the surrogate is wrong, so the point-selection rule has to supply that information itself. That is what the greedy design does: it picks points that are far apart in the **surrogate's output space**, that is, points the surrogate itself treats as most different and is therefore most likely to be wrong about.
 
 The second piece of intuition concerns the sampler. Unscented Kalman inversion needs only $2N_m+1$ forward evaluations per iteration and typically converges in a dozen or so, so the whole inversion costs a few hundred forward solves — two or three orders of magnitude below MCMC. That makes "one true solve per round for the indicator" a non-trivial fraction of the budget and puts a premium on keeping the indicator cheap. The greedy score uses only surrogate predictions on the candidate pool, so selection is essentially free, and true solves are spent only on the $Q$ points finally chosen.
 
@@ -529,17 +529,17 @@ where $\beta,C_1,C_2,K_1,K_2,H_\eta,H_y,H$ are positive bounded constants. Both 
 
 ### Numerical experiments
 
-| Item                    | Setting                                                                          |
-| ----------------------- | -------------------------------------------------------------------------------- |
-| benchmarks              | Darcy flow, heat source inversion (Cases I and II), reaction-diffusion           |
-| surrogate               | DeepONet with branch and trunk nets of 5 hidden layers × 100 neurons, `tanh`     |
-| offline training        | $1\times10^{5}$ iterations on $N_{\mathrm{prior}}=1000$ Gaussian-random-field prior samples |
-| data                    | $y_{\mathrm{obs}}=y_{\mathrm{ref}}+\max\{\lvert y_{\mathrm{ref}}\rvert\}\delta\xi$ |
-| indicator threshold     | $\epsilon=0.01$                                                                   |
-| retraining cap          | $I_{\max}=10$                                                                     |
-| greedy weight           | $\lambda=1$                                                                       |
-| sampler cost per round  | $2N_m+1$ forward evaluations, typically $O(10)$ rounds                           |
-| baselines               | FEM-UKI (full model), DeepOnet-UKI-Direct (fixed surrogate), DeepOnet-UKI-Adaptive (this paper) |
+| Item                   | Setting                                                                                         |
+| ---------------------- | ----------------------------------------------------------------------------------------------- |
+| benchmarks             | Darcy flow, heat source inversion (Cases I and II), reaction-diffusion                          |
+| surrogate              | DeepONet with branch and trunk nets of 5 hidden layers × 100 neurons, `tanh`                    |
+| offline training       | $1\times10^{5}$ iterations on $N_{\mathrm{prior}}=1000$ Gaussian-random-field prior samples     |
+| data                   | $y_{\mathrm{obs}}=y_{\mathrm{ref}}+\max\{\lvert y_{\mathrm{ref}}\rvert\}\delta\xi$              |
+| indicator threshold    | $\epsilon=0.01$                                                                                 |
+| retraining cap         | $I_{\max}=10$                                                                                   |
+| greedy weight          | $\lambda=1$                                                                                     |
+| sampler cost per round | $2N_m+1$ forward evaluations, typically $O(10)$ rounds                                          |
+| baselines              | FEM-UKI (full model), DeepOnet-UKI-Direct (fixed surrogate), DeepOnet-UKI-Adaptive (this paper) |
 
 Case I of the heat source inversion is verifiable in detail: a two-parameter source-location problem, DeepONet trained on $[0.5,1]\times[0.5,1]$ from 500 uniform samples, unscented Kalman inversion started at $[0.6,0.6]$; Case II is a higher-dimensional variant.
 
@@ -551,37 +551,37 @@ Case I of the heat source inversion is verifiable in detail: a two-parameter sou
 
 ### Relation to the others
 
-The most theoretically complete member of the family: it cites paper 37's $\epsilon$-feasible-set KL bound as motivation *and* adds a genuine convergence theorem for the surrogate-driven sampler in the linear case, which papers 34, 37, 49 and [[en/computational-mathematics/paper-notes/bayesian-inference/sampling-and-filtering|55 and 56]] all lack. It replaces the pointwise $\ell^\infty$ indicators of papers 34, 37 and 49 with a goal-oriented indicator built from the data misfit itself, and random-in-a-ball sampling with an explicit diversity-versus-proximity trade-off. It is also the direct methodological ancestor of [[en/computational-mathematics/paper-notes/bayesian-inference/sampling-and-filtering|106]], which keeps the adaptive fine-tuning loop while swapping unscented Kalman inversion for a variational flow, DeepONet for a Fourier neural operator, and greedy filtering for aggressive data replacement.
+The most theoretically complete member of the family: it cites paper 37's $\epsilon$-feasible-set KL bound as motivation _and_ adds a genuine convergence theorem for the surrogate-driven sampler in the linear case, which papers 34, 37, 49 and [[en/computational-mathematics/paper-notes/bayesian-inference/sampling-and-filtering|55 and 56]] all lack. It replaces the pointwise $\ell^\infty$ indicators of papers 34, 37 and 49 with a goal-oriented indicator built from the data misfit itself, and random-in-a-ball sampling with an explicit diversity-versus-proximity trade-off. It is also the direct methodological ancestor of [[en/computational-mathematics/paper-notes/bayesian-inference/sampling-and-filtering|106]], which keeps the adaptive fine-tuning loop while swapping unscented Kalman inversion for a variational flow, DeepONet for a Fourier neural operator, and greedy filtering for aggressive data replacement.
 
 ## Side-by-side comparison
 
-| Component        | 37                              | 34                              | 49                               | 79                                    |
-| ---------------- | ------------------------------- | ------------------------------- | -------------------------------- | ------------------------------------- |
-| Surrogate        | multi-fidelity polynomial chaos | multi-fidelity polynomial chaos | composite multi-fidelity network | DeepONet                              |
-| Sampler          | Metropolis-Hastings             | regularising ensemble Kalman    | Metropolis-Hastings              | unscented Kalman inversion            |
-| Indicator        | absolute $\ell^\infty$          | relative $\ell^\infty$          | relative $\ell^\infty$           | relative change in the data misfit    |
-| Test point       | accepted via the true model     | ensemble mean                   | accepted via the true model      | anchor chosen by the true model       |
-| New points       | random in a shrinking ball      | random in a ball                | uniform in a ball                | greedy in output space plus proximity |
-| Retraining       | refit least squares             | refit least squares             | train a shallow correction net   | transfer learning from prior weights  |
-| Theory           | KL and Hellinger bounds         | none                            | none                             | fixed-point convergence, linear case  |
-| Numerical results | setup and qualitative only     | full errors and solve counts    | setup and qualitative only       | setup and qualitative only            |
+| Component         | 37                              | 34                              | 49                               | 79                                    |
+| ----------------- | ------------------------------- | ------------------------------- | -------------------------------- | ------------------------------------- |
+| Surrogate         | multi-fidelity polynomial chaos | multi-fidelity polynomial chaos | composite multi-fidelity network | DeepONet                              |
+| Sampler           | Metropolis-Hastings             | regularising ensemble Kalman    | Metropolis-Hastings              | unscented Kalman inversion            |
+| Indicator         | absolute $\ell^\infty$          | relative $\ell^\infty$          | relative $\ell^\infty$           | relative change in the data misfit    |
+| Test point        | accepted via the true model     | ensemble mean                   | accepted via the true model      | anchor chosen by the true model       |
+| New points        | random in a shrinking ball      | random in a ball                | uniform in a ball                | greedy in output space plus proximity |
+| Retraining        | refit least squares             | refit least squares             | train a shallow correction net   | transfer learning from prior weights  |
+| Theory            | KL and Hellinger bounds         | none                            | none                             | fixed-point convergence, linear case  |
+| Numerical results | setup and qualitative only      | full errors and solve counts    | setup and qualitative only       | setup and qualitative only            |
 
 ## Coverage check
 
-| Item                                                        | Paper  | Status                                                                                     |
-| ----------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------ |
-| Verification tier and remaining gaps                        | all    | per-paper source, tier and unverified items                                                |
-| Weighted least squares, Christoffel weight, row normalisation | 37   | definition of the weight, derivation that every row has norm $\sqrt M$, identity with the optimal-sampling topic |
-| Index structure of the multi-fidelity correction            | 37     | correction term, merging as a pure regrouping, sample budget and the overfitting constraint |
-| That the algorithm samples the surrogate's posterior        | 37     | role of the subchain, where the true model appears, contrast with asymptotic exactness     |
-| $\epsilon$-feasible set with KL and Hellinger bounds        | 37, 79 | assumptions, conclusions, corollary, how the two terms match the two regions               |
-| Full regularising ensemble Kalman update                    | 34     | extended-state reduction, update, covariances, regularisation choice, stopping rule        |
-| The linear-case Tikhonov–Phillips limit                     | 34     | coincidence with the linear-Gaussian posterior mean, and the cost structure of being derivative-free |
-| Quantitative comparison with out-of-prior truth             | 34     | errors, solve counts, CPU times, and the consistency check against the budget formula      |
-| Composite multi-fidelity network                            | 49     | coupling form, training-set construction, contrast with a linear correction, capacity chain |
-| Checking the acceptance-probability ratio                   | 49     | why the printed form cannot be what was intended                                           |
-| Goal-oriented indicator and greedy design                   | 79     | the rejected honest indicator, anchor, relative change, greedy score and its cost structure |
-| Unscented Kalman inversion and linear convergence           | 79     | prediction and analysis steps, $\sigma$-points, the identity behind Lemma 3.5, both $O(\epsilon)$ bounds and their scope |
+| Item                                                          | Paper  | Status                                                                                                                   |
+| ------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------ |
+| Verification tier and remaining gaps                          | all    | per-paper source, tier and unverified items                                                                              |
+| Weighted least squares, Christoffel weight, row normalisation | 37     | definition of the weight, derivation that every row has norm $\sqrt M$, identity with the optimal-sampling topic         |
+| Index structure of the multi-fidelity correction              | 37     | correction term, merging as a pure regrouping, sample budget and the overfitting constraint                              |
+| That the algorithm samples the surrogate's posterior          | 37     | role of the subchain, where the true model appears, contrast with asymptotic exactness                                   |
+| $\epsilon$-feasible set with KL and Hellinger bounds          | 37, 79 | assumptions, conclusions, corollary, how the two terms match the two regions                                             |
+| Full regularising ensemble Kalman update                      | 34     | extended-state reduction, update, covariances, regularisation choice, stopping rule                                      |
+| The linear-case Tikhonov–Phillips limit                       | 34     | coincidence with the linear-Gaussian posterior mean, and the cost structure of being derivative-free                     |
+| Quantitative comparison with out-of-prior truth               | 34     | errors, solve counts, CPU times, and the consistency check against the budget formula                                    |
+| Composite multi-fidelity network                              | 49     | coupling form, training-set construction, contrast with a linear correction, capacity chain                              |
+| Checking the acceptance-probability ratio                     | 49     | why the printed form cannot be what was intended                                                                         |
+| Goal-oriented indicator and greedy design                     | 79     | the rejected honest indicator, anchor, relative change, greedy score and its cost structure                              |
+| Unscented Kalman inversion and linear convergence             | 79     | prediction and analysis steps, $\sigma$-points, the identity behind Lemma 3.5, both $O(\epsilon)$ bounds and their scope |
 
 ## Sources for this page
 

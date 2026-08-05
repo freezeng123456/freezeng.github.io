@@ -191,11 +191,11 @@ so such methods are necessarily **Lobatto-type and never Radau- or ARS-type**. T
 
 **Step five: three concrete families.**
 
-| Method | Construction | Parameter window and rate |
-| ------ | ------------ | ------------------------- |
-| R-IERK(1,2) | take $\theta=\frac12$ in the two-stage family IERK(1,2;$\theta$), for which $D^{(1,2)}(z)=1-z(\theta-\frac12)$ is positive definite for $z\le0$ exactly when $\theta\ge\frac12$, and $\mathcal R^{(1,2)}(\theta)=1+(\theta-\frac12)\tau_n\overline\lambda_{\mathrm{ML}}$ | $\mathcal R^{(1,2)}_{\mathrm R}=1$ exactly |
-| R-IERK(2,4;$c_2$) | no three-stage second-order method exists; the four-stage one-parameter family sets $\hat a_{32}=\hat a_{43}=c_2$ and $\hat a_{42}=\frac1{2c_2}-c_3$ | $\frac{\sqrt3-1}{2}\le c_2<1$ or $1<c_2\le\frac{2+\sqrt6}{2}$, with $\mathcal R^{(2,4)}_{\mathrm R}(c_2)=\frac1{c_2}$ |
-| R-IERK(3,6;$\hat a_{52}$) | no four-stage third-order method exists and no positive-(semi-)definite five-stage one was found; the six-stage family fixes $c_2=1$, $c_3=\frac45$, $c_4=\frac7{10}$, $c_5=\frac{12}{25}$, $\hat a_{32}=\frac65$, $\hat a_{51}=\frac{17\hat a_{52}}{103}-\frac{86756827361}{181963162950}$ | $0.664767<\hat a_{52}<0.751947$ |
+| Method                    | Construction                                                                                                                                                                                                                                                                                | Parameter window and rate                                                                                             |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| R-IERK(1,2)               | take $\theta=\frac12$ in the two-stage family IERK(1,2;$\theta$), for which $D^{(1,2)}(z)=1-z(\theta-\frac12)$ is positive definite for $z\le0$ exactly when $\theta\ge\frac12$, and $\mathcal R^{(1,2)}(\theta)=1+(\theta-\frac12)\tau_n\overline\lambda_{\mathrm{ML}}$                    | $\mathcal R^{(1,2)}_{\mathrm R}=1$ exactly                                                                            |
+| R-IERK(2,4;$c_2$)         | no three-stage second-order method exists; the four-stage one-parameter family sets $\hat a_{32}=\hat a_{43}=c_2$ and $\hat a_{42}=\frac1{2c_2}-c_3$                                                                                                                                        | $\frac{\sqrt3-1}{2}\le c_2<1$ or $1<c_2\le\frac{2+\sqrt6}{2}$, with $\mathcal R^{(2,4)}_{\mathrm R}(c_2)=\frac1{c_2}$ |
+| R-IERK(3,6;$\hat a_{52}$) | no four-stage third-order method exists and no positive-(semi-)definite five-stage one was found; the six-stage family fixes $c_2=1$, $c_3=\frac45$, $c_4=\frac7{10}$, $c_5=\frac{12}{25}$, $\hat a_{32}=\frac65$, $\hat a_{51}=\frac{17\hat a_{52}}{103}-\frac{86756827361}{181963162950}$ | $0.664767<\hat a_{52}<0.751947$                                                                                       |
 
 R-IERK(1,2) is the Crank-Nicolson-type scheme
 
@@ -348,12 +348,12 @@ with the reference produced by the Lobatto method IERK(2,3) ($a_{33}=\frac{1+\sq
 
 **Energy and efficiency tests for R-IERK(2,4;$c_2$).** With $c_2=\frac12,1,\frac32$ and $\tau_{\max}\in\{0.1,0.2,0.5\}$, all discrete energies decrease; the IERK(2,3) curves change significantly with $\tau_{\max}$ while the R-IERK curves are robust. Efficiency table for R-IERK(2,4;1) at $T=450$:
 
-| Step-size setting | CPU time | time levels |
-| ----------------- | -------- | ----------- |
+| Step-size setting    | CPU time    | time levels       |
+| -------------------- | ----------- | ----------------- |
 | fixed $\tau=10^{-4}$ | $6724.63$ s | $4.5\times10^{6}$ |
-| $\tau_{\max}=0.1$ | $11.90$ s | $11714$ |
-| $\tau_{\max}=0.2$ | $6.42$ s | $5840$ |
-| $\tau_{\max}=0.5$ | $2.62$ s | $2304$ |
+| $\tau_{\max}=0.1$    | $11.90$ s   | $11714$           |
+| $\tau_{\max}=0.2$    | $6.42$ s    | $5840$            |
+| $\tau_{\max}=0.5$    | $2.62$ s    | $2304$            |
 
 **This table is the clearest record on this page of theory bought back as performance**: roughly three orders of magnitude, and it is only usable because the energy curve does not drift with $\tau_{\max}$. Mesh-independence of $\mathcal R_{\mathrm R}$ is not an aesthetic property; it is what makes large adaptive steps trustworthy.
 
@@ -593,8 +593,8 @@ $$
 
 All roots of $\varrho_{b,\mathrm S}^{(k)}$ lie in $|\zeta|<1$ when $\gamma>\frac12$; by Routh-Hurwitz, all roots of $\varrho^{(k)}_{c,\mathrm S}$ lie in $|\zeta|<1$ under the following thresholds for $k=2,\dots,8$:
 
-| $k$ | $2$ | $3$ | $4$ | $5$ | $6$ | $7$ | $8$ |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| $k$       | $2$         | $3$                   | $4$        | $5$        | $6$ | $7$       | $8$      |
+| --------- | ----------- | --------------------- | ---------- | ---------- | --- | --------- | -------- |
 | $\gamma>$ | $-\tfrac12$ | $\tfrac{\sqrt2-1}{2}$ | $\tfrac38$ | $0.658691$ | $1$ | $1.37957$ | $1.7863$ |
 
 SIEMS-2 coincides with WBDF2 and GBDF2. Unlike generalised BDF (zero-stable only up to $k=5$), **SIEMS-$k$ is zero-stable and satisfies the hypotheses of Lemma 2.4 for suitable $\gamma$ all the way to $k=8$**, so the theory yields unconditional stability at **eighth order**; the authors note they are not aware of any previously known unconditionally stable implicit-explicit multistep scheme of order above seven.
@@ -832,11 +832,11 @@ Space is discretised by standard **finite elements** ($P_1$), implemented in **F
 
 **Test 1 (convergence, §3.1).** $\gamma=2.0$, $\Omega=[0,1]^2$, $T=1$, manufactured solution $\phi(x,y,t)=e^{-t}\cos(\pi x)\cos(\pi y)$, for both MBE ($\epsilon=1$) and PFC ($a_0=1.0$, $b_0=0.01$, $\lambda=1.0$), with $\delta t=h$; compared against IEQ and exponential SAV (ESAV). The MBE numbers are:
 
-| $\delta t$ | $\frac18$ | $\frac1{16}$ | $\frac1{32}$ | $\frac1{64}$ |
-| ---------- | --------- | ------------ | ------------ | ------------ |
-| RRER error | $3.2923$e-03 | $8.2307$e-04 | $2.0577$e-04 | $5.1442$e-05 |
-| RRER observed order | — | $2.00$ | $2.00$ | $2.00$ |
-| IEQ observed order | — | $1.94$ | $1.97$ | $1.99$ |
+| $\delta t$          | $\frac18$    | $\frac1{16}$ | $\frac1{32}$ | $\frac1{64}$ |
+| ------------------- | ------------ | ------------ | ------------ | ------------ |
+| RRER error          | $3.2923$e-03 | $8.2307$e-04 | $2.0577$e-04 | $5.1442$e-05 |
+| RRER observed order | —            | $2.00$       | $2.00$       | $2.00$       |
+| IEQ observed order  | —            | $1.94$       | $1.97$       | $1.99$       |
 
 ESAV matches RRER. **All three methods are second order**; for PFC, RRER is more accurate than both IEQ and ESAV, and a CPU-time table shows RRER is the cheapest of the three.
 
@@ -864,48 +864,48 @@ Finally, this paper and paper 91 both treat phase-field-crystal and Cahn-Hilliar
 
 ## The three approaches side by side
 
-| No. | Treated explicitly | Object carrying the difficulty | How the energy argument is kept | Energy that decays | Numerical experiments |
-| --- | ------------------ | ------------------------------ | ------------------------------- | ------------------ | --------------------- |
-| 78 | the nonlinear potential (quadratised) | none — the energy changes, not the discretisation | reformulate the energy; a staggered grid makes the scheme linear | **modified** energy $\widehat E$ ($\equiv E$ at the continuous level) | six groups, second order, phase diagrams reproduced |
-| 91 | the nonlinear bulk $f_\kappa$ | the differentiation matrix $D(z)$ (stage-index DOC) | impose $D_{\mathrm{EI}}=\mathbf 0$ so the rate is mesh-independent | the **original** energy $E$ | five groups, with a three-orders-of-magnitude speed-up table |
-| 104 | the nonlinear term $\mathcal F$ | the composition of three kernel sequences | extrema of three semi-generating functions on the unit circle | $V$-norm stability in an abstract framework | none for PDEs; only the three factor curves |
+| No. | Treated explicitly                    | Object carrying the difficulty                      | How the energy argument is kept                                    | Energy that decays                                                    | Numerical experiments                                        |
+| --- | ------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------ |
+| 78  | the nonlinear potential (quadratised) | none — the energy changes, not the discretisation   | reformulate the energy; a staggered grid makes the scheme linear   | **modified** energy $\widehat E$ ($\equiv E$ at the continuous level) | six groups, second order, phase diagrams reproduced          |
+| 91  | the nonlinear bulk $f_\kappa$         | the differentiation matrix $D(z)$ (stage-index DOC) | impose $D_{\mathrm{EI}}=\mathbf 0$ so the rate is mesh-independent | the **original** energy $E$                                           | five groups, with a three-orders-of-magnitude speed-up table |
+| 104 | the nonlinear term $\mathcal F$       | the composition of three kernel sequences           | extrema of three semi-generating functions on the unit circle      | $V$-norm stability in an abstract framework                           | none for PDEs; only the three factor curves                  |
 
 **How to read this table**: none of the three tries to prove directly that the explicit term contributes with a definite sign; each substitutes a controllable object — paper 78 the energy, paper 91 a structural condition on the Butcher tableau, paper 104 the form of the criterion. What is genuinely comparable is the "energy that decays" column: **papers 91 and 104 stay on the side of the original energy or norm, paper 78 moves to the modified-energy side**, and that line is the one real methodological disagreement inside this topic.
 
 ## Coverage check
 
-| Item | Paper | Status |
-| ---- | ----- | ------ |
-| Why explicit treatment breaks the energy argument | whole page | opening section: loss of the shared sign, and three substitute objects |
-| Cahn-Hilliard energy and $H^{-1}$ gradient flow | 91 | energy, equation, dissipation law, volume conservation |
-| The two defects | 91 | failed global Lipschitz assumption (and no MBP for CH); rate drifting with the step |
-| Stabilisation, node condition and order conditions | 91 | $L_\kappa$, $\hat{\mathbf c}=\mathbf c$, conditions to third order including the coupling ones |
-| Differential form and the differentiation matrix | 91 | $D(z)=D_{\mathrm E}-zD_{\mathrm{EI}}$ and its orthogonality identity |
-| Correspondence between $D$ and the DOC kernels | 91 | index changed from time levels to stages |
-| Average dissipation rate and refinement condition | 91 | $\mathcal R$, $D_{\mathrm{EI}}=\mathbf 0$, $A_{\mathrm I}=A_{\mathrm E}P$, $\mathcal R_{\mathrm R}$ |
-| Why Lobatto-type is forced | 91 | nonzero first column, exclusion proposition, stage order two without algebraic stability |
-| Three concrete families and their windows | 91 | R-IERK(1,2)/(2,4;$c_2$)/(3,6;$\hat a_{52}$), both determinants, exclusion of $c_2=1$ |
-| $\frac{1+\sqrt2}{4}$ is not a step ratio | 91 | it is the Butcher coefficient $a_{33}$ of the comparison method IERK(2,3) |
-| The time-space splitting replacing the maximum principle | 91 | three-step bootstrap, Lemmas 4.3 and 4.4, stage energy inequality |
-| Four main results | 91 | stage energy law, time-discrete regularity, original energy dissipation, unconditional $L^2$ convergence |
-| Numerical experiments and efficiency | 91 | adaptive rule, five groups, CPU table ($6724.63$ s versus $2.62$ s) |
-| Concrete limits of the two existing routes | 104 | family-by-family multipliers; decomposition degenerate at $\beta=1$, limited $k$, refined version only at $\beta_k=3,6,9$ |
-| Abstract setting and local Lipschitz condition | 104 | Hilbert triple, $\mu_0\in(0,\varpi)$, non-self-adjoint case |
-| Three kernel sequences and the global method | 104 | the triad, DOC kernels, composite kernels, commuting lower-triangular Toeplitz matrices |
-| The semi-generating function and its proof observation | 104 | three conclusions, $\mathrm g(\theta)=\Re[a(\theta)]$, composition rules |
-| The three extremal constants and the normalisation | 104 | $\sigma_{\mathrm F},\sigma_{\mathrm E},\lambda_{\mathrm I}$, three inequalities, equality for IMEX Euler |
-| Main theorem and controllability intensity | 104 | $\lambda_{\mathrm I}/\sigma_{\mathrm E}>\mu_0/\varpi$, separation of method and model, $\mathfrak I_{\mathrm{IE}}\le1$ |
-| The SIEMS family and eighth order | 104 | three characteristic polynomials, $\gamma$ thresholds for $k=2,\dots,8$, comparative conclusion |
-| "No numerical experiments in this version" | 104 | the abstract line commented out; only the three factor curves |
-| What IEQ and SAV share, and where RRER departs | 78 | coupled versus decoupled, differentiating the auxiliary variable, Remark 2.1 |
-| Regularised auxiliary variable and equivalent system | 78 | definition of $q$, quadratisation of $F$, $\widehat E$ and its dissipation law |
-| Relation between $\widehat E$ and $E$ at both levels | 78 | exact at the continuous level; second-order approximation at the discrete level |
-| Staggered grid and linearity of the scheme | 78 | the three equations of Algorithm 1, why (c) is the key, starting values, second order |
-| PFC and the coupled models | 78 | Algorithm 2 and its modified energy; ternary and grain growth reported as existing only |
-| Three theorems | 78 | mass conservation, two unconditional energy laws (as equalities), the key identity in the proof |
-| Six groups of numerical experiments | 78 | convergence table, energy and mass, coarsening, stripes and triangles, curved surfaces, 3D and ternary |
-| Difference from paper 52's model | 78 | with versus without slope selection, and why the latter is harder |
-| The exception in this topic and the tension it carries | 78 | no Liao, no DOC, no variable steps; modified versus original energy |
+| Item                                                     | Paper      | Status                                                                                                                    |
+| -------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Why explicit treatment breaks the energy argument        | whole page | opening section: loss of the shared sign, and three substitute objects                                                    |
+| Cahn-Hilliard energy and $H^{-1}$ gradient flow          | 91         | energy, equation, dissipation law, volume conservation                                                                    |
+| The two defects                                          | 91         | failed global Lipschitz assumption (and no MBP for CH); rate drifting with the step                                       |
+| Stabilisation, node condition and order conditions       | 91         | $L_\kappa$, $\hat{\mathbf c}=\mathbf c$, conditions to third order including the coupling ones                            |
+| Differential form and the differentiation matrix         | 91         | $D(z)=D_{\mathrm E}-zD_{\mathrm{EI}}$ and its orthogonality identity                                                      |
+| Correspondence between $D$ and the DOC kernels           | 91         | index changed from time levels to stages                                                                                  |
+| Average dissipation rate and refinement condition        | 91         | $\mathcal R$, $D_{\mathrm{EI}}=\mathbf 0$, $A_{\mathrm I}=A_{\mathrm E}P$, $\mathcal R_{\mathrm R}$                       |
+| Why Lobatto-type is forced                               | 91         | nonzero first column, exclusion proposition, stage order two without algebraic stability                                  |
+| Three concrete families and their windows                | 91         | R-IERK(1,2)/(2,4;$c_2$)/(3,6;$\hat a_{52}$), both determinants, exclusion of $c_2=1$                                      |
+| $\frac{1+\sqrt2}{4}$ is not a step ratio                 | 91         | it is the Butcher coefficient $a_{33}$ of the comparison method IERK(2,3)                                                 |
+| The time-space splitting replacing the maximum principle | 91         | three-step bootstrap, Lemmas 4.3 and 4.4, stage energy inequality                                                         |
+| Four main results                                        | 91         | stage energy law, time-discrete regularity, original energy dissipation, unconditional $L^2$ convergence                  |
+| Numerical experiments and efficiency                     | 91         | adaptive rule, five groups, CPU table ($6724.63$ s versus $2.62$ s)                                                       |
+| Concrete limits of the two existing routes               | 104        | family-by-family multipliers; decomposition degenerate at $\beta=1$, limited $k$, refined version only at $\beta_k=3,6,9$ |
+| Abstract setting and local Lipschitz condition           | 104        | Hilbert triple, $\mu_0\in(0,\varpi)$, non-self-adjoint case                                                               |
+| Three kernel sequences and the global method             | 104        | the triad, DOC kernels, composite kernels, commuting lower-triangular Toeplitz matrices                                   |
+| The semi-generating function and its proof observation   | 104        | three conclusions, $\mathrm g(\theta)=\Re[a(\theta)]$, composition rules                                                  |
+| The three extremal constants and the normalisation       | 104        | $\sigma_{\mathrm F},\sigma_{\mathrm E},\lambda_{\mathrm I}$, three inequalities, equality for IMEX Euler                  |
+| Main theorem and controllability intensity               | 104        | $\lambda_{\mathrm I}/\sigma_{\mathrm E}>\mu_0/\varpi$, separation of method and model, $\mathfrak I_{\mathrm{IE}}\le1$    |
+| The SIEMS family and eighth order                        | 104        | three characteristic polynomials, $\gamma$ thresholds for $k=2,\dots,8$, comparative conclusion                           |
+| "No numerical experiments in this version"               | 104        | the abstract line commented out; only the three factor curves                                                             |
+| What IEQ and SAV share, and where RRER departs           | 78         | coupled versus decoupled, differentiating the auxiliary variable, Remark 2.1                                              |
+| Regularised auxiliary variable and equivalent system     | 78         | definition of $q$, quadratisation of $F$, $\widehat E$ and its dissipation law                                            |
+| Relation between $\widehat E$ and $E$ at both levels     | 78         | exact at the continuous level; second-order approximation at the discrete level                                           |
+| Staggered grid and linearity of the scheme               | 78         | the three equations of Algorithm 1, why (c) is the key, starting values, second order                                     |
+| PFC and the coupled models                               | 78         | Algorithm 2 and its modified energy; ternary and grain growth reported as existing only                                   |
+| Three theorems                                           | 78         | mass conservation, two unconditional energy laws (as equalities), the key identity in the proof                           |
+| Six groups of numerical experiments                      | 78         | convergence table, energy and mass, coarsening, stripes and triangles, curved surfaces, 3D and ternary                    |
+| Difference from paper 52's model                         | 78         | with versus without slope selection, and why the latter is harder                                                         |
+| The exception in this topic and the tension it carries   | 78         | no Liao, no DOC, no variable steps; modified versus original energy                                                       |
 
 ## Sources for this page
 

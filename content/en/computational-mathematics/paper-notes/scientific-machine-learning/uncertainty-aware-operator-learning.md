@@ -126,13 +126,13 @@ The training algorithm (Supplementary S4, Algorithm 1) runs as follows: fit the 
 
 Five experiments span regression, operator learning, real tabular data and a large-scale climate model:
 
-| Example | Setting | Baselines |
-| --- | --- | --- |
+| Example                      | Setting                                                                                | Baselines                               |
+| ---------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------- |
 | 1-D discontinuous regression | $u(x)=\tfrac12[\sin^3(2\pi x)-1]$ on $[-1,0)$, $\tfrac12[\sin^3(3\pi x)+1]$ on $[0,1]$ | GP, HMC Bayesian network, deep ensemble |
-| Diffusion–reaction equation | operator learning | — |
-| Advection equation | operator learning | — |
-| California housing | real tabular regression | — |
-| Large-scale climate model | efficiency argument at scale | HMC Bayesian network |
+| Diffusion–reaction equation  | operator learning                                                                      | —                                       |
+| Advection equation           | operator learning                                                                      | —                                       |
+| California housing           | real tabular regression                                                                | —                                       |
+| Large-scale climate model    | efficiency argument at scale                                                           | HMC Bayesian network                    |
 
 The discontinuous-regression setup is fully recorded: $N=32$ equidistant noisy samples confined to $[-0.8,-0.2]\cup[0.2,0.8]$, noise $\epsilon_u\sim\mathcal N(0,\sigma_u^2)$, $\beta=0.3$. The gaps $[-1,-0.8]\cup[-0.2,0.2]\cup[0.8,1]$ are precisely what tests extrapolation behaviour. The reported comparison is that, like the GP and Hamiltonian Monte Carlo — and unlike deep ensembles — the method produces larger standard deviations in those three data-poor intervals.
 
@@ -214,7 +214,7 @@ q_{E}(z\mid\mathcal O,\bar u)=\mathcal N
 \Bigl(z\Bigm|\mu_{z}\bigl(h(\mathcal O),\bar u\bigr),\ \Sigma_{z}\bigl(h(\mathcal O),\bar u\bigr)\Bigr),
 $$
 
-with $\Sigma_z$ **diagonal** and the encoder reusing the *same* embedding $h(\mathcal O)$. Applying Jensen's inequality to the marginal likelihood,
+with $\Sigma_z$ **diagonal** and the encoder reusing the _same_ embedding $h(\mathcal O)$. Applying Jensen's inequality to the marginal likelihood,
 
 $$
 \log p_{D}(\bar u\mid\mathcal O)=\log\!\int p_{D}(\bar u\mid\mathcal O,z)p(z)\,\mathrm dz
@@ -289,20 +289,20 @@ with the inverse replaced by $[\mathcal K(x_{\text{obs}},x_{\text{obs}})+\sigma^
 **Example 1: 1-D diffusion.** $-\tfrac1{10}\tfrac{\mathrm d}{\mathrm dx}\bigl(k(x)\tfrac{\mathrm du}{\mathrm dx}\bigr)=f(x)$ on $[-1,1]$ with $u(\pm1)=0$ and $f(x)=2\sin(2\pi x)$; learn $\mathcal G:k\mapsto u$. The input is $\log k\sim\mathcal{GP}\bigl(\sin(2\pi x),\sigma^2\exp(-(x-x')^2/l^2)\bigr)$ with $\sigma=0.5$, $l=0.1$; a 401-point sensor grid, a second-order finite-difference solver, $N=10^4$ pairs, and 101 output points in training. Variable sensor count $\mathcal M=\{1,\dots,10\}$, 100,000 iterations, testing on a 401-point grid, 5 trials.
 
 | $m$ | UQ-SONet $err_{E[u]}$ | VIDON $err_{E[u]}$ |
-| --- | --- | --- |
-| 1 | 4.47 ± 0.83 | 5.35 ± 0.15 |
-| 7 | 5.88 ± 0.74 | 8.73 ± 1.03 |
+| --- | --------------------- | ------------------ |
+| 1   | 4.47 ± 0.83           | 5.35 ± 0.15        |
+| 7   | 5.88 ± 0.74           | 8.73 ± 1.03        |
 
 UQ-SONet beats VIDON at **every** sensor count from 1 to 10, and $err_{\sigma[u]}$ ranges over 7.68–8.95. The predictive bands narrow as $m$ grows. Noise robustness is tested separately (their Table 3): with multiplicative noise $k(x)\exp(\epsilon(x))$, $\epsilon\sim\mathcal N(0,\sigma^2)$, $\sigma\in\{0.1,0.3,0.5,0.7,1.0\}$, the errors stay essentially flat — at $m=7$, $err_{E[u]}$ moves from 7.49 to 6.50 as $\sigma$ goes from 0.1 to 1.0. **Degradation is remarkably insensitive to the noise level.**
 
 **Example 2: 2-D Poisson.** $-\tfrac1{10}\Delta u=f$ on $[0,1]^2$ with homogeneous Dirichlet conditions; learn $\mathcal G:f\mapsto u$. Here $f\sim\mathcal{GP}$ with mean $4(\sin2\pi x+\sin2\pi y)$ and $l_1=l_2=0.1$ on a $101\times101$ grid; $N=80{,}000$ pairs; $\mathcal M=\{1,2,3,4\}$; sensors placed by **regular-space clustering** (`pyemma.coordinates.cluster_regspace`) on permuted $81\times81$ grids inside $[0.1,0.9]^2$, with minimum spacing $d_{\min}=0.8$ for $m=2$ and $d_{\min}=0.5$ for $m=3,4$; training output grid $51\times51$, test grid $101\times101$; 20,000 iterations, 3 trials.
 
 | $m$ | UQ-SONet (noiseless) | VIDON (noiseless) | UQ-SONet (noise $\mathcal N(0,1.0^2)$) |
-| --- | --- | --- | --- |
-| 1 | 4.00 | 3.26 | 3.40 |
-| 2 | 4.83 | 4.67 | 3.40 |
-| 3 | 5.92 | 5.99 | 4.16 |
-| 4 | 5.48 | 7.01 | 5.54 |
+| --- | -------------------- | ----------------- | -------------------------------------- |
+| 1   | 4.00                 | 3.26              | 3.40                                   |
+| 2   | 4.83                 | 4.67              | 3.40                                   |
+| 3   | 5.92                 | 5.99              | 4.16                                   |
+| 4   | 5.48                 | 7.01              | 5.54                                   |
 
 **This is the most honest table in the paper: VIDON is actually better at $m=1,2$**, and UQ-SONet wins only at $m=3,4$. The claim that adding uncertainty comes with better accuracy for free is therefore not unconditional.
 
@@ -313,11 +313,11 @@ UQ-SONet beats VIDON at **every** sensor count from 1 to 10, and $err_{\sigma[u]
 **Example 5: 2-D incompressible Navier–Stokes.** Vorticity–velocity form with periodic boundaries, $\partial_tw+u\cdot\nabla w=\nu\Delta w+f$, $\nabla\cdot u=0$, $\nu=0.001$, $f(x,y)=0.1\sin(2\pi(x+y))+0.1\cos(2\pi(x+y))$; learn $w_0\mapsto w|_{t=10}$. Initial vorticity comes from $g(\bm x;\omega)=x^{1/3}(1-x)^{1/3}y^{1/3}(1-y)^{1/3}h(\bm x;\omega)$ with $h$ a zero-mean GP, $l_1=l_2=0.1$; a $100\times100$ grid with a pseudospectral stream-function solver; training observations on $50\times50$; 4 batches of 20,000; 50,000 iterations, 3 trials.
 
 | $m$ | UQ-SONet: $err_{E}$ of $w$ at $t=10$ | VIDON |
-| --- | --- | --- |
-| 1 | 2.35 | 6.01 |
-| 2 | 1.89 | 5.98 |
-| 3 | 2.55 | 8.74 |
-| 4 | 2.69 | 8.08 |
+| --- | ------------------------------------ | ----- |
+| 1   | 2.35                                 | 6.01  |
+| 2   | 1.89                                 | 5.98  |
+| 3   | 2.55                                 | 8.74  |
+| 4   | 2.69                                 | 8.08  |
 
 with $err_\sigma$ in 6.25–7.32. **The mean error is roughly a third of VIDON's, the strongest result in the paper**, and it appears on the hardest problem.
 
@@ -325,13 +325,13 @@ with $err_\sigma$ in 6.25–7.32. **The mean error is roughly a third of VIDON's
 
 **Costs.** The authors record honestly that UQ-SONet is more expensive than VIDON in both training and inference (an extra encoder network; latent sampling and statistics at inference). Table A.2, on an NVIDIA RTX 3090:
 
-| Case | UQ-SONet training | VIDON training |
-| --- | --- | --- |
-| Sec. 4.1 | 6.03 h | 5.24 h |
-| Sec. 4.2 | 4.37 h | 4.04 h |
-| Sec. 4.3 | 6.01 h | — |
-| Sec. 4.4 | 11.34 h | — |
-| Sec. 4.5 | 10.32 h | — |
+| Case     | UQ-SONet training | VIDON training |
+| -------- | ----------------- | -------------- |
+| Sec. 4.1 | 6.03 h            | 5.24 h         |
+| Sec. 4.2 | 4.37 h            | 4.04 h         |
+| Sec. 4.3 | 6.01 h            | —              |
+| Sec. 4.4 | 11.34 h           | —              |
+| Sec. 4.5 | 10.32 h           | —              |
 
 Inference takes 0.026–0.031 s against VIDON's 0.012–0.025 s.
 
@@ -417,7 +417,7 @@ $$
 
 with $\omega_D^u\sim\mathcal N(0,1)$. So $\sigma_u$ models **aleatoric** uncertainty and $\bm\omega_E$ — through $m$ and the Gaussian process — models **epistemic** uncertainty, and the two are structurally separated.
 
-**Step four: physics as a hard structural identity (their Eqs. 11–12).** The paper assumes $\sigma_u(\bm x;\theta_\sigma^u)$ is *not* differentiated in $\bm x$, so
+**Step four: physics as a hard structural identity (their Eqs. 11–12).** The paper assumes $\sigma_u(\bm x;\theta_\sigma^u)$ is _not_ differentiated in $\bm x$, so
 
 $$
 \mathcal N_{\bm x}[u(\bm x,\bm\omega_u)]=\mathcal N_{\bm x}[\mu_u(\bm x,\bm\omega_E)],
@@ -495,10 +495,10 @@ with $\nu_e=\nu=10^{-3}$, $\phi=0.4$, $K=10^{-3}$, $g=1$; 16 $g$-sensors plus 2 
 
 **Example 3: 1-D nonlinear Poisson (inverse).** $k\partial_x^2u+\lambda\tanh(u)=f$ on $[-0.7,0.7]$, $k=0.01$, exact $u=\sin^3(6x)$, unknown reaction rate $\lambda=0.7$; 32 $f$-sensors, 2 boundary $u$-sensors, 6 interior $u$-sensors; the $\Lambda$ network is a single-neuron hidden layer with $\tanh$.
 
-| Noise | LVM-GP mean (std) | B-PINN-HMC | Deep ensemble |
-| --- | --- | --- | --- |
-| 0.01 | 0.6976 ($9.816\times10^{-3}$) | 0.6967 ($4.225\times10^{-3}$) | 0.6966 ($2.493\times10^{-4}$) |
-| 0.1 | 0.6965 ($6.954\times10^{-2}$) | 0.6787 ($4.166\times10^{-2}$) | 0.6959 ($3.691\times10^{-2}$) |
+| Noise | LVM-GP mean (std)             | B-PINN-HMC                    | Deep ensemble                 |
+| ----- | ----------------------------- | ----------------------------- | ----------------------------- |
+| 0.01  | 0.6976 ($9.816\times10^{-3}$) | 0.6967 ($4.225\times10^{-3}$) | 0.6966 ($2.493\times10^{-4}$) |
+| 0.1   | 0.6965 ($6.954\times10^{-2}$) | 0.6787 ($4.166\times10^{-2}$) | 0.6959 ($3.691\times10^{-2}$) |
 
 Reading: at high noise LVM-GP has the most accurate mean but also the **largest** reported standard deviation — consistent with the paper's argument that the competitors are over-confident, though no calibration is computed.
 
@@ -509,10 +509,10 @@ Reading: at high noise LVM-GP has the most accurate mean but also the **largest*
 
 **Example 4: 2-D nonlinear diffusion–reaction (inverse).** $k(\partial_{x_1}^2u+\partial_{x_2}^2u)+\lambda u^2=f$ on $[-1,1]^2$, $k=0.01$, exact $u=\sin(\pi x_1)\sin(\pi x_2)$, unknown $\lambda=1$; 100 interior $u$-sensors, 484 $f$-sensors, 25 boundary $u$-sensors per side; three layers, 128 neurons per hidden layer.
 
-| Noise | LVM-GP mean (std) | B-PINN-HMC | Deep ensemble |
-| --- | --- | --- | --- |
-| 0.01 | 1.0003 ($4.58\times10^{-3}$) | 1.0005 ($5.75\times10^{-3}$) | 1.0047 ($4.12\times10^{-3}$) |
-| 0.1 | 0.9916 ($5.70\times10^{-3}$) | 0.9781 ($4.98\times10^{-2}$) | 0.9302 ($2.60\times10^{-2}$) |
+| Noise | LVM-GP mean (std)            | B-PINN-HMC                   | Deep ensemble                |
+| ----- | ---------------------------- | ---------------------------- | ---------------------------- |
+| 0.01  | 1.0003 ($4.58\times10^{-3}$) | 1.0005 ($5.75\times10^{-3}$) | 1.0047 ($4.12\times10^{-3}$) |
+| 0.1   | 0.9916 ($5.70\times10^{-3}$) | 0.9781 ($4.98\times10^{-2}$) | 0.9302 ($2.60\times10^{-2}$) |
 
 **This is the paper's strongest quantitative result**: at high noise LVM-GP is both the most accurate and an order of magnitude tighter than both baselines.
 
@@ -525,11 +525,11 @@ $$
 
 so the three centres (six unknowns) must be inferred. True centres $(0.3,0.3)$, $(0.75,0.75)$, $(0.2,0.7)$; noise $\epsilon_u\sim\mathcal N(0,0.1^2)$ and $\epsilon_{f_1}\sim\mathcal N(0,0.01^2)$; reference $u$ computed by finite elements in FEniCS; 1,000 random $u$-samples and 200 $f_1$-samples; three-layer 128-neuron encoder and decoder with **Mish** activations, a two-layer 128-neuron $\Lambda$ network with $\tanh$; $\sigma_u$ initialised at 0.1; 20,000 Adam iterations at fixed learning rate $0.001$, split 10,000 (mean only) plus 10,000 (mean and standard deviation).
 
-| Centre | Truth | LVM-GP mean | LVM-GP std ($\times10^{2}$) | B-PINN-HMC mean | HMC std ($\times10^{3}$) |
-| --- | --- | --- | --- | --- | --- |
-| 1 | $(0.3,0.3)$ | $(0.2927,0.3022)$ | $(2.79,6.25)$ | $(0.3014,0.2883)$ | $(3.08,3.45)$ |
-| 2 | $(0.75,0.75)$ | $(0.7433,0.7542)$ | $(2.87,2.36)$ | $(0.7473,0.7496)$ | $(3.51,2.52)$ |
-| 3 | $(0.2,0.7)$ | $(0.2065,0.7569)$ | $(5.49,6.34)$ | $(0.2268,0.6519)$ | $(18.97,11.47)$ |
+| Centre | Truth         | LVM-GP mean       | LVM-GP std ($\times10^{2}$) | B-PINN-HMC mean   | HMC std ($\times10^{3}$) |
+| ------ | ------------- | ----------------- | --------------------------- | ----------------- | ------------------------ |
+| 1      | $(0.3,0.3)$   | $(0.2927,0.3022)$ | $(2.79,6.25)$               | $(0.3014,0.2883)$ | $(3.08,3.45)$            |
+| 2      | $(0.75,0.75)$ | $(0.7433,0.7542)$ | $(2.87,2.36)$               | $(0.7473,0.7496)$ | $(3.51,2.52)$            |
+| 3      | $(0.2,0.7)$   | $(0.2065,0.7569)$ | $(5.49,6.34)$               | $(0.2268,0.6519)$ | $(18.97,11.47)$          |
 
 **Note the third source**: B-PINN-HMC reports $0.6519$ against a true $0.7$ while quoting a small standard deviation, whereas LVM-GP gives $0.7569$ with a larger one — the over-confidence pattern again. The two rows use **different** scale factors ($\times10^2$ and $\times10^3$) as printed in the source, reproduced here as printed.
 
@@ -807,11 +807,11 @@ Setup: 8 coupling layers, each conditioning network with 32 random Fourier featu
 
 The ablation over three losses (all with $\gamma_1=0.2$, $\gamma_2=0.6$, $\gamma_3=0.2$):
 
-| Loss | Time interval | Outcome |
-| --- | --- | --- |
-| Vanilla PINN | $(0,1.5)$ | Its error curve **overlaps the base distribution's** — the residual near $t=0$ dominates, so training there contributes nothing |
-| Vanilla PINN | $(0.1,1.5)$ | Removing the PDE constraint near $t=0$ improves accuracy for $t>0.1$, but the origin is then covered only by continuity of the flow |
-| Time-weighted | $(0,1.5)$ | Accurate across the whole range |
+| Loss          | Time interval | Outcome                                                                                                                             |
+| ------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Vanilla PINN  | $(0,1.5)$     | Its error curve **overlaps the base distribution's** — the residual near $t=0$ dominates, so training there contributes nothing     |
+| Vanilla PINN  | $(0.1,1.5)$   | Removing the PDE constraint near $t=0$ improves accuracy for $t>0.1$, but the origin is then covered only by continuity of the flow |
+| Time-weighted | $(0,1.5)$     | Accurate across the whole range                                                                                                     |
 
 Snapshots at $t=0.01$, $0.5$ and $1.5$ from $\bm x_0=(0,0)$; at $t=1.5$ the flow captures a **multi-modal** transition density. The error also decays monotonically across adaptive iterations.
 
@@ -865,21 +865,21 @@ It shares the operator-learning framing with paper 95: both learn a distribution
 
 ## The four side by side
 
-| Paper | Where the uncertainty comes from | How it is represented | What enforces the constraints |
-| ---- | ------------------ | ------------------------- | -------------------- |
-| 75   | inputs out of distribution | confidence gate + Gaussian decoder | nothing (soft) |
-| 95   | sparse observations or a stochastic operator | latent variable + set transformer | boundary conditions hard-wired in the architecture |
-| 98   | epistemic and aleatoric modelled separately | Gaussian-process prior + neural operator | a structural identity (hard) |
-| 107  | not applicable (varying initial condition) | conditional flow + linearised base process | density constraints held by the flow |
+| Paper | Where the uncertainty comes from             | How it is represented                      | What enforces the constraints                      |
+| ----- | -------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
+| 75    | inputs out of distribution                   | confidence gate + Gaussian decoder         | nothing (soft)                                     |
+| 95    | sparse observations or a stochastic operator | latent variable + set transformer          | boundary conditions hard-wired in the architecture |
+| 98    | epistemic and aleatoric modelled separately  | Gaussian-process prior + neural operator   | a structural identity (hard)                       |
+| 107   | not applicable (varying initial condition)   | conditional flow + linearised base process | density constraints held by the flow               |
 
 The theoretical content differs just as sharply, and is worth tabulating too:
 
-| Paper | Theory |
-| ---- | -------- |
-| 75   | no theorems; the theory is the variational lower bound and the analysis of why the flattened distribution makes the latent approximately independent of out-of-distribution inputs |
-| 95   | no theorems; the theory is the ELBO derivation and the function-space limit argument for scaling $\sigma_u^2$ by $M$ |
-| 98   | no theorems, no propositions, no error analysis (conceded by the authors) |
-| 107  | four propositions: short-time total variation $\mathcal O(t)$ for the base (its square improving to $\mathcal O(t^3)$ when $\bm f$ has a bounded second derivative), transfer of expectations under total variation, KR maps tending to the identity, and the two residual blow-up rates as $t\to0$ |
+| Paper | Theory                                                                                                                                                                                                                                                                                              |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 75    | no theorems; the theory is the variational lower bound and the analysis of why the flattened distribution makes the latent approximately independent of out-of-distribution inputs                                                                                                                  |
+| 95    | no theorems; the theory is the ELBO derivation and the function-space limit argument for scaling $\sigma_u^2$ by $M$                                                                                                                                                                                |
+| 98    | no theorems, no propositions, no error analysis (conceded by the authors)                                                                                                                                                                                                                           |
+| 107   | four propositions: short-time total variation $\mathcal O(t)$ for the base (its square improving to $\mathcal O(t^3)$ when $\bm f$ has a bounded second derivative), transfer of expectations under total variation, KR maps tending to the identity, and the two residual blow-up rates as $t\to0$ |
 
 One judgement runs through all four: **"a prediction should be a distribution" can be implemented at three different places in an operator-learning pipeline.** Paper 75 puts it in the encoder's confidence gate, paper 95 in the latent variable, paper 98 in the correlation structure of the prior. Paper 107 makes a different point: sometimes the right move is not to attach uncertainty to the prediction but to change the learned object to one that does not depend on the varying parameter at all.
 

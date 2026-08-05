@@ -196,43 +196,43 @@ Nonlinear problems are treated in §2 of the paper (that the section exists is v
 
 Placing the two ParaDiag-I routes side by side makes the change visible:
 
-| Route                              | Grid          | Source of diagonalisability      | Growth of $\mathrm{Cond}_2(V)$              | Practical $n$      |
-| ---------------------------------- | ------------- | -------------------------------- | ------------------------------------------- | ------------------ |
-| Maday-Rønquist / geometric steps   | variable      | distinct steps separate the spectrum | exponential blow-up as $\tau\to1$       | about $20$–$25$    |
-| Paper 59 / boundary value method   | **uniform**   | the scheme itself gives simple roots | $\mathcal O(n^2)$ (observed $n^{1.75}$) | no intrinsic cap   |
+| Route                            | Grid        | Source of diagonalisability          | Growth of $\mathrm{Cond}_2(V)$          | Practical $n$    |
+| -------------------------------- | ----------- | ------------------------------------ | --------------------------------------- | ---------------- |
+| Maday-Rønquist / geometric steps | variable    | distinct steps separate the spectrum | exponential blow-up as $\tau\to1$       | about $20$–$25$  |
+| Paper 59 / boundary value method | **uniform** | the scheme itself gives simple roots | $\mathcal O(n^2)$ (observed $n^{1.75}$) | no intrinsic cap |
 
 ### Numerical experiments
 
 **Reported by the paper itself (from the abstract, verified):** numerical results on a parallel machine, with **over 60 times speedup achieved on 256 cores**; §4.1 compares against the geometric-step direct algorithm of Gander et al. and documents that method's limitation to about $n\approx20$ to $25$.
 
-| Item                              | Value / content                        | Verification status                              |
-| --------------------------------- | -------------------------------------- | ------------------------------------------------ |
-| Parallel scale                    | 256 cores                              | abstract, verified                                |
-| Reported speedup                  | over $60\times$                        | abstract, verified                                |
-| Baseline compared against         | Gander et al.'s geometric-step direct algorithm | paper §4.1, verified                     |
-| Usable time points of the baseline | about $20$–$25$                       | paper §1, verified                                |
-| Observed $\mathrm{Cond}_2(V)$     | $\mathcal O(n^{1.75})$                 | plotted in the ParaDiag review, verified (unproved) |
-| Test PDEs, meshes, wall-clock tables | —                                   | **not verified** (full text not read)             |
+| Item                                 | Value / content                                 | Verification status                                 |
+| ------------------------------------ | ----------------------------------------------- | --------------------------------------------------- |
+| Parallel scale                       | 256 cores                                       | abstract, verified                                  |
+| Reported speedup                     | over $60\times$                                 | abstract, verified                                  |
+| Baseline compared against            | Gander et al.'s geometric-step direct algorithm | paper §4.1, verified                                |
+| Usable time points of the baseline   | about $20$–$25$                                 | paper §1, verified                                  |
+| Observed $\mathrm{Cond}_2(V)$        | $\mathcal O(n^{1.75})$                          | plotted in the ParaDiag review, verified (unproved) |
+| Test PDEs, meshes, wall-clock tables | —                                               | **not verified** (full text not read)               |
 
 A parallel efficiency of $60/256\approx23\%$ is a reasonable order of magnitude for a direct method, but **without wall-clock tables the loss cannot be attributed**: steps (a) and (c) are global transforms in the time direction and hence communication-heavy, while the $N_t$ complex-shifted spatial systems in step (b) all carry different shifts, so an iterative spatial solver would give different iteration counts and natural load imbalance. How much each contributes is not something the abstract can answer. One further point deserves stating plainly: **whether all 256 cores are devoted to the time direction or the run uses a space-time split is not verified here** — if the parallelism is purely temporal then $n\ge256$ is itself the most direct evidence that the cap has been removed, and if it is a hybrid split, that cannot be read off from the speedup.
 
 **Quantitative evidence on the baseline side (from the GWZ survey, i.e. this site's [[en/computational-mathematics/knowledge-notes/time-parallelization/chapter-3-4-paradiag-i|ParaDiag-I chapter]], not this paper's experiments).** The cap that paper 59 sets out to remove has a complete experimental characterisation in the survey, which serves as the quantitative background to this paper's motivation:
 
-| Item                    | Setting                                                              |
-| ----------------------- | -------------------------------------------------------------------- |
-| Equations               | 1D heat equation and advection-diffusion (viscosity $10^{-2}$)        |
-| Boundary and initial data | homogeneous Dirichlet, $u_0(x)=\sin(2\pi x)$                        |
-| Spatial mesh            | $\Delta x=1/50$                                                       |
-| Time window             | $T=0.2$ (sweeping $\varrho$); $T=0.5$ (sweeping $N_t$)                |
-| Sweep range             | $\varrho\in[10^{-2},1]$ at five values of $N_t$; and $N_t=2^4,2^5,\dots,2^{10}$ |
-| Error measure           | maximum $L^\infty$ error over all time nodes                          |
+| Item                      | Setting                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| Equations                 | 1D heat equation and advection-diffusion (viscosity $10^{-2}$)                  |
+| Boundary and initial data | homogeneous Dirichlet, $u_0(x)=\sin(2\pi x)$                                    |
+| Spatial mesh              | $\Delta x=1/50$                                                                 |
+| Time window               | $T=0.2$ (sweeping $\varrho$); $T=0.5$ (sweeping $N_t$)                          |
+| Sweep range               | $\varrho\in[10^{-2},1]$ at five values of $N_t$; and $N_t=2^4,2^5,\dots,2^{10}$ |
+| Error measure             | maximum $L^\infty$ error over all time nodes                                    |
 
-| Quantity observed                            | Result                                                    |
-| -------------------------------------------- | ---------------------------------------------------------- |
-| Error as a function of $\varrho$             | every curve has a unique minimum                           |
-| Predictive power of $\varrho_{\rm opt}$      | very accurate for advection-diffusion; slightly off for the heat equation at small $N_t$ |
-| Error versus $N_t$ at the numerically optimal $\varrho$ | falls, then crosses a threshold below $100$ steps and rises sharply |
-| Control: uniform-step backward Euler         | error decreases monotonically in $N_t$                     |
+| Quantity observed                                       | Result                                                                                   |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Error as a function of $\varrho$                        | every curve has a unique minimum                                                         |
+| Predictive power of $\varrho_{\rm opt}$                 | very accurate for advection-diffusion; slightly off for the heat equation at small $N_t$ |
+| Error versus $N_t$ at the numerically optimal $\varrho$ | falls, then crosses a threshold below $100$ steps and rises sharply                      |
+| Control: uniform-step backward Euler                    | error decreases monotonically in $N_t$                                                   |
 
 The last two rows are the point of the experiment: **the cap is a roundoff cap, not a convergence cap.** The same time discretisation on a uniform grid keeps improving as $N_t$ grows; only after geometric stretching plus diagonalisation does the error turn around near $100$ steps, so the loss is entirely attributable to the diagonalisation itself. This is exactly the mechanism paper 59 removes by changing the time discretisation.
 
@@ -380,11 +380,11 @@ an $\mathcal O(\alpha)$ contraction that is **independent of $\Delta t$, $\Delta
 
 Writing the three statements as numbers makes the choice of $\alpha$ obvious:
 
-| $\alpha$   | $1/(1+\alpha)$ | $1/(1-\alpha)$ | $\rho(\mathcal M)\le\alpha/(1-\alpha)$ | $\mathrm{Cond}_2(V)\le1/\alpha$ |
-| ---------- | -------------- | -------------- | -------------------------------------- | ------------------------------- |
-| $10^{-1}$  | $0.9091$       | $1.1111$       | $0.1111$                               | $10$                            |
-| $10^{-2}$  | $0.9901$       | $1.0101$       | $0.0101$                               | $10^{2}$                        |
-| $10^{-3}$  | $0.9990$       | $1.0010$       | $0.0010$                               | $10^{3}$                        |
+| $\alpha$  | $1/(1+\alpha)$ | $1/(1-\alpha)$ | $\rho(\mathcal M)\le\alpha/(1-\alpha)$ | $\mathrm{Cond}_2(V)\le1/\alpha$ |
+| --------- | -------------- | -------------- | -------------------------------------- | ------------------------------- |
+| $10^{-1}$ | $0.9091$       | $1.1111$       | $0.1111$                               | $10$                            |
+| $10^{-2}$ | $0.9901$       | $1.0101$       | $0.0101$                               | $10^{2}$                        |
+| $10^{-3}$ | $0.9990$       | $1.0010$       | $0.0010$                               | $10^{3}$                        |
 
 (The first four columns are computed directly from the theorem and its corollary; the last is the generic bound for $\alpha$-circulant diagonalisation.) Adding the second fact from the derivation — that only **one** eigenvalue per scalar channel deviates from $1$ — shows how friendly this theorem is to Krylov methods: across the full $N_xN_t$-dimensional system at most $N_x$ eigenvalues differ from $1$, and all the rest sit exactly at $1$.
 
@@ -399,11 +399,11 @@ Writing the three statements as numbers makes the choice of $\alpha$ obvious:
 
 The abstract confirms only that "illustrative numerical experiments are presented to complement our theory". **The specific PDEs, mesh parameters and iteration counts are not verified.** But the survey cites this paper's experiments in two places, both worth recording because both concern situations the theory does **not** cover:
 
-| Experiment cited                        | Behaviour observed                                                                            |
-| --------------------------------------- | --------------------------------------------------------------------------------------------- |
-| Nonlinear problems, Newton + GMRES      | clustering of $\mathcal P_\alpha^{-1}\mathcal J$; $\rho>1$ can occur, so the stationary iteration fails while GMRES still works well |
-| Effect of the time window $T$           | a shorter $T$ gives more clustered eigenvalues and faster GMRES convergence                     |
-| Numerov parameter (the survey's own run) | $\gamma=1/120$ stays inside the circle of radius $\alpha/(1-\alpha)$; $\gamma=1/120.01$ escapes |
+| Experiment cited                         | Behaviour observed                                                                                                                   |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Nonlinear problems, Newton + GMRES       | clustering of $\mathcal P_\alpha^{-1}\mathcal J$; $\rho>1$ can occur, so the stationary iteration fails while GMRES still works well |
+| Effect of the time window $T$            | a shorter $T$ gives more clustered eigenvalues and faster GMRES convergence                                                          |
+| Numerov parameter (the survey's own run) | $\gamma=1/120$ stays inside the circle of radius $\alpha/(1-\alpha)$; $\gamma=1/120.01$ escapes                                      |
 
 The first row separates the theorem from practice: what the theorem guarantees is $\rho(\mathcal M)\le\alpha/(1-\alpha)$, a statement about the **stationary iteration**. Replace $\mathcal K$ by the Jacobian $\mathcal J$ of a nonlinear problem and the hypothesis no longer holds, so $\rho$ may exceed $1$; but GMRES needs the spectrum to be **clustered**, not $\rho<1$, so it still converges quickly. This is the concrete reason for choosing a Krylov method over the stationary iteration.
 
@@ -516,11 +516,11 @@ The paper's remaining verifiable conclusions: both applications (PDE-constrained
 
 First, the outer solver is **CG**, not GMRES or MINRES. That means the preconditioned system being iterated on is **symmetric positive definite**, consistent with the MSC/Schur-complement reading above and a genuine difference from the neighbouring work:
 
-| Paper    | Outer solver        | Implied spectral property |
-| -------- | ------------------- | -------------------------- |
-| Paper 46 | GMRES / BiCGStab    | non-symmetric              |
-| Paper 65 | GMRES               | non-symmetric              |
-| Paper 71 | **CG**              | **symmetric positive definite** |
+| Paper    | Outer solver     | Implied spectral property       |
+| -------- | ---------------- | ------------------------------- |
+| Paper 46 | GMRES / BiCGStab | non-symmetric                   |
+| Paper 65 | GMRES            | non-symmetric                   |
+| Paper 71 | **CG**           | **symmetric positive definite** |
 
 Second, the claim is **quantitative agreement** between the predicted interval and the measured CG rate, not merely "faster than unpreconditioned". That is a stronger claim than a speedup, because it matches the theorem's interval endpoints against the slope of an experimental curve.
 
@@ -609,46 +609,46 @@ This site's section-by-section reading of it — including all 48 original figur
 
 ## How the five relate
 
-| Paper | Obstruction removed                                             | Means                                                                 |
-| ----- | ---------------------------------------------------------------- | --------------------------------------------------------------------- |
-| 59    | $B$ not diagonalisable on a uniform grid, $V$ ill conditioned on a geometric one | switch to a boundary value method, giving $\mathrm{Cond}_2(V)=\mathcal O(n^2)$ |
-| 65    | case-by-case spectral analysis resting on ad hoc structural hypotheses | assume only stability, obtaining the modulus bound $[\frac{1}{1+\alpha},\frac{1}{1-\alpha}]$ |
-| 71    | a forward-backward system is not a single Toeplitz system         | circulantise the several Toeplitz blocks of the system                 |
-| 84    | a time-spectral matrix has no Toeplitz structure                  | factor out Toeplitz factors first, then circulantise                   |
-| 85    | a scattered literature                                            | organise it by the type of dynamics                                    |
+| Paper | Obstruction removed                                                              | Means                                                                                        |
+| ----- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 59    | $B$ not diagonalisable on a uniform grid, $V$ ill conditioned on a geometric one | switch to a boundary value method, giving $\mathrm{Cond}_2(V)=\mathcal O(n^2)$               |
+| 65    | case-by-case spectral analysis resting on ad hoc structural hypotheses           | assume only stability, obtaining the modulus bound $[\frac{1}{1+\alpha},\frac{1}{1-\alpha}]$ |
+| 71    | a forward-backward system is not a single Toeplitz system                        | circulantise the several Toeplitz blocks of the system                                       |
+| 84    | a time-spectral matrix has no Toeplitz structure                                 | factor out Toeplitz factors first, then circulantise                                         |
+| 85    | a scattered literature                                                           | organise it by the type of dynamics                                                          |
 
 One judgement runs through all of them: **every advance on this route takes the form of replacing one hypothesis by a weaker or more classical one.** Paper 59 replaces "distinct step sizes" by "uniform steps but a different scheme"; paper 65 replaces "Toeplitz plus diagonal dominance" by "stable"; paper 71 replaces "a single forward evolution" by "a forward-backward coupling", at the cost of losing the freedom to fix $\alpha$; paper 84 identifies when the last remaining hypothesis (Toeplitz structure) stops holding, and how to get around it.
 
 Ordering the five by how much roundoff the diagonalisation costs makes the economics of the whole thread visible:
 
-| Route                              | Time matrix                              | Roundoff amplification of the diagonalisation | Dependence on $N_t$          | Representative |
-| ---------------------------------- | ---------------------------------------- | --------------------------------------------- | ---------------------------- | -------------- |
-| ParaDiag-I, geometric steps        | variable-step backward Euler             | bound carries a factor $\varrho^{-(N_t-1)}$    | **exponential**              | Maday-Rønquist |
-| ParaDiag-I, boundary value method  | uniform-step BVM                         | $\mathcal O(n^2)$ (observed $\mathcal O(n^{1.75})$) | polynomial              | Paper 59       |
-| ParaDiag-II, fixed $\alpha$        | $\alpha$-circulant                       | $\le1/\alpha$                                  | **none**                     | Paper 65       |
-| ParaDiag-II, forward-backward      | $\alpha$-circulant, $\alpha=CN_t^{-\theta}$ | $\lesssim N_t^{\theta}/C$                   | polynomial ($\theta$ unverified) | Paper 71   |
-| ParaDiag-II, time spectral         | circulantised after factorisation        | "well conditioned", bound unverified           | unverified                   | Paper 84       |
+| Route                             | Time matrix                                 | Roundoff amplification of the diagonalisation       | Dependence on $N_t$              | Representative |
+| --------------------------------- | ------------------------------------------- | --------------------------------------------------- | -------------------------------- | -------------- |
+| ParaDiag-I, geometric steps       | variable-step backward Euler                | bound carries a factor $\varrho^{-(N_t-1)}$         | **exponential**                  | Maday-Rønquist |
+| ParaDiag-I, boundary value method | uniform-step BVM                            | $\mathcal O(n^2)$ (observed $\mathcal O(n^{1.75})$) | polynomial                       | Paper 59       |
+| ParaDiag-II, fixed $\alpha$       | $\alpha$-circulant                          | $\le1/\alpha$                                       | **none**                         | Paper 65       |
+| ParaDiag-II, forward-backward     | $\alpha$-circulant, $\alpha=CN_t^{-\theta}$ | $\lesssim N_t^{\theta}/C$                           | polynomial ($\theta$ unverified) | Paper 71       |
+| ParaDiag-II, time spectral        | circulantised after factorisation           | "well conditioned", bound unverified                | unverified                       | Paper 84       |
 
 The third row is the centre of this table: **fixed-$\alpha$ $\alpha$-circulant preconditioning is the only member of the family whose roundoff cost does not grow with the time window at all**, the price being that it is only an approximation and needs an outer Krylov iteration. The other four rows all explain when that ideal cannot be reached, and how fast it degrades.
 
 ## Coverage check
 
-| Content                                            | Paper | Coverage status                                                            |
-| -------------------------------------------------- | ----- | --------------------------------------------------------------------------- |
-| Three-step factorisation and why $B$ is not diagonalisable | 59 | the factorisation, the Jordan block, the defectiveness of lower-triangular Toeplitz |
-| The geometric-step dilemma and the $n\approx20$ ceiling | 59 | closed-form $V$, ratio-versus-increment check, both error bounds, $\varrho_{\rm opt}$ |
-| The boundary value method and its uniform second order | 59 | the hybrid scheme, why it cannot be time-stepped, $B$ and $\boldsymbol b$, $B^2$ for second order |
-| The Chebyshev mechanism and the conditioning proof  | 59    | characteristic equation, root structure, $y$-substitution, $V=\Theta\Phi$, Christoffel-Darboux |
-| Speedup and the ceiling of the baseline             | 59    | $60\times$ on 256 cores (verified), the survey's sweep tables, unverified items flagged |
-| The unified two-matrix form for first and second order | 65 | $r_1,r_2$, $\mathcal K$ and $\mathcal P_\alpha$, $\alpha$ in two corners     |
-| The main theorem and its exchange of hypotheses     | 65    | stability condition, modulus bound, orientation check, the $\le2$ second-order condition, $\rho\le\alpha/(1-\alpha)$ |
-| The rank-one computation and its two by-products    | 65    | the eigenvalue $1/(1-\alpha r^{N_t})$, at most $N_x$ deviations, parabolic over hyperbolic |
-| Sharpness of the hypothesis and where it fails      | 65    | the Numerov $\gamma$ comparison, general multistep giving only $1+\mathcal O(\alpha)$ |
-| Reading the nonlinear and $T$-dependence experiments | 65   | three-row experiment table; the tension with the linear theory resolved (this page's reading) |
-| Circulantising several blocks in a forward-backward system | 71 | the obstruction, the plural recipe, MSC and its positive definiteness, why CG |
-| The $\alpha$ scaling law and its consequence        | 71    | the form $\alpha=CN_t^{-\theta}$, $\theta$ unverified, roundoff floor growing with $N_t$ |
-| The unstructuredness of a time-spectral matrix      | 84    | one-shot solve, the density mechanism (Lagrange quadrature), why the recipe fails |
-| Factorise first, then circulantise                  | 84    | Strang-type $\alpha$-circulant, Legendre dual-Petrov-Galerkin, factorisation unverified |
+| Content                                                    | Paper | Coverage status                                                                                                      |
+| ---------------------------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------- |
+| Three-step factorisation and why $B$ is not diagonalisable | 59    | the factorisation, the Jordan block, the defectiveness of lower-triangular Toeplitz                                  |
+| The geometric-step dilemma and the $n\approx20$ ceiling    | 59    | closed-form $V$, ratio-versus-increment check, both error bounds, $\varrho_{\rm opt}$                                |
+| The boundary value method and its uniform second order     | 59    | the hybrid scheme, why it cannot be time-stepped, $B$ and $\boldsymbol b$, $B^2$ for second order                    |
+| The Chebyshev mechanism and the conditioning proof         | 59    | characteristic equation, root structure, $y$-substitution, $V=\Theta\Phi$, Christoffel-Darboux                       |
+| Speedup and the ceiling of the baseline                    | 59    | $60\times$ on 256 cores (verified), the survey's sweep tables, unverified items flagged                              |
+| The unified two-matrix form for first and second order     | 65    | $r_1,r_2$, $\mathcal K$ and $\mathcal P_\alpha$, $\alpha$ in two corners                                             |
+| The main theorem and its exchange of hypotheses            | 65    | stability condition, modulus bound, orientation check, the $\le2$ second-order condition, $\rho\le\alpha/(1-\alpha)$ |
+| The rank-one computation and its two by-products           | 65    | the eigenvalue $1/(1-\alpha r^{N_t})$, at most $N_x$ deviations, parabolic over hyperbolic                           |
+| Sharpness of the hypothesis and where it fails             | 65    | the Numerov $\gamma$ comparison, general multistep giving only $1+\mathcal O(\alpha)$                                |
+| Reading the nonlinear and $T$-dependence experiments       | 65    | three-row experiment table; the tension with the linear theory resolved (this page's reading)                        |
+| Circulantising several blocks in a forward-backward system | 71    | the obstruction, the plural recipe, MSC and its positive definiteness, why CG                                        |
+| The $\alpha$ scaling law and its consequence               | 71    | the form $\alpha=CN_t^{-\theta}$, $\theta$ unverified, roundoff floor growing with $N_t$                             |
+| The unstructuredness of a time-spectral matrix             | 84    | one-shot solve, the density mechanism (Lagrange quadrature), why the recipe fails                                    |
+| Factorise first, then circulantise                         | 84    | Strang-type $\alpha$-circulant, Legendre dual-Petrov-Galerkin, factorisation unverified                              |
 
 ## Sources for this page
 

@@ -35,18 +35,18 @@ Replacing $\mathcal G$ by a surrogate $\widehat{\mathcal G}$ gives an approximat
 
 How much detail the two close-reading pages carry is decided entirely by how much of each source could be checked. The summary is below; the per-paper gaps are recorded on the pages themselves.
 
-| No. | Source checked                                                     | Tier                       |
-| --- | ------------------------------------------------------------------ | -------------------------- |
-| 34  | arXiv:1809.08931 full text plus journal abstract                   | Full text                  |
-| 37  | arXiv:1807.00618 full text                                         | Full text                  |
-| 49  | arXiv:1911.08926 full text                                         | Full text                  |
-| 55  | arXiv:2104.06285 full text                                         | Full text                  |
-| 56  | arXiv:2104.06276 full text                                         | Full text                  |
-| 79  | arXiv:2310.17844 v3 full text                                      | Full text                  |
-| 82  | ScienceDirect abstract, complete introduction, section openings    | **Abstract and introduction only** |
-| 88  | arXiv:2508.06852 full text                                         | Full text                  |
-| 99  | arXiv:2411.13277 v3 full text                                      | Full text                  |
-| 106 | arXiv:2605.29373 v1 full text                                      | Full text                  |
+| No. | Source checked                                                  | Tier                               |
+| --- | --------------------------------------------------------------- | ---------------------------------- |
+| 34  | arXiv:1809.08931 full text plus journal abstract                | Full text                          |
+| 37  | arXiv:1807.00618 full text                                      | Full text                          |
+| 49  | arXiv:1911.08926 full text                                      | Full text                          |
+| 55  | arXiv:2104.06285 full text                                      | Full text                          |
+| 56  | arXiv:2104.06276 full text                                      | Full text                          |
+| 79  | arXiv:2310.17844 v3 full text                                   | Full text                          |
+| 82  | ScienceDirect abstract, complete introduction, section openings | **Abstract and introduction only** |
+| 88  | arXiv:2508.06852 full text                                      | Full text                          |
+| 99  | arXiv:2411.13277 v3 full text                                   | Full text                          |
+| 106 | arXiv:2605.29373 v1 full text                                   | Full text                          |
 
 Nine are full text. One, paper 82, is paywalled with no preprint, so **not a single equation from its Sections 2 to 4 is verifiable**; its close reading covers only what the abstract and introduction support and says where the line falls.
 
@@ -108,7 +108,7 @@ The two are consistent in order: Hellinger distance is controlled by the square 
 
 Both bounds above compare **two posterior measures**. Neither says how far what the algorithm hands back — samples, an ensemble, a Gaussian approximation — sits from the true posterior. Of the ten papers only 79 closes that step, and only in the linear case.
 
-There are three hypotheses: (3.2) for any $\epsilon$ the *linear* neural operator $\widehat G:\mathbb R^{N_m}\to\mathbb R^{N_y}$ can be trained so that $\|\widehat G-G\|_2<\epsilon$; (3.3) $\|G\|_2<H$; (3.4) $G^{T}\Sigma_\eta^{-1}G\succ0$ with $\|G^{T}\Sigma_\eta^{-1}G\|_2>C_1$. Lemma 3.5 then gives the surrogate-side counterpart a positive lower bound, $\|\widehat G^{T}\Sigma_\eta^{-1}\widehat G\|_2>C_2$, through the perturbation estimate $\|G^{T}\Sigma_\eta^{-1}G-\widehat G^{T}\Sigma_\eta^{-1}\widehat G\|_2\le2\epsilon H\|\Sigma_\eta^{-1}\|_2$.
+There are three hypotheses: (3.2) for any $\epsilon$ the _linear_ neural operator $\widehat G:\mathbb R^{N_m}\to\mathbb R^{N_y}$ can be trained so that $\|\widehat G-G\|_2<\epsilon$; (3.3) $\|G\|_2<H$; (3.4) $G^{T}\Sigma_\eta^{-1}G\succ0$ with $\|G^{T}\Sigma_\eta^{-1}G\|_2>C_1$. Lemma 3.5 then gives the surrogate-side counterpart a positive lower bound, $\|\widehat G^{T}\Sigma_\eta^{-1}\widehat G\|_2>C_2$, through the perturbation estimate $\|G^{T}\Sigma_\eta^{-1}G-\widehat G^{T}\Sigma_\eta^{-1}\widehat G\|_2\le2\epsilon H\|\Sigma_\eta^{-1}\|_2$.
 
 **Theorem 3.6.** Add the range conditions $\mathrm{Range}(G^{T})=\mathrm{Range}(\widehat G^{T})=\mathbb R^{N_m}$ together with $\Sigma_\omega\succ0$ and $\Sigma_\eta\succ0$. Then the surrogate-driven unscented Kalman inversion fixed point $(\widehat r_\infty,\widehat C^{-1}_\infty)$ converges to the full-model fixed point $(r_\infty,C^{-1}_\infty)$, with
 
@@ -126,15 +126,15 @@ all constants positive and bounded. Both are $O(\epsilon)$, that is, linear in t
 
 ### What is proved and what is only argued
 
-| Statement                                                                     | Source                       | Scope and qualification                                        |
-| ----------------------------------------------------------------------------- | ---------------------------- | -------------------------------------------------------------- |
-| Uniformly close potentials $\Rightarrow$ small Hellinger distance             | Stuart, Acta Numer. 2010     | demands global accuracy, the very cost this family avoids      |
-| Local accuracy + small bad-set posterior mass $\Rightarrow$ small KL          | 37 Thm 2 = 79 Thm 2.1        | compares two posteriors only, says nothing about the output    |
-| Hellinger version, without the square                                         | 37 Cor. 3, attributed to [8] | as above                                                        |
-| Surrogate operator error $\epsilon$ $\Rightarrow$ inversion fixed point $O(\epsilon)$ | 79 Thm 3.6            | linear operator network only, unscented Kalman inversion only  |
-| Local polynomial regression error $O(R^{2})/O(R^{3})$ in a ball of radius $R$ | Conrad et al. 2016, background | needs a controlled poisedness constant, which a network lacks   |
-| Asymptotic exactness under unbounded refinement                               | Conrad et al. 2016, background | none of the ten papers takes this route                        |
-| Convergence of the adaptive loop, or bad-set measure going to zero            | **none**                     | argued as a mechanism in every paper                            |
+| Statement                                                                             | Source                         | Scope and qualification                                       |
+| ------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| Uniformly close potentials $\Rightarrow$ small Hellinger distance                     | Stuart, Acta Numer. 2010       | demands global accuracy, the very cost this family avoids     |
+| Local accuracy + small bad-set posterior mass $\Rightarrow$ small KL                  | 37 Thm 2 = 79 Thm 2.1          | compares two posteriors only, says nothing about the output   |
+| Hellinger version, without the square                                                 | 37 Cor. 3, attributed to [8]   | as above                                                      |
+| Surrogate operator error $\epsilon$ $\Rightarrow$ inversion fixed point $O(\epsilon)$ | 79 Thm 3.6                     | linear operator network only, unscented Kalman inversion only |
+| Local polynomial regression error $O(R^{2})/O(R^{3})$ in a ball of radius $R$         | Conrad et al. 2016, background | needs a controlled poisedness constant, which a network lacks |
+| Asymptotic exactness under unbounded refinement                                       | Conrad et al. 2016, background | none of the ten papers takes this route                       |
+| Convergence of the adaptive loop, or bad-set measure going to zero                    | **none**                       | argued as a mechanism in every paper                          |
 
 The last two rows are the key to reading this family. The Conrad–Marzouk–Pillai–Smith route buys asymptotic exactness with a Metropolis correction: the samples eventually follow the true posterior. This topic's route gives up that guarantee. **The subchains are run against the surrogate, so the samples follow the surrogate-induced posterior**, and correctness rests entirely on the KL bound above showing the two posteriors are close. The two guarantees differ in strength and in price — the first needs several leave-one-out refits per step, the second one or two true solves per outer iteration.
 
@@ -172,15 +172,15 @@ $$
 
 requires a high-dimensional integral and is not implementable. Every paper therefore retreats to a single-point quantity. Here is the whole family, with the baseline it departs from on the first row:
 
-| No.               | Indicator                                                | Evaluated at                                    | Trigger                              |
-| ----------------- | -------------------------------------------------------- | ----------------------------------------------- | ------------------------------------ |
-| Conrad et al.     | leave-one-out sensitivity $\epsilon^{\pm}$ of the acceptance probability | both $\theta^{-}$ and $\theta^{+}$ | $>\gamma_t$, refine at the larger    |
-| 37                | **absolute** $\ell^\infty$ error                         | a state accepted by a true-model Metropolis step | $>\epsilon$                          |
-| 34                | relative $\ell^\infty$ error                             | the ensemble mean                               | $>\mathrm{tol}$                      |
-| 49                | relative $\ell^\infty$ error                             | an accepted state                               | $>\mathrm{tol}$                      |
-| 56                | relative $\ell^2$ error                                  | the particle mean                               | $>\mathrm{tol}$                      |
-| 79                | $e_D(t)=\Phi(r_t;y)$                                     | the anchor: best true-model fit among posterior samples | relative change $>\epsilon$  |
-| 106               | $\Phi$ at the current prior mean                         | the evolving prior mean                         | relative change $<\epsilon$ means **stop** |
+| No.           | Indicator                                                                | Evaluated at                                            | Trigger                                    |
+| ------------- | ------------------------------------------------------------------------ | ------------------------------------------------------- | ------------------------------------------ |
+| Conrad et al. | leave-one-out sensitivity $\epsilon^{\pm}$ of the acceptance probability | both $\theta^{-}$ and $\theta^{+}$                      | $>\gamma_t$, refine at the larger          |
+| 37            | **absolute** $\ell^\infty$ error                                         | a state accepted by a true-model Metropolis step        | $>\epsilon$                                |
+| 34            | relative $\ell^\infty$ error                                             | the ensemble mean                                       | $>\mathrm{tol}$                            |
+| 49            | relative $\ell^\infty$ error                                             | an accepted state                                       | $>\mathrm{tol}$                            |
+| 56            | relative $\ell^2$ error                                                  | the particle mean                                       | $>\mathrm{tol}$                            |
+| 79            | $e_D(t)=\Phi(r_t;y)$                                                     | the anchor: best true-model fit among posterior samples | relative change $>\epsilon$                |
+| 106           | $\Phi$ at the current prior mean                                         | the evolving prior mean                                 | relative change $<\epsilon$ means **stop** |
 
 Two design principles run through the table. The first is **goal orientation**: the indicator should measure error in the quantity that actually drives the sampler, not in the forward model as such. Conrad and coauthors put it most sharply — the scale of an error in forward-model outputs or in the log-likelihood cannot be known in advance, whereas an error in the acceptance probability reads directly as an additive error in a probability, which lets a user set the threshold with problem-independent intuition. Papers 79 and 106 arrive at the same place from the other side: they use the data misfit $\Phi$ itself, the objective the inversion is trying to reduce. Papers 34, 37, 49 and 56 compromise, measuring raw model error but **only at one point believed to sit in the posterior bulk**. The second principle is **locality through the design point**: the expensive high-fidelity evaluation is always spent at a single point — an accepted chain state, the ensemble mean, the particle mean, the best-fitting posterior sample, the current prior mean. That is the cost-control device itself: the Conrad cross-validation indicator needs $N$ leave-one-out refits per step, while these need one forward solve per outer iteration.
 

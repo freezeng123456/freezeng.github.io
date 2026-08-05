@@ -86,15 +86,15 @@ Stacking the unknowns at all time levels, a one-step discretisation gives a bloc
 
 The three close readings collect every experimental datum that could be verified into tables. Taken together, the numerical evidence across these papers is very unevenly distributed, and it helps to know that in advance:
 
-| Paper    | Strongest verifiable evidence                                                | What is missing                          |
-| -------- | ----------------------------------------------------------------------------- | ---------------------------------------- |
-| 12       | convergence constants and the thresholds $J_{\min}=O(\log^2z_{\max})$, $J_{\rm cri}=4$; the examples only to the level of application class | meshes, iteration counts |
-| 39       | four directly comparable constants and the equal-cost accounting; the survey's viscosity scan showing where the constants fail | the scale and wall-clock data of the paper's own experiments |
-| 59       | over $60\times$ speedup on 256 cores; the baseline's $n\approx20$–$25$ ceiling; observed $\mathrm{Cond}_2(V)=O(n^{1.75})$ | test PDEs, meshes, wall-clock tables |
-| 65       | three qualitative observations (nonlinear GMRES, the effect of $T$, the Numerov stability boundary) | iteration counts, mesh sizes |
-| 71       | the outer solver is CG, so the preconditioned system is symmetric positive definite; quantitative agreement between predicted spectrum and measured CG rate | $\gamma$, $N_t$, $C$, iteration counts |
-| 84       | six figures, GMRES as the outer solver                                        | test problems, spectral degrees, clustering radius |
-| 20, 30, 77, 31, 46, 53 | see the "numerical experiments" sections of each close reading; most can be confirmed only to the level of application class | all quantitative results |
+| Paper                  | Strongest verifiable evidence                                                                                                                               | What is missing                                              |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| 12                     | convergence constants and the thresholds $J_{\min}=O(\log^2z_{\max})$, $J_{\rm cri}=4$; the examples only to the level of application class                 | meshes, iteration counts                                     |
+| 39                     | four directly comparable constants and the equal-cost accounting; the survey's viscosity scan showing where the constants fail                              | the scale and wall-clock data of the paper's own experiments |
+| 59                     | over $60\times$ speedup on 256 cores; the baseline's $n\approx20$–$25$ ceiling; observed $\mathrm{Cond}_2(V)=O(n^{1.75})$                                   | test PDEs, meshes, wall-clock tables                         |
+| 65                     | three qualitative observations (nonlinear GMRES, the effect of $T$, the Numerov stability boundary)                                                         | iteration counts, mesh sizes                                 |
+| 71                     | the outer solver is CG, so the preconditioned system is symmetric positive definite; quantitative agreement between predicted spectrum and measured CG rate | $\gamma$, $N_t$, $C$, iteration counts                       |
+| 84                     | six figures, GMRES as the outer solver                                                                                                                      | test problems, spectral degrees, clustering radius           |
+| 20, 30, 77, 31, 46, 53 | see the "numerical experiments" sections of each close reading; most can be confirmed only to the level of application class                                | all quantitative results                                     |
 
 One practical way to read this: **the quantitative strength of these papers lies in their theoretical constants, not in performance tables.** The only one carrying parallel performance numbers is paper 59, the only one carrying a set of directly comparable convergence constants is paper 39, and for most of the rest all that can be confirmed is that experiments exist and which outer solver was used — which is itself informative, since choosing CG over GMRES says directly whether the object being iterated on is symmetric positive definite.
 

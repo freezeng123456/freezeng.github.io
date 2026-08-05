@@ -92,11 +92,11 @@ The same quantity arrives from a second direction: the weights of Gauss quadratu
 
 Once the criterion "$M/\log M$ beats the stability factor" is written down, the topic splits into three competing routes that share one pipeline and differ only in which density the points come from and what weight goes with it:
 
-| Route                                | Sampling density               | Weight        | Sample requirement                                                            |
-| ------------------------------------ | ------------------------------ | ------------- | ------------------------------------------------------------------------------ |
-| plain Monte Carlo                    | the orthogonality measure $w$  | none          | $M\sim N^2$ (tensor Legendre); $N^{\ln3/\ln2}\approx N^{1.585}$ for Chebyshev |
-| Christoffel-weighted (induced) sampling | $\rho=(K/N)\,w$             | of the form $1/K$ | $M\gtrsim N\log N$, non-asymptotic, criterion depends on $N$ alone            |
-| greedy deterministic selection       | chosen from a candidate set by QR with column pivoting | weighted | pushes $M$ close to $N$                                                       |
+| Route                                   | Sampling density                                       | Weight            | Sample requirement                                                            |
+| --------------------------------------- | ------------------------------------------------------ | ----------------- | ----------------------------------------------------------------------------- |
+| plain Monte Carlo                       | the orthogonality measure $w$                          | none              | $M\sim N^2$ (tensor Legendre); $N^{\ln3/\ln2}\approx N^{1.585}$ for Chebyshev |
+| Christoffel-weighted (induced) sampling | $\rho=(K/N)\,w$                                        | of the form $1/K$ | $M\gtrsim N\log N$, non-asymptotic, criterion depends on $N$ alone            |
+| greedy deterministic selection          | chosen from a candidate set by QR with column pivoting | weighted          | pushes $M$ close to $N$                                                       |
 
 The criterion on the second row depends only on $N=\dim\mathbb P_\Lambda$ and not on the dimension $d$, the domain $D$, the weight $w$, or which $N$-dimensional subspace is used; the price is that one must be able to sample from $\rho$, which does depend on all of those. The third row trades randomness for a selection procedure, and its details are on [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|Optimal sampling and preconditioning]].
 

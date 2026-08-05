@@ -167,13 +167,13 @@ The specific mesh sizes, values of $J$, iteration counts, measured contraction f
 
 The closest thing to reported measurements is the set of constants that circulates around this paper in the literature. They come from a third-party introduction (Zhou, Liu and Wu, _Parareal-CG_, arXiv:2304.10152 §1) restating this paper, and are verifiable as a **restatement** rather than as the paper's own typesetting:
 
-| Coarse/fine combination                      | Contraction  | Threshold                             | Attributed to      |
-| -------------------------------------------- | ------------ | ------------------------------------- | ------------------ |
-| Parareal-Euler                                | $\approx0.298$ | $J\ge2$                               | Mathew-Sarkis-Schaerer |
-| Parareal-2sDIRK                               | $0.316$      | $J\ge2$                               | Wu                 |
-| Parareal-TR/BDF2                              | $0.333$      | $J\ge2$                               | Wu                 |
-| third-order DIRK fine propagator              | $\approx0.333$ | $J\ge4$                               | **paper 12**       |
-| trapezoidal / fourth-order Gauss fine propagator | $\approx0.333$ | $J\ge J^*_{\min}(\rho(A),\Delta t)$ | **paper 12**       |
+| Coarse/fine combination                          | Contraction    | Threshold                           | Attributed to          |
+| ------------------------------------------------ | -------------- | ----------------------------------- | ---------------------- |
+| Parareal-Euler                                   | $\approx0.298$ | $J\ge2$                             | Mathew-Sarkis-Schaerer |
+| Parareal-2sDIRK                                  | $0.316$        | $J\ge2$                             | Wu                     |
+| Parareal-TR/BDF2                                 | $0.333$        | $J\ge2$                             | Wu                     |
+| third-order DIRK fine propagator                 | $\approx0.333$ | $J\ge4$                             | **paper 12**           |
+| trapezoidal / fourth-order Gauss fine propagator | $\approx0.333$ | $J\ge J^*_{\min}(\rho(A),\Delta t)$ | **paper 12**           |
 
 > [!warning] On the rounding of these constants
 > Whether the paper itself typesets $0.333$ or a different rounding is unverified here; the authors' own survey rounds the same conclusion to $\approx0.3$. That survey also records two concrete thresholds: $J_{\min}=2$ for the two-stage second-order SDIRK method (Wu, IMA J. Numer. Anal. 2015) and $J_{\min}=4$ for the two-stage third-order SDIRK method (this paper) — the latter agreeing with the fourth row above.
@@ -319,11 +319,11 @@ Two pieces of surrounding context are verifiable and help locate the paper. Firs
 
 Second, the calibration scale comes from the closest uniform-grid result (Yang, Yuan and Zhou, _Robust Convergence of Parareal Algorithms with Arbitrarily High-Order Fine Propagators_, CSIAM Trans. Appl. Math., arXiv:2109.05203), whose abstract is verifiable:
 
-| Hypothesis                                                                | Conclusion                                                              |
-| ------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Hypothesis                                                                                | Conclusion                                                             |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | $\mathcal G$ backward Euler, single-step fine propagator with $\lvert r(-\infty)\rvert<1$ | a critical $J_*$ exists with linear rate near $0.3$ for all $J\ge J_*$ |
-| the same, with nonsmooth or incompatible initial data                     | the rate remains robust                                                 |
-| $\mathcal F$ a two-, three- or four-stage Lobatto IIIC method             | contraction factor $<0.31$ with $J_*=2$                                 |
+| the same, with nonsmooth or incompatible initial data                                     | the rate remains robust                                                |
+| $\mathcal F$ a two-, three- or four-stage Lobatto IIIC method                             | contraction factor $<0.31$ with $J_*=2$                                |
 
 **Whether paper 77 attains a comparable constant on nonuniform fine grids is unverified here.**
 
@@ -343,24 +343,24 @@ Following the contrast further shows that the two routes have different cost str
 
 ## Coverage check
 
-| Item                                                | Paper  | Status                                                                     |
-| --------------------------------------------------- | ------ | -------------------------------------------------------------------------- |
-| Parareal iteration, preconditioner reading          | 12     | iteration, $M_g\Delta U^k=b-M_fU^k$, where the parallelism lives           |
-| Error matrix and the two convergence factors        | 12     | $M(z)$, factorisation, $\varrho_l$ and $\varrho_s$, finite termination     |
-| Nonlinear superlinear bound                         | —      | Gander-Hairer bound (background, not one of these papers)                  |
-| Practical limits of the machinery                   | —      | $\nu$ sweep and Radau IIA (from the survey, not these papers)              |
-| Stability functions and high-frequency limits       | 12     | $R(\infty)$ table, $\lim\varrho_l=\lvert R_f(\infty)\rvert^J$              |
-| Threshold theorem in the A-stable case              | 12     | $J_{\min}=O(\log^2 z_{\max})$, L-stable and exact contrasts                |
-| Parameter-free threshold for third-order DIRK       | 12     | $J_{\rm cri}=4$                                                            |
-| Circulating constants and the rounding caveat       | 12     | five rows (third-party restatement), $0.333$ versus $0.3$                  |
-| Experiment classes and what each tests              | 12     | fractional PDEs, UQ; meshes and speedups unverified                        |
-| Space-fractional bottleneck in the coarse solve     | 20     | dense $A$, large $\lambda_{\max}$ (limited verification)                   |
-| Adjacent mechanisms that must not be attributed     | 20     | explicit list of non-attributable candidates                               |
-| Historical effect and unbalanced load               | 30     | broken premise, $\sum n=N_t(N_t+1)/2$, critical path                       |
-| Localisation and mixed coarse correction            | 30     | auxiliary variables, the discarded naive update, separate correction       |
-| Nonuniform fine grid destroying Toeplitz structure  | 77     | power to product, both failures, why it is new                             |
-| Calibration scale for a nonuniform-grid result      | 77     | three verified rows from Yang-Yuan-Zhou                                    |
-| Opposite role of nonuniform steps in the two routes | 12, 77 | obstacle versus prerequisite, two cost structures                          |
+| Item                                                | Paper  | Status                                                                 |
+| --------------------------------------------------- | ------ | ---------------------------------------------------------------------- |
+| Parareal iteration, preconditioner reading          | 12     | iteration, $M_g\Delta U^k=b-M_fU^k$, where the parallelism lives       |
+| Error matrix and the two convergence factors        | 12     | $M(z)$, factorisation, $\varrho_l$ and $\varrho_s$, finite termination |
+| Nonlinear superlinear bound                         | —      | Gander-Hairer bound (background, not one of these papers)              |
+| Practical limits of the machinery                   | —      | $\nu$ sweep and Radau IIA (from the survey, not these papers)          |
+| Stability functions and high-frequency limits       | 12     | $R(\infty)$ table, $\lim\varrho_l=\lvert R_f(\infty)\rvert^J$          |
+| Threshold theorem in the A-stable case              | 12     | $J_{\min}=O(\log^2 z_{\max})$, L-stable and exact contrasts            |
+| Parameter-free threshold for third-order DIRK       | 12     | $J_{\rm cri}=4$                                                        |
+| Circulating constants and the rounding caveat       | 12     | five rows (third-party restatement), $0.333$ versus $0.3$              |
+| Experiment classes and what each tests              | 12     | fractional PDEs, UQ; meshes and speedups unverified                    |
+| Space-fractional bottleneck in the coarse solve     | 20     | dense $A$, large $\lambda_{\max}$ (limited verification)               |
+| Adjacent mechanisms that must not be attributed     | 20     | explicit list of non-attributable candidates                           |
+| Historical effect and unbalanced load               | 30     | broken premise, $\sum n=N_t(N_t+1)/2$, critical path                   |
+| Localisation and mixed coarse correction            | 30     | auxiliary variables, the discarded naive update, separate correction   |
+| Nonuniform fine grid destroying Toeplitz structure  | 77     | power to product, both failures, why it is new                         |
+| Calibration scale for a nonuniform-grid result      | 77     | three verified rows from Yang-Yuan-Zhou                                |
+| Opposite role of nonuniform steps in the two routes | 12, 77 | obstacle versus prerequisite, two cost structures                      |
 
 ## Sources for this page
 

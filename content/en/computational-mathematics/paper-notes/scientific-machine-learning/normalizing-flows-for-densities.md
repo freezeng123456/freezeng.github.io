@@ -74,11 +74,11 @@ The abstract claims no theorem, and no convergence or approximation result was f
 
 Section 4 falls into three groups:
 
-| Group | Content                                                          |
-| ----- | ---------------------------------------------------------------- |
+| Group | Content                                                                                 |
+| ----- | --------------------------------------------------------------------------------------- |
 | One   | learning stochastic processes, including non-Gaussian and **mixed** non-Gaussian fields |
-| Two   | forward stochastic elliptic equations                            |
-| Three | inverse stochastic elliptic equations                            |
+| Two   | forward stochastic elliptic equations                                                   |
+| Three | inverse stochastic elliptic equations                                                   |
 
 The mixed non-Gaussian group is the most informative of the three: it tests exactly whether the division of labour holds — Karhunen-Loève structure for correlation, flow for non-Gaussianity — because an insufficiently expressive flow would smear a mixture into a single mode.
 
@@ -99,7 +99,7 @@ The solution of a time-dependent Fokker-Planck equation is not a density but **a
 
 The first is to train one flow per time slice. Computationally that is a disaster, and it guarantees nothing about continuity in time — two adjacent instants could be learned as entirely unrelated objects.
 
-The second is to treat time as a $(d+1)$-st dimension and let the flow learn a joint space-time density. This route is **mathematically wrong**, for a blunt reason: the density integrates to one over space at each fixed time, but integrating over space and time together gives the length of the time interval, $\int p(x,t)\,\mathrm dx\,\mathrm dt\neq1$. The pushforward formula guarantees *joint* normalisation while the equation demands *per-instant* normalisation, and the two are incompatible.
+The second is to treat time as a $(d+1)$-st dimension and let the flow learn a joint space-time density. This route is **mathematically wrong**, for a blunt reason: the density integrates to one over space at each fixed time, but integrating over space and time together gives the length of the time interval, $\int p(x,t)\,\mathrm dx\,\mathrm dt\neq1$. The pushforward formula guarantees _joint_ normalisation while the equation demands _per-instant_ normalisation, and the two are incompatible.
 
 The third is the paper's choice: **condition, do not augment.** One flow, but its coupling layers take $t$ as an extra input; the latent time coordinate is pinned to real time, $t^\ast=t$. The Jacobian then degenerates to $1$ in the time direction, only the spatial block remains, per-instant normalisation holds automatically, and one set of weights covers the whole time interval.
 
@@ -210,11 +210,11 @@ The paper's own feature list amounts to four steps: model $p(\bm x,t)$ by a temp
 
 The experiments cover three categories:
 
-| Category         | Content                                                       |
-| ---------------- | ------------------------------------------------------------- |
-| Linear drift     | time-dependent Fokker-Planck equations with a linear drift    |
-| Nonlinear drift  | the same, with a nonlinear drift term                          |
-| High dimension   | high-dimensional time-dependent problems                       |
+| Category        | Content                                                    |
+| --------------- | ---------------------------------------------------------- |
+| Linear drift    | time-dependent Fokker-Planck equations with a linear drift |
+| Nonlinear drift | the same, with a nonlinear drift term                      |
+| High dimension  | high-dimensional time-dependent problems                   |
 
 The linear-drift group serves as calibration: such problems often have analytic or high-accuracy reference solutions, so one can tell whether the error comes from the flow's expressiveness or from the residual discretisation. The nonlinear-drift and high-dimensional groups are the real targets.
 
@@ -393,12 +393,12 @@ This is exactly the "refine the training set and the approximate solution altern
 
 The examples cover four classes:
 
-| Example                                          | What it tests                                       |
-| ------------------------------------------------ | ---------------------------------------------------- |
-| 2D fractional FPE driven by the fractional Laplacian alone | the non-local term in isolation from drift and diffusion |
-| a bimodal target distribution                    | flow expressiveness, and whether adaptivity collapses onto one mode |
-| higher-dimensional stationary FPEs               | where the two routes diverge with dimension          |
-| time-dependent fractional FPE with a Cauchy solution | time conditioning and heavy tails; Cauchy is the natural stationary law for $\alpha$-stable noise |
+| Example                                                    | What it tests                                                                                     |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| 2D fractional FPE driven by the fractional Laplacian alone | the non-local term in isolation from drift and diffusion                                          |
+| a bimodal target distribution                              | flow expressiveness, and whether adaptivity collapses onto one mode                               |
+| higher-dimensional stationary FPEs                         | where the two routes diverge with dimension                                                       |
+| time-dependent fractional FPE with a Cauchy solution       | time conditioning and heavy tails; Cauchy is the natural stationary law for $\alpha$-stable noise |
 
 The last choice is deliberate: the Cauchy distribution is heavy-tailed with no second moment, exactly the object a finite-domain grid method handles worst, whereas a flow is defined on all of $\mathbb R^d$ and heavy tails are just a shape the reference distribution takes after mapping.
 
@@ -519,11 +519,11 @@ Degrees of freedom accumulate layerwise, $\mathrm{DOFs}(p_{\text{B-KRnet},\bm\th
 
 ### Four differences from KRnet
 
-| Item             | KRnet                     | B-KRnet                            |
-| ---------------- | ------------------------- | ---------------------------------- |
-| Reference        | Gaussian on $\mathbb R^d$ | uniform on $[-1,1]^d$              |
-| Coupling layer   | affine (scale and shift)  | monotone piecewise-quadratic CDF   |
-| Scale-bias layer | present                   | **removed** (the domain is bounded) |
+| Item             | KRnet                     | B-KRnet                                                   |
+| ---------------- | ------------------------- | --------------------------------------------------------- |
+| Reference        | Gaussian on $\mathbb R^d$ | uniform on $[-1,1]^d$                                     |
+| Coupling layer   | affine (scale and shift)  | monotone piecewise-quadratic CDF                          |
+| Scale-bias layer | present                   | **removed** (the domain is bounded)                       |
 | Smoothness       | set by the activation     | piecewise linear density, first-order differentiable only |
 
 The second row is the essential one: an affine map sends $[-1,1]^m$ elsewhere, a CDF map keeps it invariant. The third follows from the second — the scale-bias layer exists to bring data to a sensible range, and on a bounded domain the domain itself does that. The fourth has a direct consequence: **second-order PDEs must be recast as first-order systems.**
@@ -579,14 +579,14 @@ Algorithm 1 wraps this with mini-batching, Adam, and a step-decay learning-rate 
 
 **The example list.** Three density-estimation examples (Section 3) and three PDE examples (Section 6):
 
-| Section | Problem                                                  | What it tests                        |
-| ------- | -------------------------------------------------------- | ------------------------------------- |
-| 3.1     | density estimation on an annulus                          | non-convex support                    |
-| 3.2     | a mixture of Gaussians                                    | multimodal expressiveness             |
-| 3.3     | a logistic distribution with holes                        | disconnected support                  |
-| 6.1     | a four-dimensional $-\Delta p+p=f$                        | whether the first-order recast works at moderate dimension |
-| 6.2     | the stationary Keller-Segel system (two coupled densities) | several densities at once             |
-| 6.3     | a 2D stationary kinetic Fokker-Planck equation, KRnet ⊗ B-KRnet | mixing bounded and unbounded dimensions |
+| Section | Problem                                                         | What it tests                                              |
+| ------- | --------------------------------------------------------------- | ---------------------------------------------------------- |
+| 3.1     | density estimation on an annulus                                | non-convex support                                         |
+| 3.2     | a mixture of Gaussians                                          | multimodal expressiveness                                  |
+| 3.3     | a logistic distribution with holes                              | disconnected support                                       |
+| 6.1     | a four-dimensional $-\Delta p+p=f$                              | whether the first-order recast works at moderate dimension |
+| 6.2     | the stationary Keller-Segel system (two coupled densities)      | several densities at once                                  |
+| 6.3     | a 2D stationary kinetic Fokker-Planck equation, KRnet ⊗ B-KRnet | mixing bounded and unbounded dimensions                    |
 
 The shared settings are: `Tanh` activation; **three subintervals per CDF coupling layer**; $\mathrm{NN}(\bm y_1)$ a fully connected network with two hidden layers; Adam in PyTorch; **update rate $\gamma=0.8$**.
 
@@ -604,12 +604,12 @@ B-KRnet is the bounded member of the KRnet family that runs through this whole t
 
 ## How the four build on one another
 
-| No. | Target object                        | Reference                    | Training signal                            | New technical part                      |
-| --- | ------------------------------------ | ---------------------------- | ------------------------------------------ | --------------------------------------- |
-| 62  | random field from scattered sensors  | Gaussian field with KL structure | log-likelihood (plus optional physics residual) | KL expansion with network coefficients |
-| 64  | time-dependent Fokker-Planck         | unbounded Gaussian           | equation residual                          | latent time pinned to real time         |
-| 72  | fractional Fokker-Planck             | unbounded Gaussian           | equation residual                          | Monte Carlo or analytic auxiliary model |
-| 87  | densities with bounded support       | uniform on $[-1,1]^d$        | equation residual (recast as a first-order system) | piecewise-quadratic CDF coupling layer |
+| No. | Target object                       | Reference                        | Training signal                                    | New technical part                      |
+| --- | ----------------------------------- | -------------------------------- | -------------------------------------------------- | --------------------------------------- |
+| 62  | random field from scattered sensors | Gaussian field with KL structure | log-likelihood (plus optional physics residual)    | KL expansion with network coefficients  |
+| 64  | time-dependent Fokker-Planck        | unbounded Gaussian               | equation residual                                  | latent time pinned to real time         |
+| 72  | fractional Fokker-Planck            | unbounded Gaussian               | equation residual                                  | Monte Carlo or analytic auxiliary model |
+| 87  | densities with bounded support      | uniform on $[-1,1]^d$            | equation residual (recast as a first-order system) | piecewise-quadratic CDF coupling layer  |
 
 One judgement runs through all four: **structural constraints should be guaranteed by the architecture, not approximated by penalties.** Normalisation is guaranteed by change of variables, non-negativity by the pushforward formula, the initial condition by multiplying the coupling layer by $t$, and bounded support by the CDF coupling layer. Each such guarantee removes one penalty term whose weight would otherwise need tuning.
 
@@ -617,23 +617,23 @@ A second judgement concerns the price: every constructive guarantee is bought wi
 
 ## Coverage check
 
-| Item                                             | Paper | Status                                                    |
-| ------------------------------------------------ | ----- | ---------------------------------------------------------- |
-| Division of labour between KL structure and flow | 62    | intuition, three-step construction, three conceded advantages |
-| Numerical experiments of 62                      | 62    | three groups; **formulas and error magnitudes unverified**  |
-| Time conditioning and Jacobian collapse          | 64    | three candidate routes, the wrong one, the right one, consequences |
-| Time-dependent affine coupling layer             | 64    | formula, roles of $\beta$ and the $t$ input, two differences from real NVP |
-| Numerical experiments of 64                      | 64    | four-step algorithm and three categories; **dimensions and errors unverified** |
-| Fractional FPE under Lévy noise                  | 72    | equation, density model, coupling layer and the notation clash |
-| Lemma 3.1 and the Beta-concentration rule        | 72    | full representation, two independent directions, $r_\epsilon$ dependence |
-| Lemma 3.2, GRBF and the coupled loss             | 72    | closed form, mixture model, necessity of the consistency penalty |
-| Multiplying by $t$ for the initial condition     | 72    | coupling-layer form and its meaning                        |
+| Item                                             | Paper | Status                                                                                                                                |
+| ------------------------------------------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Division of labour between KL structure and flow | 62    | intuition, three-step construction, three conceded advantages                                                                         |
+| Numerical experiments of 62                      | 62    | three groups; **formulas and error magnitudes unverified**                                                                            |
+| Time conditioning and Jacobian collapse          | 64    | three candidate routes, the wrong one, the right one, consequences                                                                    |
+| Time-dependent affine coupling layer             | 64    | formula, roles of $\beta$ and the $t$ input, two differences from real NVP                                                            |
+| Numerical experiments of 64                      | 64    | four-step algorithm and three categories; **dimensions and errors unverified**                                                        |
+| Fractional FPE under Lévy noise                  | 72    | equation, density model, coupling layer and the notation clash                                                                        |
+| Lemma 3.1 and the Beta-concentration rule        | 72    | full representation, two independent directions, $r_\epsilon$ dependence                                                              |
+| Lemma 3.2, GRBF and the coupled loss             | 72    | closed form, mixture model, necessity of the consistency penalty                                                                      |
+| Multiplying by $t$ for the initial condition     | 72    | coupling-layer form and its meaning                                                                                                   |
 | Numerical experiments of 72                      | 72    | four adaptive steps, four example classes; **dimensions and errors unverified**; two often-repeated conclusions marked as unconfirmed |
-| Piecewise linear density and quadratic CDF       | 87    | piecewise integration, the stable inverse, reparameterisation constants and their role |
-| Pseudo-triangular structure, freezing, $d_1=1$   | 87    | block decomposition, squeezing, the reason for the edge case |
-| Prop. 2.4 and Prop. 2.6                          | 87    | both statements and their proof status                     |
-| First-order recast and the three-term loss       | 87    | introducing $\bm g$, the three terms, the two properties held by construction |
-| Numerical experiments of 87                      | 87    | six examples, shared settings, four adaptive steps, two conceded limitations; **errors unverified** |
+| Piecewise linear density and quadratic CDF       | 87    | piecewise integration, the stable inverse, reparameterisation constants and their role                                                |
+| Pseudo-triangular structure, freezing, $d_1=1$   | 87    | block decomposition, squeezing, the reason for the edge case                                                                          |
+| Prop. 2.4 and Prop. 2.6                          | 87    | both statements and their proof status                                                                                                |
+| First-order recast and the three-term loss       | 87    | introducing $\bm g$, the three terms, the two properties held by construction                                                         |
+| Numerical experiments of 87                      | 87    | six examples, shared settings, four adaptive steps, two conceded limitations; **errors unverified**                                   |
 
 ## Sources for this page
 

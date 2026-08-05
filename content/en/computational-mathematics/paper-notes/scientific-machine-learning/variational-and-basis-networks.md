@@ -152,11 +152,11 @@ It discretises an infinite-dimensional algorithm (the paper's Algorithm 1): upda
 
 The examples of Section 4 and the baselines:
 
-| Example                          | Dimension | Content                                    |
-| -------------------------------- | --------- | ------------------------------------------ |
-| second-order elliptic (Poisson type) | 2D, 3D | with essential boundary conditions          |
-| linear eigenvalue problem        | 2D, 3D    | smallest eigenvalue and its eigenfunction   |
-| nonlinear eigenvalue problem     | 2D, 3D    | Gross-Pitaevskii type                       |
+| Example                              | Dimension | Content                                   |
+| ------------------------------------ | --------- | ----------------------------------------- |
+| second-order elliptic (Poisson type) | 2D, 3D    | with essential boundary conditions        |
+| linear eigenvalue problem            | 2D, 3D    | smallest eigenvalue and its eigenfunction |
+| nonlinear eigenvalue problem         | 2D, 3D    | Gross-Pitaevskii type                     |
 
 There are two baselines: the **penalty-method deep-learning version**, and **solving the minimax problem directly by stochastic gradient descent-ascent (SGDA)**. The second matters, because it tests whether "augmented Lagrangian plus alternating updates" really beats taking the minimax formulation at face value. Remark 3.1 states plainly that designing an efficient descent-ascent method for this minimax problem **remains open**, which both explains the alternating scheme and concedes that its theoretical footing is incomplete.
 
@@ -323,14 +323,14 @@ $$
 
 three cases: one peak at $(0.5,0.5)$; two peaks diagonally at $(\pm0.5,\pm0.5)$; four peaks at $(\pm0.5,\pm0.5)$. The $1000$ in the exponent is the point: it squeezes the peak width to $O(0.03)$, roughly two orders below the domain scale, which is exactly what a globally scaled basis cannot resolve.
 
-| Setting               | Value                              |
-| --------------------- | ---------------------------------- |
-| tolerance $\epsilon$  | $10^{-4}$                          |
-| initial basis $M_0$   | 200                                |
-| refinement radius $r$ | 0.15                               |
+| Setting                   | Value                             |
+| ------------------------- | --------------------------------- |
+| tolerance $\epsilon$      | $10^{-4}$                         |
+| initial basis $M_0$       | 200                               |
+| refinement radius $r$     | 0.15                              |
 | interior points $X_{f_0}$ | $50\times50$ grid, $J_{f_0}=2500$ |
-| boundary points $X_{g_0}$ | 400                            |
-| error evaluation grid | $256\times256$                     |
+| boundary points $X_{g_0}$ | 400                               |
+| error evaluation grid     | $256\times256$                    |
 
 Outcome: the three cases converge to 2, 3 and 5 subdomains, meaning **the number of detected subdomains is exactly the number of peaks plus the one smooth master domain**; the detected centres are $(\pm0.5102,\pm0.5102)$, matching the true peak locations with no prior information supplied. The error decreases monotonically over the per-peak basis counts $M^*\in\{700,800,900,1000\}$ and reaches $\mathrm{err}_{L^2}\approx10^{-4}$ at $M^*=1000$, which the paper describes as significantly smaller than the results of two adaptive-sampling PINN papers. The selected integer scale is $c_k=5$ for every peak subdomain.
 
@@ -350,15 +350,15 @@ Outcome: a single refinement suffices, $\Omega_1=B_r(x_1)$ with $x_1=(-0.0345,-0
 
 **Example four: 3-D Poisson with one peak (Section 4.5).** On $\Omega=[-1,1]^3$ with $u=\exp(-1000[(x-0.5)^2+(y-0.5)^2+(z-0.5)^2])$.
 
-| Setting               | Value                          |
-| --------------------- | ------------------------------ |
-| tolerance $\epsilon$  | $10^{-4}$                      |
-| initial basis $M_0$   | 2000                           |
-| refinement radius $r$ | 0.11                           |
-| interior points       | $J_{f_0}=10000$                |
-| boundary points       | $J_{g_0}=2400$ (400 per face)  |
-| subdomain interior points | 8500                       |
-| interface points      | 600                            |
+| Setting                   | Value                         |
+| ------------------------- | ----------------------------- |
+| tolerance $\epsilon$      | $10^{-4}$                     |
+| initial basis $M_0$       | 2000                          |
+| refinement radius $r$     | 0.11                          |
+| interior points           | $J_{f_0}=10000$               |
+| boundary points           | $J_{g_0}=2400$ (400 per face) |
+| subdomain interior points | 8500                          |
+| interface points          | 600                           |
 
 Outcome: the detected centre is $(0.5170,0.5050,0.5000)$; the scale grows with the basis count, $c_1=6,7,8$ at $M^*=3000,4000,5000$; and $\mathrm{err}_{L^2}\approx10^{-3}$ at $M^*=5000$.
 
@@ -567,12 +567,12 @@ $$
 
 Training uses a uniform grid of $50\times50=2500$ interior points plus 200 boundary points; testing uses $111\times111=12321$ points.
 
-| Comparison                        | Result                                                              |
-| --------------------------------- | -------------------------------------------------------------------- |
-| versus coupled TransNet at $\nu=10^{-4}$ | better on both velocity and pressure; divergence at least $\mathcal O(10^{-12})$ |
-| sweeping $\nu$ at $M=1000$        | TransNet slightly better at large $\nu$; this method better by nearly two orders for $\nu\le10^{-2}$ |
-| runtime                           | about 2 s versus slightly over 5 s for TransNet                      |
-| versus PINN                       | velocity and pressure errors at least four orders smaller; PINN divergence error only $\mathcal O(10^{-3})$, and PINN loses all accuracy at low viscosity |
+| Comparison                               | Result                                                                                                                                                    |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| versus coupled TransNet at $\nu=10^{-4}$ | better on both velocity and pressure; divergence at least $\mathcal O(10^{-12})$                                                                          |
+| sweeping $\nu$ at $M=1000$               | TransNet slightly better at large $\nu$; this method better by nearly two orders for $\nu\le10^{-2}$                                                      |
+| runtime                                  | about 2 s versus slightly over 5 s for TransNet                                                                                                           |
+| versus PINN                              | velocity and pressure errors at least four orders smaller; PINN divergence error only $\mathcal O(10^{-3})$, and PINN loses all accuracy at low viscosity |
 
 The divergence at low viscosity is the most informative part of this example: the smaller $\nu$, the steeper the exponential layer in the Kovasznay solution and the worse the conditioning of the coupled formulation, whereas the decoupled formulation turns the velocity problem into a pure biharmonic one, unentangled from the pressure.
 
@@ -604,13 +604,13 @@ $$
 
 Halton sampling gives 10000 interior points plus 2400 boundary points ($20\times20\times6$), with 2000 Halton test points.
 
-| Comparison       | Result                                                       |
-| ---------------- | ------------------------------------------------------------- |
-| velocity         | more accurate than TransNet at every $M$                      |
-| pressure         | TransNet about one order better at large $M$, but nearly twice as slow |
-| divergence       | $10^{-14}$, six orders better than TransNet                   |
-| sweeping $\nu$   | this method better for $\nu\le10^{-4}$ on velocity and $\nu\le10^{-3}$ on pressure |
-| cost             | about half of TransNet                                        |
+| Comparison     | Result                                                                             |
+| -------------- | ---------------------------------------------------------------------------------- |
+| velocity       | more accurate than TransNet at every $M$                                           |
+| pressure       | TransNet about one order better at large $M$, but nearly twice as slow             |
+| divergence     | $10^{-14}$, six orders better than TransNet                                        |
+| sweeping $\nu$ | this method better for $\nu\le10^{-4}$ on velocity and $\nu\le10^{-3}$ on pressure |
+| cost           | about half of TransNet                                                             |
 
 The pressure row deserves attention because it is a weakness the paper reports itself: **solving sequentially means the pressure step inherits the error of the velocity step**, whereas a coupled solve lets the two correct one another. The paper does not sidestep this.
 
@@ -639,11 +639,11 @@ The move of "splitting a coupled system into a sequence of cheaper subproblems" 
 
 ## What the three share
 
-| No. | Constraint taken out of the penalty | Carried instead by                       | What training becomes         |
-| --- | ----------------------------------- | ---------------------------------------- | ----------------------------- |
-| 60  | essential boundary conditions       | a multiplier network plus augmented Lagrangian | two alternating stochastic optimisations |
+| No. | Constraint taken out of the penalty | Carried instead by                             | What training becomes                       |
+| --- | ----------------------------------- | ---------------------------------------------- | ------------------------------------------- |
+| 60  | essential boundary conditions       | a multiplier network plus augmented Lagrangian | two alternating stochastic optimisations    |
 | 90  | interface matching and local scale  | domain decomposition plus rescaled local bases | a sequence of linear least-squares problems |
-| 102 | the divergence-free condition       | a $\mathbf{curl}$ ansatz and its identities | two least-squares solves in sequence |
+| 102 | the divergence-free condition       | a $\mathbf{curl}$ ansatz and its identities    | two least-squares solves in sequence        |
 
 All three answer the same question: **when a constraint enters the loss as a penalty, its weight becomes a free parameter that must be tuned; hand the constraint to structure and that free parameter disappears.** The prices differ — paper 60 pays an extra network and a projection, paper 90 pays a layer of domain decomposition and a scale search, paper 102 raises a second-order equation to fourth order. Those prices are predictable; tuning a penalty weight is not.
 
@@ -653,21 +653,21 @@ A third judgement concerns evidence: **none of the three proves a convergence th
 
 ## Coverage check
 
-| Item                                             | Paper | Status                                                    |
-| ------------------------------------------------ | ----- | ----------------------------------------------------------- |
-| Defects of the two workarounds and the multiplier's role | 60 | intuition, problems with the ansatz and the penalty        |
-| Augmented Lagrangian and minimax equivalence      | 60   | functional form, sign convention, derivation of the inner maximisation, dual functional |
-| Energies of the three instances                   | 60   | elliptic, linear eigenvalue, nonlinear eigenvalue with cited uniqueness |
-| Parameter-space projection of the multiplier update | 60  | source of the difficulty, projection target, Monte Carlo forms and the bracket note |
-| Numerical experiments of 60                       | 60   | Algorithm 2 and infinite-dimensional Algorithm 1, three example classes, two baselines, Remark 3.1; **error tables and quoted factors unverified** |
-| Frozen basis and the two presetting strategies    | 90   | basis definition, uniform draws, re-parameterisation and the location/shape split |
-| Domain decomposition and unweighted least squares | 90   | transmission conditions, loss, why penalty weights vanish, Gauss-Newton and its stopping rule |
-| Residual indicator, local rescaling, scale search | 90   | all three parts, why brute force is affordable, the constructive discontinuity |
-| Numerical experiments of 90                       | 90   | complete settings and results for all four examples, including detected centres, scales, error magnitudes and three open problems |
-| Divergence-free ansatz and the two advection identities | 102 | general principle, two lemmas, two theorems with the proof route, the role of the gauge |
-| Four decoupled subproblems and pressure recovery  | 102  | fourth-order velocity equation, derivation of the boundary conditions, first-order gradient system and classical solutions |
-| Discretisation, Gauss-Newton and cost accounting  | 102  | shared basis, two least-squares steps, linearisation and initialisation, complexity comparison |
-| Numerical experiments of 102                      | 102  | solutions, grids, baselines, timings and divergence magnitudes for all four examples, plus the two conceded weaknesses |
+| Item                                                     | Paper | Status                                                                                                                                             |
+| -------------------------------------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Defects of the two workarounds and the multiplier's role | 60    | intuition, problems with the ansatz and the penalty                                                                                                |
+| Augmented Lagrangian and minimax equivalence             | 60    | functional form, sign convention, derivation of the inner maximisation, dual functional                                                            |
+| Energies of the three instances                          | 60    | elliptic, linear eigenvalue, nonlinear eigenvalue with cited uniqueness                                                                            |
+| Parameter-space projection of the multiplier update      | 60    | source of the difficulty, projection target, Monte Carlo forms and the bracket note                                                                |
+| Numerical experiments of 60                              | 60    | Algorithm 2 and infinite-dimensional Algorithm 1, three example classes, two baselines, Remark 3.1; **error tables and quoted factors unverified** |
+| Frozen basis and the two presetting strategies           | 90    | basis definition, uniform draws, re-parameterisation and the location/shape split                                                                  |
+| Domain decomposition and unweighted least squares        | 90    | transmission conditions, loss, why penalty weights vanish, Gauss-Newton and its stopping rule                                                      |
+| Residual indicator, local rescaling, scale search        | 90    | all three parts, why brute force is affordable, the constructive discontinuity                                                                     |
+| Numerical experiments of 90                              | 90    | complete settings and results for all four examples, including detected centres, scales, error magnitudes and three open problems                  |
+| Divergence-free ansatz and the two advection identities  | 102   | general principle, two lemmas, two theorems with the proof route, the role of the gauge                                                            |
+| Four decoupled subproblems and pressure recovery         | 102   | fourth-order velocity equation, derivation of the boundary conditions, first-order gradient system and classical solutions                         |
+| Discretisation, Gauss-Newton and cost accounting         | 102   | shared basis, two least-squares steps, linearisation and initialisation, complexity comparison                                                     |
+| Numerical experiments of 102                             | 102   | solutions, grids, baselines, timings and divergence magnitudes for all four examples, plus the two conceded weaknesses                             |
 
 ## Sources for this page
 

@@ -282,11 +282,11 @@ The qualitative outcome is that the experiments support the findings, that is, t
 
 For contrast, one verifiable set of numbers **independent of this paper** shows where these constants stop applying. A viscosity sweep on the heat and advection-diffusion equations reported in the survey gives:
 
-| Viscosity $\nu$ | $\varrho_{l,\max}$ (parareal) | $\varrho_{l,\max}$ (MGRIT-FCF) | State                                        |
-| --------------- | ----------------------------- | ------------------------------ | -------------------------------------------- |
-| $0.1$           | —                             | $\approx\varrho_{l,\rm parareal}^2$ | the squaring relation holds             |
-| $0.01$          | close to $1$                  | close to $1$                   | both on the verge of failing                 |
-| $0.002$         | $1.4211$                      | $1.2812$                       | both diverge, MGRIT degrades less severely   |
+| Viscosity $\nu$ | $\varrho_{l,\max}$ (parareal) | $\varrho_{l,\max}$ (MGRIT-FCF)      | State                                      |
+| --------------- | ----------------------------- | ----------------------------------- | ------------------------------------------ |
+| $0.1$           | —                             | $\approx\varrho_{l,\rm parareal}^2$ | the squaring relation holds                |
+| $0.01$          | close to $1$                  | close to $1$                        | both on the verge of failing               |
+| $0.002$         | $1.4211$                      | $1.2812$                            | both diverge, MGRIT degrades less severely |
 
 The survey's explanation for the last row is that MGRIT performs two consecutive fine solves without an intervening coarse solve that would by then be unhelpful.
 
@@ -450,37 +450,37 @@ Papers 39 and 31 supply the $\alpha$-circulant and diagonalisation toolkit; pape
 
 ## The four papers ordered by price
 
-| No. | What is diagonalised                          | Role of $\alpha$                                    | Conditioning cost               | What it buys                                       |
-| --- | --------------------------------------------- | --------------------------------------------------- | ------------------------------- | -------------------------------------------------- |
-| 31  | the circulant of a time-periodic problem      | $\alpha=1$, exact periodicity                       | $\mathrm{Cond}_2(V)=1$, free    | a direct (non-iterative) algorithm                 |
-| 39  | the head-tail coupled coarse correction       | $\alpha\in(0,1)$, introduced                        | $\mathrm{Cond}_2(V)\le1/\alpha$ | the rate is preserved when $\alpha\le\rho/(1+\rho)$ |
-| 46  | the forward-backward optimality system        | a periodic surrogate $\widehat B_{\rm per}$ as preconditioner | absorbed by an outer Krylov iteration | eigenvalue and singular-value clustering  |
-| 53  | a rebuilt multi-stage all-at-once system      | $\alpha\in(0,1)$                                    | $\mathrm{Cond}_2(V)\le1/\alpha$ | $\rho\le\alpha/(1-\alpha)$ when $\gamma\ge1/4$     |
+| No. | What is diagonalised                     | Role of $\alpha$                                              | Conditioning cost                     | What it buys                                        |
+| --- | ---------------------------------------- | ------------------------------------------------------------- | ------------------------------------- | --------------------------------------------------- |
+| 31  | the circulant of a time-periodic problem | $\alpha=1$, exact periodicity                                 | $\mathrm{Cond}_2(V)=1$, free          | a direct (non-iterative) algorithm                  |
+| 39  | the head-tail coupled coarse correction  | $\alpha\in(0,1)$, introduced                                  | $\mathrm{Cond}_2(V)\le1/\alpha$       | the rate is preserved when $\alpha\le\rho/(1+\rho)$ |
+| 46  | the forward-backward optimality system   | a periodic surrogate $\widehat B_{\rm per}$ as preconditioner | absorbed by an outer Krylov iteration | eigenvalue and singular-value clustering            |
+| 53  | a rebuilt multi-stage all-at-once system | $\alpha\in(0,1)$                                              | $\mathrm{Cond}_2(V)\le1/\alpha$       | $\rho\le\alpha/(1-\alpha)$ when $\gamma\ge1/4$      |
 
 The table makes the logic of this route visible: **diagonalisation is not the goal in itself; making some matrix diagonalisable with a well-conditioned eigenvector matrix is.** The time-periodic problem supplies that for free. Everything else must trade a controllable approximation for it, and the approximation error is then handed to an outer Krylov iteration — which is the subject of the [[en/computational-mathematics/paper-notes/parallel-in-time/all-at-once-preconditioners|all-at-once preconditioners]] page.
 
 ## Coverage check
 
-| Item                                                      | Paper | Status                                                                            |
-| --------------------------------------------------------- | ----- | --------------------------------------------------------------------------------- |
-| Why diagonalisation turns a sequential sweep into solves  | —     | change-of-coordinates reading, complex-shifted problems, FFT cost                 |
-| Simultaneous diagonalisation of $\alpha$-circulants       | —     | $V=\Gamma_\alpha^{-1}\mathbb F^*$, $D_j$ from the first column alone              |
-| The master trade-off, quantified                          | —     | proof of $\mathrm{Cond}_2(V)\le1/\alpha$, four-row trade-off table                |
-| Three ways of writing the same method                     | —     | stationary iteration, Krylov, head-tail waveform relaxation                       |
-| All-at-once Kronecker system, three steps                 | 31    | system, three steps, FFTs and the parallel step                                   |
-| Why $\alpha=1$ makes the price zero                       | 31    | circulant, unitarity, $\mathrm{Cond}_2(V)=1$, no parameter trade-off              |
-| Multigrid for complex shifts, smoother choice             | 31    | dense $A$ and damped Richardson, mesh-independent factor, damping optimisation    |
-| Exact relation of MGRIT-FCF to parareal                   | 39    | iteration, all three relaxations, overlap reading, the extra factor               |
-| Why Lobatto IIIC improves the contraction                 | 39    | tableau, $(0,2)$ Padé, $z^{-2}$ decay acting on numerator and denominator         |
-| Head-tail coupling and a diagonalisable correction        | 39    | coupling condition, why the redefinition is needed, $C_\alpha$, the $\alpha\to0$ limit |
-| The four constants and equal-cost accounting              | 39    | constants table, squared comparison, per-fine-solve contraction table             |
-| The $\alpha$ threshold and its attribution                | 39    | $\alpha\le\rho/(1+\rho)$ (parareal, Wu 2018); MGRIT case unverified               |
-| What each test problem probes                             | 39    | UQ advection-diffusion, Gray-Scott; viscosity sweep (from the survey)             |
-| Forward-backward obstruction, two time matrices           | 46    | KKT system, meaning of $B^\top$, Jordan block versus circulant                    |
-| Two algorithms and the clustering theorem                 | 46    | direct algorithm, periodic surrogate, eigenvalue and singular-value clustering    |
-| What the choice of outer solver tells us                  | 46    | GMRES/BiCGStab versus CG, contrast with paper 71                                  |
-| Why multi-stage methods lack an all-at-once form          | 53    | stage values are not time-level unknowns, the recipe has nothing to act on        |
-| A-stability coinciding with the convergence condition     | 53    | $\gamma\ge1/4$, both tableaux checked, $\rho\le\alpha/(1-\alpha)$, the conjecture |
+| Item                                                     | Paper | Status                                                                                 |
+| -------------------------------------------------------- | ----- | -------------------------------------------------------------------------------------- |
+| Why diagonalisation turns a sequential sweep into solves | —     | change-of-coordinates reading, complex-shifted problems, FFT cost                      |
+| Simultaneous diagonalisation of $\alpha$-circulants      | —     | $V=\Gamma_\alpha^{-1}\mathbb F^*$, $D_j$ from the first column alone                   |
+| The master trade-off, quantified                         | —     | proof of $\mathrm{Cond}_2(V)\le1/\alpha$, four-row trade-off table                     |
+| Three ways of writing the same method                    | —     | stationary iteration, Krylov, head-tail waveform relaxation                            |
+| All-at-once Kronecker system, three steps                | 31    | system, three steps, FFTs and the parallel step                                        |
+| Why $\alpha=1$ makes the price zero                      | 31    | circulant, unitarity, $\mathrm{Cond}_2(V)=1$, no parameter trade-off                   |
+| Multigrid for complex shifts, smoother choice            | 31    | dense $A$ and damped Richardson, mesh-independent factor, damping optimisation         |
+| Exact relation of MGRIT-FCF to parareal                  | 39    | iteration, all three relaxations, overlap reading, the extra factor                    |
+| Why Lobatto IIIC improves the contraction                | 39    | tableau, $(0,2)$ Padé, $z^{-2}$ decay acting on numerator and denominator              |
+| Head-tail coupling and a diagonalisable correction       | 39    | coupling condition, why the redefinition is needed, $C_\alpha$, the $\alpha\to0$ limit |
+| The four constants and equal-cost accounting             | 39    | constants table, squared comparison, per-fine-solve contraction table                  |
+| The $\alpha$ threshold and its attribution               | 39    | $\alpha\le\rho/(1+\rho)$ (parareal, Wu 2018); MGRIT case unverified                    |
+| What each test problem probes                            | 39    | UQ advection-diffusion, Gray-Scott; viscosity sweep (from the survey)                  |
+| Forward-backward obstruction, two time matrices          | 46    | KKT system, meaning of $B^\top$, Jordan block versus circulant                         |
+| Two algorithms and the clustering theorem                | 46    | direct algorithm, periodic surrogate, eigenvalue and singular-value clustering         |
+| What the choice of outer solver tells us                 | 46    | GMRES/BiCGStab versus CG, contrast with paper 71                                       |
+| Why multi-stage methods lack an all-at-once form         | 53    | stage values are not time-level unknowns, the recipe has nothing to act on             |
+| A-stability coinciding with the convergence condition    | 53    | $\gamma\ge1/4$, both tableaux checked, $\rho\le\alpha/(1-\alpha)$, the conjecture      |
 
 ## Sources for this page
 

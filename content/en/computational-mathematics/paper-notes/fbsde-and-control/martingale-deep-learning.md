@@ -56,7 +56,7 @@ Throughout, $v\in C^{1,2}$ is assumed, justified by a nondegeneracy condition: $
 
 ### Derivation
 
-**Step one: replace the pointwise minimum principle by an integral one.** Verification gives the pointwise minimum principle $H(t,X^*_t,u^*(t,X^*_t),\partial_xv,\partial^2_{xx}v)=\inf_{\kappa\in U}H(\cdots)$, and that condition on $(t,x)$ is precisely one source of the curse of dimensionality. Along an *uncontrolled* diffusion $X_t=X_0+\int_0^t\mu\,\mathrm ds+\int_0^t\sigma\,\mathrm dB_s$, define the Hamiltonian process and the cost process:
+**Step one: replace the pointwise minimum principle by an integral one.** Verification gives the pointwise minimum principle $H(t,X^*_t,u^*(t,X^*_t),\partial_xv,\partial^2_{xx}v)=\inf_{\kappa\in U}H(\cdots)$, and that condition on $(t,x)$ is precisely one source of the curse of dimensionality. Along an _uncontrolled_ diffusion $X_t=X_0+\int_0^t\mu\,\mathrm ds+\int_0^t\sigma\,\mathrm dB_s$, define the Hamiltonian process and the cost process:
 
 $$
 H^{u,v}_t:=H\bigl(t,X_t,u(t,X_t),\partial_xv(t,X_t),\partial^2_{xx}v(t,X_t)\bigr),
@@ -178,7 +178,7 @@ $$
 Lemmas 3.2 and 3.4 are its two halves.
 
 > [!warning] This is a characterisation theorem, not a convergence theorem
-> The paper gives **no** convergence-rate theorem for the neural-network approximation, **no** generalisation bound, and **no** proof that the min-max training converges. The regularity $v\in C^{1,2}$ is *assumed* throughout, justified by the nondegeneracy of $\sigma\sigma^\top$. The one quantitative rate claim — first-order weak convergence in $\Delta t$ — is *argued* in Remark 3.6 from the weak order of Euler-Maruyama and *verified numerically* in Section 4.3, not proved. That gap is filled later by Theorem 4 of paper 93.
+> The paper gives **no** convergence-rate theorem for the neural-network approximation, **no** generalisation bound, and **no** proof that the min-max training converges. The regularity $v\in C^{1,2}$ is _assumed_ throughout, justified by the nondegeneracy of $\sigma\sigma^\top$. The one quantitative rate claim — first-order weak convergence in $\Delta t$ — is _argued_ in Remark 3.6 from the weak order of Euler-Maruyama and _verified numerically_ in Section 4.3, not proved. That gap is filled later by Theorem 4 of paper 93.
 
 ### Numerical experiments
 
@@ -229,9 +229,9 @@ The $d=100$ row barely moves with the GPU count (153 to 148), showing that at th
 
 It builds on **DeepMartNet** (Cai and co-authors, for boundary-value and eigenvalue problems), adding adversarial learning and the control network; SOC-MartNet is its stochastic-control version.
 
-It is complementary to the entire classical line (papers 8, 19, 23, 25, 26, 35, 41, 47, 63, 68): those solve low-dimensional FBSDEs to high order with quadrature-based conditional expectations and proven error estimates, while paper 86 reaches $d=10^4$ with no proven rates. **The bridge is the same underlying object**: the martingale $\mathcal M_t=v(t,X_t)+\int_0^tH_s\,\mathrm ds$ *is* the BSDE $Y_t=v(t,X_t)$ in disguise, and the proof of Lemma 3.4 is exactly the nonlinear Feynman-Kac argument.
+It is complementary to the entire classical line (papers 8, 19, 23, 25, 26, 35, 41, 47, 63, 68): those solve low-dimensional FBSDEs to high order with quadrature-based conditional expectations and proven error estimates, while paper 86 reaches $d=10^4$ with no proven rates. **The bridge is the same underlying object**: the martingale $\mathcal M_t=v(t,X_t)+\int_0^tH_s\,\mathrm ds$ _is_ the BSDE $Y_t=v(t,X_t)$ in disguise, and the proof of Lemma 3.4 is exactly the nonlinear Feynman-Kac argument.
 
-Contrast with the route of papers 26, 41 and 50 (see the [[en/computational-mathematics/paper-notes/fbsde-and-control/second-order-fbsdes-and-control|second-order FBSDEs and control page]]): those go through the Pontryagin maximum principle and an adjoint FBSDE, whereas paper 86 goes through **dynamic programming and the HJB equation**, so it never forms the adjoint BSDE, and it obtains a *feedback* control $u_\alpha(t,x)$ on a region rather than an open-loop control along a single initial condition. Paper 68 is Shuixin Fang's classical-analysis precursor. Remark 3.6's weak-versus-strong-order argument is the sharpest single conceptual contrast with the deep BSDE family (E-Han-Jentzen; Han-Jentzen-E) and with all pathwise probabilistic schemes.
+Contrast with the route of papers 26, 41 and 50 (see the [[en/computational-mathematics/paper-notes/fbsde-and-control/second-order-fbsdes-and-control|second-order FBSDEs and control page]]): those go through the Pontryagin maximum principle and an adjoint FBSDE, whereas paper 86 goes through **dynamic programming and the HJB equation**, so it never forms the adjoint BSDE, and it obtains a _feedback_ control $u_\alpha(t,x)$ on a region rather than an open-loop control along a single initial condition. Paper 68 is Shuixin Fang's classical-analysis precursor. Remark 3.6's weak-versus-strong-order argument is the sharpest single conceptual contrast with the deep BSDE family (E-Han-Jentzen; Han-Jentzen-E) and with all pathwise probabilistic schemes.
 
 Code is at [sx-fang/MartNet](https://github.com/sx-fang/MartNet).
 
@@ -285,7 +285,7 @@ $$
 =\mathcal Dv(t,x)+O(h).
 $$
 
-Remark 3 contrasts this with **randomized-smoothing PINNs** (RS-PINNs), which smooth the *network*, $v_\theta(x)=\mathbb E[\phi_\theta(x+\sqrt h\xi)]$, and differentiate via Stein's identity $\partial_xv_\theta=\mathbb E[\frac{\xi}{\sqrt h}\phi_\theta]$, $\partial_{xx}v_\theta=\mathbb E[\frac{\xi\xi^\top-I_d}{h}\phi_\theta]$. **RS-PINNs behave like a central difference while the RDO behaves like an upwind one**, analogous to a material derivative, so the RDO is better suited to convection-dominated problems.
+Remark 3 contrasts this with **randomized-smoothing PINNs** (RS-PINNs), which smooth the _network_, $v_\theta(x)=\mathbb E[\phi_\theta(x+\sqrt h\xi)]$, and differentiate via Stein's identity $\partial_xv_\theta=\mathbb E[\frac{\xi}{\sqrt h}\phi_\theta]$, $\partial_{xx}v_\theta=\mathbb E[\frac{\xi\xi^\top-I_d}{h}\phi_\theta]$. **RS-PINNs behave like a central difference while the RDO behaves like an upwind one**, analogous to a material derivative, so the RDO is better suited to convection-dominated problems.
 
 **Step three: the RDM formulation and the strong-form loss.** Substituting $\mathcal D\to\mathcal D_h$ turns the equation into $\mathbb E[R(t,x,\xi;v)]=O(h)$ where
 
@@ -297,25 +297,25 @@ $$
 
 with the strong-form loss $\mathcal L_{\rm rdm}(\hat v)=\int_0^{T-h}\int_{\mathbb R^d}|\mathbb E[R(t,x,\xi;\hat v)]|^2p(t,x)\,\mathrm dx\,\mathrm dt$.
 
-**Step four: the sampling density is the solution of the Fokker-Planck equation.** This step supplies the theoretical account of the "where should one sample" heuristic. Write $\mathcal D=\partial_t+\mathcal L$, let $\epsilon=\hat v-v$ and let $\hat r:=(\partial_t+\mathcal L)\hat v-f(t,x,v)$ be the *linearised* residual, with $\mathcal L,f$ evaluated at the **exact** $v$. Then $(\partial_t+\mathcal L)\epsilon=\hat r$; pairing with a weight $p$ and using the $L^2$-adjoint $\mathcal L^*$ gives $\partial_t\int\epsilon p=\int\hat rp+\int\epsilon(\partial_tp-\mathcal L^*p)$. **Choosing $p$ to solve the adjoint (Fokker-Planck) problem** $(\partial_t-\mathcal L^*)p=0$, $p(0,\cdot)=\delta_{x_0}$ eliminates the last term and leaves the exact error representation
+**Step four: the sampling density is the solution of the Fokker-Planck equation.** This step supplies the theoretical account of the "where should one sample" heuristic. Write $\mathcal D=\partial_t+\mathcal L$, let $\epsilon=\hat v-v$ and let $\hat r:=(\partial_t+\mathcal L)\hat v-f(t,x,v)$ be the _linearised_ residual, with $\mathcal L,f$ evaluated at the **exact** $v$. Then $(\partial_t+\mathcal L)\epsilon=\hat r$; pairing with a weight $p$ and using the $L^2$-adjoint $\mathcal L^*$ gives $\partial_t\int\epsilon p=\int\hat rp+\int\epsilon(\partial_tp-\mathcal L^*p)$. **Choosing $p$ to solve the adjoint (Fokker-Planck) problem** $(\partial_t-\mathcal L^*)p=0$, $p(0,\cdot)=\delta_{x_0}$ eliminates the last term and leaves the exact error representation
 
 $$
 \epsilon(0,x_0)=\int_{\mathbb R^d}\epsilon(T,x)p(T,x)\,\mathrm dx
 -\int_0^T\!\!\int_{\mathbb R^d}\hat r(s,x)p(s,x)\,\mathrm dx\,\mathrm ds .
 $$
 
-So $p(s,x)$ *is* the sensitivity of the error at $(0,x_0)$ to the residual at $(s,x)$; and since $p(t,\cdot)$ is the density of $X_t$ under the forward SDE, optimal sampling means simulating that SDE with weak Euler-Maruyama, using the **same** law of $\xi$ as in the RDO.
+So $p(s,x)$ _is_ the sensitivity of the error at $(0,x_0)$ to the residual at $(s,x)$; and since $p(t,\cdot)$ is the density of $X_t$ under the forward SDE, optimal sampling means simulating that SDE with weak Euler-Maruyama, using the **same** law of $\xi$ as in the RDO.
 
 **Step five: two equivalences.** Both identifications are proved by direct computation, with **no stochastic calculus** in the RDM direction.
 
-- **Equivalent to the martingale methods.** With $M_t:=v(t,X_t)+\int_0^tf(s,X_s,v(s,X_s))\mathrm ds$, the martingale condition $\mathbb E^x_t[M_{t+h}-M_t]=0$ becomes $\mathbb E^x_t[v(t+h,X_{t+h})]-v(t,x)+\int_t^{t+h}\mathbb E^x_t[f]\mathrm ds=0$. Approximating the conditional law by weak Euler-Maruyama and the integral by the left-rectangle rule, each to $O(h^2)$, gives $h\,\mathbb E[R(t,x,\xi;v)]=O(h^2)$. **In other words the RDM formulation *is* the discrete martingale condition of papers 86, 96 and DeepMartNet.**
+- **Equivalent to the martingale methods.** With $M_t:=v(t,X_t)+\int_0^tf(s,X_s,v(s,X_s))\mathrm ds$, the martingale condition $\mathbb E^x_t[M_{t+h}-M_t]=0$ becomes $\mathbb E^x_t[v(t+h,X_{t+h})]-v(t,x)+\int_t^{t+h}\mathbb E^x_t[f]\mathrm ds=0$. Approximating the conditional law by weak Euler-Maruyama and the integral by the left-rectangle rule, each to $O(h^2)$, gives $h\,\mathbb E[R(t,x,\xi;v)]=O(h^2)$. **In other words the RDM formulation _is_ the discrete martingale condition of papers 86, 96 and DeepMartNet.**
 - **Equivalent to the implicit Euler scheme for the FBSDE.** Taking $\mathbb E^x_{t_n}$ of the backward equation on $[t_n,t_{n+1}]$ kills the Itô integral; substituting $Y=v(t,X_t)$ and using the same two approximations gives $v(t_n,x)=\mathbb E[v(t_{n+1},x+\xi_h)]-h\,f(t_n,x,v(t_n,x))$, described in the paper as a special case of the Zhao-Chen-Peng $\theta$-schemes. **Remark 5 writes out the general-$Z$ case**: the $Y$-part becomes $v(t_n,x)=\mathbb E[v(t_{n+1},x+\xi_h)]-hf(t_n,x,v,z)$ and needs a companion $Z$-part, the simplest instance being
   $$
   z(t_n,x)=\frac1h\mathbb E\Bigl[v(t_{n+1},x+\xi_h)\,\sqrt h\,\xi^\top\Bigr].
   $$
   **This is the cleanest bridge in the whole list between the deep-learning papers and the classical FBSDE schemes**: it is the standard "multiply by the Brownian increment and divide by $h$" representation of $Z$.
 
-**Step six: a Galerkin weak form to control the variance.** The strong loss has an expectation *inside* a square, so an unbiased minibatch estimator with $M$ points and $2K$ draws of $\xi$ has variance
+**Step six: a Galerkin weak form to control the variance.** The strong loss has an expectation _inside_ a square, so an unbiased minibatch estimator with $M$ points and $2K$ draws of $\xi$ has variance
 
 $$
 \mathrm{Var}\bigl[\hat{\mathcal L}_{\rm rdm}(\hat v)\bigr]=O\!\Bigl(\tfrac1M\bigl(1+\tfrac1{K^2}\bigr)\Bigr),
@@ -337,7 +337,7 @@ $$
 A_i=N_i\times M_i,\quad M_1\cap M_2=\varnothing,
 $$
 
-**and it is the disjointness of the *path* index sets that makes the product unbiased.**
+**and it is the disjointness of the _path_ index sets that makes the product unbiased.**
 
 **Step seven: networks.** The terminal condition is hard-wired: $v_\theta=\phi_\theta(t,x)$ for $t\le t_{N-1}$ and $v_\theta=g(x)$ for $t>t_{N-1}$. The adversary is a shallow **multiscale (MscaleDNN-style) sine network** with a wide output:
 
@@ -357,7 +357,7 @@ $$
 \min_{\hat u\in\mathcal U_{\rm ad}}\ \mathcal L(\hat u,\hat v,\mathbf 1).
 $$
 
-**The constant test function $\mathbf 1$ in the control step** is what replaces pointwise minimisation of the Hamiltonian by an **averaged** minimisation over sampled $(t,x)$ — the same device as in papers 86 and 96. Paths in the HJB case are generated by the *controlled* SDE.
+**The constant test function $\mathbf 1$ in the control step** is what replaces pointwise minimisation of the Hamiltonian by an **averaged** minimisation over sampled $(t,x)$ — the same device as in papers 86 and 96. Paths in the HJB case are generated by the _controlled_ SDE.
 
 ### Theorems
 
@@ -393,7 +393,7 @@ This is the first paper in the Cai-Fang-Zhou martingale line with a **proved con
 > [!warning] Accuracy holds only where the sampled paths go
 > The norm $M^2_n$ in Theorem 4 is weighted by the law of $X^m_n$, so **it guarantees accuracy only inside the region the sample paths explore**. This limitation is common to the whole family (papers 86, 93, 96, 100, 108). Remark 1 of paper 96 states the same thing as "a good pilot process must cover the region of interest with high probability", and the $d=1$ visualisation of paper 108 shows it directly.
 
-- **Remark 9, the sharpest comparative claim in the paper.** Because the RDM formulation is equivalent to the discrete martingale condition, Theorem 4 **also proves first-order-in-time convergence for papers 86, 96 and DeepMartNet**. This is higher than the $O(h^{1/2})$ typical of deep-BSDE methods for general coefficients. The mechanism: martingale/RDM methods use Euler-Maruyama only to approximate the *conditional law* of $X_{t+h}$ given $X_t=x$, so the error is governed by the **weak** order $O(h)$; deep BSDE methods use it to approximate *sample paths*, so they are capped by the **strong** order $O(h^{1/2})$.
+- **Remark 9, the sharpest comparative claim in the paper.** Because the RDM formulation is equivalent to the discrete martingale condition, Theorem 4 **also proves first-order-in-time convergence for papers 86, 96 and DeepMartNet**. This is higher than the $O(h^{1/2})$ typical of deep-BSDE methods for general coefficients. The mechanism: martingale/RDM methods use Euler-Maruyama only to approximate the _conditional law_ of $X_{t+h}$ given $X_t=x$, so the error is governed by the **weak** order $O(h)$; deep BSDE methods use it to approximate _sample paths_, so they are capped by the **strong** order $O(h^{1/2})$.
 - What is absent: no error bound in terms of network size or training; no proof that the min-max problem for HJB controls the error of $v$ — **Remark 7 explicitly flags this as open**; no rate in $d$.
 
 ### Numerical experiments
@@ -426,26 +426,26 @@ Errors are reported as relative $L^1$ and $L^\infty$ errors $\mathrm{RE}_1(t_n)$
 
 **(v) Head-to-head against PINNs and RS-PINNs (Section 4.5, Table 4).** On the elliptic benchmarks of Hu et al.: Allen-Cahn $\Delta v+v-v^3=f$ and Sine-Gordon $\Delta v+\sin v=f$ on the unit ball $B_d$ with $v|_{\partial B_d}=0$ and exact solution $v(x)=(1-|x|^2)\sum_{i=1}^{d-1}c_i\sin(x_i+\cos(x_{i+1})+x_{i+1}\cos(x_i))$, $c_i\sim N(0,1)$ i.i.d. The PINN and RS-PINN numbers are quoted verbatim from that literature. The table also includes **strong-form DRDM**, which the authors themselves identify as essentially the shotgun method of Xu-Zhang up to offline path sampling and antithetic variates. Metrics are relative $L^2$ error, runtime in minutes, memory in MB.
 
-| Method                  | Metric        | $d=10^2$ | $10^3$   | $5\times10^3$ | $10^4$   | $10^5$   |
-| ----------------------- | ------------- | -------- | -------- | ------------- | -------- | -------- |
-| PINNs                   | AC rel. $L^2$ | 7.187E-3 | 5.617E-4 | 1.773E-3      | N.A.     | N.A.     |
-| PINNs                   | SG rel. $L^2$ | 7.192E-3 | 5.642E-4 | 1.782E-3      | N.A.     | N.A.     |
-| PINNs                   | RT (min)      | 3        | 285      | 1832.4        | N.A.     | N.A.     |
-| PINNs                   | Memory (MB)   | 1328     | 4425     | 56563         | >81252   | >81252   |
-| RS-PINNs                | AC rel. $L^2$ | 7.923E-3 | 5.504E-4 | 1.802E-3      | 1.860E-3 | 2.192E-3 |
-| RS-PINNs                | SG rel. $L^2$ | 7.835E-3 | 6.744E-4 | 1.795E-3      | 1.854E-3 | 2.176E-3 |
-| RS-PINNs                | RT (min)      | 1.8      | 7.2      | 31.8          | 66       | 720      |
-| RS-PINNs                | Memory (MB)   | 1413     | 1815     | 3593          | 5789     | 45599    |
-| Strong-form DRDM        | AC rel. $L^2$ | 1.311E-2 | 6.171E-3 | 4.714E-3      | 3.112E-3 | 7.423E-4 |
-| Strong-form DRDM        | SG rel. $L^2$ | 2.009E-2 | 6.191E-3 | 4.715E-3      | 3.112E-3 | 2.232E-2 |
-| Strong-form DRDM        | RT (min)      | 1.04     | 1.11     | 1.81          | 2.70     | 48.64    |
-| Strong-form DRDM        | Memory (MB)   | 75       | 254      | 1204          | 2389     | 23739    |
+| Method                      | Metric        | $d=10^2$ | $10^3$   | $5\times10^3$ | $10^4$   | $10^5$   |
+| --------------------------- | ------------- | -------- | -------- | ------------- | -------- | -------- |
+| PINNs                       | AC rel. $L^2$ | 7.187E-3 | 5.617E-4 | 1.773E-3      | N.A.     | N.A.     |
+| PINNs                       | SG rel. $L^2$ | 7.192E-3 | 5.642E-4 | 1.782E-3      | N.A.     | N.A.     |
+| PINNs                       | RT (min)      | 3        | 285      | 1832.4        | N.A.     | N.A.     |
+| PINNs                       | Memory (MB)   | 1328     | 4425     | 56563         | >81252   | >81252   |
+| RS-PINNs                    | AC rel. $L^2$ | 7.923E-3 | 5.504E-4 | 1.802E-3      | 1.860E-3 | 2.192E-3 |
+| RS-PINNs                    | SG rel. $L^2$ | 7.835E-3 | 6.744E-4 | 1.795E-3      | 1.854E-3 | 2.176E-3 |
+| RS-PINNs                    | RT (min)      | 1.8      | 7.2      | 31.8          | 66       | 720      |
+| RS-PINNs                    | Memory (MB)   | 1413     | 1815     | 3593          | 5789     | 45599    |
+| Strong-form DRDM            | AC rel. $L^2$ | 1.311E-2 | 6.171E-3 | 4.714E-3      | 3.112E-3 | 7.423E-4 |
+| Strong-form DRDM            | SG rel. $L^2$ | 2.009E-2 | 6.191E-3 | 4.715E-3      | 3.112E-3 | 2.232E-2 |
+| Strong-form DRDM            | RT (min)      | 1.04     | 1.11     | 1.81          | 2.70     | 48.64    |
+| Strong-form DRDM            | Memory (MB)   | 75       | 254      | 1204          | 2389     | 23739    |
 | **Weak-form DRDM (theirs)** | AC rel. $L^2$ | 3.963E-2 | 6.211E-3 | 4.699E-3      | 3.118E-3 | 7.381E-4 |
-| **Weak-form DRDM**      | SG rel. $L^2$ | 4.172E-2 | 6.306E-3 | 4.701E-3      | 3.118E-3 | 4.769E-3 |
-| **Weak-form DRDM**      | RT (min)      | 1.22     | 1.26     | 1.43          | 1.59     | 13.26    |
-| **Weak-form DRDM**      | Memory (MB)   | 57       | 185      | 859           | 1698     | 16829    |
+| **Weak-form DRDM**          | SG rel. $L^2$ | 4.172E-2 | 6.306E-3 | 4.701E-3      | 3.118E-3 | 4.769E-3 |
+| **Weak-form DRDM**          | RT (min)      | 1.22     | 1.26     | 1.43          | 1.59     | 13.26    |
+| **Weak-form DRDM**          | Memory (MB)   | 57       | 185      | 859           | 1698     | 16829    |
 
-**The authors' own reading is unusually candid: DRDM is generally *less* accurate than PINNs and RS-PINNs**, which they attribute to the $O(h)$ truncation error of the RDO that the AD-based methods do not incur. The gain is entirely in runtime and memory, and it grows with $d$: at $d=10^5$ the weak-form DRDM needs 13.26 minutes and 16.8 GB, RS-PINNs need 720 minutes and 45.6 GB, and PINNs cannot run at all. Weak and strong forms have comparable accuracy, but per gradient step with minibatch $n_b$ the strong form evaluates $v_\theta$ $n_b+n_b\ell$ times ($\ell=128$ draws of $\xi$ per point in their runs) whereas the weak form evaluates it $2n_b$ times, so the weak form wins as $d$ grows.
+**The authors' own reading is unusually candid: DRDM is generally _less_ accurate than PINNs and RS-PINNs**, which they attribute to the $O(h)$ truncation error of the RDO that the AD-based methods do not incur. The gain is entirely in runtime and memory, and it grows with $d$: at $d=10^5$ the weak-form DRDM needs 13.26 minutes and 16.8 GB, RS-PINNs need 720 minutes and 45.6 GB, and PINNs cannot run at all. Weak and strong forms have comparable accuracy, but per gradient step with minibatch $n_b$ the strong form evaluates $v_\theta$ $n_b+n_b\ell$ times ($\ell=128$ draws of $\xi$ per point in their runs) whereas the weak form evaluates it $2n_b$ times, so the weak form wins as $d$ grows.
 
 ### Relation to the others
 
@@ -459,7 +459,7 @@ It is the direct successor of paper 96 and the sibling of paper 100: the random 
 
 ### The idea
 
-Paper 86 still needs $\partial_xv$ and, worse, the $d\times d$ **Hessian $\partial^2_{xx}v$** inside the Hamiltonian, computed by automatic differentiation at every sample. For $d\sim10^4$ that is the binding cost, and paper 86's own conclusion flags it as the open problem. A second bottleneck is that all SDE-model-based deep methods (deep BSDE, DeepMartNet, and paper 86 in the *controlled* case) must simulate paths that depend on the unknown $v$ or $u$, so the paths must be **re-simulated sequentially in time** after every network update.
+Paper 86 still needs $\partial_xv$ and, worse, the $d\times d$ **Hessian $\partial^2_{xx}v$** inside the Hamiltonian, computed by automatic differentiation at every sample. For $d\sim10^4$ that is the binding cost, and paper 86's own conclusion flags it as the open problem. A second bottleneck is that all SDE-model-based deep methods (deep BSDE, DeepMartNet, and paper 86 in the _controlled_ case) must simulate paths that depend on the unknown $v$ or $u$, so the paths must be **re-simulated sequentially in time** after every network update.
 
 This paper removes both. **The derivative-free mechanism fits in one sentence: write the martingale increment so that it contains only two evaluations of the network at two nearby points, with no derivative anywhere in between.** The time-parallelism mechanism comes from a structural device: impose the martingale property not on **one** long path spanning $[0,T]$ but on a **family** of short-horizon processes, one per time step, so the time steps decouple.
 
@@ -483,7 +483,7 @@ Note the **quasilinearity**: $\mu,\sigma$ depend on $v$ itself, which is more ge
 
 **Step one: pilot process and system process.** This is the paper's key structural device.
 
-- The **pilot process** $\hat X$, used only to explore $\mathbb R^d$ and built from an *initial guess* $\hat v$:
+- The **pilot process** $\hat X$, used only to explore $\mathbb R^d$ and built from an _initial guess_ $\hat v$:
   $$
   \hat X_t=\hat X_0+\int_0^t\hat\mu(s,\hat X_s)\mathrm ds+\int_0^t\hat\sigma(s,\hat X_s)\mathrm dB_s,
   \qquad
@@ -528,7 +528,7 @@ $$
 \qquad \xi\sim N(0,I_q).
 $$
 
-This yields $\min_{v\in\mathcal V}\sup_{\rho\in\mathcal T}|G(v,\rho)|^2=0$ with $G(v,\rho):=\int_0^{T-h}\mathbb E[\rho(t,\hat X_t)\mathcal M(t,\hat X_t,\xi;v)]\mathrm dt$ and $\mathcal V=\{v\in C^{1,2}:v(T,x)=g(x)\}$. **Remark 2** gives the approximation error of this step as $O(h^2)$, from the weak-second-order *local* truncation error of Euler-Maruyama plus the locally second-order left-rectangle quadrature.
+This yields $\min_{v\in\mathcal V}\sup_{\rho\in\mathcal T}|G(v,\rho)|^2=0$ with $G(v,\rho):=\int_0^{T-h}\mathbb E[\rho(t,\hat X_t)\mathcal M(t,\hat X_t,\xi;v)]\mathrm dt$ and $\mathcal V=\{v\in C^{1,2}:v(T,x)=g(x)\}$. **Remark 2** gives the approximation error of this step as $O(h^2)$, from the weak-second-order _local_ truncation error of Euler-Maruyama plus the locally second-order left-rectangle quadrature.
 
 **Note that $\mathcal M$ contains no derivative of $v$ at all**, only two evaluations of the network at two nearby points. That is the entire derivative-free mechanism.
 
@@ -539,7 +539,7 @@ $$
 \qquad A_1\cap A_2=\varnothing .
 $$
 
-**Using two disjoint index sets is what makes the estimate of the *square* unbiased**; the naive $|G(\cdot;A)|^2$ is biased upward by the minibatch variance.
+**Using two disjoint index sets is what makes the estimate of the _square_ unbiased**; the naive $|G(\cdot;A)|^2$ is biased upward by the minibatch variance.
 
 **Step five: networks.** The value network hard-wires the terminal condition. The **multiscale adversarial network** is richer than paper 86's:
 
@@ -615,9 +615,9 @@ The contrast with the classical line (papers 8, 19, 25, 26, 41, 47, 63, 68) is t
 
 Nonlinear Fokker-Planck equations (porous medium, fractional porous medium, Keller-Segel, Curie-Weiss) are the forward equations of **mean-field SDEs** $\mathrm dX_t=b(t,X_{t-},\mu_t)\mathrm dt+\sigma(t,X_{t-},\mu_t)\mathrm dZ_t$ with $\mu_t=\mathrm{Law}(X_t)$ and $Z$ a Lévy process. They cannot be simulated by plain Monte Carlo because the mean-field term destroys the Markov property. Classical **propagation-of-chaos (PoC) particle methods** replace $\mu_t$ by the empirical measure of $N$ interacting particles, at two costs: all $N$ particles must be advanced simultaneously, which is expensive; and reconstructing the solution requires storing **all particle trajectories**, which is prohibitive in high dimension.
 
-**The mechanism of this paper is to let the neural network serve as the particles' memory.** It builds on the **sequential propagation of chaos (SPoC)** theory of Du-Jiang-Li, in which each new particle interacts only with the *preceding* ones so that the system takes an iterative form; the stored measure is then replaced wholesale by a neural network density, and trajectories are never stored.
+**The mechanism of this paper is to let the neural network serve as the particles' memory.** It builds on the **sequential propagation of chaos (SPoC)** theory of Du-Jiang-Li, in which each new particle interacts only with the _preceding_ ones so that the system takes an iterative form; the stored measure is then replaced wholesale by a neural network density, and trajectories are never stored.
 
-**One conceptual oddity is worth settling first**: the "loss" here is not an objective being minimised. The particle batch, and hence the loss itself, changes every epoch; gradient descent is only the mechanism by which the network *absorbs* the new batch, mimicking the weighted average $\mu^n_t=(1-\alpha_n)\mu^{n-1}_t+\alpha_n\hat\mu^n_t$. That is why exactly one descent step is taken per epoch, and why **the loss value does not decay during training** (Figure 2: the loss plateaus while the relative $L^2$ error keeps dropping). The loss therefore cannot serve as a stopping criterion, which is precisely what motivates the posterior error estimate of Section 3.2.
+**One conceptual oddity is worth settling first**: the "loss" here is not an objective being minimised. The particle batch, and hence the loss itself, changes every epoch; gradient descent is only the mechanism by which the network _absorbs_ the new batch, mimicking the weighted average $\mu^n_t=(1-\alpha_n)\mu^{n-1}_t+\alpha_n\hat\mu^n_t$. That is why exactly one descent step is taken per epoch, and why **the loss value does not decay during training** (Figure 2: the loss plateaus while the relative $L^2$ error keeps dropping). The loss therefore cannot serve as a stopping criterion, which is precisely what motivates the posterior error estimate of Section 3.2.
 
 ### Setting
 
@@ -660,7 +660,7 @@ The operator $\mathcal F$ is: build a loss from the current network and the fres
    \approx\frac1N\sum_{m=0}^M\sum_{x\in S}\Bigl|\rho_{FC,\theta}(t_m,x)
    -\frac1K\sum_{i=1}^K\frac{e^{-|x-X^i_{t_m}|^2/(2\epsilon^2)}}{(2\pi\epsilon^2)^{d/2}}\Bigr|^2,
    $$
-   with $S=\{x_j\}_{j=1}^N$ sampled uniformly from a truncation box $\Omega_0$. **Remark 2**: in back-propagation $\hat\rho_{t_m}(x_j)$ is *detached*, treated as a $\theta$-independent constant even though the particles were generated using the network.
+   with $S=\{x_j\}_{j=1}^N$ sampled uniformly from a truncation box $\Omega_0$. **Remark 2**: in back-propagation $\hat\rho_{t_m}(x_j)$ is _detached_, treated as a $\theta$-independent constant even though the particles were generated using the network.
 2. **KL loss $\mathcal L_{\rm kl}$**, used with a **temporal normalizing flow** (KRnet), which is automatically nonnegative with unit mass and can be sampled directly:
    $$
    \mathcal L_{\rm kl}=-\sum_{m=0}^M\int_{\mathbb R^d}\hat\rho_{t_m}(x)\log\rho_{NF,\theta}(t_m,x)\,\mathrm dx
@@ -675,7 +675,7 @@ The operator $\mathcal F$ is: build a loss from the current network and the fres
 
 ### Theorems
 
-The analysis is deliberately set in a **simplified surrogate**: the density is represented by a truncated Fourier basis with $L^2$-projection $P_N$, so that one gradient step on $\mathcal L_{\rm sq}$ is *exactly* an affine update.
+The analysis is deliberately set in a **simplified surrogate**: the density is represented by a truncated Fourier basis with $L^2$-projection $P_N$, so that one gradient step on $\mathcal L_{\rm sq}$ is _exactly_ an affine update.
 
 - **Exact-update identity.** In the Fourier surrogate $\mathcal F$ acts as $\rho^{\theta_t}_n=(1-2\alpha_n)\rho^{\theta_t}_{n-1}+2\alpha_nP_N(\hat\rho_t)$, so unrolling gives $\rho^{\theta_t}_{n-1}=P_N(\sum_{l=0}^{n-1}\frac{\beta_l}K\sum_i\delta^\epsilon_{\tilde X^{i,l}_t})$ with $\beta_l=(1-2\alpha_{n-1})\cdots(1-2\alpha_{l+1})2\alpha_l$ and $\sum_l\beta_l=1$. **This is the precise sense in which deepSPoC "is" SPoC: the network update is a weighted average of all past batches.**
 - **Basis-size condition.** $\hat\rho_t$ is Lipschitz with constant $\tilde C/(K\epsilon^{d+1})$, so $\|\hat\rho_t-P_N\hat\rho_t\|_\infty\le C(\epsilon,K,L,d)(\log N)^d/N$; choosing $N$ so that $\|\rho-P_N\rho\|_\infty\le\epsilon/(2L)^{d+1}$ gives $W_1(\rho,P_N\rho)\le\epsilon$ and $|\|\rho\|_1-\|P_N\rho\|_1|\le\epsilon$. **The choice of $W_1$ rather than a general $W_r$ is deliberate**: control by $\|\cdot\|_\infty$ is homogeneous only for $r=1$.
@@ -686,7 +686,7 @@ The analysis is deliberately set in a **simplified surrogate**: the density is r
   \mathbb E\,W_1^2\bigl(\rho^{\theta_t}_{n-1},\mu_t\bigr)\ \le\ C\Bigl(\epsilon^2+(Kn)^{-\frac{1}{1+d/2}}\Bigr).
   $$
   The second term is the usual PoC/empirical-measure rate in $Kn$, the total number of particles simulated; the first is the mollification and truncation floor. **The caveat the authors state themselves: this holds in the Fourier-projection surrogate, not for the actual neural network.**
-- **Posterior error estimate (Section 3.2).** Restricted to Brownian-driven dynamics, under **Assumption 3.2** (the same Lipschitz conditions with $W_2$ in place of $W_1$, noted to be *weaker* than 3.1 since $W_1\le W_2$), define on $\mathcal P_{2,\infty}([0,T])$ the metric $H_\alpha(\mu_\cdot,\nu_\cdot):=(\int_0^Te^{-\alpha t}W_2^2(\mu_t,\nu_t)\mathrm dt)^{1/2}$ and the solution map $\Phi(\mu_\cdot):=t\mapsto\mathrm{Law}(X_t)$ for the *frozen*, hence Markovian and directly simulable, SDE.
+- **Posterior error estimate (Section 3.2).** Restricted to Brownian-driven dynamics, under **Assumption 3.2** (the same Lipschitz conditions with $W_2$ in place of $W_1$, noted to be _weaker_ than 3.1 since $W_1\le W_2$), define on $\mathcal P_{2,\infty}([0,T])$ the metric $H_\alpha(\mu_\cdot,\nu_\cdot):=(\int_0^Te^{-\alpha t}W_2^2(\mu_t,\nu_t)\mathrm dt)^{1/2}$ and the solution map $\Phi(\mu_\cdot):=t\mapsto\mathrm{Law}(X_t)$ for the _frozen_, hence Markovian and directly simulable, SDE.
   - **Proposition 3.5:** with $C_0=2(T+1)C^2$ and $\alpha>C_0$, $H_\alpha(\Phi(\mu_\cdot),\Phi(\nu_\cdot))\le\sqrt{C_0/(\alpha-C_0)}\,H_\alpha(\mu_\cdot,\nu_\cdot)$, so $\Phi$ is a contraction.
   - **Theorem 3.6:** with $\mu^*_\cdot$ the fixed point (the true solution), for $\alpha>2C_0=4(T+1)C^2$ and **any** $\mu_\cdot\in\mathcal P_{2,\infty}([0,T])$,
     $$
@@ -701,12 +701,12 @@ Networks: fully connected with 6 hidden layers of 512 neurons and ReLU; temporal
 
 **(i) Porous medium equation (Section 4.1).** $\partial_t\rho=\Delta\rho^m$, quasilinear and degenerate at $\rho=0$, benchmarked against the **Barenblatt solution** $U_{m,C}(t,x)=t^{-\alpha}\{C-\frac{m-1}{2m}\beta\frac{|x|^2}{t^{2\beta}}\}_+^{1/(m-1)}$ with $\alpha=\frac d{d(m-1)+2}$ and $\beta=\alpha/d$ — a weak solution that loses classical differentiability at the free boundary. The runs are:
 
-| Dimension | Algorithm                | Parameters                                                                              |
-| --------- | ------------------------ | ---------------------------------------------------------------------------------------- |
-| 1D        | Alg. 1 (uniform)         | $t_0=1$, $T=1$, $\Delta t=0.01$, $N=1000$                                                |
-| 3D        | Alg. 1 (adaptive)        | $t_0=0.1$, $T=0.2$, $\Delta t=0.005$, noise intensity $0.2$, $\Omega_0=[-2,2]^3$         |
-| 5D        | Alg. 1 (adaptive), Alg. 3 | 2000 uniform + 4000 adaptive points, $\sigma=0.3$, $\epsilon=0.05$, $K=8000$, $\Omega_0=[-3,3]^5$ |
-| 6D, 8D    | Alg. 3 only              | $t_0=1$, $T=1.5$, $\delta t=0.025$, $10^4$ samples, $\Omega_0=[-3,3]^6$ / $[-3,3]^8$, $\gamma=0.5$ every $\Gamma=500$ epochs |
+| Dimension | Algorithm                 | Parameters                                                                                                                   |
+| --------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 1D        | Alg. 1 (uniform)          | $t_0=1$, $T=1$, $\Delta t=0.01$, $N=1000$                                                                                    |
+| 3D        | Alg. 1 (adaptive)         | $t_0=0.1$, $T=0.2$, $\Delta t=0.005$, noise intensity $0.2$, $\Omega_0=[-2,2]^3$                                             |
+| 5D        | Alg. 1 (adaptive), Alg. 3 | 2000 uniform + 4000 adaptive points, $\sigma=0.3$, $\epsilon=0.05$, $K=8000$, $\Omega_0=[-3,3]^5$                            |
+| 6D, 8D    | Alg. 3 only               | $t_0=1$, $T=1.5$, $\delta t=0.025$, $10^4$ samples, $\Omega_0=[-3,3]^6$ / $[-3,3]^8$, $\gamma=0.5$ every $\Gamma=500$ epochs |
 
 **One explicit finding: Algorithm 1 is hard to use at 6D and 8D because high-dimensional mollification is inaccurate; it is the mollification-free $\mathcal L_{\rm path}$ (Algorithm 3) that makes those dimensions reachable.**
 
@@ -714,13 +714,13 @@ Networks: fully connected with 6 hidden layers of 512 neurons and ReLU; temporal
 
 **(iii) Keller-Segel (Section 4.2).** $\partial_t\mu=\nabla\cdot((\nabla W*\mu)\mu)+\Delta\mu$ in $d=2$ with the **singular** kernel $W(x)=\frac1{2\pi}\ln|x|$ — a distribution-dependent, singular-interaction case outside the PoC theory. Solved with both Algorithm 1 and Algorithm 3.
 
-**(iv) Curie-Weiss mean-field equation (Section 4.3).** $\mathrm dX_t=\{-\beta(X_t^3-X_t)+\beta K\mathbb EX_t\}\mathrm dt+\mathrm dB_t$ with $\beta=1$ and $K=-0.1$, an *expectation*-dependent mean-field SDE. Long-time behaviour is compared with the explicit invariant density $p^*(x)=C^{-1}\exp\{-2\beta(\frac{x^4}4-\frac{x^2}2)\}$ and with a PoC reference computed using **5 million particles**; deepSPoC uses 5000 epochs of 1000 particles each — **the same total particle count, but never held in memory at once, which is the memory argument made concrete.**
+**(iv) Curie-Weiss mean-field equation (Section 4.3).** $\mathrm dX_t=\{-\beta(X_t^3-X_t)+\beta K\mathbb EX_t\}\mathrm dt+\mathrm dB_t$ with $\beta=1$ and $K=-0.1$, an _expectation_-dependent mean-field SDE. Long-time behaviour is compared with the explicit invariant density $p^*(x)=C^{-1}\exp\{-2\beta(\frac{x^4}4-\frac{x^2}2)\}$ and with a PoC reference computed using **5 million particles**; deepSPoC uses 5000 epochs of 1000 particles each — **the same total particle count, but never held in memory at once, which is the memory argument made concrete.**
 
 **(v) Fractional porous medium equation (Section 4.4).** $\partial_t\rho=-(-\Delta)^{\alpha/2}(|\rho|^{m-1}\rho)$ with $m>1$ and $\alpha\in(0,2)$, the fractional Laplacian written as a principal-value integral — a **nonlocal** operator driven by an $\alpha$-stable Lévy process rather than Brownian motion.
 
 ### Relation to the others
 
-**It is the methodological odd one out on this page**, and the only paper in the list about **forward** (Fokker-Planck / McKean-Vlasov) problems rather than backward (FBSDE / HJB) ones. Where papers 8, 47, 63, 86, 93 and 96 propagate information *backward* from a terminal condition using conditional expectations, deepSPoC propagates a *law* forward and fits it with a network.
+**It is the methodological odd one out on this page**, and the only paper in the list about **forward** (Fokker-Planck / McKean-Vlasov) problems rather than backward (FBSDE / HJB) ones. Where papers 8, 47, 63, 86, 93 and 96 propagate information _backward_ from a terminal condition using conditional expectations, deepSPoC propagates a _law_ forward and fits it with a network.
 
 The engineering DNA is nevertheless shared: the network replaces stored trajectories; training is driven by freshly simulated Euler-Maruyama paths; adaptive, dynamics-based spatial sampling is essential in high $d$. In particular the "sample where the process actually goes" principle that paper 93 derives from the Fokker-Planck adjoint equation is here literally the object being learned.
 
@@ -730,7 +730,7 @@ The engineering DNA is nevertheless shared: the network replaces stored trajecto
 
 ### The idea
 
-For semilinear parabolic PDEs in $d\gg1$, the two dominant families both have gaps. **Deep learning solvers** (deep BSDE, SOC-MartNet, DRDM) reach very high $d$, but the paper's diagnosis is blunt: "limited stability of the optimization procedure, pronounced sensitivity to hyperparameters, and a lack of rigorous a priori error estimates." **Classical probabilistic and regression Monte Carlo BSDE solvers** (Gobet-Lemor-Warin and descendants) are analysable, but they approximate conditional expectations by regression onto *global* basis functions whose number grows combinatorially with $d$ and which become ill-conditioned beyond $d\approx200$, and they solve the coupled $(Y,Z)$ system by Picard iteration, whose cost explodes in high dimension. Sparse grids stall around $d\approx10$; branching-diffusion representations suffer variance blow-up over long horizons and cost $O(d^2)$.
+For semilinear parabolic PDEs in $d\gg1$, the two dominant families both have gaps. **Deep learning solvers** (deep BSDE, SOC-MartNet, DRDM) reach very high $d$, but the paper's diagnosis is blunt: "limited stability of the optimization procedure, pronounced sensitivity to hyperparameters, and a lack of rigorous a priori error estimates." **Classical probabilistic and regression Monte Carlo BSDE solvers** (Gobet-Lemor-Warin and descendants) are analysable, but they approximate conditional expectations by regression onto _global_ basis functions whose number grows combinatorially with $d$ and which become ill-conditioned beyond $d\approx200$, and they solve the coupled $(Y,Z)$ system by Picard iteration, whose cost explodes in high dimension. Sparse grids stall around $d\approx10$; branching-diffusion representations suffer variance blow-up over long horizons and cost $O(d^2)$.
 
 **The mechanism here is to keep the martingale time discretisation and the derivative-free spirit but replace the neural network entirely by local linear regression on a small particle ensemble.** Two judgements carry the design: the conditional expectation is approximated by an **ensemble average over all particles** (and the particle number $M$ enters the error only through $e^{-cM}$, so $M\le100$ suffices), and $Z$ comes from a **weighted least-squares fit of $\nabla u$**, which reorders the pipeline to $X\to Z\to Y$ and removes the Picard iteration. What is bought back is interpretability, a rigorous a priori bound, and laptop-scale cost.
 
@@ -756,7 +756,7 @@ $$
 
 **This is the $\theta=1$ member of the family**, the same $Y$-part that paper 93's Remark 5 writes down, and the ancestor of the schemes in papers 8, 47 and 63.
 
-**Step two: a small-scale stochastic particle method.** Simulate $M$ *independent* Euler-Maruyama trajectories and approximate the conditional expectation by the **ensemble average over all $M$ particles**:
+**Step two: a small-scale stochastic particle method.** Simulate $M$ _independent_ Euler-Maruyama trajectories and approximate the conditional expectation by the **ensemble average over all $M$ particles**:
 
 $$
 \tilde Y^m_k\approx\frac1M\sum_{j=1}^M\tilde Y^j_{k+1}+f\bigl(t_k,\tilde X^m_k,\tilde Y^m_k,\tilde Z^m_k\bigr)\Delta t,
@@ -774,7 +774,7 @@ u(t_{k+1},\cdot)\approx
 +\underbrace{\nabla u(t_k,\tilde X^m_k)}_{=:\alpha_x}{}^\top(\cdot-\tilde X^m_k),
 $$
 
-and fit $(\alpha,\alpha_x)\in\mathbb R^{d+1}$ by weighted least squares against the *already computed* values $\tilde Y^j_{k+1}$ regressed on the *current* positions $\tilde X^j_k$:
+and fit $(\alpha,\alpha_x)\in\mathbb R^{d+1}$ by weighted least squares against the _already computed_ values $\tilde Y^j_{k+1}$ regressed on the _current_ positions $\tilde X^j_k$:
 
 $$
 J(\boldsymbol\alpha)=\sum_{j=1}^Mw_j\bigl(\tilde Y^j_{k+1}-\alpha-\alpha_x^\top D_j\bigr)^2,
@@ -786,7 +786,7 @@ with $K$ a kernel (Gaussian in practice). Then $\tilde Z^m_k=\sigma^\top(t_k,\ti
 
 - **Matrix-free solve.** LSQR or PCG using only the two products $\beta_j=w_j(\alpha+D_j^\top\alpha_x)$ and $(\mathbf D^\top\beta)_0=\sum_j\beta_j$, $(\mathbf D^\top\beta)_{1:d}=\sum_j\beta_jD_j$. Storage is $O(d)$, cost $O(Md)$ per time step, and $\mathbf D^\top W\mathbf D$ is never formed.
 - **Ridge regularisation (Remark 2.2).** Since $M\ll d$ is the normal regime, the normal equations are underdetermined, so the implementation minimises $J_\lambda(\boldsymbol\alpha)=\sum_jw_j(\cdots)^2+\lambda\|\boldsymbol\alpha\|^2$.
-- **Why kernel weights instead of $k$-nearest-neighbours (Remark 2.3).** Under distance concentration in high $d$, $k$-NN inflates the radii; but for the Gaussian kernel the *ratio* $w_j/w_i=\exp\{-(\|D_j\|^2-\|D_i\|^2)/\varepsilon_k^2\}$ still discriminates on the relative gap $|\|D_j\|-\|D_i\||$ even when absolute distances concentrate. Using *all* particles also removes the radius-tuning hyperparameter of conventional local linear regression.
+- **Why kernel weights instead of $k$-nearest-neighbours (Remark 2.3).** Under distance concentration in high $d$, $k$-NN inflates the radii; but for the Gaussian kernel the _ratio_ $w_j/w_i=\exp\{-(\|D_j\|^2-\|D_i\|^2)/\varepsilon_k^2\}$ still discriminates on the relative gap $|\|D_j\|-\|D_i\||$ even when absolute distances concentrate. Using _all_ particles also removes the radius-tuning hyperparameter of conventional local linear regression.
 
 **Step four: $Y$ by a scalar Newton iteration.** With $\tilde X^m_k$ and $\tilde Z^m_k$ fixed, the scheme is a **one-dimensional** root problem $F(\tilde Y^m_k)=0$, solved by Newton's method and reported to need only 2 to 3 iterations per step.
 
@@ -918,7 +918,7 @@ $$
 
 **Remark 3 is essential for reading the algorithm: $i$ is the policy-iteration index, not a time index.** For each fixed $i$ the ensemble $\{X^m_i\}$ is a set of **space-time** samples of $[0,T)\times\mathbb R^d$ approximating the occupation measure $\mu^*$, not samples at one time level. **This is what removes the sequential-in-time bottleneck: no trajectory is ever simulated end to end.**
 
-**Step four: weak form plus adversarial training.** Only *one* sample of the next state is available per current state, so the conditional expectations are removed by testing:
+**Step four: weak form plus adversarial training.** Only _one_ sample of the next state is available per current state, so the conditional expectations are removed by testing:
 
 $$
 \text{(PE)}\ \min_\theta\sup_{\rho\in\mathcal T}
@@ -927,7 +927,7 @@ $$
 \text{(PI)}\ \min_\alpha\ \mathbb E\bigl[\mathcal M(X^m_i;\mu_i,u_\alpha,v_\theta)\bigr],
 $$
 
-where $\mathcal M(x;\mu,u,v):=\{hf(x,\mu,u)+v\circ\Phi(x,\mu,u)-v(x)\}\mathbf 1(t\in\Pi_h)$ with $\mathcal R_h=\mathbb E[\mathcal M]+O(h^2)$, and $\mathcal T:=\{\rho:[0,T)\times\mathbb R^d\to[-1,1]^r\ \text{smooth}\}$. The justification is the tower property, $\mathbb E[\rho\mathcal M]=\mathbb E[\rho\,\mathbb E[\mathcal M|X^m_i]]$, so the policy-evaluation step is a **weighted Galerkin formulation** of the residual equation, weighted by the law of $X^m_i$. And by the law of total expectation, if $u_\alpha$ is expressive enough then minimising the *averaged* objective makes $u_\alpha(X^m_i)$ minimise the inner conditional expectation for almost every realisation, so **the averaged optimisation preserves pointwise optimality** — the paper cites paper 86's Lemma 3.2 for the rigorous version. **Remark 5**: a vector-valued test function with $r\ge600$ substantially stabilises adversarial training compared with $r=1$.
+where $\mathcal M(x;\mu,u,v):=\{hf(x,\mu,u)+v\circ\Phi(x,\mu,u)-v(x)\}\mathbf 1(t\in\Pi_h)$ with $\mathcal R_h=\mathbb E[\mathcal M]+O(h^2)$, and $\mathcal T:=\{\rho:[0,T)\times\mathbb R^d\to[-1,1]^r\ \text{smooth}\}$. The justification is the tower property, $\mathbb E[\rho\mathcal M]=\mathbb E[\rho\,\mathbb E[\mathcal M|X^m_i]]$, so the policy-evaluation step is a **weighted Galerkin formulation** of the residual equation, weighted by the law of $X^m_i$. And by the law of total expectation, if $u_\alpha$ is expressive enough then minimising the _averaged_ objective makes $u_\alpha(X^m_i)$ minimise the inner conditional expectation for almost every realisation, so **the averaged optimisation preserves pointwise optimality** — the paper cites paper 86's Lemma 3.2 for the rigorous version. **Remark 5**: a vector-valued test function with $r\ge600$ substantially stabilises adversarial training compared with $r=1$.
 
 **Step five: networks and minibatch estimators.** The control is clipped into the box $U=\prod_j[a_j,b_j]$ by $u_{\alpha,j}(x)=\min\{\max\{a_j,\psi_{\alpha,j}(x)\},b_j\}$. The value network hard-wires the terminal condition **using the current empirical measure**: $v_\theta=\varphi_\theta(x)$ on $[0,T)\times\mathbb R^d$ and $v_\theta=g(x,\mu_i)$ on $\{T\}\times\mathbb R^d$. The adversary is the same shallow multiscale sine network as in paper 93. The minibatch estimators again use **disjoint** sets $A_{i,1},A_{i,2}$ so that the squared term is (nearly) unbiased.
 
@@ -974,7 +974,7 @@ with $c_1=1$, $c_2=0.1$, $c_4=10$, $c_F=1$. There is no explicit solution, so va
 
 **What is genuinely new relative to papers 86, 93 and 96** is the **regenerative reformulation** with cycles and resetting, which converts a finite-horizon mean-field game into an infinite-horizon problem with an invariant occupation measure, and the **one-step random mapping** update of the particle ensemble. Together these make the outer loop index double as the cycle index, so no full trajectory is ever simulated — the mean-field-game analogue of the offline-path-generation trick of papers 96 and 93, pushed further.
 
-**Mean-field connections:** paper 33 (explicit $\theta$-schemes for mean-field BSDEs) and paper 61 (explicit multistep schemes for mean-field FBSDEs) are the high-order, low-dimensional, provably convergent treatments of mean-field *backward* equations; paper 97 (DeepSPoC) handles the mean-field *forward* side; paper 108 couples both sides and solves the equilibrium problem at $d=10^4$ but with no theory. **Papers 33, 61, 97 and 108 span exactly the same grid of trade-offs — order and proof versus dimension — that papers 8, 47 and 63 versus 86, 93 and 96 span for the non-mean-field case.**
+**Mean-field connections:** paper 33 (explicit $\theta$-schemes for mean-field BSDEs) and paper 61 (explicit multistep schemes for mean-field FBSDEs) are the high-order, low-dimensional, provably convergent treatments of mean-field _backward_ equations; paper 97 (DeepSPoC) handles the mean-field _forward_ side; paper 108 couples both sides and solves the equilibrium problem at $d=10^4$ but with no theory. **Papers 33, 61, 97 and 108 span exactly the same grid of trade-offs — order and proof versus dimension — that papers 8, 47 and 63 versus 86, 93 and 96 span for the non-mean-field case.**
 
 The link to the stochastic-control thread: papers 26, 41 and 50 solve control problems through the Pontryagin/FBSDE route (gradient projection, high-order FBSDE schemes, conditional gradient with particle filters), whereas paper 108 goes through dynamic programming and policy iteration and adds the equilibrium fixed point. On authorship, Shuixin Fang and Tao Zhou also co-author papers 86, 93, 96 and 100; Zhen Wu is a control theorist at Shandong University, which is also Weidong Zhao's institution — the classical FBSDE co-author on papers 8, 16, 18, 19, 23, 25, 26, 33, 35, 41, 47, 61, 63 and 68.
 
@@ -992,13 +992,13 @@ Each substitution replaces a condition that cannot be handled directly by an equ
 
 The other five each remove one component of that machinery, and the genealogy of removals is itself informative:
 
-| Paper | What it removes                                       | What it buys                                                  | What it costs                                                    |
-| ----- | ----------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------- |
-| 96    | all derivatives in the loss, and path re-simulation   | $d=10^4$, parallelism in time and space                       | still no global theorem; controlled jumps cannot be pre-computed |
-| 93    | stochastic analysis (Taylor and moments instead)      | the first convergence-rate theorem (first order in time), which retroactively covers 86 and 96 | lower accuracy than PINNs; the RDO carries its own $O(h)$ truncation |
-| 100   | the neural network itself                             | a rigorous a priori bound, laptop-scale cost, interpretability | only $d=10^4$, only first order                                  |
-| 97    | stored particle trajectories                          | forward mean-field equations, and the only computable posterior bound | the convergence theorem holds only in a Fourier surrogate         |
-| 108   | full trajectory simulation and the coupled HJB-FP solve | mean-field game equilibria at $d=10^4$                        | no convergence theorem at all                                    |
+| Paper | What it removes                                         | What it buys                                                                                   | What it costs                                                        |
+| ----- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| 96    | all derivatives in the loss, and path re-simulation     | $d=10^4$, parallelism in time and space                                                        | still no global theorem; controlled jumps cannot be pre-computed     |
+| 93    | stochastic analysis (Taylor and moments instead)        | the first convergence-rate theorem (first order in time), which retroactively covers 86 and 96 | lower accuracy than PINNs; the RDO carries its own $O(h)$ truncation |
+| 100   | the neural network itself                               | a rigorous a priori bound, laptop-scale cost, interpretability                                 | only $d=10^4$, only first order                                      |
+| 97    | stored particle trajectories                            | forward mean-field equations, and the only computable posterior bound                          | the convergence theorem holds only in a Fourier surrogate            |
+| 108   | full trajectory simulation and the coupled HJB-FP solve | mean-field game equilibria at $d=10^4$                                                         | no convergence theorem at all                                        |
 
 **One limitation runs across the whole table and deserves to be remembered separately**: the criterion of this family only forces the PDE residual to vanish **in the region the pilot process or the sampled ensemble explores**. Remark 1 of paper 96 states it, Theorem 4 of paper 93 encodes it in the weighted norm $M^2_n[\cdot]$, and paper 108 displays it in its $d=1$ visualisation. **"Solved accurately" is always a statement with a domain attached here.**
 
@@ -1006,33 +1006,33 @@ A second judgement concerns the scale of accuracy. The classical multistep and $
 
 ## Coverage checklist
 
-| Item                                                              | Paper | Coverage status                            |
-| ----------------------------------------------------------------- | ----- | ------------------------------------------ |
-| HJB equation, Hamiltonian, and the four covered situations        | 86    | verified from the full text                |
-| Integral minimum principle (Lemma 3.2) with its one-line proof    | 86    | verified from the full text                |
-| Martingale characterisation (Lemma 3.4), both directions          | 86    | verified from the full text                |
-| Theorem 3.5, the geometric assumption, weak versus strong order   | 86    | verified; noted as not a convergence theorem |
-| Adversarial weak form, augmented Lagrangian, three networks       | 86    | verified from the full text                |
-| Experiments: runtimes, first-order rate, Tables 1 and 2           | 86    | verified, tabulated here                   |
-| Random-difference expansion, RDO, Fokker-Planck sampling          | 93    | verified from the full text                |
-| The two equivalences (martingale methods, implicit Euler)         | 93    | verified from the full text                |
-| Assumptions 1-3, Theorem 1, Corollary 2, Lemma 3, Theorem 4       | 93    | verified, with step restrictions and constants |
-| Remark 9 (proving first order for papers 86 and 96 as well)       | 93    | verified from the full text                |
-| Experiments: Tables 2, 3, 4 and the authors' self-assessment      | 93    | verified, tabulated here                   |
-| Pilot/system process, localised martingale, Remark 1              | 96    | verified; the region limitation preserved  |
-| Derivative-free $\mathcal M$, disjoint minibatches, policy improvement | 96 | verified from the full text                |
-| Only an $O(h^2)$ local estimate, no global theorem                | 96    | verified from the full text                |
-| Experiments: Tables 1 and 2, and the width study                  | 96    | verified, tabulated here                   |
-| SPoC, the deepSPoC system, three losses, adaptive sampling        | 97    | verified from the full text                |
-| Theorem 3.3 and its surrogate-setting caveat                      | 97    | verified from the full text                |
-| Posterior estimate (Proposition 3.5, Theorem 3.6)                 | 97    | verified from the full text                |
-| Experiments: five equation families with their parameters         | 97    | verified; no orders reported, noted        |
-| Local linear regression, matrix-free solve, Newton iteration      | 100   | verified from the full text                |
-| Lemmas 3.1, 3.3, 3.8 and Theorem 3.1                              | 100   | verified from the full text                |
-| Experiments: three problems, runtime tables, hardware             | 100   | verified, tabulated here                   |
-| Regenerative reformulation, one-step random mapping, Remark 3     | 108   | verified from the full text                |
-| No convergence theorem, only an $O(h^2)$ local estimate           | 108   | verified from the full text                |
-| Experiments: Table 1, the $d=10^4$ run, four test problems        | 108   | verified, tabulated here                   |
+| Item                                                                   | Paper | Coverage status                                |
+| ---------------------------------------------------------------------- | ----- | ---------------------------------------------- |
+| HJB equation, Hamiltonian, and the four covered situations             | 86    | verified from the full text                    |
+| Integral minimum principle (Lemma 3.2) with its one-line proof         | 86    | verified from the full text                    |
+| Martingale characterisation (Lemma 3.4), both directions               | 86    | verified from the full text                    |
+| Theorem 3.5, the geometric assumption, weak versus strong order        | 86    | verified; noted as not a convergence theorem   |
+| Adversarial weak form, augmented Lagrangian, three networks            | 86    | verified from the full text                    |
+| Experiments: runtimes, first-order rate, Tables 1 and 2                | 86    | verified, tabulated here                       |
+| Random-difference expansion, RDO, Fokker-Planck sampling               | 93    | verified from the full text                    |
+| The two equivalences (martingale methods, implicit Euler)              | 93    | verified from the full text                    |
+| Assumptions 1-3, Theorem 1, Corollary 2, Lemma 3, Theorem 4            | 93    | verified, with step restrictions and constants |
+| Remark 9 (proving first order for papers 86 and 96 as well)            | 93    | verified from the full text                    |
+| Experiments: Tables 2, 3, 4 and the authors' self-assessment           | 93    | verified, tabulated here                       |
+| Pilot/system process, localised martingale, Remark 1                   | 96    | verified; the region limitation preserved      |
+| Derivative-free $\mathcal M$, disjoint minibatches, policy improvement | 96    | verified from the full text                    |
+| Only an $O(h^2)$ local estimate, no global theorem                     | 96    | verified from the full text                    |
+| Experiments: Tables 1 and 2, and the width study                       | 96    | verified, tabulated here                       |
+| SPoC, the deepSPoC system, three losses, adaptive sampling             | 97    | verified from the full text                    |
+| Theorem 3.3 and its surrogate-setting caveat                           | 97    | verified from the full text                    |
+| Posterior estimate (Proposition 3.5, Theorem 3.6)                      | 97    | verified from the full text                    |
+| Experiments: five equation families with their parameters              | 97    | verified; no orders reported, noted            |
+| Local linear regression, matrix-free solve, Newton iteration           | 100   | verified from the full text                    |
+| Lemmas 3.1, 3.3, 3.8 and Theorem 3.1                                   | 100   | verified from the full text                    |
+| Experiments: three problems, runtime tables, hardware                  | 100   | verified, tabulated here                       |
+| Regenerative reformulation, one-step random mapping, Remark 3          | 108   | verified from the full text                    |
+| No convergence theorem, only an $O(h^2)$ local estimate                | 108   | verified from the full text                    |
+| Experiments: Table 1, the $d=10^4$ run, four test problems             | 108   | verified, tabulated here                       |
 
 ## Sources for this page
 

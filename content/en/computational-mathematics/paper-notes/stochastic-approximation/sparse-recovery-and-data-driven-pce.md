@@ -143,10 +143,10 @@ $$
 
 **Lemma 4.5 and Theorem 4.6 (total-degree case).** Lemma 4.5 assumes $d\ge q$ and prime $M\ge\max\{2q+1,\ (2q(d-1))^2\}$. Theorem 4.6: for prime $M\ge9\cdot4^{\,q}\cdot d^2\cdot s^2$ and $f=\sum_{n\in\Lambda^{q,d}_D}c_n\Phi_n$, the $\ell_1$ solution with $A=A_D\cdot C$ satisfies the same bound $\|c^{\#}-c\|_2\lesssim\sigma_{s,1}(c)/\sqrt s$; Remark 4.7 gives exact recovery once $m\ge\tfrac92\cdot4^{\,q}\cdot d^2s^2+1$.
 
-| Index set | Hypothesis of the coherence lemma | Points needed for exact recovery |
-| ------------------------------- | ------------------------------------------------------ | -------------------------------------------- |
-| Tensor product $\Lambda^{q,d}_P$ | $M$ prime, $M\ge\max\{2q+1,(2d(d-1))^2\}$ | $m\ge\max\{q,\ \tfrac92\cdot4^{d}d^2s^2\}+1$ |
-| Total degree $\Lambda^{q,d}_D$ | $d\ge q$, $M$ prime, $M\ge\max\{2q+1,(2q(d-1))^2\}$ | $m\ge\tfrac92\cdot4^{\,q}d^2s^2+1$ |
+| Index set                        | Hypothesis of the coherence lemma                   | Points needed for exact recovery             |
+| -------------------------------- | --------------------------------------------------- | -------------------------------------------- |
+| Tensor product $\Lambda^{q,d}_P$ | $M$ prime, $M\ge\max\{2q+1,(2d(d-1))^2\}$           | $m\ge\max\{q,\ \tfrac92\cdot4^{d}d^2s^2\}+1$ |
+| Total degree $\Lambda^{q,d}_D$   | $d\ge q$, $M$ prime, $M\ge\max\{2q+1,(2q(d-1))^2\}$ | $m\ge\tfrac92\cdot4^{\,q}d^2s^2+1$           |
 
 **The only difference in that table that matters is the exponent moving from $4^d$ to $4^{\,q}$**: from exponential in the dimension to exponential in the polynomial degree. Uncertainty-quantification problems routinely have $d$ in the hundreds while $q$ stays small, so the total-degree version is the usable one.
 
@@ -156,14 +156,14 @@ $$
 
 Section 5 compares $\Theta_M$ against interpolation points drawn i.i.d. uniformly on $[-1,1]^d$.
 
-| Item | Setting |
-| ---------- | -------------------------------------------------------------- |
-| Comparison | the deterministic set $\Theta_M$ against i.i.d. uniform points |
-| Spaces | two groups, tensor-product Chebyshev and total-degree Chebyshev |
-| Test functions | support drawn uniformly over all size-$s$ subsets of $\Lambda$ |
-| Coefficients | nonzeros i.i.d. standard Gaussian (mean 0, standard deviation 1) |
-| Solver | SPGL1 in MATLAB |
-| Statistics | 100 repetitions at each fixed sparsity $s$, giving an empirical success rate |
+| Item           | Setting                                                                      |
+| -------------- | ---------------------------------------------------------------------------- |
+| Comparison     | the deterministic set $\Theta_M$ against i.i.d. uniform points               |
+| Spaces         | two groups, tensor-product Chebyshev and total-degree Chebyshev              |
+| Test functions | support drawn uniformly over all size-$s$ subsets of $\Lambda$               |
+| Coefficients   | nonzeros i.i.d. standard Gaussian (mean 0, standard deviation 1)             |
+| Solver         | SPGL1 in MATLAB                                                              |
+| Statistics     | 100 repetitions at each fixed sparsity $s$, giving an empirical success rate |
 
 The reported outcome is that **the deterministic points perform similarly to random points**. What the experiment establishes is therefore not an accuracy advantage but the absence of an accuracy penalty for being deterministic — which is how the abstract itself puts it ("a similar performance").
 
@@ -233,11 +233,11 @@ $$
 
 **Three uniform-boundedness lemmas.** These are the technical core, since they determine the size of $L(\mathbf n)$.
 
-| Marginal | Condition | $L_i(n)$ |
-| ---------------------------------------------------------------------- | ------------------------------------ | ---------------------------------- |
-| Beta / Jacobi, $B(\gamma+1,\delta+1)$, $\gamma,\delta\ge-\tfrac12$ | bounded interval $[-1,1]$ | $\le C(\gamma,\delta)$, **uniform in $n$** |
-| two-sided exponential $\rho_i\propto e^{-\lvert x\rvert^\alpha}$, $\alpha>\tfrac32$ | $\mathbb R$ (normal is $\alpha=2$) | $\le C(\alpha)\,n^{2/3}$ |
-| one-sided exponential $\rho_i\propto e^{-\lvert x\rvert^\alpha}$, $\alpha>\tfrac34$ | $[0,\infty)$ (exponential is $\alpha=1$) | $\le C(\alpha)\,n^{2/3}$ |
+| Marginal                                                                            | Condition                                | $L_i(n)$                                   |
+| ----------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------ |
+| Beta / Jacobi, $B(\gamma+1,\delta+1)$, $\gamma,\delta\ge-\tfrac12$                  | bounded interval $[-1,1]$                | $\le C(\gamma,\delta)$, **uniform in $n$** |
+| two-sided exponential $\rho_i\propto e^{-\lvert x\rvert^\alpha}$, $\alpha>\tfrac32$ | $\mathbb R$ (normal is $\alpha=2$)       | $\le C(\alpha)\,n^{2/3}$                   |
+| one-sided exponential $\rho_i\propto e^{-\lvert x\rvert^\alpha}$, $\alpha>\tfrac34$ | $[0,\infty)$ (exponential is $\alpha=1$) | $\le C(\alpha)\,n^{2/3}$                   |
 
 Remark 4.1 states that the conclusion is expected for the more general weight $\rho_i\propto x^\mu e^{-\lvert x\rvert^\alpha}$ with $\mu\ge-\frac12$, **but this is not proved here**.
 
@@ -268,12 +268,12 @@ with probability at least $1-N^{-\gamma\log^3(s)}$, with $C_2,\gamma$ universal.
 
 **The three sample-complexity regimes**, in the paper's own summary form $M\gtrsim L(\mathbf n)s$:
 
-| Parameter type | $L(\mathbf n)$ | Sample requirement |
-| --------------------------------------------------- | ------------------------------ | ------------------------------------ |
-| Beta (bounded) | $\le C^d$ | $M\gtrsim C^d\,s\log^3 s\log N$ |
-| Normal (maximum degree $n-1$ the same in every dimension) | $\le(Cn)^{2d/3}$ | $M\gtrsim n^{2d/3}s\log^3 s\log N$ |
-| One-sided exponential ($\rho\propto e^{-\lVert z\rVert_1}$ on $[0,\infty)^d$) | as above | as above |
-| Normal, empirical observation at degree $n-1=9$ | $Cn^{2/3}\lesssim4$ | $M\ge4^d\,s\log^3 s\log N$ for $n\le10$ |
+| Parameter type                                                                | $L(\mathbf n)$      | Sample requirement                      |
+| ----------------------------------------------------------------------------- | ------------------- | --------------------------------------- |
+| Beta (bounded)                                                                | $\le C^d$           | $M\gtrsim C^d\,s\log^3 s\log N$         |
+| Normal (maximum degree $n-1$ the same in every dimension)                     | $\le(Cn)^{2d/3}$    | $M\gtrsim n^{2d/3}s\log^3 s\log N$      |
+| One-sided exponential ($\rho\propto e^{-\lVert z\rVert_1}$ on $[0,\infty)^d$) | as above            | as above                                |
+| Normal, empirical observation at degree $n-1=9$                               | $Cn^{2/3}\lesssim4$ | $M\ge4^d\,s\log^3 s\log N$ for $n\le10$ |
 
 In the bounded case the constant of Tang and Iaccarino is essentially $C=3$; Figure 1 of the paper **suggests** that $C=2$ would be sharper, but that is **not proved**.
 
@@ -287,20 +287,20 @@ The paper also restates Theorem 2.3 of Yan–Guo–Xiu: for multivariate Legendr
 
 The $\ell_1$ problems are solved with the Spectral Projected Gradient algorithm SPGL1 in MATLAB. Test coefficient vectors are built by fixing a sparsity $s$, drawing $s$ nonzero entries i.i.d. standard normal and zeroing the rest. Five recovery procedures are compared by empirical success probability:
 
-| Label | Sampling | Problem solved |
-| -------------- | ---------------------------------------------------- | -------------- |
-| Random | i.i.d. from $\rho$ | unweighted |
-| PreChebyshev | i.i.d. from the Chebyshev density $v(x)=\frac{1}{\pi^d\prod_i\sqrt{1-x_i^2}}$ | weighted (preconditioned) |
-| **Gaussian** | subsampled Gauss grid with Gauss weights | weighted (**the method proposed here**) |
-| Chebyshev | i.i.d. from the Chebyshev measure | unweighted |
-| Uniform | i.i.d. from the uniform measure | unweighted |
+| Label        | Sampling                                                                      | Problem solved                          |
+| ------------ | ----------------------------------------------------------------------------- | --------------------------------------- |
+| Random       | i.i.d. from $\rho$                                                            | unweighted                              |
+| PreChebyshev | i.i.d. from the Chebyshev density $v(x)=\frac{1}{\pi^d\prod_i\sqrt{1-x_i^2}}$ | weighted (preconditioned)               |
+| **Gaussian** | subsampled Gauss grid with Gauss weights                                      | weighted (**the method proposed here**) |
+| Chebyshev    | i.i.d. from the Chebyshev measure                                             | unweighted                              |
+| Uniform      | i.i.d. from the uniform measure                                               | unweighted                              |
 
 Figure 2 plots recovery probability against sparsity $s$ for Legendre polynomials at fixed $M=85$, in two configurations:
 
-| Configuration | $d$ | degree bound $n$ | $N$ | $M$ |
-| ---------------------- | --- | ---------------- | --- | --- |
-| low dimension, high degree | 2 | 21 | 231 | 85 |
-| high dimension, low degree | 10 | 4 | 286 | 85 |
+| Configuration              | $d$ | degree bound $n$ | $N$ | $M$ |
+| -------------------------- | --- | ---------------- | --- | --- |
+| low dimension, high degree | 2   | 21               | 231 | 85  |
+| high dimension, low degree | 10  | 4                | 286 | 85  |
 
 Figure 1 plots the theoretical bound $L$ itself: for Jacobi families with symmetric parameters $\gamma=\delta$, and for the two exponential-type densities (Hermite with $\rho=\exp(-x^2)$ on $\mathbb R$, Laguerre with $\rho=\exp(-x)$ on $[0,\infty)$).
 
@@ -504,12 +504,12 @@ $$
 
 The $\ell_1$ problems are solved with SPGL1 and every experiment uses $\Gamma=[-q,q]^d\cap\mathbb Z^d$; the labels "standard" and "gradient-enhanced" carry a percentage denoting the fraction of derivative components used.
 
-| Example | $d$ | $q$ | Setting | Quantity reported |
-| ------- | --- | --- | -------------------------------------------- | ---------------------------- |
-| 4.1 | 2 | 10 | $v_1=e_1$, $v_2=e_2$; uniform samples; support drawn uniformly among size-$s$ subsets, nonzeros i.i.d. standard normal; 500 trials per configuration | recovery rate vs $N$ at $s=5$; vs $s$ at $N=20$ |
-| 4.2 | 5 | 2 | 20% and 40% enhancement (partials in one and in two variables) | recovery rate vs $N$ at $s=6$; vs $s$ at $N=30$ |
-| 4.3 | 2 | 5 | Problem 2 setting, $s=8$, $M=40$; $N/4$ function values and $3N/4$ values of $D_{e_1}f$, against standard $\ell_1$ with $N$ function values | recovery rate |
-| 4.4 | 2 | 10 | function approximation: $g(x)=\sin\bigl(\cos\sum_jx_j\bigr)$ and $g(x)=\cos\bigl(\sum_jx_j\bigr)\exp\bigl(\sin(\sum_jx_j)\bigr)$, matching $f$ and $D_{e_t}f$ at the samples | discrete $L^2$ error vs $N$ |
+| Example | $d$ | $q$ | Setting                                                                                                                                                                      | Quantity reported                               |
+| ------- | --- | --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| 4.1     | 2   | 10  | $v_1=e_1$, $v_2=e_2$; uniform samples; support drawn uniformly among size-$s$ subsets, nonzeros i.i.d. standard normal; 500 trials per configuration                         | recovery rate vs $N$ at $s=5$; vs $s$ at $N=20$ |
+| 4.2     | 5   | 2   | 20% and 40% enhancement (partials in one and in two variables)                                                                                                               | recovery rate vs $N$ at $s=6$; vs $s$ at $N=30$ |
+| 4.3     | 2   | 5   | Problem 2 setting, $s=8$, $M=40$; $N/4$ function values and $3N/4$ values of $D_{e_1}f$, against standard $\ell_1$ with $N$ function values                                  | recovery rate                                   |
+| 4.4     | 2   | 10  | function approximation: $g(x)=\sin\bigl(\cos\sum_jx_j\bigr)$ and $g(x)=\cos\bigl(\sum_jx_j\bigr)\exp\bigl(\sin(\sum_jx_j)\bigr)$, matching $f$ and $D_{e_t}f$ at the samples | discrete $L^2$ error vs $N$                     |
 
 The reported outcomes: in Examples 4.1 and 4.2 gradient information improves the recovery rate, **monotonically in how much of it is included**; in Example 4.3 **derivative values play a role similar to function values**, the empirical counterpart of Theorem 3.1; in Example 4.4 gradient information improves accuracy "dramatically".
 
@@ -679,14 +679,14 @@ uniformly in $n,\alpha,\beta$. The proof of Theorem 3.1 applies this bound to th
 
 ### Numerical experiments
 
-The $\ell_1$ problems are solved with SPGL1. Three method labels run through all experiments: *standard* ($\ell_1$ on $\Phi$), *gradient-enhanced* (on $\hat\Phi$), and ***standard-double***, meaning the standard approach given **the same total budget of scalar data**: in $d=2$ the 100% gradient method uses $3N$ pieces of information ($N$ values plus $2N$ derivatives), so standard-double uses $3N$ function values. Percentages denote the fraction of derivative components used (50% in $d=2$ means $N$ values plus $N$ randomly chosen partials).
+The $\ell_1$ problems are solved with SPGL1. Three method labels run through all experiments: _standard_ ($\ell_1$ on $\Phi$), _gradient-enhanced_ (on $\hat\Phi$), and _**standard-double**_, meaning the standard approach given **the same total budget of scalar data**: in $d=2$ the 100% gradient method uses $3N$ pieces of information ($N$ values plus $2N$ derivatives), so standard-double uses $3N$ function values. Percentages denote the fraction of derivative components used (50% in $d=2$ means $N$ values plus $N$ randomly chosen partials).
 
-| Section | Configuration | Quantity reported |
-| ------- | ---------------------------------------- | ------------------------------------- |
-| §5.1 stability | $(d,n)=(2,30)$ and $(6,5)$ | mutual coherence of $\Phi$, $\tilde\Phi$, $\hat\Phi$ vs sample count; and vs $M$ at fixed $N=80$ |
-| §5.2 fixed sparsity | $(d,n)=(2,20)$; uniform inputs, Chebyshev samples; exactly $s$-sparse $c$ with nonzeros i.i.d. standard normal; 100 trials; success when $\lVert c-\tilde c\rVert_\infty\le10^{-3}$ | recovery probability vs $N$ at $s=8$; vs $s$ at fixed $N$ |
-| §5.2 fixed sparsity | $(d,n)=(10,3)$; 10% and 20% gradient enhancement (one and two partials) | recovery probability vs $N$ at $s=6$; vs $s$ at $N=70$ |
-| §5.3 function approximation | $(d,n,M)=(2,20,231)$, $(10,3,286)$ and $(6,5)$; Legendre chaos with Chebyshev samples | discrete $L^2$ / root-mean-square error vs $N$ |
+| Section                     | Configuration                                                                                                                                                                       | Quantity reported                                                                                |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| §5.1 stability              | $(d,n)=(2,30)$ and $(6,5)$                                                                                                                                                          | mutual coherence of $\Phi$, $\tilde\Phi$, $\hat\Phi$ vs sample count; and vs $M$ at fixed $N=80$ |
+| §5.2 fixed sparsity         | $(d,n)=(2,20)$; uniform inputs, Chebyshev samples; exactly $s$-sparse $c$ with nonzeros i.i.d. standard normal; 100 trials; success when $\lVert c-\tilde c\rVert_\infty\le10^{-3}$ | recovery probability vs $N$ at $s=8$; vs $s$ at fixed $N$                                        |
+| §5.2 fixed sparsity         | $(d,n)=(10,3)$; 10% and 20% gradient enhancement (one and two partials)                                                                                                             | recovery probability vs $N$ at $s=6$; vs $s$ at $N=70$                                           |
+| §5.3 function approximation | $(d,n,M)=(2,20,231)$, $(10,3,286)$ and $(6,5)$; Legendre chaos with Chebyshev samples                                                                                               | discrete $L^2$ / root-mean-square error vs $N$                                                   |
 
 The three test functions of §5.3 are the sphere $f_1(x)=\sum_{i=1}^dx_i^2$, the Gaussian $f_2(x)=\exp\bigl(-\sum_{i=1}^d0.01(\tfrac12(x_i+1)-0.375)^2\bigr)$ and the sinusoids $f_3(x)=\sum_{i=1}^d0.3+\sin(\tfrac{16}{15}x_i-0.7)+\sin^2(\tfrac{16}{15}x_i-0.7)$.
 
@@ -778,7 +778,7 @@ The only information required is that the random variable lives in a bounded dom
 > [!warning] The unbounded-domain equilibrium measures are conjectures, not theorems
 > Both densities below are labelled **conjectures** in the original, and can only be cited that way. The Gaussian limiting induced / equilibrium measure $C(2-\|\xi\|^2)^{d/2}$ recurs across several papers in this topic, and **it is a conjecture in every one of them, never a theorem**; the Chebyshev limit on bounded domains, by contrast, is backed by a theorem. Do not conflate the two.
 
-*(Gaussian, $\mathbb R^d$)*: estimate $(\hat\mu,\hat\sigma)$ from the data, standardise $\hat\xi=(\xi-\hat\mu)/\hat\sigma$, and use
+_(Gaussian, $\mathbb R^d$)_: estimate $(\hat\mu,\hat\sigma)$ from the data, standardise $\hat\xi=(\xi-\hat\mu)/\hat\sigma$, and use
 
 $$
 \hat\rho(\xi)=C\bigl(2-\|\xi\|^2\bigr)^{d/2}
@@ -792,7 +792,7 @@ $$
 
 producing samples on the Euclidean ball of radius $\sqrt{2k}$.
 
-*(Exponential, $\mathbb R_+^d$)*:
+_(Exponential, $\mathbb R_+^d$)_:
 
 $$
 \hat\rho(\xi)=C\sqrt{\frac{\bigl(4-\sum_{i=1}^d\xi_i\bigr)^d}{\prod_{i=1}^d\xi_i}}
@@ -848,12 +848,12 @@ All results are averaged over 100 independent trials, and two sampling rates are
 
 **§5.1 stability.** The condition number of $\hat A=W^{1/2}A$ (printed as "$W^2A$", **flagged as an extraction artifact**) is reported as a mean with 20% and 80% quantiles against polynomial degree, for four $d=2$ test types:
 
-| Case | $\xi_1$ | $\xi_2$ |
+| Case | $\xi_1$                 | $\xi_2$             |
 | ---- | ----------------------- | ------------------- |
-| 1 | $\mathrm{Bino}(20,1/2)$ | $U[-0.6,0.6]$ |
-| 2 | $U[-0.8,0.8]$ | $U[-1,1]$ |
-| 3 | $\mathrm{Bino}(20,1/2)$ | $\mathrm{Pois}(10)$ |
-| 4 | $U[-0.6,0.6]$ | $N(0.1,1.2)$ |
+| 1    | $\mathrm{Bino}(20,1/2)$ | $U[-0.6,0.6]$       |
+| 2    | $U[-0.8,0.8]$           | $U[-1,1]$           |
+| 3    | $\mathrm{Bino}(20,1/2)$ | $\mathrm{Pois}(10)$ |
+| 4    | $U[-0.6,0.6]$           | $N(0.1,1.2)$        |
 
 **Case 4 mixes a bounded with an unbounded marginal, so a different equilibrium measure is used in each dimension** — a demonstration in itself of the per-coordinate sampler design. The rates tested are $M=1.5N$, $2N$, $N\log N$ and $1.5N\log N$; a five-dimensional set of test cases is also used.
 
@@ -970,10 +970,10 @@ Three method labels run through all experiments: **induced distribution** (this 
 
 **§4.1 exact sparse recovery.** Here $\omega$ is tensorial with isotropic marginals that are equal mixtures of uniform on $[-1,1]$, truncated $N(0.2,1.5)$ on $[-1,1]$ and truncated lognormal on $[0,1]$; $S$ consists of $Q=10^5$ i.i.d. samples from $\omega$; $c^*$ is randomly $s$-sparse with standard normal entries; success is declared when $\|c-c^*\|_\infty<10^{-3}$.
 
-| Scenario | $d$ | $K$ | $N$ | $s$ | Outcome |
-| ------------------------- | --- | --- | --- | --- | ------------------------------ |
-| low dimension, high degree | 2 | 20 | 231 | 8 | induced sampling **significantly better** than MC |
-| high dimension, low degree | 10 | 3 | 286 | 8 | the two are **similar** |
+| Scenario                   | $d$ | $K$ | $N$ | $s$ | Outcome                                           |
+| -------------------------- | --- | --- | --- | --- | ------------------------------------------------- |
+| low dimension, high degree | 2   | 20  | 231 | 8   | induced sampling **significantly better** than MC |
+| high dimension, low degree | 10  | 3   | 286 | 8   | the two are **similar**                           |
 
 The explanation for the second row generalises: **a low-degree space makes $\mu$ close to $\omega$, so induced and naive sampling converge** — the same degree dependence reported in Example 8.1 of paper 45.
 
@@ -997,25 +997,25 @@ Paper 44 is the direct successor of paper **36** — the same aPC/Hankel basis c
 
 ## How the six relate
 
-| No. | Composition of the measurements | Sampling design | Origin of the basis |
+| No. | Composition of the measurements         | Sampling design                 | Origin of the basis   |
 | --- | --------------------------------------- | ------------------------------- | --------------------- |
-| 10 | values, deterministic points | Weil-sum point set | known distribution |
-| 21 | values, subset of a Gauss grid | implicitly Christoffel weighted | known distribution |
-| 29 | values plus gradients, trigonometric | preconditioning required | known distribution |
-| 32 | values plus gradients, polynomial chaos | preconditioning required | known distribution |
-| 36 | values, weighted least squares | set by the empirical measure | **empirical measure** |
-| 44 | values, sparse approximation | induced sampling | **empirical measure** |
+| 10  | values, deterministic points            | Weil-sum point set              | known distribution    |
+| 21  | values, subset of a Gauss grid          | implicitly Christoffel weighted | known distribution    |
+| 29  | values plus gradients, trigonometric    | preconditioning required        | known distribution    |
+| 32  | values plus gradients, polynomial chaos | preconditioning required        | known distribution    |
+| 36  | values, weighted least squares          | set by the empirical measure    | **empirical measure** |
+| 44  | values, sparse approximation            | induced sampling                | **empirical measure** |
 
 The same six seen through their theoretical route and what it costs:
 
-| No. | Route | Main guarantee | Price of that guarantee |
-| --- | ---------------------------- | ---------------------------------------- | ------------------------------------ |
-| 10 | coherence plus Weil sums | deterministic exact recovery | $m\gtrsim4^{\,q}d^2s^2$, quadratic in sparsity |
-| 21 | restricted isometry for a bounded orthonormal system | $M\gtrsim L(\mathbf n)s\log^3s\log N$ | $L(\mathbf n)\sim n^{2d/3}$ for unbounded parameters |
-| 29 | coherence (Thm 2.1) and restricted isometry (Thm 3.1) | deterministic $\mu(\tilde\Phi)\le\lambda\mu(\Phi)$ with $\lambda<1$ | admissible directions needed; $R_0$ may be large |
-| 32 | coherence | mean isotropy and a degree-independent coherence bound | **no sample-complexity theorem**; $\beta_L\le\mu_L$ unproved |
-| 36 | quoted least-squares stability | $M\gtrsim N\log N$ | **asymptotic in $N$ only**; unbounded densities are conjectures |
-| 44 | quoted bounded-orthonormal-system theory | uniformly bounded entries of $\sqrt WA$ | **no new theorem**; tensorisation discards coordinate dependence |
+| No. | Route                                                 | Main guarantee                                                      | Price of that guarantee                                          |
+| --- | ----------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 10  | coherence plus Weil sums                              | deterministic exact recovery                                        | $m\gtrsim4^{\,q}d^2s^2$, quadratic in sparsity                   |
+| 21  | restricted isometry for a bounded orthonormal system  | $M\gtrsim L(\mathbf n)s\log^3s\log N$                               | $L(\mathbf n)\sim n^{2d/3}$ for unbounded parameters             |
+| 29  | coherence (Thm 2.1) and restricted isometry (Thm 3.1) | deterministic $\mu(\tilde\Phi)\le\lambda\mu(\Phi)$ with $\lambda<1$ | admissible directions needed; $R_0$ may be large                 |
+| 32  | coherence                                             | mean isotropy and a degree-independent coherence bound              | **no sample-complexity theorem**; $\beta_L\le\mu_L$ unproved     |
+| 36  | quoted least-squares stability                        | $M\gtrsim N\log N$                                                  | **asymptotic in $N$ only**; unbounded densities are conjectures  |
+| 44  | quoted bounded-orthonormal-system theory              | uniformly bounded entries of $\sqrt WA$                             | **no new theorem**; tensorisation discards coordinate dependence |
 
 One judgement runs through all six: **sample complexity in sparse recovery is decided by the uniformity of the row norms, so any operation that changes the row structure — adding gradient rows, changing basis, changing the sampling density — must come with a matching preconditioner.** That unifies this page with the [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|optimal sampling page]]: both handle the same quantity, one inside a least-squares framework and one inside an ℓ1 framework.
 

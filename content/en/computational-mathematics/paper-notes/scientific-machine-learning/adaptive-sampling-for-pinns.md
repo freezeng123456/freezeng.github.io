@@ -162,11 +162,11 @@ The algorithm itself is short (Algorithm 1 in the paper): given $\mathcal D_f,\m
 
 The experiments fall into three groups:
 
-| Group | Target                                                                          |
-| ----- | ------------------------------------------------------------------------------- |
-| One   | high-dimensional integral fractional Laplacian equations (forward problems)     |
-| Two   | parameter identification for time-space fractional PDEs, recovering the order   |
-| Three | fractional diffusion equations with random inputs                               |
+| Group | Target                                                                        |
+| ----- | ----------------------------------------------------------------------------- |
+| One   | high-dimensional integral fractional Laplacian equations (forward problems)   |
+| Two   | parameter identification for time-space fractional PDEs, recovering the order |
+| Three | fractional diffusion equations with random inputs                             |
 
 The paper's quantitative claim is that the **overall computational cost is lower than fPINN**, which is what opens high-dimensional fractional PDEs at all.
 
@@ -293,13 +293,13 @@ The outer loop (Algorithm 1) takes as input the network solution $u(x;\theta)$, 
 
 The examples of Section 5 cover five classes of problem, all chosen so that uniform sampling is at a disadvantage:
 
-| Example                                    | Why it is hard                                            |
-| ------------------------------------------ | --------------------------------------------------------- |
-| 2D Poisson with a peaked or singular solution | the high-residual region is a tiny fraction of the domain |
-| Burgers' equation                          | the solution develops a steepening interior layer          |
-| high-dimensional Poisson problem           | uniform candidates barely cover the active region         |
-| Poisson on an unbounded 2D domain          | uniform sampling is not even definable on an unbounded set |
-| time-dependent problem on an unbounded domain | both difficulties at once                               |
+| Example                                       | Why it is hard                                             |
+| --------------------------------------------- | ---------------------------------------------------------- |
+| 2D Poisson with a peaked or singular solution | the high-residual region is a tiny fraction of the domain  |
+| Burgers' equation                             | the solution develops a steepening interior layer          |
+| high-dimensional Poisson problem              | uniform candidates barely cover the active region          |
+| Poisson on an unbounded 2D domain             | uniform sampling is not even definable on an unbounded set |
+| time-dependent problem on an unbounded domain | both difficulties at once                                  |
 
 The baselines are uniform sampling and residual-based adaptive refinement. The qualitative conclusion is that self-adaptive importance sampling concentrates points in the high-residual region and the error decays faster than under either baseline. The authors' group repository is [SEU-YL-UQ/FI-PINNs](https://github.com/SEU-YL-UQ/FI-PINNs); the arXiv rendering of the paper does not itself print this address, so it is best cited as the authors' group repository.
 
@@ -564,11 +564,11 @@ Algorithm 1 (the basic version) is structured as follows: input an initial solut
 
 Four examples are compared side by side under four sampling strategies:
 
-| Example     | Problem                        |
-| ----------- | ------------------------------ |
-| Section 4.1 | a two-dimensional peak problem |
-| Section 4.2 | a two-peak problem             |
-| Section 4.3 | a problem with a singularity   |
+| Example     | Problem                            |
+| ----------- | ---------------------------------- |
+| Section 4.1 | a two-dimensional peak problem     |
+| Section 4.2 | a two-peak problem                 |
+| Section 4.3 | a problem with a singularity       |
 | Section 4.4 | a high-dimensional Poisson problem |
 
 The four strategies are conventional deep Ritz (fresh uniform points each round), Algorithm 1, Algorithm 2 and Algorithm 3. The shared setup is: error measured as a relative discrete $L_2$ error on a tensor grid, replaced by uniform samples in high dimension; a ResNet-like architecture with $\sin^3(x)$ activations; Adam for both networks; and a bounded KRnet with the same architecture as in paper 87. The abstract's quantitative claim is that the adaptive methods improve accuracy over plain deep Ritz, **particularly on low-regularity and high-dimensional problems**.
@@ -598,22 +598,22 @@ Three transferable judgements:
 
 ## Coverage check
 
-| Item                                                     | Paper | Status                                                            |
-| -------------------------------------------------------- | ----- | ----------------------------------------------------------------- |
-| Inner-outer split estimator for the fractional Laplacian | 66    | full derivation chain, both Beta laws, the $r_\epsilon$ floor     |
-| Expectation form of the Caputo derivative                | 66    | formula and sampling law (with a prefactor caveat)                |
-| Squaring bias and two independent draws                  | 66    | the unbiased construction and its conditions                      |
-| Numerical experiments of 66                              | 66    | algorithm and the three experiment groups; **magnitudes unverified** |
-| Limit-state function and failure probability             | 70    | definitions, safe and failure sets, contrast with refinement      |
-| Self-adaptive importance sampling                        | 70    | iterative update, termination, weighted final proposal, estimator |
-| Theorem 4.4 with its proof skeleton                      | 70    | three assumptions, bound, split estimate, prior-factor check      |
-| Numerical experiments of 70                              | 70    | five example classes and baselines; **magnitudes and dimension unverified** |
-| Fixed-size resampling and subset simulation              | 73    | role and position, with the verification limits stated            |
-| Zero-variance proposal and the mixture model             | 76    | optimal density, KL criterion, EM updates, projection             |
-| Numerical experiments of 76                              | 76    | impedance-tomography equations and loss, inverse source; **tables unverified** |
-| Statistical error of a variational loss                  | 80    | error split, worked example, the $O(1/\sigma)$ requirement        |
-| Residual variance for a sign-changing integrand          | 80    | optimal density, variance ordering, strictly positive floor       |
-| Two-network alternation and both mixtures                | 80    | both objectives, both density floors                              |
+| Item                                                     | Paper | Status                                                                           |
+| -------------------------------------------------------- | ----- | -------------------------------------------------------------------------------- |
+| Inner-outer split estimator for the fractional Laplacian | 66    | full derivation chain, both Beta laws, the $r_\epsilon$ floor                    |
+| Expectation form of the Caputo derivative                | 66    | formula and sampling law (with a prefactor caveat)                               |
+| Squaring bias and two independent draws                  | 66    | the unbiased construction and its conditions                                     |
+| Numerical experiments of 66                              | 66    | algorithm and the three experiment groups; **magnitudes unverified**             |
+| Limit-state function and failure probability             | 70    | definitions, safe and failure sets, contrast with refinement                     |
+| Self-adaptive importance sampling                        | 70    | iterative update, termination, weighted final proposal, estimator                |
+| Theorem 4.4 with its proof skeleton                      | 70    | three assumptions, bound, split estimate, prior-factor check                     |
+| Numerical experiments of 70                              | 70    | five example classes and baselines; **magnitudes and dimension unverified**      |
+| Fixed-size resampling and subset simulation              | 73    | role and position, with the verification limits stated                           |
+| Zero-variance proposal and the mixture model             | 76    | optimal density, KL criterion, EM updates, projection                            |
+| Numerical experiments of 76                              | 76    | impedance-tomography equations and loss, inverse source; **tables unverified**   |
+| Statistical error of a variational loss                  | 80    | error split, worked example, the $O(1/\sigma)$ requirement                       |
+| Residual variance for a sign-changing integrand          | 80    | optimal density, variance ordering, strictly positive floor                      |
+| Two-network alternation and both mixtures                | 80    | both objectives, both density floors                                             |
 | Numerical experiments of 80                              | 80    | three algorithm variants, four examples, four strategies; **numbers unverified** |
 
 ## Sources for this page

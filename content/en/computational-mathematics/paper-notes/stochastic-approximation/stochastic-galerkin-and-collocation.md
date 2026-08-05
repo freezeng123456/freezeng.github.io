@@ -304,9 +304,9 @@ The paper reports that the observed order tracks the regularity index. (The theo
 
 A further example takes data satisfying the $BV$ hypothesis (2.32a) but **not** the $H^1$ hypothesis (2.8a):
 
-| Error      | Theory                                | Observed in the paper           |
-| ---------- | ------------------------------------- | ------------------------------- |
-| $e_{mean}$ | $O(N^{-1})$ by Theorem 3.3            | first order, matching the theory |
+| Error      | Theory                                    | Observed in the paper                   |
+| ---------- | ----------------------------------------- | --------------------------------------- |
+| $e_{mean}$ | $O(N^{-1})$ by Theorem 3.3                | first order, matching the theory        |
 | $e_{ms}$   | Theorem 3.1 does not apply, no prediction | **not** first order, roughly half order |
 
 This is the point of the experiment: **the hypotheses of Theorem 3.1 are sharp**. Drop the $H^1$ hypothesis and the mean error that Theorem 3.3 protects stays first order while the mean-square error immediately falls away. The paper also investigates an accuracy-enhancement technique following the multi-element collocation method of Foo, Wan and Karniadakis (_J. Comput. Phys._ 227 (2008) 9572-9595).
@@ -438,14 +438,14 @@ the geometric factor $r^{p+1}$ with $0<r<1$ being the spectral rate. The closed 
 
 Section 4 has a single example, reused from paper 2:
 
-| Item        | Setting                                                                 |
-| ----------- | ----------------------------------------------------------------------- |
-| Equation    | $u_t(x,t;y)=y\,u_x(x,t;y)$, $0<x<2\pi$, $t>0$                           |
-| Initial data | $u(x,0;y)=\cos(y)$ (transcribed as printed, see the note below)        |
-| Boundary    | chosen so that the exact solution is $u(x,t;y)=\cos(x-yt)$              |
-| Swept       | number of projection terms (Galerkin) / number of collocation nodes     |
-| Recorded    | mean-square error against the swept quantity (Figs. 4.1, 4.2), several time levels |
-| Observed    | exponential convergence for both families; errors grow with $t$         |
+| Item         | Setting                                                                            |
+| ------------ | ---------------------------------------------------------------------------------- |
+| Equation     | $u_t(x,t;y)=y\,u_x(x,t;y)$, $0<x<2\pi$, $t>0$                                      |
+| Initial data | $u(x,0;y)=\cos(y)$ (transcribed as printed, see the note below)                    |
+| Boundary     | chosen so that the exact solution is $u(x,t;y)=\cos(x-yt)$                         |
+| Swept        | number of projection terms (Galerkin) / number of collocation nodes                |
+| Recorded     | mean-square error against the swept quantity (Figs. 4.1, 4.2), several time levels |
+| Observed     | exponential convergence for both families; errors grow with $t$                    |
 
 This solution lies in $H^{(m)}_y(-1,1)$ for every positive integer $m$, so exponential convergence is expected and is observed for both Galerkin and collocation. The growth of the error with $t$ is the known long-time degradation of polynomial chaos and stochastic collocation.
 
@@ -567,20 +567,20 @@ A companion mixed-derivative bound (eq. (3.18)) gives $\int_\Gamma\int_D\rho(y)(
 > [!warning] An asymmetry in the exponents
 > Equation (3.17) is transcribed as printed: the first two eigenvalue families appear under square roots and the third, $\nu_i$, does not. This is likely a typographical inconsistency in the paper, so the exponent on $\nu_i$ is **verified as printed but unverified in intent**. The conclusion drawn from the estimate — low-index directions matter more — does not depend on that exponent, but any quantitative use of the bound should be checked against the original.
 
-The paper lists one further contribution: sufficient conditions on the data guaranteeing that the solution lies in appropriate random spaces ($BV$ and $H^k$), generalising paper 2 from a random *variable* wave speed to a random *field* wave speed.
+The paper lists one further contribution: sufficient conditions on the data guaranteeing that the solution lies in appropriate random spaces ($BV$ and $H^k$), generalising paper 2 from a random _variable_ wave speed to a random _field_ wave speed.
 
 ### Numerical experiments
 
 Example 4.1 has the following setup and measurements:
 
-| Item        | Setting                                                                     |
-| ----------- | --------------------------------------------------------------------------- |
-| Equation    | $\partial_t u=\kappa(y)\partial_x u$, $x\in[-1,1]$                          |
-| Wave speed  | $\kappa(y)=0.5\sum_{n=1}^{4}n^{-2}y_n$, each $y_n$ uniform on $(-1,1)$      |
-| Initial data | $u(x,0,y)=\sin(x)$                                                         |
-| Boundary    | $u(\pm1,t,y)=\sin(\pm1+\kappa(y)t)$, imposed by the sign of $\kappa$        |
-| Errors      | $e_{mean}$, $e_{std}$, $e_2$ (defined below)                                |
-| Table 1     | nonuniform (anisotropic) convergence results at $t=2$                       |
+| Item         | Setting                                                                |
+| ------------ | ---------------------------------------------------------------------- |
+| Equation     | $\partial_t u=\kappa(y)\partial_x u$, $x\in[-1,1]$                     |
+| Wave speed   | $\kappa(y)=0.5\sum_{n=1}^{4}n^{-2}y_n$, each $y_n$ uniform on $(-1,1)$ |
+| Initial data | $u(x,0,y)=\sin(x)$                                                     |
+| Boundary     | $u(\pm1,t,y)=\sin(\pm1+\kappa(y)t)$, imposed by the sign of $\kappa$   |
+| Errors       | $e_{mean}$, $e_{std}$, $e_2$ (defined below)                           |
+| Table 1      | nonuniform (anisotropic) convergence results at $t=2$                  |
 
 The three error measures are
 
@@ -686,28 +686,28 @@ This is the last of the intrusive-Galerkin strand and cites four papers from thi
 
 ## Coverage check
 
-| Item                                                | Paper | Status                                                     |
-| --------------------------------------------------- | ----- | ---------------------------------------------------------- |
-| Separating characteristics and accuracy lost in time | 2/4/5 | explicit solution, $t^k$ growth of $\partial_y^k u$, consequences |
-| Galerkin coefficient matrix and its sparsity        | 1     | $a_{jk}$, $e_{ijk}$, symmetry, derivation of $2N+1$ nonzeros |
-| Reduction to three-term recurrence coefficients     | 1     | both identities, their derivation and technical role        |
-| Jacobi coefficients and the $b_n=0$ criterion       | 1     | $h_n$, $a_n$, $b_n$, $c_n$, unverified denominator flagged  |
-| Theorem 1 and the threshold $\lvert\alpha\rvert\ge1/2$ | 1  | both densities, conclusion, qualification, convention       |
-| Sign-changing speed and switching inflow            | 2     | problem setting and the regularity consequence              |
-| Data hypotheses weighted by $1/\lvert c\rvert$      | 2     | all three conditions, energy derivation, weight reconciled  |
-| Three regularity and three convergence theorems     | 2     | $H^1$/$H^2$/$BV$ and $N^{-1}$/$N^{-2}$/mean only            |
-| Numerical evidence that the hypotheses are sharp    | 2     | orders for three initial data, half order in the $BV$ case  |
-| Geometric growth and analytic extension             | 4     | hypothesis form, Leibniz induction, origin of $1/\sqrt\zeta$ |
-| Exponential convergence for collocation             | 4     | the estimate, relation between $\varrho$ and $\tau$         |
-| Hyperbolic solutions not analytic in general        | 4     | both qualifications and the "rather rough" self-assessment  |
-| The example and a quantitative reading of time decay | 4    | setup table, inconsistency flagged, $\tau\sim1/t$           |
-| Both defining conditions of bi-orthogonality        | 5     | definition, eigenproblem, same matrix as paper 1            |
-| Exact decoupling and sign tests on effective speeds | 5     | derivation of (3.8)-(3.10), $C_{k,i}$ inside the support    |
-| Sensitivity basis for anisotropic orders            | 5     | (3.17), the $\nu_i$ exponent flagged, (3.18)                |
-| Setup of Example 4.1 and the saving in unknowns     | 5     | sign-changing speed range, weight table, $48$ against $256$ |
-| Double decoupling for interface problems            | 3     | only the idea confirmable from keywords and references      |
-| Collocation and spectral time stepping for delay ODEs | 7   | abstract-level construction and "exponential in both spaces" |
-| Energy preservation and decoupled stepping for Maxwell | 38 | abstract-level schemes and their structural properties      |
+| Item                                                   | Paper | Status                                                            |
+| ------------------------------------------------------ | ----- | ----------------------------------------------------------------- |
+| Separating characteristics and accuracy lost in time   | 2/4/5 | explicit solution, $t^k$ growth of $\partial_y^k u$, consequences |
+| Galerkin coefficient matrix and its sparsity           | 1     | $a_{jk}$, $e_{ijk}$, symmetry, derivation of $2N+1$ nonzeros      |
+| Reduction to three-term recurrence coefficients        | 1     | both identities, their derivation and technical role              |
+| Jacobi coefficients and the $b_n=0$ criterion          | 1     | $h_n$, $a_n$, $b_n$, $c_n$, unverified denominator flagged        |
+| Theorem 1 and the threshold $\lvert\alpha\rvert\ge1/2$ | 1     | both densities, conclusion, qualification, convention             |
+| Sign-changing speed and switching inflow               | 2     | problem setting and the regularity consequence                    |
+| Data hypotheses weighted by $1/\lvert c\rvert$         | 2     | all three conditions, energy derivation, weight reconciled        |
+| Three regularity and three convergence theorems        | 2     | $H^1$/$H^2$/$BV$ and $N^{-1}$/$N^{-2}$/mean only                  |
+| Numerical evidence that the hypotheses are sharp       | 2     | orders for three initial data, half order in the $BV$ case        |
+| Geometric growth and analytic extension                | 4     | hypothesis form, Leibniz induction, origin of $1/\sqrt\zeta$      |
+| Exponential convergence for collocation                | 4     | the estimate, relation between $\varrho$ and $\tau$               |
+| Hyperbolic solutions not analytic in general           | 4     | both qualifications and the "rather rough" self-assessment        |
+| The example and a quantitative reading of time decay   | 4     | setup table, inconsistency flagged, $\tau\sim1/t$                 |
+| Both defining conditions of bi-orthogonality           | 5     | definition, eigenproblem, same matrix as paper 1                  |
+| Exact decoupling and sign tests on effective speeds    | 5     | derivation of (3.8)-(3.10), $C_{k,i}$ inside the support          |
+| Sensitivity basis for anisotropic orders               | 5     | (3.17), the $\nu_i$ exponent flagged, (3.18)                      |
+| Setup of Example 4.1 and the saving in unknowns        | 5     | sign-changing speed range, weight table, $48$ against $256$       |
+| Double decoupling for interface problems               | 3     | only the idea confirmable from keywords and references            |
+| Collocation and spectral time stepping for delay ODEs  | 7     | abstract-level construction and "exponential in both spaces"      |
+| Energy preservation and decoupled stepping for Maxwell | 38    | abstract-level schemes and their structural properties            |
 
 ## Sources for this page
 
