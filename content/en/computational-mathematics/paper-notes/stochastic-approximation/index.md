@@ -47,15 +47,64 @@ From papers 6 and 9 onward the route turns **non-intrusive**: solve at a set of 
 
 ## The central object: the Christoffel function
 
-The object at the centre of this family is the Christoffel function. For an orthonormal basis $\{\phi_n\}_{n=1}^{N}$, its discrete form supplies the weight in weighted least squares,
+These 23 papers belong to one topic because they all come down to one quantity. Set out that quantity and the internal order of the list becomes visible.
+
+### What it is
+
+Let $w$ be a weight (probability density) on $D$, let $\{\varphi_\alpha\}$ be orthonormal against $w$, let $\Lambda$ be a finite multi-index set with $N=|\Lambda|$, and let $\mathbb P_\Lambda=\mathrm{span}\{\varphi_\alpha:\alpha\in\Lambda\}$. The reproducing kernel diagonal is
 
 $$
-w(y)=\frac{N}{\sum_{n=1}^{N}\phi_n^{2}(y)} ,
+K(z)=K_\Lambda(z)=\sum_{\alpha\in\Lambda}\varphi_\alpha^{2}(z) ,
 $$
 
-and its reciprocal supplies the sampling density. Its role can be stated in one sentence: **it measures how concentrated the polynomial space is at a point, and sampling weighted by it makes the row norms of the design matrix nearly uniform.** With uniform row norms the weighted Gram matrix $G=A^{\mathsf T}W^2A$ is close to the identity, and only then is least squares stable.
+the (normalised) Christoffel function is its reciprocal $N/K(z)$, and every weight in weighted least squares is written here in the form $1/K$. In vector form $K(z)=\varphi^{\mathsf T}\varphi$, so any orthogonal change of basis $\psi\leftarrow U\varphi$ leaves it unchanged: **$K$ is a property of the subspace $\mathbb P_\Lambda$, not of the basis.** Only a basis-independent quantity deserves to be the centre of a family of methods.
 
-That observation improves the sample budget from roughly $M\gtrsim N^2$ for draws from the target measure to roughly $M\gtrsim N\log N$ for draws from a Christoffel-weighted density, while greedy selection (approximate Fekete points, computed by QR with column pivoting) pushes $M$ close to $N$. All three routes share one pipeline; only the sampling density differs.
+### Why it is the one
+
+Draw $M$ points i.i.d. from a density $\rho=q^2w$ and form the weighted design and Gram matrices
+
+$$
+(A)_{m,n}=\frac{\varphi_n(z_m)}{\sqrt{M\,q^2(z_m)}} ,
+\qquad
+G=A^{\mathsf T}A ,
+\qquad
+\mathbb E\,G=I .
+$$
+
+The squared norm of row $m$ of $A$ is $\frac1M\sum_n(\varphi_n(z_m)/q(z_m))^2$, and $\mathbb E\,\mathrm{tr}\,G=N$, so these squared row norms **sum to $N$ on average**. The stability theorem asks precisely that none of them be an outlier: if
+
+$$
+\frac{M}{\log M}\ \ge\ C(r+1)\,\sup_{z\in D}\sum_{n=1}^{N}\Bigl(\frac{\varphi_n(z)}{q(z)}\Bigr)^{2},
+\qquad C=\frac{2}{\log(27/8e)}\approx 9.24 ,
+$$
+
+then with probability at least $1-2M^{-r}$ we have $\|G-I\|_2\le\frac12$. The supremum on the right is the **stability factor**; its smallest possible value is $N$, and taking $q^2=K/N$ — that is, sampling from the **induced density**
+
+$$
+\rho(z)=\frac{1}{N}\sum_{n=1}^{N}\varphi_n^{2}(z)\,w(z)
+$$
+
+and weighting by $1/q^2=w/\rho$ — attains that lower bound **exactly**. In one sentence: **the Christoffel function measures how concentrated the polynomial space is at a point, and sampling weighted by it flattens the row norms of the design matrix; only with flat row norms is $G$ close to the identity and least squares stable.**
+
+The same quantity arrives from a second direction: the weights of Gauss quadrature are exactly Christoffel function values. So "randomly subsample a tensor-product Gauss grid" is not an ad hoc device — it is Christoffel-weighted sampling in disguise, which is the construction of papers 13 and 21, treated on [[en/computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|Discrete least-squares approximation]].
+
+### Three sampling routes
+
+Once the criterion "$M/\log M$ beats the stability factor" is written down, the topic splits into three competing routes that share one pipeline and differ only in which density the points come from and what weight goes with it:
+
+| Route                                   | Sampling density                                       | Weight            | Sample requirement                                                            |
+| --------------------------------------- | ------------------------------------------------------ | ----------------- | ----------------------------------------------------------------------------- |
+| plain Monte Carlo                       | the orthogonality measure $w$                          | none              | $M\sim N^2$ (tensor Legendre); $N^{\ln3/\ln2}\approx N^{1.585}$ for Chebyshev |
+| Christoffel-weighted (induced) sampling | $\rho=(K/N)\,w$                                        | of the form $1/K$ | $M\gtrsim N\log N$, non-asymptotic, criterion depends on $N$ alone            |
+| greedy deterministic selection          | chosen from a candidate set by QR with column pivoting | weighted          | pushes $M$ close to $N$                                                       |
+
+The criterion on the second row depends only on $N=\dim\mathbb P_\Lambda$ and not on the dimension $d$, the domain $D$, the weight $w$, or which $N$-dimensional subspace is used; the price is that one must be able to sample from $\rho$, which does depend on all of those. The third row trades randomness for a selection procedure, and its details are on [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|Optimal sampling and preconditioning]].
+
+Three qualifications, all of them made by the papers themselves:
+
+- Using the **equilibrium measure** — the $k\to\infty$ limit of the induced measure — in place of the induced measure also gives log-linear counts, but only **asymptotically in the degree**, whereas the induced measure achieves it at every finite $N$. Paper 44 notes that at $K=20$ the two designs are still visibly different.
+- **The advantage of induced sampling shrinks in high dimension at low degree**, because a low-degree space makes $\rho$ close to $w$; paper 45 finds only a modest advantage on its four-dimensional hyperbolic-cross PDE example. The claim that survives is that induced sampling is consistently among the best and is the one with a minimal-sample-count theorem — not that it always wins numerically.
+- On a bounded domain the large-$N$ limit of the induced measure is the (tensorised) Chebyshev density, and that is a theorem. **The Gaussian counterpart is only a conjecture** in papers 22, 28, 36 and 45, never proved, and must not be cited as a theorem.
 
 ## Core idea of each paper
 
@@ -102,9 +151,11 @@ That observation improves the sample budget from roughly $M\gtrsim N^2$ for draw
 ![Fold gradients and sampling density into the recovery problem](assets/diagrams/tao-zhou-papers/en/sparse-recovery.svg)
 
 > [!note] Coverage status
-> Papers 1, 2, 4, 5, 9, 10, 11, 14, 21, 22, 24, 28, 29, 32, 36, 44 and 45 have been checked equation by equation against full texts, so their formulas, theorem hypotheses and constants are transcribed. Papers 6, 7 and 38 reach only abstract and metadata level. Papers 3 and 13 could not be verified — the publisher blocks the full text of both and no aggregator holds an abstract — so their sections give only what indexing keywords, sister papers and third-party literature confirm, and report none of their theorems, constants or numerical results.
+> Papers **1, 2, 4, 5, 9, 10, 11, 14, 21, 22, 24, 28, 29, 32, 36, 44 and 45** have been checked equation by equation against full texts: their settings, derivation chains, theorem hypotheses and constants, and experimental configurations are transcribed, and the close-reading pages carry the full derivations and experimental records. Where a paper supplies no numbers for a figure, only the configuration is reported and no numbers are supplied.
 >
-> One terminological caution as well: this group of papers is not consistent about the Christoffel function, some writing $\sum_\alpha\varphi_\alpha^2$ and others its reciprocal. This site uses $K(z)=\sum_\alpha\varphi_\alpha^2(z)$ throughout and takes the Christoffel function to be $N/K(z)$, so every weight appearing on these pages is of the form $1/K$. Check each paper's own convention before quoting it.
+> Papers **6, 7 and 38** reach abstract and metadata level only, so no theorems or experimental numbers are given for them. Papers **3 and 13** could not be verified: the publisher blocks the full text of both and no aggregator holds an abstract (for paper 13, researchr explicitly records that the abstract is missing and Semantic Scholar notes that the abstract field was elided by the publisher). Their sections give only what indexing keywords, sister papers and third-party literature confirm — paper 13's construction is inferred from its identically designed sister paper 21, and the claim of a linearly growing sample count rests on a third-party statement (Seshadri–Narayan–Sarkar) rather than on the paper itself — and **neither paper's theorems, constants or numerical results are reported here**.
+>
+> Two further cautions. On notation: this group of papers is not consistent about the Christoffel function, some writing $\sum_\alpha\varphi_\alpha^2$ and others its reciprocal. This site uses $K(z)=\sum_\alpha\varphi_\alpha^2(z)$ throughout and takes the Christoffel function to be $N/K(z)$, so every weight appearing on these pages is of the form $1/K$; check each paper's own convention before quoting it. And as flagged above, the asymptotic induced measure in the Gaussian case is only a **conjecture** in every paper that states it, never a theorem.
 
 ## Relation to the other topics
 
