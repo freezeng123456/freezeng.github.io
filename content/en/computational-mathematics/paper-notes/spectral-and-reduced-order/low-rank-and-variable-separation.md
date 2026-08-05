@@ -178,38 +178,50 @@ The point of the second step is that the eigenproblem is only ever solved in a s
 > [!warning] What could be verified
 > The journal text requires a subscription and there is no preprint. Confirmable: the problem setting, the keywords (uncertainty quantification, Karhunen-Loève expansion, Fredholm eigenvalue problem, multigrid finite element) and the contribution as stated in the abstract. The generic correction step above comes from the Lin-Xie framework being adapted; **the specific adaptation to the integral operator, the constants and all numerical results are unverified here** and should be checked against the published article.
 
-## 83: dynamical variable separation for parameter-dependent systems
+## 83: enrich the basis one term at a time so every step decouples
 
-Paper 83 belongs to the same family as paper 15: build a separated representation that evolves in time for a parameter-dependent dynamical system rather than expanding in a fixed basis. The published title is _A Dynamical Variable-Separation Method for Parameter-Dependent Dynamical Systems_, slightly different from the homepage listing; this site records the published version.
+Paper 83 belongs to the same family as paper 15 — build a separated representation that evolves in time for a parameter-dependent dynamical system rather than expanding in a fixed basis — but it takes a structurally different route.
 
-> [!note] Close reading pending
-> This page has not yet checked the paper equation by equation, so it does not report the separated form, the update formulas or the theoretical results. The usable orientation is that it shares the stance of "let the representation evolve with the solution" with paper 15, in contrast to fixed-basis reduced-order models.
+Paper 15 evolves a rank-$S$ representation all at once: every mode advances simultaneously, the modes are coupled through the covariance matrix $C$, and uniqueness is fixed by a gauge condition. Paper 83 inverts that, **enriching the basis one term at a time by a greedy algorithm**: each step adds a single term to the reduced basis, which lets the problem be rewritten as **two decoupled evolution equations at that step**, one a **parameter-independent partial differential equation** and the other a **parameter-dependent ordinary differential equation**. Both are derived directly from the original dynamical system and the representation terms already separated out.
+
+What this buys can be read off against the error bound of paper 15. There the constant grows like $e^{C/\rho}$, with $\rho$ a lower bound on the smallest singular value of the best rank-$S$ field, and $\rho^{-1}$ enters through the $C^{-1}$ in the tangent projection. **Greedy term-by-term enrichment makes each step's two equations decouple, so no covariance matrix has to be inverted**, and the collapse of the smallest singular value does not appear as a risk in the same place. The price is greediness: a sequence built one term at a time is not guaranteed to be the optimal rank-$S$ representation, and it is exactly the best rank-$S$ approximation that paper 15's bound is stated against.
+
+A second structural gain is that the computation splits in two: an **offline** stage constructing the reduced basis functions and an **online** stage using the resulting low-rank representation. Paper 15 has no such split, since its basis and coefficients evolve together in one time advance and no cost can be moved earlier. On that basis the paper claims reduced computational complexity and improved efficiency over many existing low-rank separation techniques, with numerical results for linear and nonlinear parameter-dependent systems.
+
+> [!note] What could be verified
+> The problem setting, the greedy term-by-term enrichment, the two decoupled equations per step (a parameter-independent PDE plus a parameter-dependent ODE) and the offline-online split are all confirmable from the preprint abstract. The concrete form of the separated representation, the explicit form of the two equations, the greedy criterion and any convergence results have not been checked equation by equation here.
+>
+> The published title is _A Dynamical Variable-Separation Method for Parameter-Dependent Dynamical Systems_, slightly different from the homepage listing; this site records the published version. The preprint is [arXiv:2502.08464](https://arxiv.org/abs/2502.08464), dated 12 February 2025.
 
 ## How the three relate
 
-| No. | What evolves                              | Optimal reference              | Principal risk                          |
-| --- | ----------------------------------------- | ------------------------------ | --------------------------------------- |
-| 15  | spatial basis and stochastic coefficients | truncated Karhunen-Loève       | collapse of the smallest singular value |
-| 17  | nothing (a one-off eigensolve)            | the exact Karhunen-Loève basis | assembling and solving a dense matrix   |
-| 83  | a separated representation (pending)      | pending                        | pending                                 |
+| No. | What evolves                                 | How the modes relate                 | Principal risk                          |
+| --- | -------------------------------------------- | ------------------------------------ | --------------------------------------- |
+| 15  | spatial basis and stochastic coefficients    | evolve together, coupled through $C$ | collapse of the smallest singular value |
+| 17  | nothing (a one-off eigensolve)               | not applicable                       | assembling and solving a dense matrix   |
+| 83  | a greedily enriched separated representation | decouple into two equations per step | the greedy sequence need not be optimal |
 
 The relation between papers 17 and 15 is worth naming: the error bound in paper 15 is stated against the truncated Karhunen-Loève approximation, and paper 17 solves the problem of **computing that reference object**. Together they give the full cost structure of this route: either pay for the dense eigenproblem that produces the Karhunen-Loève basis, or let the basis evolve and accept the risk carried by the smallest singular value.
 
+Paper 83 supplies a third option: neither compute the optimal basis in advance nor evolve every mode at once, but enrich greedily term by term so each step decouples. Taken together the three map out the choice: **coupled evolution buys quasi-optimality against the best rank-$S$ approximation, decoupled greedy enrichment buys freedom from inverting a covariance, and a one-off eigensolve buys the optimal basis at the price of a dense matrix.**
+
 ## Coverage check
 
-| Item                                               | Paper | Status                                                             |
-| -------------------------------------------------- | ----- | ------------------------------------------------------------------ |
-| Ansatz and the three gauge conditions              | 15    | form, conditions, meaning of the gauge                             |
-| Three evolution equations and their roles          | 15    | mean, basis, coefficient equations, projector                      |
-| Tangent projection and the origin of $C^{-1}$      | 15    | tangent space, projection formula, Dirac-Frenkel form              |
-| Theorem 4.1 and the $e^{C/\rho}$ constant          | 15    | assumptions, conclusion, both readings, curvature                  |
-| The eigenvalue-crossing failure mode               | 15    | construction and what it demonstrates                              |
-| Handling a singular covariance                     | 15    | the pseudoinverse trap, reformulation, per-step diagonalisation    |
-| Structural difference of the Fredholm problem      | 17    | compactness, spectral accumulation, dense matrix                   |
-| Multilevel correction step and integral iterations | 17    | the two generic steps, dimension argument, quadrature versus solve |
+| Item                                               | Paper | Status                                                               |
+| -------------------------------------------------- | ----- | -------------------------------------------------------------------- |
+| Ansatz and the three gauge conditions              | 15    | form, conditions, meaning of the gauge                               |
+| Three evolution equations and their roles          | 15    | mean, basis, coefficient equations, projector                        |
+| Tangent projection and the origin of $C^{-1}$      | 15    | tangent space, projection formula, Dirac-Frenkel form                |
+| Theorem 4.1 and the $e^{C/\rho}$ constant          | 15    | assumptions, conclusion, both readings, curvature                    |
+| The eigenvalue-crossing failure mode               | 15    | construction and what it demonstrates                                |
+| Handling a singular covariance                     | 15    | the pseudoinverse trap, reformulation, per-step diagonalisation      |
+| Structural difference of the Fredholm problem      | 17    | compactness, spectral accumulation, dense matrix                     |
+| Multilevel correction step and integral iterations | 17    | the two generic steps, dimension argument, quadrature versus solve   |
+| Greedy enrichment and the two equations per step   | 83    | how the basis grows, the decoupled structure, contrast with paper 15 |
+| The offline-online split                           | 83    | the two stages and why paper 15 has no such split                    |
 
 ## Sources for this page
 
 - E. Musharbash, F. Nobile, and T. Zhou, [_Error analysis of the dynamically orthogonal approximation of time dependent random PDEs_](https://doi.org/10.1137/140967787), SIAM J. Sci. Comput. 37(2) (2015), pp. A776-A810.
 - H. Xie and T. Zhou, [_A multilevel finite element method for Fredholm integral eigenvalue problems_](https://doi.org/10.1016/j.jcp.2015.09.043), J. Comput. Phys. 303 (2015), pp. 173-184.
-- L. Chen, Y. Chen, Q. Li, and T. Zhou, [_A dynamical variable-separation method for parameter-dependent dynamical systems_](https://doi.org/10.1137/24M168427X), SIAM J. Sci. Comput. 47(3) (2025), pp. A1783-A1808.
+- L. Chen, Y. Chen, Q. Li, and T. Zhou, [_A dynamical variable-separation method for parameter-dependent dynamical systems_](https://doi.org/10.1137/24M168427X), SIAM J. Sci. Comput. 47(3) (2025), pp. A1783-A1808 (preprint [arXiv:2502.08464](https://arxiv.org/abs/2502.08464)).
