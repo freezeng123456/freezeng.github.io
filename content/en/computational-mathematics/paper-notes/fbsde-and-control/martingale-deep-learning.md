@@ -123,9 +123,31 @@ Code is at [sx-fang/MartNet](https://github.com/sx-fang/MartNet).
 
 ## 93, 96 and 100: directions in which the framework extends
 
-- **93 (deep random difference method)** targets high-dimensional quasilinear parabolic equations. The "random difference" in the name refers to replacing derivatives by random differences, reducing the dependence on automatic differentiation.
-- **96 (martingale deep learning for very high dimensional quasi-linear equations and stochastic optimal controls)** is the comprehensive submission to _SIAM Review_ that systematises the martingale framework and pushes it to very high dimension.
-- **100 (a derivative-free localised stochastic method)** removes the dependence on derivatives for very high dimensional semilinear parabolic equations. "Localised" refers to decomposing the global problem into local subproblems to control variance.
+All three start by **localising paper 86's martingale criterion in time**. Applying Itô's formula to $t\mapsto v(t,X_t^s)$ gives
+
+$$
+\mathcal M_t^s:=v(t,X_t^s)-v(s,X_s^s)+\int_s^tf\bigl(r,X_r^s,v(r,X_r^s)\bigr)\,\mathrm dr
+=\int_s^tR(r,X_r^s;v)\,\mathrm dr+\int_s^t(\partial_xv)^{\top}\sigma\,\mathrm dB_r,
+$$
+
+where
+
+$$
+R(t,x;v):=(\partial_t+\mathcal L)v(t,x)+f\bigl(t,x,v(t,x)\bigr)
+$$
+
+**is exactly the PDE residual**. Conditioning kills the Itô integral, and at $t=s+h$ one gets $\mathbb E[\mathcal M_{s+h}^s\mid\hat X_s]=h\,R(s,\hat X_s;v)+O(h^2)$, so the martingale criterion can be written
+
+$$
+\mathbb E\bigl[\mathcal M_{t+h}^t\,\big|\,\hat X_t\bigr]=0,
+\qquad 0\le t\le T-h .
+$$
+
+**The point of this formulation is that the residual is never computed explicitly, yet is characterised by this condition.** It also carries a definite limitation, which the papers state in a remark of their own: the condition only forces the residual to vanish **in the region the pilot process explores**, so the pilot process $\hat X$ must cover the region of interest with high probability. That is where the practical risk in this family lies.
+
+- **93 (deep random difference method)** targets high-dimensional **quasi**linear parabolic equations $\mathcal Dv=f(t,x,v)$ with $\mathcal D=\partial_t+\mu^{\top}(t,x,v)\partial_x+\frac12\mathrm{Tr}[\sigma\sigma^{\top}(t,x,v)\partial_{xx}]$ — note that $\mu$ and $\sigma$ may depend on $v$ itself, which is more general than paper 86's fixed $\mathcal L$. The "random difference" of the name means replacing derivatives by random differences, reducing the dependence on automatic differentiation further: the comparison the paper cites is that PINN-type methods must assemble a $d\times d$ Hessian by automatic differentiation and run out of memory for $d\ge10^4$. It also supplies the convergence-rate estimate earlier martingale methods lacked, and deliberately re-derives the whole mechanism using only Taylor expansion and elementary moment identities so as to lower the stochastic-analysis prerequisites.
+- **96 (martingale deep learning for very high dimensional quasi-linear equations and stochastic optimal controls)** is the comprehensive submission to _SIAM Review_ that systematises the localised martingale criterion above and pushes it to very high dimension, with the separation of pilot process from system process as its key structural device.
+- **100 (a derivative-free localised stochastic method)** targets **semi**linear parabolic equations through the decoupled FBSDE representation $Y_t=u(t,X_t)$, $Z_t=\sigma^{\top}\nabla u(t,X_t)$. Under global Lipschitz and linear-growth assumptions, together with uniform nondegeneracy $\xi^{\top}\sigma\sigma^{\top}\xi\ge\lambda\|\xi\|^2$, that FBSDE has a unique adapted solution. "Localised" refers to decomposing the global problem into local subproblems to control variance, and "derivative-free" to a discretisation built entirely from conditional expectations, with no derivative terms.
 
 ## 97 and 108: the mean-field direction
 
@@ -133,7 +155,7 @@ Code is at [sx-fang/MartNet](https://github.com/sx-fang/MartNet).
 - **108 (deep policy iteration for high-dimensional mean-field games)** treats mean-field games by deep policy iteration with a regenerative reformulation. A mean-field game couples a Fokker-Planck equation to the Hamilton-Jacobi-Bellman equation, so the value function and the distribution must evolve together.
 
 > [!note] Coverage status
-> Paper 86 has been checked equation by equation, including the published version. The close readings for 93, 96, 97, 100 and 108 are still being filled in: this page gives only the positioning confirmable from titles, abstracts and their relation to the framework of paper 86, without expanding their formulas and theorems.
+> All six papers on this page have been checked equation by equation against full texts: paper 86 against both the published version and the preprint, and papers 93, 96, 97, 100 and 108 against their arXiv full texts, with paper 96 covering all three of its retitled versions. That papers 97 and 108 above receive only their problem setting and positioning is an editorial choice, not a verification gap; their scheme details are simply not expanded on this page.
 
 ## The general judgement behind this route
 
