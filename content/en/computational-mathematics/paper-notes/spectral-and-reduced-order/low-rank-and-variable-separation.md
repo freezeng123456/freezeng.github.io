@@ -10,7 +10,7 @@ tags:
 ---
 
 > [!note] Coverage of this page
-> Papers **15** (_SIAM J. Sci. Comput._ 37(2), 2015), **17** (_J. Comput. Phys._ 303, 2015) and **83** (_SIAM J. Sci. Comput._ 47(3), 2025). The journal text of paper 17 requires a subscription and has no preprint, so that section separates what the paper itself confirms from the general framework it adapts; the close reading of paper 83 is still to be written.
+> Papers **15** (_SIAM J. Sci. Comput._ 37(2), 2015), **17** (_J. Comput. Phys._ 303, 2015) and **83** (_SIAM J. Sci. Comput._ 47(3), 2025). The journal text of paper 17 requires a subscription and has no preprint, so that section separates what the paper itself confirms from the general framework it adapts; paper 83 is written from its preprint abstract, with the verification limits stated in its section.
 
 ![Evolve a random solution directly on a low-rank manifold](assets/diagrams/tao-zhou-papers/en/low-rank-dynamics.svg)
 
