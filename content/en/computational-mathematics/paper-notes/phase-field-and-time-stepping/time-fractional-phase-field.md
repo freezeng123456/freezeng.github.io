@@ -28,6 +28,9 @@ breaks the standard argument: multiplying by $\phi_t$ no longer produces a sign-
 
 The paper closes that gap and identifies the **correct form** of the law: it is an **integral** statement accumulated over $[0,T]$, not a pointwise differential one. That is worth remembering, because it is exactly the starting point of paper 57.
 
+> [!warning] The law must not be quoted in a strengthened form
+> The paper states explicitly that the integral energy law it obtains **does not imply** $\frac{\mathrm d}{\mathrm dt}E\le0$, and **does not imply** $\frac{\mathrm d^{\alpha}}{\mathrm dt^{\alpha}}E\le0$ either. This is the single most frequently mis-stated point in the downstream literature: restating the result as a pointwise dissipation law, whether in the integer-order or the fractional derivative, does not hold. Precisely because no such strengthening is available, paper 57 has to change the energy functional rather than push this law further.
+
 The three models read
 
 $$
