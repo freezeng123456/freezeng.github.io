@@ -146,10 +146,78 @@ At inference $z$ is sampled from the **prior** rather than the encoder, since $\
 
 ## 98: replacing the noise term with a Gaussian process prior
 
-Paper 98 follows the confidence-aware encoder idea of paper 75 with two substitutions: the noise term $z_0\sim\mathcal N(0,I)$ becomes a **Gaussian process prior**, and the mean of the Gaussian decoder becomes a **neural operator**. The point of the first substitution is uncertainty with **correlation structure**: independent Gaussian noise gives pointwise uncertainty, whereas a Gaussian process prior correlates the uncertainty across locations, which is closer to the behaviour of a PDE solution.
+### Why it has to be a process and not a variable
 
-> [!note] Coverage status
-> The text of paper 98 is public as a preprint, but this page has not yet checked its loss function and training algorithm equation by equation, so it reports only the difference from paper 75 and what that difference means.
+The part of this paper most worth recording is the reason given in its Section 3.1, not which module was swapped. Consider $\lambda u_{xx}=f$: the solution is a **double integral** of $f$, so — in a relation the paper explicitly labels heuristic —
+
+$$
+\mathrm{Var}\bigl(u(x)\bigr)\ \sim\ \iint_{\Omega_x}\mathrm{Var}\bigl(f(\xi)\bigr)\,\mathrm d\xi .
+$$
+
+The uncertainty in $u$ is therefore a **global aggregation** of the uncertainty in $f$ over the whole domain, not a pointwise image of it. A low-dimensional i.i.d. latent variable cannot express that structure; a latent **process** with spatial correlation can. **That is the actual argument for replacing $\mathcal N(0,I)$ by a Gaussian process**, rather than the general observation that correlated uncertainty is more realistic.
+
+The paper's criticism of the existing routes is equally specific: plain Gaussian-process regression struggles with nonlinear equations and scales poorly; Bayesian PINNs with Hamiltonian Monte Carlo are accurate but the posterior computation is expensive; deep ensembles are cheap but produce spurious oscillations and unreliable confidence when the data are scarce or noisy.
+
+### The confidence-aware encoder
+
+$$
+\bm z(\bm x;\theta_E)=\mathrm{diag}\bigl(m(\bm x;\theta_m)\bigr)\,\bar{\bm z}(\bm x;\theta_{\bar{\bm z}})
++\mathrm{diag}\bigl(1-m(\bm x;\theta_m)\bigr)\,\bm z_0,
+$$
+
+where $\bar{\bm z}$ is a deterministic deep network, each component of $m$ lies in $[0,1]$, and $\bm z_0$ is a **vector-valued Gaussian process**
+
+$$
+\bm z_0\sim\mathcal{GP}\bigl(0,K(\bm x,\bm x')\bigr),
+\qquad
+K(\bm x,\bm x')=\sigma_K^2\exp\Bigl(-\frac{\|\bm x-\bm x'\|^2}{2\ell^2}\Bigr)\bm I_{d_z},
+$$
+
+with independent output dimensions sharing one scalar squared-exponential kernel and $\sigma_K=1$ throughout. Here $m(\bm x)=1$ means $\bm x$ is near the training data and $\bm z$ is deterministic, while $m(\bm x)=0$ means $\bm x$ is far from the data and $\bm z$ inherits the full Gaussian-process variance. Since $\mathrm{Var}(\bm z(\bm x))=(1-m(\bm x))^2$, the paper notes that $m$ can equally be read as **an alternative parameterisation of a Gaussian process with a non-stationary kernel**, and the induced encoder law is
+
+$$
+q_E(\bm z\mid\bm x)\sim\mathcal N\Bigl(m(\bm x)\bar{\bm z}(\bm x),\ \operatorname{diag}\bigl(1-m(\bm x)\bigr)^2\Bigr).
+$$
+
+This is exactly where it differs from papers 95 and 89: the latent prior is a process over the input domain rather than $\mathcal N(0,I)$, so the latent randomness is spatially correlated, and the blend weight is learned per input, so the model can be confident where it has seen data and uncertain elsewhere.
+
+### The neural-operator decoder, and separating the two uncertainties
+
+The latent field is propagated by an FNO-style integral-operator stack with $\bm z_1(\bm x,\bm\omega_E)=\bm z(\bm x,\bm\omega_E)$ and $\bm\omega_E\sim\mathcal N(0,\bm I_M)$:
+
+$$
+\bm z_i=\sigma\Bigl(W_i\bm z_{i-1}+b_i+\int_{\Omega}k_i(\bm x,\bm x')\bm z_{i-1}(\bm x',\bm\omega_E)\,\mathrm d\bm x'\Bigr),
+\quad i=2,\dots,L-1,
+\qquad
+\bm z_L=W_L\bm z_{L-1}+b_L,
+$$
+
+with a "Positional Transformer" kernel
+
+$$
+k_i(\bm x,\bm x')=\frac{\exp(-\alpha_i\|\bm x-\bm x'\|^2)}{\int_{\Omega}\exp(-\alpha_i\|\bm x-\bm y\|^2)\mathrm d\bm y}\,V_i,
+$$
+
+where $\alpha_i>0$ is a length scale, $V_i$ is learnable, and the integral is evaluated by quadrature, FFT or Monte Carlo. The probabilistic decoder is
+
+$$
+u(\bm x,\bm\omega_u)=\bm z_L(\bm x,\bm\omega_E)+\sigma_u(\bm x;\theta_\sigma^u)\cdot\omega_D^u,
+\qquad \omega_D^u\sim\mathcal N(0,1),
+$$
+
+so $\sigma_u$ models **aleatoric** uncertainty and $\bm\omega_E$, through $m$ and the Gaussian process, models **epistemic** uncertainty; the two are separated structurally.
+
+One further design choice is worth recording: the paper assumes $\sigma_u(\bm x;\theta_\sigma^u)$ is not differentiated with respect to $\bm x$, so that
+
+$$
+\mathcal N_{\bm x}[u(\bm x,\bm\omega_u)]=\mathcal N_{\bm x}[\mu_u(\bm x,\bm\omega_E)],
+\qquad
+\mu_f=\mathcal N_{\bm x}[\mu_u],
+\qquad
+\mu_b=\mathcal B_{\bm x}[\mu_u].
+$$
+
+The physics is therefore a **hard structural identity** rather than an extra residual network fitted alongside — unlike paper 75, which carries the physics in a loss term.
 
 ## 107: changing the learned object from initial-condition dependence to the transition density
 
@@ -221,10 +289,12 @@ $$
 | --- | ---------------------------------------- | ------------------------------------------- | ------------------------------------- |
 | 75  | inputs falling out of distribution       | confidence gate plus Gaussian decoder       | nobody (soft constraints)             |
 | 95  | sparse observations or a random operator | latent variable plus set transformer        | architecture, for boundary conditions |
-| 98  | as in 75, with correlation structure     | Gaussian process prior plus neural operator | pending                               |
+| 98  | epistemic and aleatoric modelled apart   | Gaussian process prior plus neural operator | structural identity (hard)            |
 | 107 | not applicable (varying initial data)    | conditional flow plus linearised base       | the flow, for density constraints     |
 
 One judgement runs through all four: **"a prediction should be a distribution" can be located in three different places in an operator-learning architecture.** Paper 75 puts it in the encoder's confidence gate, paper 95 in a latent variable, paper 98 in the correlation structure of the prior. Paper 107 makes a different point: sometimes the right move is not to add uncertainty to the prediction but to change to a learned object that does not depend on the varying parameter at all.
+
+Paper 98 also supplies a criterion the other three leave implicit: **the form of the uncertainty representation should be dictated by the structure of the operator itself.** Because $u$ is a double integral of $f$, the variance of $u$ is a global aggregation of the variance of $f$, and pointwise independent latent noise cannot express that even in principle. This is a question of representational capacity, not of accuracy.
 
 ## Sources for this page
 
