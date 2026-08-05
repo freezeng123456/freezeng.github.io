@@ -45,7 +45,17 @@ makes i.i.d. sampling from $\nu_{\mathbf n}$ equivalent to uniform sampling from
 
 The paper further shows that after weighting the design matrix by the Christoffel function the resulting family $\{\psi_{k,\mathbf n}\}$ is **orthonormal under the discrete measure $\nu_{\mathbf n}$**, and the corresponding matrix $D=\bigotimes_iD^i$ with $D^i=(\Sigma^i)^{1/2}\Psi^i$ is orthogonal. That is the concrete realisation of "row normalisation" in a tensor structure.
 
-The paper also quantifies the unbounded-domain difficulty (the order given is of the form $n^{2d/3}$), which is the sparse-recovery manifestation of the same difficulty that [[en/computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|paper 11]] met in the least-squares setting.
+The main theorem requires a sample count of
+
+$$
+M\ \ge\ L(\mathbf n)\,C_1\,s\log^3(s)\log(N),
+\qquad
+L(\mathbf n)=\prod_{i=1}^{d}L_i(n_i),
+$$
+
+with $C_1$ universal; under that condition the solution $c^\sharp$ of the weighted $\ell_1$ problem satisfies $\|c-c^\sharp\|_2\le C_2\sigma_{s,1}(c)/\sqrt s$ with probability at least $1-N^{-\gamma\log^3(s)}$. **One easily overlooked detail of the setup: those $M$ samples are drawn from $\nu_{\mathbf n}$ without replacement**, not i.i.d. — the equivalence noted above concerns how the design is built, while the sampling step itself is without replacement.
+
+All the dimension dependence is concentrated in $L(\mathbf n)$, the same structure as the $L(n)$ of [[en/computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|paper 24]]. The paper also quantifies the unbounded-domain difficulty (the order given is of the form $n^{2d/3}$), which is the sparse-recovery manifestation of the same difficulty that [[en/computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|paper 11]] met in the least-squares setting.
 
 ## 29 and 32: gradient-enhanced ℓ1 recovery
 

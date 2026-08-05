@@ -45,7 +45,17 @@ $$
 
 论文进一步指出，设计矩阵按 Christoffel 函数加权后，得到的函数族 $\{\psi_{k,\mathbf n}\}$ 在离散测度 $\nu_{\mathbf n}$ 下**正交归一**，相应的矩阵 $D=\bigotimes_iD^i$（$D^i=(\Sigma^i)^{1/2}\Psi^i$）是正交矩阵。这正是「行归一化」在张量结构下的具体实现。
 
-论文同时量化了无界域的困难（论文给出的量级形如 $n^{2d/3}$），这是[[computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|编号 11]] 在最小二乘情形遇到的同一困难在稀疏恢复框架下的表现。
+主定理的样本要求是
+
+$$
+M\ \ge\ L(\mathbf n)\,C_1\,s\log^3(s)\log(N),
+\qquad
+L(\mathbf n)=\prod_{i=1}^{d}L_i(n_i),
+$$
+
+$C_1$ 为普适常数；在此条件下加权 $\ell_1$ 问题的解 $c^\sharp$ 以至少 $1-N^{-\gamma\log^3(s)}$ 的概率满足 $\|c-c^\sharp\|_2\le C_2\sigma_{s,1}(c)/\sqrt s$。**一处容易被忽略的设定：这 $M$ 个样本是从 $\nu_{\mathbf n}$ 中不放回抽取的**，而不是独立同分布——上面那条等价说法讲的是设计的构造，抽样环节本身用的是不放回。
+
+维数依赖全部集中在 $L(\mathbf n)$ 里，这与[[computational-mathematics/paper-notes/stochastic-approximation/optimal-sampling-and-preconditioning|编号 24]] 的 $L(n)$ 是同一种结构。论文同时量化了无界域的困难（论文给出的量级形如 $n^{2d/3}$），这是[[computational-mathematics/paper-notes/stochastic-approximation/discrete-least-squares|编号 11]] 在最小二乘情形遇到的同一困难在稀疏恢复框架下的表现。
 
 ## 29 与 32：梯度增强的 ℓ1 恢复
 
