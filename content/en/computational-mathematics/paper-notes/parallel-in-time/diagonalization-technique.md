@@ -79,7 +79,7 @@ The extra $|R_f^J(z/J)|\le1$ is precisely the gain from an additional F-relaxati
 
 ### Two inefficiencies
 
-First, the coarse propagator $\mathcal G$ is almost always backward Euler, which is only first order and gives a contraction of about $0.1$ under FCF-relaxation; nobody had asked whether a better $\mathcal G$ could do materially better **without making the coarse solve dominant**. The paper switches to the second-order Lobatto IIIC method, whose stability function is
+First, the coarse propagator $\mathcal G$ is almost always backward Euler, which is only first order and gives a contraction of about $0.1$ under FCF-relaxation (the exact values appear below); nobody had asked whether a better $\mathcal G$ could do materially better **without making the coarse solve dominant**. The paper switches to the second-order Lobatto IIIC method, whose stability function is
 
 $$
 R_g(z)=\frac{1}{1+z+z^2/2}
@@ -110,6 +110,27 @@ $$
 diagonalised by FFT.
 
 That the two fixes are compatible is worth emphasising: improving the coarse propagator alone worsens the sequential bottleneck, and parallelising the coarse correction cancels that worsening. Each change on its own delivers less than the two together.
+
+### Four directly comparable constants
+
+With $\mathcal F$ an L-stable integrator and $J=\Delta T/\Delta t=O(1)$, the values of $\max_{z\ge0}\varrho_l$ are
+
+| Coarse propagator $\mathcal G$ | Parareal | MGRIT (FCF-relaxation) |
+| ------------------------------ | -------- | ---------------------- |
+| backward Euler                 | 0.2984   | 0.1115                 |
+| Lobatto IIIC (second order)    | 0.0817   | 0.0197                 |
+
+This is the precise form of the abstract's "from 0.1 to 0.02". The bound is also **robust**: it depends neither on the eigenvalues of the coefficient matrix nor on the coarsening ratio $J$.
+
+One comparison has to be stated plainly or the gain will be overestimated: **at equal cost, one MGRIT-FCF iteration is slightly worse than two parareal iterations.** FCF-relaxation performs two fine solves per sweep, so the right comparison is against two parareal sweeps, and $0.2984^2=0.0890<0.1115$ while $0.0817^2=0.0067<0.0197$. The two columns therefore cannot be compared directly to decide which is better, because their per-iteration costs differ. What does hold firmly is the gain from **changing $\mathcal G$**: within either column, moving from backward Euler to Lobatto IIIC lowers the contraction factor by roughly a factor of 3.7 for parareal and 5.7 for MGRIT-FCF.
+
+As for choosing the coupling parameter $\alpha$, the paper's conclusion is that a suitable choice leaves the new algorithm with the **same** convergence rate as the original. For the parareal case there is an explicit threshold, due to Wu (SISC 2018): provided
+
+$$
+\alpha\le\frac{\rho}{1+\rho},
+$$
+
+one has $\rho_{\text{new}}=\rho$. Since $\rho=O(10^{-1})$ in practice, $\alpha=O(10^{-1})$ suffices, and the diagonalisation roundoff amplification $\mathrm{Cond}_2(V)\le1/\alpha$ is then negligible. **Whether paper 39 establishes the same threshold for MGRIT has not been verified here**; only the statement that a suitable $\alpha$ preserves the convergence rate is confirmed.
 
 ## 46: a forward-backward system has no single direction of propagation
 
