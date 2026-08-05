@@ -10,7 +10,7 @@ tags:
 ---
 
 > [!note] Coverage of this page
-> Papers **15** (_SIAM J. Sci. Comput._ 37(2), 2015), **17** (_J. Comput. Phys._ 303, 2015) and **83** (_SIAM J. Sci. Comput._ 47(3), 2025). The journal text of paper 17 requires a subscription and has no preprint, so that section separates what the paper itself confirms from the general framework it adapts; paper 83 is written from its preprint abstract, with the verification limits stated in its section.
+> Papers **15** (_SIAM J. Sci. Comput._ 37(2), 2015), **17** (_J. Comput. Phys._ 303, 2015) and **83** (_SIAM J. Sci. Comput._ 47(3), 2025). The journal text of paper 17 requires a subscription and has no preprint, so that section separates what the paper itself confirms from the general framework it adapts; papers 15 and 83 are checked equation by equation against publicly available full texts.
 
 ![Evolve a random solution directly on a low-rank manifold](assets/diagrams/tao-zhou-papers/en/low-rank-dynamics.svg)
 
@@ -180,18 +180,150 @@ The point of the second step is that the eigenproblem is only ever solved in a s
 
 ## 83: enrich the basis one term at a time so every step decouples
 
-Paper 83 belongs to the same family as paper 15 — build a separated representation that evolves in time for a parameter-dependent dynamical system rather than expanding in a fixed basis — but it takes a structurally different route.
+### Three reductions, each freezing the wrong thing
 
-Paper 15 evolves a rank-$S$ representation all at once: every mode advances simultaneously, the modes are coupled through the covariance matrix $C$, and uniqueness is fixed by a gauge condition. Paper 83 inverts that, **enriching the basis one term at a time by a greedy algorithm**: each step adds a single term to the reduced basis, which lets the problem be rewritten as **two decoupled evolution equations at that step**, one a **parameter-independent partial differential equation** and the other a **parameter-dependent ordinary differential equation**. Both are derived directly from the original dynamical system and the representation terms already separated out.
+The paper states its position sharply. Generalised polynomial chaos writes $u\approx\sum_i\zeta_i(\xi)g_i(x,t)$, **freezing the parametric coefficients in time** while the spatial modes move, and needs substantial prior information from the full model. Proper orthogonal decomposition writes $u\approx\sum_i\zeta_i(t;\xi)g_i(x)$, **freezing the spatial modes in both time and parameter**.
 
-What this buys can be read off against the error bound of paper 15. There the constant grows like $e^{C/\rho}$, with $\rho$ a lower bound on the smallest singular value of the best rank-$S$ field, and $\rho^{-1}$ enters through the $C^{-1}$ in the tangent projection. **Greedy term-by-term enrichment makes each step's two equations decouple, so no covariance matrix has to be inverted**, and the collapse of the smallest singular value does not appear as a risk in the same place. The price is greediness: a sequence built one term at a time is not guaranteed to be the optimal rank-$S$ representation, and it is exactly the best rank-$S$ approximation that paper 15's bound is stated against.
+Whether proper orthogonal decomposition succeeds depends on the Kolmogorov widths of the solution manifold $\mathcal M=\{u(\cdot,t;\xi)\}$ decaying fast, and that **fails for first-order linear transport and hyperbolic problems** — the Kolmogorov barrier. The dynamically orthogonal method analysed in paper 15 breaks the barrier by letting both factors move, but it and its variants (DyBO, dual-DO, DBO) all solve a **coupled** system for all $N$ modes at once, and that is precisely where the covariance inverse and its conditioning problems come from.
 
-A second structural gain is that the computation splits in two: an **offline** stage constructing the reduced basis functions and an **online** stage using the resulting low-rank representation. Paper 15 has no such split, since its basis and coefficients evolve together in one time advance and no cost can be moved earlier. On that basis the paper claims reduced computational complexity and improved efficiency over many existing low-rank separation techniques, with numerical results for linear and nonlinear parameter-dependent systems.
+This paper's angle is to keep the doubly time-dependent ansatz but build the modes **one at a time by greedy enrichment**, so each step decouples into two scalar-coefficient subproblems.
 
-> [!note] What could be verified
-> The problem setting, the greedy term-by-term enrichment, the two decoupled equations per step (a parameter-independent PDE plus a parameter-dependent ODE) and the offline-online split are all confirmable from the preprint abstract. The concrete form of the separated representation, the explicit form of the two equations, the greedy criterion and any convergence results have not been checked equation by equation here.
->
-> The published title is _A Dynamical Variable-Separation Method for Parameter-Dependent Dynamical Systems_, slightly different from the homepage listing; this site records the published version. The preprint is [arXiv:2502.08464](https://arxiv.org/abs/2502.08464), dated 12 February 2025.
+### The model and the affine assumption
+
+$$
+\frac{\partial u}{\partial t}(x,t;\xi)=F\bigl(u(x,t;\xi);\xi\bigr),
+\qquad u(x,0;\xi)=\mu(x;\xi),
+$$
+
+with the structural assumption $F(u;\xi)=\mathcal C(\xi)+\mathcal A(u;\xi)+\mathcal H(u;\xi)$, where $\mathcal A$ is linear and $\mathcal H$ nonlinear, and **affine parameter dependence**:
+
+$$
+\mathcal C(\xi)=\sum_{i}\kappa^i_C(\xi)\mathcal C^i,
+\qquad
+\mathcal A(u;\xi)=\sum_{i}\kappa^i_A(\xi)\mathcal A^i(u),
+\qquad
+\mathcal H(u;\xi)=\sum_{i}\kappa^i_H(\xi)\mathcal H^i(u),
+$$
+
+together with a separable initial condition $\mu(x;\xi)=\sum_i p^i(\xi)q^i(x)$. **Affinity is exactly what makes the offline-online split possible**; the paper notes that when it fails, a variable-separation step can first produce an affine approximation with negligible loss.
+
+### The ansatz: no mean field and no orthogonality gauge
+
+$$
+u(x,t;\xi)\approx u_N(x,t;\xi):=\sum_{i=1}^{N}\zeta_i(t;\xi)\,g_i(x,t),
+$$
+
+with $\{\zeta_i\}$ parameter-dependent, $\{g_i\}$ parameter-independent, and **both time-dependent**. Compare the dynamically orthogonal ansatz $u\approx\bar u(x,t)+\sum_i\zeta_i(t;\xi)g_i(x,t)$, which keeps a statistical mean field and requires $\{g_i(\cdot,t)\}$ orthonormal at every $t$. **This paper drops both the mean field and the orthonormality gauge**, and uniqueness comes instead from the sequential greedy construction.
+
+### The greedy rule and the two decoupled subproblems
+
+The first step picks $\xi_1$ arbitrarily and takes $g_1(x,t)$ to be the **full solution** at $\xi=\xi_1$, after which testing with $g_1$ gives a parameter-dependent ordinary differential equation for $\zeta_1(t;\xi)$. At step $k\ge2$, with the error $e:=u-u_{k-1}$, the selection rule is
+
+$$
+\xi_k\in\arg\max_{\xi\in\Xi}\triangle_k(\xi),
+$$
+
+where $\triangle_k$ is either $\|e\|_{L^2([0,T];V)}$ itself, if affordable, or the a posteriori bound below; the loop stops when $\triangle_k(\xi_k)<\varepsilon$ and otherwise removes $\xi_k$ from the candidate set. Rewriting the equation in terms of the error,
+
+$$
+\Bigl\langle \frac{\partial(e+u_{k-1})}{\partial t},v\Bigr\rangle
+=\bigl\langle F\bigl((e+u_{k-1});\xi\bigr),v\bigr\rangle,
+\qquad \forall v\in V,
+$$
+
+the two subproblems are: $g_k(x,t)$ solves this at the **single** parameter $\xi=\xi_k$, a parameter-independent partial differential equation; and setting $e=g_k\zeta_k$ with $v=g_k$ gives a scalar ordinary differential equation for $\zeta_k(t;\xi)$.
+
+### Initial conditions: recovering the gauge implicitly at $t=0$
+
+The paper calls the initial conditions "one of the most essential ingredients", and constructs them by $L^2$ matching against the current mode. Writing $g_{k,0}(x)=g_k(x,0)$, we have $g_1(x,0)=\mu(x;\xi_1)$ and
+
+$$
+\zeta_{1,0}(\xi)=\sum_{i}\frac{\langle q^i,g_{1,0}\rangle}{\langle g_{1,0},g_{1,0}\rangle}p^i(\xi);
+$$
+
+for $k\ge2$ the initial error $e_0(x;\xi)=\mu(x;\xi)-\sum_{j<k}g_{j,0}(x)\zeta_{j,0}(\xi)$ gives $g_{k,0}=e_0(\cdot;\xi_k)$ and
+
+$$
+\zeta_{k,0}(\xi)=\sum_{i}\frac{\langle q^i,g_{k,0}\rangle}{\langle g_{k,0},g_{k,0}\rangle}p^i(\xi)
+-\sum_{j=1}^{k-1}\frac{\langle g_{j,0},g_{k,0}\rangle}{\langle g_{k,0},g_{k,0}\rangle}\zeta_{j,0}(\xi).
+$$
+
+**The second sum is a Gram-Schmidt-like correction.** It is where this method recovers, implicitly and only at $t=0$, part of what the dynamically orthogonal gauge condition supplies explicitly. One edge case: if $\mu\equiv0$ then $g_{k,0}=0$ and $\zeta_{k,0}=0$ at every step.
+
+### The linear case: the new mode is driven by the previous residual
+
+With $F(u;\xi)=\mathcal C(\xi)+\mathcal A(u;\xi)$ the error equation becomes
+
+$$
+\Bigl\langle\frac{\partial e}{\partial t},v\Bigr\rangle-\bigl\langle\mathcal A(e;\xi),v\bigr\rangle
+=\bigl\langle r_k,v\bigr\rangle,
+\qquad
+r_k:=\mathcal A(u_{k-1};\xi)-\frac{\partial u_{k-1}}{\partial t}+\mathcal C(\xi),
+$$
+
+so **the new spatial mode is driven by the residual of the previous approximation**. The coefficient equation is the scalar ordinary differential equation
+
+$$
+\bigl\langle (g_k)_t,g_k\bigr\rangle\zeta_k
++\bigl\langle g_k,g_k\bigr\rangle(\zeta_k)_t
+-\bigl\langle\mathcal A(g_k;\xi),g_k\bigr\rangle\zeta_k
+=\bigl\langle r_k,g_k\bigr\rangle .
+$$
+
+Note the term $\langle(g_k)_t,g_k\rangle$: in the dynamically orthogonal method it is **forced to vanish** by the gauge condition, whereas here it is simply carried along. That reduces the difference between the two routes to one concrete term.
+
+### The decisive point: the divisor is a scalar, not a matrix
+
+Splitting $[0,T]$ into $N_t$ steps, using first-order differences and backward Euler, and substituting the affine expansions together with the separated form of $u_{k-1}$, gives a closed-form recursion
+
+$$
+\zeta_{k,n+1}(\xi)=\frac{c_{n+1}\,\zeta_{k,n}(\xi)+s_{n+1}(\xi)}{l_{n+1}(\xi)},
+\qquad n=0,\dots,N_t-1,
+$$
+
+$$
+c_{n+1}=\frac{\langle g_{k,n+1},g_{k,n+1}\rangle}{\tau},
+\qquad
+l_{n+1}(\xi)=2c_{n+1}-\frac{\langle g_{k,n},g_{k,n+1}\rangle}{\tau}
+-\sum_{i}\kappa^i_A(\xi)\bigl\langle\mathcal A^i(g_{k,n+1}),g_{k,n+1}\bigr\rangle,
+$$
+
+with $s_{n+1}(\xi)$ assembled from the affine terms and the $k-1$ modes already computed. **This is the paper's answer to the covariance inversion of the dynamically orthogonal method: $l_{n+1}(\xi)$ is a scalar rather than a matrix, so neither $C^{-1}$ nor $C^{\dagger}$ appears anywhere.**
+
+The offline stage stores only parameter-independent scalar inner products such as $\langle g_{k,n+1},g_{k,n+1}\rangle$ and $\langle\mathcal A^i(g_{j,n+1}),g_{k,n+1}\rangle$. Online, a new parameter $\bar\xi$ needs only a cheap scalar ordinary differential equation whose coefficients are affine in the parameter, so **the online cost is independent of the spatial discretisation** of the original problem.
+
+In the nonlinear case (Burgers) the residual equation contains $\langle e_{n+1}\partial_xe_{n+1},v\rangle$, which the paper approximates semi-implicitly by $e_n\partial_xe_{n+1}$ to control cost, and states that the same procedure carries over to Allen-Cahn.
+
+### The a posteriori bound, and the absence of a convergence theorem
+
+The bound rests on the **local logarithmic Lipschitz constant** of $F$ at $u$,
+
+$$
+L_V[F](u):=\sup_{v\ne u}\frac{\langle v-u,\;F(v;\xi)-F(u;\xi)\rangle}{\|v-u\|_V^2}.
+$$
+
+Testing the error equation $\partial_te=F(u;\xi)-F(u_{k-1};\xi)+r_k$ with $e$ and applying a comparison lemma gives $\|e\|_V\le\delta_k(t;\xi)$ with
+
+$$
+\delta_k(t;\xi)=\int_0^{t}\alpha(s;\xi)e^{\int_s^{t}\beta(\tau;\xi)\mathrm d\tau}\mathrm ds
++e^{\int_0^{t}\beta(\tau;\xi)\mathrm d\tau}\|e(\cdot,0;\xi)\|_V,
+$$
+
+where $\alpha=\|r_k\|_V$ and $\beta=L_V[F](u_{k-1})$, and the selection criterion takes $\triangle_k(\xi)=\int_0^T\delta_k^2\mathrm dt$. **For dissipative $F$ the logarithmic Lipschitz constant can be negative**, in which case the exponential factors damp rather than amplify — which is what makes the estimator usable over long horizons.
+
+> [!warning] No convergence theorem
+> The conclusion explicitly lists "a rigorous convergence analysis of the proposed method under reasonable assumptions" as future work. The rigorous content is the a posteriori bound above together with the exact algebraic recursion; the claim of reduced complexity and improved efficiency over existing low-rank separation techniques is the abstract's, supported numerically rather than by theorem. The paper also states a limitation of its own: both storage and online computation still depend on the size of the space-time discretisation, and reducing that is left open.
+
+### The two most informative numerical comparisons
+
+**A head-to-head against a time-dependent reduced-basis method** (one-dimensional reaction-diffusion with a parameter-dependent boundary condition, $\xi\in[1,3]^4$, $M=10^3$ test samples) yields a frank trade-off. At $N=4$ the competitor reaches error $9.19\times10^{-6}$ against this method's $1.46\times10^{-4}$, so **the competitor's error falls faster**; the paper's own explanation is that the competitor updates all parametric coefficients at every iteration while this method never modifies the time-parameter basis functions computed at earlier steps. But **beyond $N=7$ the competitor's error rises quickly**, attributed to ill-conditioning of its linear systems for the parametric coefficients, while this method's online time is more than an order of magnitude smaller ($7.20\times10^{-3}$ s per sample at $N=7$ against $1.19\times10^{-1}$ s, with full-order finite elements plus backward Euler at $3.75$ s per sample). The paper's summary: the competitor gives higher accuracy under certain conditions, and this method does better on efficiency and error stability.
+
+**A comparison against the static-basis variable-separation method** (two-dimensional heat equation) is the cleanest piece of evidence in the paper. As $N$ grows the static-basis method **diverges** (error $2.18$ at $N=8$, $9.64\times10^{-1}$ at $N=10$) while this method decreases monotonically ($4.52\times10^{-5}$ at $N=8$). The paper reads that as demonstrating the necessity of time-dependent basis functions for both the parametric and the spatial variable.
+
+In the Burgers example the basis fields show a clear amplitude hierarchy, from $g_1\sim3.5\times10^{-1}$ down to $g_9\sim3\times10^{-5}$, so the first field carries the core information and the last few carry fine scales. In the Allen-Cahn example the error first decreases with the number of separated terms and then **reaches a floor**, unlike the other examples.
+
+> [!note] Title difference
+> The homepage lists this paper as _A dynamical variable-separation method for dynamical systems with random input_, whereas the published version, the preprint and third-party records all give _A Dynamical Variable-Separation Method for Parameter-Dependent Dynamical Systems_. This site records the published version; the preprint is [arXiv:2502.08464](https://arxiv.org/abs/2502.08464).
 
 ## How the three relate
 
@@ -207,18 +339,26 @@ Paper 83 supplies a third option: neither compute the optimal basis in advance n
 
 ## Coverage check
 
-| Item                                               | Paper | Status                                                               |
-| -------------------------------------------------- | ----- | -------------------------------------------------------------------- |
-| Ansatz and the three gauge conditions              | 15    | form, conditions, meaning of the gauge                               |
-| Three evolution equations and their roles          | 15    | mean, basis, coefficient equations, projector                        |
-| Tangent projection and the origin of $C^{-1}$      | 15    | tangent space, projection formula, Dirac-Frenkel form                |
-| Theorem 4.1 and the $e^{C/\rho}$ constant          | 15    | assumptions, conclusion, both readings, curvature                    |
-| The eigenvalue-crossing failure mode               | 15    | construction and what it demonstrates                                |
-| Handling a singular covariance                     | 15    | the pseudoinverse trap, reformulation, per-step diagonalisation      |
-| Structural difference of the Fredholm problem      | 17    | compactness, spectral accumulation, dense matrix                     |
-| Multilevel correction step and integral iterations | 17    | the two generic steps, dimension argument, quadrature versus solve   |
-| Greedy enrichment and the two equations per step   | 83    | how the basis grows, the decoupled structure, contrast with paper 15 |
-| The offline-online split                           | 83    | the two stages and why paper 15 has no such split                    |
+| Item                                                              | Paper | Status                                                                |
+| ----------------------------------------------------------------- | ----- | --------------------------------------------------------------------- |
+| Ansatz and the three gauge conditions                             | 15    | form, conditions, meaning of the gauge                                |
+| Three evolution equations and their roles                         | 15    | mean, basis, coefficient equations, projector                         |
+| Tangent projection and the origin of $C^{-1}$                     | 15    | tangent space, projection formula, Dirac-Frenkel form                 |
+| Theorem 4.1 and the $e^{C/\rho}$ constant                         | 15    | assumptions, conclusion, both readings, curvature                     |
+| The eigenvalue-crossing failure mode                              | 15    | construction and what it demonstrates                                 |
+| Handling a singular covariance                                    | 15    | the pseudoinverse trap, reformulation, per-step diagonalisation       |
+| Structural difference of the Fredholm problem                     | 17    | compactness, spectral accumulation, dense matrix                      |
+| Multilevel correction step and integral iterations                | 17    | the two generic steps, dimension argument, quadrature versus solve    |
+| What each of the three reductions freezes                         | 83    | polynomial chaos, proper orthogonal decomposition, Kolmogorov barrier |
+| Model, affine assumption and ansatz                               | 83    | structural split, affinity, dropping mean field and gauge             |
+| Greedy rule and the two decoupled subproblems                     | 83    | selection rule, stopping, origin of both equations                    |
+| Initial conditions and the Gram-Schmidt-like correction           | 83    | both formulas and their relation to the gauge                         |
+| Residual driving and the carried $\langle(g_k)_t,g_k\rangle$ term | 83    | both equations in the linear case, where the difference lands         |
+| Closed-form recursion with a scalar divisor                       | 83    | recursion, $c_{n+1}$, $l_{n+1}$, absence of $C^{-1}$                  |
+| Offline-online split and the online cost                          | 83    | stored scalars, scalar online equation, independence of the mesh      |
+| A posteriori bound and the logarithmic Lipschitz constant         | 83    | definition, $\delta_k$, possible negativity and its effect            |
+| Absence of a convergence theorem, stated limitation               | 83    | the conclusion's wording and the storage dependence                   |
+| Both numerical comparisons                                        | 83    | the reduced-basis trade-off, the static-basis divergence              |
 
 ## Sources for this page
 

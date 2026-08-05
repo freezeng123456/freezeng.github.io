@@ -32,7 +32,7 @@ On an unbounded domain the decisive structure is the **far-field decay rate**. F
 - **83 (dynamical variable separation for parameter-dependent dynamical systems)** belongs to the same family as paper 15 but inverts its structure: instead of evolving all modes of a rank-$S$ representation together, it enriches the reduced basis one term at a time by a greedy algorithm, so each step splits into two decoupled evolution equations, a parameter-independent PDE and a parameter-dependent ODE. No covariance has to be inverted, and the computation divides into an offline basis construction and an online low-rank evaluation.
 
 > [!note] Coverage status
-> Papers 27, 42, 15 and 17 have close-reading content checked equation by equation. For papers 92 and 83 the full text could not be reached through public channels, so this site reports only what the abstract, keywords and reference list confirm, with unverified points marked.
+> Papers 15, 27, 42 and 83 have close-reading content checked equation by equation. Paper 17 is behind a paywall with no preprint, so its section separates the paper's own claims from the general framework it adapts. The full text of paper 92 could not be reached at all, so this site reports only what its abstract, keywords and reference list confirm.
 
 ## Two shared technical judgements
 
