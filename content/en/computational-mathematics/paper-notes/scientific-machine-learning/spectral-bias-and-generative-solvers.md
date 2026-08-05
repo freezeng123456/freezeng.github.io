@@ -1,6 +1,6 @@
 ---
 title: Spectral Bias and Generative Solvers
-description: Papers 81, 89, 94, 101, 103 and 105 - networks favour low frequencies, and targets often are not low frequency
+description: Papers 81, 89, 94, 101, 103 and 105 - frequency content should be measured, not assumed
 lang: en
 translation: computational-mathematics/paper-notes/scientific-machine-learning/spectral-bias-and-generative-solvers
 tags:
@@ -10,11 +10,11 @@ tags:
 ---
 
 > [!note] Coverage of this page
-> Papers **81** (_Comput. Methods Appl. Mech. Engrg._ 437, 2025), **89** (_Neural Networks_ 194, 2026), **94** (_J. Comput. Phys._ 558, 2026), **101** (submitted to _J. Comput. Phys._, [arXiv:2512.18586](https://arxiv.org/abs/2512.18586)), **103** (submitted to _J. Comput. Phys._) and **105** (submitted to _Comput. Methods Appl. Mech. Engrg._).
+> Papers **81** (_Comput. Methods Appl. Mech. Engrg._ 437, 2025), **89** (_Neural Networks_ 194, 2026, [arXiv:2401.02080](https://arxiv.org/abs/2401.02080)), **94** (_J. Comput. Phys._ 558, 2026), **101** ([arXiv:2512.18586](https://arxiv.org/abs/2512.18586)), **103** ([arXiv:2606.22514](https://arxiv.org/abs/2606.22514)) and **105** ([arXiv:2604.07169](https://arxiv.org/abs/2604.07169)).
 
 ## Spectral bias is a measurable quantity
 
-Spectral bias, or the frequency principle, is the observation that networks converge rapidly to low-frequency components and struggle to represent high-frequency or highly oscillatory features. Multi-scale networks improve on that with a down-scaling map: decompose the compactly supported Fourier transform over concentric annuli $\mathbb K_i=\{\bm k:(i-1)K_0\le|\bm k|\le iK_0\}$, scale each band down by $a_i>1$, and approximate
+Spectral bias, or the frequency principle, is the observation that networks converge rapidly to low-frequency components and struggle to represent high-frequency or highly oscillatory features. **That direction is not absolute**: paper 101 shows it reverses wholesale under a PDE residual loss, as set out below. Taking the usual direction first, multi-scale networks improve on it with a down-scaling map: decompose the compactly supported Fourier transform over concentric annuli $\mathbb K_i=\{\bm k:(i-1)K_0\le|\bm k|\le iK_0\}$, scale each band down by $a_i>1$, and approximate
 
 $$
 f_{\theta}(\bm x)=\sum_{i=1}^{W} a_i^{d}\, f_{\theta_i}(a_i\bm x),
@@ -114,44 +114,195 @@ The envelope is centred at $q(t)$ with standard deviation proportional to $\sqrt
 
 A second, independent problem the paper addresses is that changing the initial condition forces retraining, which motivates an operator-learning formulation.
 
-## 101: keep the feature bank fixed and learn attention weights
+## 101: a fixed feature bank with learnable weights
 
-Paper 101 attacks the same spectral-bias problem as paper 81 from a different angle. Its criticism of the existing fixes (random Fourier features, multi-scale networks and others) is that they freeze the choice of frequency content into the architecture. Its alternative keeps a **fixed** bank of multiscale random Fourier features and learns input-dependent **cross-attention** weights over it.
+### An observation that points the other way
 
-The contrast between the two routes is worth stating: paper 81 **rebuilds the network** around the captured dominant modes, which is discrete and requires retraining; paper 101 makes the weights **continuously learnable**, with no structural rebuild. The first has features aligned exactly with the target frequencies; the second needs no discrete rebuild step.
+The most notable thing in this paper is not its architecture but an observation in its Section 3.1: **under physics-based training the direction of the spectral bias reverses.** The reason is scaling on the Fourier side. Since $\widehat{\partial_xu}(k)=\mathrm ik\,\hat u(k)$, a Deep Ritz energy term $\|\partial_xu\|_{L^2}^2$ weights mode $k$ by $k^2$; since $\widehat{u_{xx}}(k)=-k^2\hat u(k)$, a squared PDE residual weights mode $k$ by $k^4$. The differential operator therefore **amplifies** high frequencies on its own, and what ends up under-resolved under a residual loss is the **low**-frequency part.
 
-## 103 and 105: two other ways of writing structure into a network
+The paper measures this. For $u=\sin(\pi x)+\sin(5\pi x)+\sin(20\pi x)$ it tracks the frequency-wise relative error $\Delta_F(k)=|\hat u_k^{\rm pred}-\hat u_k|/|\hat u_k|$ at $k\in\{1,5,20\}$: under pure regression the low frequencies do converge first, but under Deep Ritz and PINN losses the high frequencies decay faster.
 
-- **103 (PI-DOSnet)** writes the structure of **operator splitting** into the network for evolution equations. Lie-Trotter and Strang splitting decompose a complex evolution into substeps that can be handled separately; writing that structure explicitly into a network means the network's layers correspond to the substeps rather than to an unstructured map.
-- **105 (FLUID)** carries the random-field flow route of paper 62 into a unified inference framework for dynamics, replacing the Karhunen-Loève-structured reference field with conditional flows.
+That fixes the form of the solution representation — a sum of two networks,
+
+$$
+u(\bm x;\theta)=u_h(\bm x;\theta_h)+\alpha\,u_\ell(\bm x;\theta_\ell),
+$$
+
+where $u_h$ is the cross-attention network below (responsible for high frequencies) and $u_\ell$ is a plain fully connected network (low frequencies), with the boundary condition split as $u_h=g$ and $u_\ell=0$.
+
+### Fixed frequencies, learnable decay
+
+Base frequencies $\omega_m\sim\mathcal N(\bm 0,\sigma^{-2}I_{d_{\rm in}})$ are expanded over dyadic scales $\widetilde\omega_{m,k}=2^k\omega_m$ for $k=0,\dots,K$, giving $M=M_{\rm base}(K+1)$ frequencies, with phases $b_{m,k}\sim\mathrm{Uniform}(0,2\pi)$ drawn once. The feature map carries a **learnable amplitude envelope**:
+
+$$
+\phi(\bm x)=\sqrt{\tfrac1M}\Bigl[a_{m,k}\cos\bigl(\widetilde\omega_{m,k}^{\top}\bm x+b_{m,k}\bigr)\Bigr]_{(m,k)},
+\qquad
+a_{m,k}=\exp\bigl(-\beta\|\widetilde\omega_{m,k}\|_2\bigr).
+$$
+
+**The frequencies themselves are fixed and non-trainable; the only learnable quantity is the decay rate $\beta$**, parameterised through a softplus to keep it non-negative. This is exactly complementary to paper 81's trade-off: 81 moves the features onto the true frequencies, 101 pairs a sufficiently wide fixed bank with a learnable decay envelope.
+
+### Cross-attention: queries from the solution, keys and values from the bank
+
+Write $Q^{(l)}(\bm x)$ for the latent state and $H(\bm x)$ for the bank features, and set $Q_l=Q^{(l)}W_Q^{(l)}$, $K_l=H(\bm x)W_K^{(l)}$, $V_l=H(\bm x)W_V^{(l)}$. Then
+
+$$
+\mathrm{CA}\bigl(Q^{(l)},H\bigr)=\mathrm{softmax}\Bigl(\frac{Q_lK_l^{\top}}{\sqrt{d_q}}\Bigr)V_l,
+$$
+
+$$
+\widetilde Q^{(l)}=Q^{(l)}+\mathrm{CA}\bigl(Q^{(l)},H\bigr),
+\qquad
+Q^{(l+1)}=\widetilde Q^{(l)}+\sigma\bigl(W^{(l)}\widetilde Q^{(l)}+b^{(l)}\bigr).
+$$
+
+The query comes from the **latent state** and the keys and values from the **frequency bank** — hence cross-attention rather than self-attention. The point is that the softmax weights are input-dependent, so different regions of the domain can emphasise different frequency bands.
+
+### A posteriori frequency enhancement
+
+Train a preliminary model, take a DFT on a uniform grid to get $\hat u_{\theta,k}$, put $\zeta=\max_{k\in B}|\hat u_{\theta,k}|$ and select by relative threshold
+
+$$
+\mathcal K_{\rm post}=\bigl\{k\in B:\ |\hat u_{\theta,k}|>\lambda\zeta\bigr\},\qquad 0<\lambda<1 .
+$$
+
+Deterministic frequencies $\omega_k^{\rm post}=2k\pi$ and their features are built from this set and concatenated in the **token** dimension as $H_{\rm aug}=[H_{\rm base};H_{\rm post}]$. The new tokens are not switched on abruptly but released smoothly through an additive logit mask,
+
+$$
+A^{(l)}=\frac{Q_lK_l^{\top}}{\sqrt{d_q}}+\mathcal M^{(l)},
+\qquad
+\mathcal M^{(l)}=[\,\bm 0;\ \eta_l\bm 1\,],\quad \eta_l\le0,
+$$
+
+with the zero block acting on $H_{\rm base}$ and the constant block $\eta_l$ on $H_{\rm post}$, and a schedule $\eta_l\uparrow0$ releasing the injected tokens gradually. So the bank is **augmented** rather than rebuilt and the backbone is left untouched — which is exactly where this parts company with paper 81.
+
+## 103: operator splitting as a network, with time back in the input
+
+Take an autonomous evolution equation
+
+$$
+u_t=\mathcal Lu+\mathcal Nu=:\mathcal Fu\ \text{ in }\Omega\times(0,t^\star],
+\qquad u(0,\cdot)=u_0,\qquad \mathcal Bu=0\ \text{ on }\partial\Omega,
+$$
+
+with $\mathcal L$ linear, $\mathcal N$ nonlinear and $\mathcal B$ the boundary operator, none of them depending on $t$. Lie-Trotter and Strang splitting give
+
+$$
+u(T,\bm x)\approx e^{\tau_K\mathcal N}e^{\tau_K\mathcal L}\cdots e^{\tau_1\mathcal N}e^{\tau_1\mathcal L}u(0,\bm x),
+$$
+
+$$
+u(T,\bm x)\approx e^{\frac{\tau_K}2\mathcal L}e^{\tau_K\mathcal N}e^{\frac{\tau_K}2\mathcal L}\cdots e^{\frac{\tau_1}2\mathcal L}e^{\tau_1\mathcal N}e^{\frac{\tau_1}2\mathcal L}u(0,\bm x).
+$$
+
+DOSnet, the architecture this paper builds on, writes that product directly as a network: $\psi_{\bm\theta_T}=\psi_{\bm\theta_K}\circ\cdots\circ\psi_{\bm\theta_1}$, each splitting block alternating learnable linear layers (convolutions) with nonlinear layers $\phi_{\mathcal N_{l,i}}=e^{\tau_{l,i}\mathcal N}$ subject to $\sum_{l,i}\tau_{l,i}=T$. **The striking part is that the activation function is the exact flow of the nonlinear subproblem, not ReLU or tanh.**
+
+Two defects motivate the paper. First, data-driven operator learning needs many paired samples, and for an evolution problem every pair costs a solver run. Second, the learned operator is never required to satisfy the equation, so it **cannot be evaluated at an arbitrary time**: DOSnet outputs only the terminal-time solution, its intermediate block outputs correspond to intermediate times only by comparison against reference data, and the number of retrievable intermediate times is tied to the number of blocks.
+
+PI-DOSnet's central change is to take equal steps $\tau_{1,1}=\dots=\tau_{1,K}=dt=t/K$ and replace the exponential of the linear part by an explicit second-order Taylor expansion in $dt$, which makes the whole block an **explicit function of $t$**. Time returns to the input, the solution can be evaluated at any instant, and training no longer depends on paired data.
+
+## 105: one shared summary network tying filtering to smoothing
+
+### Setting
+
+For a state-space model
+
+$$
+u_t=f(u_{t-1},\epsilon_{u,t}),\qquad y_t=h(u_t,\epsilon_{y,t}),
+$$
+
+the goal is to do **filtering** $p(u_t\mid y_{1:t})$ and **smoothing** $p(u_{1:t}\mid y_{1:t})$ at once. The paper constrains itself more than usual: it assumes only a **simulator**, so the functional forms of $f$, $h$ and the noise distributions are not assumed known and the transition and observation densities need not be evaluable.
+
+The central difficulty is that the conditioning variable for filtering is the entire history $y_{1:t}$, whose dimension grows with $t$, so a fixed-input flow cannot be used. FLUID compresses it with a multi-layer LSTM into a fixed-length summary $s_t=\mathrm{Enc}(y_{1:t};\psi)\in\mathbb R^h$ and writes, with a conditional KRnet flow,
+
+$$
+p(u_t\mid y_{1:t})\approx p_{\theta_1,\psi}(u_t\mid s_t).
+$$
+
+### A causal factorisation, and sharing
+
+The smoothing side rests on an exact factorisation
+
+$$
+p(u_{1:t}\mid y_{1:t})=p(u_t\mid y_{1:t})\prod_{k=1}^{t-1}p(u_k\mid u_{k+1},y_{1:k}),
+$$
+
+where the second factor conditions on $y_{1:k}$ and **not** on $y_{1:t}$ — that is what keeps the recursion causal, so the same summary $s_k$ can be reused directly. A second flow learns $p(u_t\mid u_{t+1},y_{1:t})\approx p_{\theta_2,\psi}(u_t\mid u_{t+1},s_t)$.
+
+**Both flows share the same summary network $\psi$, and this is the paper's named contribution.** The joint objective is
+
+$$
+\min_{\theta_1,\theta_2,\psi}\
+-\frac1{NT}\sum_{i=1}^N\sum_{t=1}^T\log p_{\theta_1,\psi}(u_t^i\mid s_t^i)
+-\frac{\lambda}{N(T-1)}\sum_{i=1}^N\sum_{t=1}^{T-1}\log p_{\theta_2,\psi}(u_t^i\mid u_{t+1}^i,s_t^i).
+$$
+
+At $\lambda=(T-1)/T$ there is an algebraic identity: the two terms recombine into a per-time filtering likelihood plus a whole-trajectory smoothing likelihood, so this **single** loss is the maximum-likelihood objective for both tasks simultaneously. Sharing has a sufficiency justification as well: if a sufficient summary $S^{\dagger}$ exists, meaning $p(X\mid Y)=p(X\mid S^{\dagger})$ almost surely, then it is simultaneously the optimal summary for each of the two objectives.
+
+### Sharing is not helpful but necessary
+
+The ablation is the result most worth recording. At state dimension $K=20$, shared against independent summaries:
+
+| Metric               | Shared | Independent |
+| -------------------- | ------ | ----------- |
+| filtering RMSE       | 0.1945 | 0.1958      |
+| backward-kernel RMSE | 0.1240 | 0.1596      |
+| smoothing RMSE       | 0.1525 | **60.3744** |
+| smoothing CRPS       | 0.0742 | **33.2893** |
+
+Each flow **on its own** is barely affected, while the backward **iterative sampling** collapses entirely. The paper's explanation is that with independent summaries the errors accumulate rapidly through the smoothing recursion and the estimates become unusable for $K\ge20$. This is the empirical counterpart of the loss-recombination identity above, and it is where the paper's real contribution lies.
+
+> [!warning] Two places where the text and the tables disagree
+> The prose claims smoothing improves uniformly on filtering, but Table 9 at $K=50$ reports smoothing RMSE 0.5423 against filtering 0.2605, and the Burgers Table 6 has the same inversion at $r^2=0.25$. This page records the table values.
 
 ## 89: sampling from a known unnormalised energy
 
-Paper 89 treats **sampling from a Boltzmann distribution**: given an unnormalised energy $E(x)$, the target is $\pi(x)\propto e^{-E(x)}$ with an unavailable normalising constant. This is a generative-model paper rather than a PDE solver, but it shares the stance of the [[computational-mathematics/paper-notes/scientific-machine-learning/normalizing-flows-for-densities|density-flow line]]: represent a distribution by an invertible or sampleable model, so "sampling" becomes "training a model".
+The goal is to sample from $\pi(x)=Z^{-1}\exp(-U(x))$, where $U$ can be evaluated pointwise, $Z$ is unavailable, and **no training data from $\pi$ exist**. The last condition rules out the objectives used for ordinary generative models: Jensen-Shannon divergence, MMD and Wasserstein distance all need real samples.
 
-Its approach is an energy-based diffusion generator. Diffusion or score-based methods differ from normalizing flows in a specific way: flows give an explicit density but are constrained by invertibility, while diffusion models are more expressive but supply the density only implicitly through a stochastic differential equation. When only the energy is known and no samples are available, the training signal has to come from the energy itself, so a reverse-KL or comparable variational objective is needed.
+The paper targets a specific defect in each of two families. Normalizing-flow Boltzmann generators must use a **bijective** decoder to have $\log p_D(x)$ in closed form, and bijectivity limits effective capacity; diffusion-based samplers (PIS and its relatives) need a numerical SDE or ODE solver inside the training loop to evaluate a time integral, which is expensive. The energy-based diffusion generator removes both restrictions at once: a **non-invertible** decoder together with a **simulation-free** loss.
+
+The starting point is a variational bound. Since samples from $\pi$ are unavailable the reverse KL must be used, and it is bounded by an augmented KL carrying a latent variable:
+
+$$
+D_{\rm KL}\bigl(p_D(x)\,\|\,\pi(x)\bigr)
+\le
+\mathbb E_{p_D(z_0)p_D(x\mid z_0;\phi)}
+\left[\log\frac{p_D(z_0)p_D(x\mid z_0;\phi)}{p_E(z_0\mid x;\theta)}+U(x)\right]+\log Z,
+$$
+
+with equality when $p_E(z_0\mid x;\theta)$ matches the decoder-induced conditional of $z_0$ given $x$. The decoder is Gaussian,
+
+$$
+p_D(x\mid z_0;\phi)=\mathcal N\bigl(x\mid\mu(z_0;\phi),\,\Sigma(z_0;\phi)\bigr),
+$$
+
+with $\mu$ and $\Sigma$ networks and **no invertibility imposed**; after decoding, a forward diffusion $\mathrm dz_t=f(z_t,t)\mathrm dt+g(t)\mathrm dW_t$ runs in latent space. The point is that $\log Z$ is a constant independent of the parameters, so the bound can be optimised without knowing it.
+
+This shares the stance of the [[computational-mathematics/paper-notes/scientific-machine-learning/normalizing-flows-for-densities|density-flow line]] with the setting exactly reversed: there one has samples and wants a density, here one has a density and wants samples.
 
 > [!note] Coverage status
-> The constructions, error bounds and algorithm of papers 81 and 94 have been checked. The specific losses, architectures and theorems of papers 89, 101, 103 and 105 have not been checked equation by equation here; the content above is limited to what titles, abstracts and cross-references in neighbouring papers confirm.
+> The constructions, losses and principal results of all six have been checked equation by equation against the preprint or journal full text. What remains unchecked is the analysis of high-frequency amplification in paper 101's Appendix A — the Fourier scaling argument in its main text has been checked — together with the journal status of papers 101, 103 and 105, none of which carries journal information on its arXiv record.
 
 ## Where the six sit
 
-| No. | How frequency content is handled                  | Structural rebuild |
-| --- | ------------------------------------------------- | ------------------ |
-| 81  | captured a posteriori from the solution's DFT     | yes (two criteria) |
-| 94  | placed analytically inside a Gaussian wave packet | not applicable     |
-| 101 | fixed feature bank plus learnable cross-attention | no                 |
-| 103 | not applicable (operator-splitting structure)     | no                 |
-| 105 | not applicable (conditional flow representation)  | no                 |
-| 89  | not applicable (Boltzmann sampling)               | no                 |
+| No. | How frequency content is handled                       | Change to the structure         |
+| --- | ------------------------------------------------------ | ------------------------------- |
+| 81  | dominant modes captured a posteriori from a DFT        | rebuilt (two criteria)          |
+| 94  | absorbed analytically into a Gaussian wave packet      | not applicable                  |
+| 101 | fixed bank, learnable envelope, cross-attention        | tokens augmented, backbone kept |
+| 103 | not applicable (splitting structure, $t$ in the input) | unchanged                       |
+| 105 | not applicable (conditional flows, shared summary)     | unchanged                       |
+| 89  | not applicable (Boltzmann sampling)                    | unchanged                       |
 
-One judgement runs through all of them: **frequency content is either measured (paper 81), removed analytically (paper 94), or weighted by the model itself over a sufficiently wide feature bank (paper 101). Assuming it is low-frequency is outside all three, and that assumption is precisely what spectral bias means.**
+One judgement runs through all of them: **frequency content is either measured (paper 81's DFT capture, paper 101's a posteriori threshold), removed analytically (paper 94's wave-packet ansatz), or weighted by the model itself over a sufficiently wide fixed bank (paper 101's cross-attention). Anything that fixes the frequency content a priori pays for frequency mismatch — and paper 81 turns that cost into a concrete quantity via $\|F\|_{C^1[-1,1]}=\infty$.**
+
+Paper 101 then adds a qualification to that judgement: **"biased towards low frequencies" is a property of the loss, not an intrinsic property of the network.** Under a regression loss the network favours low frequencies; under a residual loss weighted like $k^4$ it favours high ones. What has to be avoided is therefore not a bias in one particular direction but assuming the direction without measuring it.
 
 ## Sources for this page
 
 - J. Huang, R. You, and T. Zhou, [_Frequency-adaptive multi-scale deep neural networks_](https://doi.org/10.1016/j.cma.2025.117751), Comput. Methods Appl. Mech. Engrg. 437 (2025), 117751 (preprint [arXiv:2410.00053](https://arxiv.org/abs/2410.00053)).
-- Y. Wang, L. Guo, H. Wu, and T. Zhou, [_Energy-based diffusion generator for efficient sampling of Boltzmann distributions_](https://doi.org/10.1016/j.neunet.2025.108126), Neural Networks 194 (2026), 108126.
+- Y. Wang, L. Guo, H. Wu, and T. Zhou, [_Energy-based diffusion generator for efficient sampling of Boltzmann distributions_](https://doi.org/10.1016/j.neunet.2025.108126), Neural Networks 194 (2026), 108126 (preprint [arXiv:2401.02080](https://arxiv.org/abs/2401.02080)).
 - J. Huang, R. You, and T. Zhou, [_Deep learning for the semi-classical limit of the Schrödinger equation_](https://doi.org/10.1016/j.jcp.2026.114869), J. Comput. Phys. 558 (2026), 114869 (preprint [arXiv:2509.04453](https://arxiv.org/abs/2509.04453)).
 - X. Feng, T. Tang, X. Wan, and T. Zhou, _Overcoming spectral bias via cross-attention_, [arXiv:2512.18586](https://arxiv.org/abs/2512.18586), submitted to J. Comput. Phys.
-- J. Huang, Y. Qian, and T. Zhou, _PI-DOSnet: a physics-informed deep operator-splitting network for evolution partial differential equations_, submitted to J. Comput. Phys.
-- T. Cui, X. Feng, C. Pei, X. Wan, and T. Zhou, _FLUID: flow-based unified inference for dynamics_, submitted to Comput. Methods Appl. Mech. Engrg.
+- J. Huang, Y. Qian, and T. Zhou, _PI-DOSnet: a physics-informed deep operator-splitting network for evolution partial differential equations_, [arXiv:2606.22514](https://arxiv.org/abs/2606.22514), submitted to J. Comput. Phys.
+- T. Cui, X. Feng, C. Pei, X. Wan, and T. Zhou, _FLUID: flow-based unified inference for dynamics_, [arXiv:2604.07169](https://arxiv.org/abs/2604.07169), submitted to Comput. Methods Appl. Mech. Engrg.
